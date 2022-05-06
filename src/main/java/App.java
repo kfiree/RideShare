@@ -11,9 +11,9 @@ import java.io.InputStream;
 public class App {
 
     public static void main(String[] args) {
-        String filepath = ExtractMap.chooseFile();
-        CreateGraph(filepath);
-//        CreateGraph("data/maps/ariel.pbf");
+//        String filepath = ExtractMap.chooseFile();
+//        CreateGraph(filepath);
+        CreateGraph("data/ariel.pbf");
 //
     }
 
@@ -32,15 +32,16 @@ public class App {
             reader.run();
 
             // create graph:
-            OGraph OGraph = OGraph.getInstance();
+            OGraph graph = OGraph.getInstance();
 
             // secondary parsing of ways/creation of edges:
-            OGraph.parseMapWays(custom.ways, custom.MapObjects);
+            graph.parseMapWays(custom.ways, custom.MapObjects);
 
             //TODO add data to map
-
+            MapView map = new MapView(graph);
+            map.show();
             //TODO add algorithms here
-            System.out.println(OGraph.toString());
+            System.out.println(graph.toString());
 
         } catch (FileNotFoundException e) {
             JOptionPane.showMessageDialog(new JFrame(), "File not found!", "ERROR",
