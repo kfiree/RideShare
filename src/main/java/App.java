@@ -1,4 +1,5 @@
 import crosby.binary.osmosis.OsmosisReader;
+import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 import osmProcessing.OGraph;
 import osmProcessing.Reader;
 
@@ -6,6 +7,7 @@ import javax.swing.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.HashSet;
 //32.101267 35.2040791
 
 public class App {
@@ -13,8 +15,7 @@ public class App {
     public static void main(String[] args) {
 //        String filepath = ExtractMap.chooseFile();
 //        CreateGraph(filepath);
-        CreateGraph("data/ariel.pbf");
-//
+        CreateGraph("data/arielpbf.pbf");
     }
 
     public static void CreateGraph(String pathToPBF) {
@@ -29,11 +30,11 @@ public class App {
             reader.setSink(custom);
 
             // initial parsing of the .pbf file:
-            reader.run();
+             reader.run();
 
             // create graph:
             OGraph graph = OGraph.getInstance();
-
+            HashSet<String> boundTags = Reader.getBoundTags(), nodeTags = Reader.getNodeTags(), wayTags = Reader.getWayTags();
             // secondary parsing of ways/creation of edges:
             graph.parseMapWays(custom.ways, custom.MapObjects);
 

@@ -9,17 +9,19 @@ public class ONode {
      * PROPERTIES:
      */
     private LinkedList<OEdge> edges = new LinkedList<OEdge>();
-
+    static int keyGenerator = 0;
+    private int key;
     private Double latitude;
     private Double longitude;
-    private Long id;
+    private Long osmID;
     private Map<String, String> tags;
 
     //degree = weight
     private Integer degree;
 
     public ONode(MapObject object) {
-        this.id = object.getID();
+        this.key = keyGenerator++;
+        this.osmID = object.getID();
         this.latitude = object.getLatitude();
         this.longitude = object.getLongitude();
         this.tags = object.getTags();
@@ -30,8 +32,10 @@ public class ONode {
 
     // GETTERS:
 
+    public int getKey() {return key;}
+
     public Long getID() {
-        return this.id;
+        return this.osmID;
     }
 
     public Double getLatitude() {
@@ -48,7 +52,7 @@ public class ONode {
     }
 
     public ArrayList<ONode> getAdjacentNodes() {
-        ArrayList<ONode> adjacentNodes = new ArrayList<ONode>();
+        ArrayList<ONode> adjacentNodes = new ArrayList<>();
         for(OEdge edge : edges) {
             adjacentNodes.add(edge.getEndNode());
         }
@@ -88,7 +92,7 @@ public class ONode {
                 "edges=" + edges +
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
-                ", id=" + id +
+                ", id=" + osmID +
                 ", degree=" + degree +
                 '}';
     }

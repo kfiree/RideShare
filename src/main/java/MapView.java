@@ -8,6 +8,7 @@ import osmProcessing.OGraph;
 import osmProcessing.ONode;
 import scala.Int;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -50,6 +51,7 @@ public class MapView {
 
         Viewer viewer = displayGraph.display();
         viewer.disableAutoLayout();
+//        viewer.getDefaultView().enable;
     }
 
     private Edge addEdgeToMap(OEdge e){
@@ -61,13 +63,41 @@ public class MapView {
     }
 
     private Node addNodeToMap(ONode node){
-        Node displayNode = displayGraph.getNode(node.getID().toString());
+        String keyStr = String.valueOf(node.getKey());
+        Node displayNode = displayGraph.getNode(keyStr);
 
         if(displayNode == null){
-            displayNode = displayGraph.addNode(node.getID().toString());
+            displayNode = displayGraph.addNode(keyStr);
             displayNode.setAttribute("xy", node.getLongitude(), node.getLatitude());
+            displayNode.addAttribute("ui.label", node.getID().toString());
         }
+        if(node.getKey() == 224){
+            ArrayList<ONode> adjacentNodes = node.getAdjacentNodes();
+            int a = 1;
 
+            //255
+        }
         return displayNode;
     }
+    public static void main(String args[]) {
+        Graph graph = new MultiGraph("Tutorial 1");
+        graph.setStrict(false);
+        graph.setAutoCreate( true );
+
+        graph.addNode("A").setAttribute("xy", 1, 1);
+        graph.addNode("B").setAttribute("xy", 1, 10);
+        graph.addNode("C").setAttribute("xy", 10, 1);
+        graph.addNode("D").setAttribute("xy", 10, 10);
+
+
+        graph.addEdge("BC", "B", "C");
+        graph.addEdge("CA", "C", "A");
+        graph.addEdge("DA", "D", "A");
+        graph.addEdge("DB", "D", "B");
+//        graph.addEdge("DC", "D", "C");
+
+        Viewer viewer = graph.display();
+        viewer.disableAutoLayout();
+    }
+
 }

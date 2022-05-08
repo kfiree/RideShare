@@ -1,9 +1,6 @@
 package osmProcessing;
 
-import org.openstreetmap.osmosis.core.container.v0_6.EntityContainer;
-import org.openstreetmap.osmosis.core.container.v0_6.NodeContainer;
-import org.openstreetmap.osmosis.core.container.v0_6.RelationContainer;
-import org.openstreetmap.osmosis.core.container.v0_6.WayContainer;
+import org.openstreetmap.osmosis.core.container.v0_6.*;
 import org.openstreetmap.osmosis.core.domain.v0_6.*;
 import org.openstreetmap.osmosis.core.task.v0_6.Sink;
 
@@ -17,6 +14,21 @@ public class Reader implements Sink {
     public Map<Long, MapObject> MapObjects = new HashMap<>();
 
     static int entityNum = 0;
+    static HashSet<String> nodeTags = new HashSet<>(),
+    wayTags = new HashSet<>(),
+    boundTags = new HashSet<>();
+
+    public static HashSet<String> getNodeTags() {
+        return nodeTags;
+    }
+
+    public static HashSet<String> getWayTags() {
+        return wayTags;
+    }
+
+    public static HashSet<String> getBoundTags() {
+        return boundTags;
+    }
 
     /**
      * Method called on each entity from original XML file
@@ -24,13 +36,27 @@ public class Reader implements Sink {
      * Method separates entities in different collections
      */
     public void process(EntityContainer entityContainer) {
+        entityNum++;
+//        System.out.println(entityNum);
+        if(entityNum == 56623){
+            int a = 1;
+        }
 
+        if (entityContainer instanceof BoundContainer) {
+            MapObject temp;
 
-        if (entityContainer instanceof NodeContainer) {
+            Bound bound = ((BoundContainer) entityContainer).getEntity();
+//            System.out.println(bound.toString());
+            for(Tag t: bound.getTags()){
+                boundTags.add(t.getKey() + ", " + t.getValue());
+            }
+        }else if (entityContainer instanceof NodeContainer) {
             MapObject temp;
 
             Node node = ((NodeContainer) entityContainer).getEntity();
             node.toString();
+            temp = new MapObject(node.getLatitude(), node.getLongitude(), node.getId(), node.getTags());
+            MapObjects.put(temp.getID(), temp);
 
             // create node or add details if object was already created through ways (usually not the case, if .pbf file formatted correctly)
             if (MapObjects.get(node.getId()) != null) {
@@ -44,12 +70,19 @@ public class Reader implements Sink {
                 MapObjects.put(temp.getID(), temp);
             }
 
+            for(Tag t: node.getTags()){
+
+                nodeTags.add(t.getKey() + ", " + t.getValue());
+            }
+
         // process your node //
         } else if (entityContainer instanceof WayContainer){
             Way way = ((WayContainer) entityContainer).getEntity();
             // you can filter ways/nodes //
+//            if(way.entityData.id == 155117788){
+//                int a = 1;
+//            }
             if (this.isAppropriate(way)) {
-
                 OMapWay mway = new OMapWay(way.getId(), way.getTags());
                 // process all nodes contained in the way //
                 for(WayNode wn: way.getWayNodes()) {
@@ -68,6 +101,9 @@ public class Reader implements Sink {
                     temp.addWay(mway);
                 }
                 this.ways.add(mway);
+            }
+            for(Tag t: way.getTags()){
+                wayTags.add(t.getKey() + ", " + t.getValue());
             }
 //            for (Tag myTag : way.getTags()) {
 //                if ("highway".equalsIgnoreCase(myTag.getKey())) {
