@@ -138,5 +138,7 @@ public class OGraph {
         return new LinkedList<ONode>(this.nodes.values());
     }
 
-
+    public ONode getNode(long key){
+        return this.nodes.get(key);
+    }
 }

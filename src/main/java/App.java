@@ -1,5 +1,5 @@
+import Gui.MapView;
 import crosby.binary.osmosis.OsmosisReader;
-import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 import osmProcessing.OGraph;
 import osmProcessing.Reader;
 
@@ -40,7 +40,7 @@ public class App {
 
             //TODO add data to map
             MapView map = new MapView(graph);
-            map.show();
+            map.run();
             //TODO add algorithms here
             System.out.println(graph.toString());
 

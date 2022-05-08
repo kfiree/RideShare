@@ -3,6 +3,7 @@ package osmProcessing;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ONode {
     /**
@@ -84,17 +85,15 @@ public class ONode {
 
     @Override
     public String toString() {
-        String tagsStr = "";
-        if(!tags.isEmpty()) {
-            tagsStr = ", tags: ";
-        }
-        return "fd{" +
-                "edges=" + edges +
-                ", latitude=" + latitude +
-                ", longitude=" + longitude +
-                ", id=" + osmID +
-                ", degree=" + degree +
-                '}';
+
+        String idStr = "id = " + osmID;
+        String coordinatesStr = ", coordinates = (" +latitude + "," + longitude + ")";
+        String adjacentStr = edges.stream().map(list -> list.getEndNode().getID().toString()).collect(Collectors.joining(", "));
+        adjacentStr = ", adjacent = (" + adjacentStr +")";
+        String tagsStr = tags.entrySet().stream().map(list -> list.getKey()+list.getValue()).collect(Collectors.joining(", "));
+        tagsStr = ", tags = (" + tagsStr +")";
+
+        return "Node{" + idStr + coordinatesStr + adjacentStr + adjacentStr + tagsStr +"}";
     }
 
     public int compareTo(ONode node) {
