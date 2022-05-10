@@ -35,12 +35,13 @@ public class App {
             // create graph:
             OGraph graph = OGraph.getInstance();
             HashSet<String> boundTags = Reader.getBoundTags(), nodeTags = Reader.getNodeTags(), wayTags = Reader.getWayTags();
+
             // secondary parsing of ways/creation of edges:
             graph.parseMapWays(custom.ways, custom.MapObjects);
 
             //TODO add data to map
-//            MapView map = new MapView(graph);
-//            map.run();
+            MapView.getInstance().run();
+
             //TODO add algorithms here
             System.out.println(graph.toString());
 

@@ -8,6 +8,8 @@ public class OGraph {
     // access through node id:
     private Map<Long, ONode> nodes;
 
+    HashMap<Long, Integer> nodesQuantity = new HashMap<>();
+
     /**
      * Singleton specific properties:
      */
@@ -30,6 +32,7 @@ public class OGraph {
      * @param objects
      */
     public void parseMapWays(ArrayList<OMapWay> ways, Map<Long, MapObject> objects) {
+
         for (OMapWay way: ways) {
             boolean right = false, left = false , roundabout = false;
             if(way.getID() == 85568828l ){
@@ -41,6 +44,7 @@ public class OGraph {
             else if(way.getID() == 539167076l ){
                 right = true;
             }
+
             // Create first edge between the first and the last objects:
             HashMap<Long, MapObject> objectsOnWay = (HashMap<Long, MapObject>) way.getObjects();
 
@@ -58,6 +62,10 @@ public class OGraph {
                 // iterate through other objects on way (first and last one polled):
                 for (MapObject object: way.getObjectsList()) {
                     // check whether the object was referenced by other ways:
+                    Integer nodeReferenceNum = OGraph.getInstance().nodesQuantity.get(object.getID());
+//                    if (nodeReferenceNum > 1) {
+//
+//                    }
                     if (object.linkCounter > 1) {
                         // if so, split way into two edges at this point:
                         edge = splitEdgeAt(object, edge, way);

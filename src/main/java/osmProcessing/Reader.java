@@ -52,6 +52,7 @@ public class Reader implements Sink {
             Node node = ((NodeContainer) entityContainer).getEntity();
             temp = new MapObject(node.getLatitude(), node.getLongitude(), node.getId(), node.getTags());
             MapObjects.put(temp.getID(), temp);
+            OGraph.getInstance().nodesQuantity.put(temp.getID(), 0);
 
             // create node or add details if object was already created through ways (usually not the case, if .pbf file formatted correctly)
             if (MapObjects.get(node.getId()) != null) {
@@ -78,9 +79,8 @@ public class Reader implements Sink {
         // process your node //
         } else if (entityContainer instanceof WayContainer){
             Way way = ((WayContainer) entityContainer).getEntity();
-
-            if(way.getId() == 155117788){
-                int a = 1;
+            if(way.getId() == 85568828l ){
+                boolean roundabout = true;
             }
             // you can filter ways/nodes //
             if (this.isAppropriate(way)) {
@@ -97,7 +97,10 @@ public class Reader implements Sink {
                         MapObjects.put(temp.getID(), temp);
                     }
                     mway.addObject(temp);
+                    Integer nodeNum = OGraph.getInstance().nodesQuantity.get(wn.getNodeId());
+                    OGraph.getInstance().nodesQuantity.put(wn.getNodeId(), nodeNum == null? 0 : nodeNum++);
                     // linkCounter of node counts on how many ways the node appears //
+//                    if(nodesQuantity.containsKey())
                     temp.linkCounter++;
                     temp.addWay(mway);
                 }
@@ -150,29 +153,52 @@ public class Reader implements Sink {
      * (3) way should have a name (street name)
      */
     private boolean isAppropriate(Way way) {
-        // use Object-Boolean variable to track, if value changed
-        Boolean carAllowed = null;
-        Boolean namedStreet = null;
+        Boolean carAllowed = true;
 
         for (Tag tag : way.getTags()) {
-//            String a = tag.getKey();
-//            System.out.println(a);
-            if (tag.getKey().equals("name")) {
-                namedStreet = true;
-            }
-            if (tag.getKey().equals("highway")) {
-                carAllowed = this.noVehicleValues.contains(tag.getValue()) ? false : true;
+            if (tag.getKey().equals("highway") && this.noVehicleValues.contains(tag.getValue())) {
+                carAllowed = false;
             }
             // ... no need to iterate over all tags if both values already changed
-            if (namedStreet != null && carAllowed != null) {
+            if (carAllowed != null) {
                 break;
             }
         }
-        // final decision:
-        carAllowed = carAllowed == null ? false : carAllowed;
-        namedStreet = namedStreet == null ? false : namedStreet;
-        return (carAllowed && namedStreet);
+        return carAllowed;
     }
+
+//    /**
+//     * Checks, whether a way is appropriate for our graph
+//     * @param way from pbf file to check
+//     * @return true if
+//     * (1) way contains highway tag
+//     * (2) way not for only pedestrians, not a footway
+//     * (3) way should have a name (street name)
+//     */
+//    private boolean isAppropriate(Way way) {
+//        // use Object-Boolean variable to track, if value changed
+//        Boolean carAllowed = null;
+//        Boolean namedStreet = null;
+//
+//        for (Tag tag : way.getTags()) {
+////            String a = tag.getKey();
+////            System.out.println(a);
+//            if (tag.getKey().equals("name")) {
+//                namedStreet = true;
+//            }
+//            if (tag.getKey().equals("highway")) {
+//                carAllowed = this.noVehicleValues.contains(tag.getValue()) ? false : true;
+//            }
+//            // ... no need to iterate over all tags if both values already changed
+//            if (namedStreet != null && carAllowed != null) {
+//                break;
+//            }
+//        }
+//        // final decision:
+//        carAllowed = carAllowed == null ? false : carAllowed;
+//        namedStreet = namedStreet == null ? false : namedStreet;
+//        return (carAllowed && namedStreet);
+//    }
 
     /**
      * Values of tag 'highway' of ways in OSM where no cars are allowed

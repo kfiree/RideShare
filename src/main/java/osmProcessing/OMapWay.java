@@ -11,8 +11,9 @@ public class OMapWay {
     private Map<Long, MapObject> objects = new HashMap<Long, MapObject>();
     // Tags referenced by tag-key:
     private Map<String, String> tags = new HashMap<String, String>();
+    //TODO get name from nodes
     // Name of the street if provided:
-    private String name;
+    private String name = "";
 
     public OMapWay(long id, Collection<Tag> tags) {
         this.id = id;

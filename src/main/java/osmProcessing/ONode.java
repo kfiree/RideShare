@@ -81,6 +81,18 @@ public class ONode {
         this.tags.put(k, v);
     }
 
+    public LinkedList<OEdge> getEdges() {
+        return edges;
+    }
+
+    public Long getOsmID() {
+        return osmID;
+    }
+
+    public Map<String, String> getTags() {
+        return tags;
+    }
+
     public boolean isConnected(ONode targetNode) {
         for (OEdge e : this.edges) {
             if (e.getStartNode().getID() == targetNode.getID() ||

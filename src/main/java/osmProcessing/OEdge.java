@@ -20,8 +20,8 @@ public class OEdge {
     public OEdge(OMapWay way, ONode start, ONode target) {
         this.startNode = start;
         this.endNode = target;
-        this.name = way.getTag("name");
-        this.highwayType = way.getTag("highway");
+        this.name = way.getName();
+        this.highwayType = way.getTags().get("highway");
     }
 
     /**

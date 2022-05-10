@@ -17,9 +17,15 @@ public class MapView {
     private Graph displayGraph;
     private String styleSheet = "node {	text-mode: hidden; }";
 
-    public MapView(OGraph graph) {
-        this.graph = graph;
+    private static MapView INSTANCE = new MapView();
+
+    private MapView() {
         this.displayGraph = new MultiGraph("map simulation");
+        this.graph = OGraph.getInstance();
+    }
+
+    public static MapView getInstance() {
+        return INSTANCE;
     }
 
     public void run(){
@@ -35,12 +41,14 @@ public class MapView {
             drawEdge(e);
         }
 
-        // node.setAttribute("ui.style", "size: 100px;");
+//         node.setAttribute("ui.style", "size: 100px;");
 
         Viewer viewer = displayGraph.display();
         displayGraph.setAttribute("ui.stylesheet", styleSheet);
+        displayGraph.setAttribute("ui.quality");
+        displayGraph.setAttribute("ui.antialias");
         viewer.disableAutoLayout();
-//        viewer.getDefaultView().setMouseManager(new CustomMouseManager());
+        viewer.getDefaultView().setMouseManager(new CustomMouseManager());
     }
 
     private Edge drawEdge(OEdge e){
@@ -55,9 +63,14 @@ public class MapView {
         Node displayNode = displayGraph.getNode(keyStr);
 
         if(displayNode == null){
+
             displayNode = displayGraph.addNode(keyStr);
             displayNode.setAttribute("xy", node.getLongitude(), node.getLatitude());
-//            displayNode.addAttribute("ui.label", node.getID().toString());
+            displayNode.addAttribute("ui.label", node.getID().toString());
+
+            if(!node.getTags().containsKey("highway")){
+                displayNode.setAttribute("ui.style", "size: 1px;");
+            }
         }
 
         return displayNode;
