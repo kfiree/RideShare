@@ -39,8 +39,8 @@ public class App {
             graph.parseMapWays(custom.ways, custom.MapObjects);
 
             //TODO add data to map
-            MapView map = new MapView(graph);
-            map.run();
+//            MapView map = new MapView(graph);
+//            map.run();
             //TODO add algorithms here
             System.out.println(graph.toString());
 
