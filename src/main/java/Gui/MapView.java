@@ -40,7 +40,7 @@ public class MapView {
         Viewer viewer = displayGraph.display();
         displayGraph.setAttribute("ui.stylesheet", styleSheet);
         viewer.disableAutoLayout();
-        viewer.getDefaultView().setMouseManager(new CustomMouseManager());
+//        viewer.getDefaultView().setMouseManager(new CustomMouseManager());
     }
 
     private Edge drawEdge(OEdge e){
@@ -57,7 +57,7 @@ public class MapView {
         if(displayNode == null){
             displayNode = displayGraph.addNode(keyStr);
             displayNode.setAttribute("xy", node.getLongitude(), node.getLatitude());
-            displayNode.addAttribute("ui.label", node.getID().toString());
+//            displayNode.addAttribute("ui.label", node.getID().toString());
         }
 
         return displayNode;
