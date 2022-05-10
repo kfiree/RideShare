@@ -153,11 +153,17 @@ public class Reader implements Sink {
      * (3) way should have a name (street name)
      */
     private boolean isAppropriate(Way way) {
-        Boolean carAllowed = true;
-
+        Boolean carAllowed = false;
+        List<WayNode> wayNodes = way.getWayNodes();
+        for(WayNode n : wayNodes){
+            if(n.getNodeId() == 5329461160l){
+                boolean stop = true;
+                break;
+            }
+        }
         for (Tag tag : way.getTags()) {
-            if (tag.getKey().equals("highway") && this.noVehicleValues.contains(tag.getValue())) {
-                carAllowed = false;
+            if (tag.getKey().equals("highway") ) {
+                carAllowed =  !this.noVehicleValues.contains(tag.getValue());
             }
             // ... no need to iterate over all tags if both values already changed
             if (carAllowed != null) {
@@ -207,7 +213,8 @@ public class Reader implements Sink {
      */
     private final List<String> noVehicleValues = Arrays.asList("trunk", "motorway", "pedestrian", "footway", "bridleway", "steps", "path", "cycleway",
             "construction", "proposed", "bus_stop", "elevator", "street_lamp", "stop", "traffic_signals", "service", "track", "platform", "raceway",
-            "abandoned", "road" , "escape" , "proposed" , "construction", "corridor", "bridleway" , "bus_guideway", "none", "motorway_link", "unclassified");
+            "abandoned", "road" , "escape" , "proposed" , "construction", "corridor", "bridleway" , "bus_guideway", "none", "motorway_link", "unclassified",
+            "construction", "service", "residential", "living_street", "tertiary");
 
     /**
      * Check if a node from pbf file is appropriate for your purposes

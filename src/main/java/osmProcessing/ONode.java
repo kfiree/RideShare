@@ -1,8 +1,6 @@
 package osmProcessing;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ONode {
@@ -110,10 +108,23 @@ public class ONode {
         String coordinatesStr = ", coordinates = (" +latitude + "," + longitude + ")";
         String adjacentStr = edges.stream().map(list -> list.getEndNode().getID().toString()).collect(Collectors.joining(", "));
         adjacentStr = ", adjacent = (" + adjacentStr +")";
-        String tagsStr = tags.entrySet().stream().map(list -> list.getKey()+ ":" + list.getValue()).collect(Collectors.joining(", "));
+        String tagsStr = tags.entrySet().stream()
+                .filter(entry -> relevantTags(entry.getKey()))
+                .map(entry -> entry.getKey() + ":" + entry.getValue())
+                .collect(Collectors.joining(", "));
+
         tagsStr = ", tags = (" + tagsStr +")";
 
-        return "Node{" + idStr + coordinatesStr + adjacentStr + adjacentStr + tagsStr +"}";
+        return "Node{" + idStr + coordinatesStr + adjacentStr + tagsStr +"}";
+    }
+    private final List<String> irrelevantTags = Arrays.asList("name", "surface", "ref");
+
+    private boolean relevantTags(String tag){
+        for (String s: irrelevantTags) {
+            if(tag.contains(s))
+                return false;
+        }
+        return true;
     }
 
     public int compareTo(ONode node) {
