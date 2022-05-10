@@ -30,17 +30,28 @@ public class OGraph {
      * @param objects
      */
     public void parseMapWays(ArrayList<OMapWay> ways, Map<Long, MapObject> objects) {
-
         for (OMapWay way: ways) {
-
+            boolean right = false, left = false , roundabout = false;
+            if(way.getID() == 85568828l ){
+                roundabout = true;
+            }
+            else if(way.getID() == 155117788l ){
+                left = true;
+            }
+            else if(way.getID() == 539167076l ){
+                right = true;
+            }
             // Create first edge between the first and the last objects:
             HashMap<Long, MapObject> objectsOnWay = (HashMap<Long, MapObject>) way.getObjects();
 
             if (objectsOnWay.isEmpty() == false && objectsOnWay.size() >= 2) {
 
                 ONode start = this.selectNode(way.pollFirstObject());
+                start.addTags("edge", "source");
+                start.addTags(way.getTags());
                 ONode target = this.selectNode(way.pollLastObject());
-
+                target.addTags(way.getTags());
+                target.addTags("edge", "destination");
                 OEdge edge = new OEdge(way, start, target);
                 this.edges.put(this.calculateEdgeId(edge), edge);
 

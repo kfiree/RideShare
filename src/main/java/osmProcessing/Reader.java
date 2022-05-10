@@ -37,10 +37,6 @@ public class Reader implements Sink {
      */
     public void process(EntityContainer entityContainer) {
         entityNum++;
-//        System.out.println(entityNum);
-        if(entityNum == 56623){
-            int a = 1;
-        }
 
         if (entityContainer instanceof BoundContainer) {
             MapObject temp;
@@ -54,7 +50,6 @@ public class Reader implements Sink {
             MapObject temp;
 
             Node node = ((NodeContainer) entityContainer).getEntity();
-            node.toString();
             temp = new MapObject(node.getLatitude(), node.getLongitude(), node.getId(), node.getTags());
             MapObjects.put(temp.getID(), temp);
 
@@ -64,6 +59,11 @@ public class Reader implements Sink {
                 temp.setLatitude(node.getLatitude());
                 temp.setLongitude(node.getLongitude());
                 temp.addAllTags(node.getTags());
+                for (Tag t: node.getTags()) {
+                    if(t.getKey().equals("junction") || t.getValue().equals("roundabout")){
+                        int a = 1;
+                    }
+                }
             }
             else {
                 temp = new MapObject(node.getLatitude(), node.getLongitude(), node.getId(), node.getTags());
@@ -78,10 +78,11 @@ public class Reader implements Sink {
         // process your node //
         } else if (entityContainer instanceof WayContainer){
             Way way = ((WayContainer) entityContainer).getEntity();
+
+            if(way.getId() == 155117788){
+                int a = 1;
+            }
             // you can filter ways/nodes //
-//            if(way.entityData.id == 155117788){
-//                int a = 1;
-//            }
             if (this.isAppropriate(way)) {
                 OMapWay mway = new OMapWay(way.getId(), way.getTags());
                 // process all nodes contained in the way //
@@ -102,9 +103,12 @@ public class Reader implements Sink {
                 }
                 this.ways.add(mway);
             }
+//            System.out.println(way.getId());
             for(Tag t: way.getTags()){
+//                System.out.println(t.getKey() + ", " + t.getValue());
                 wayTags.add(t.getKey() + ", " + t.getValue());
             }
+
 //            for (Tag myTag : way.getTags()) {
 //                if ("highway".equalsIgnoreCase(myTag.getKey())) {
 //                    System.out.println("highway: " + way.getId() + way.toString());

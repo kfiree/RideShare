@@ -73,6 +73,14 @@ public class ONode {
         this.degree = degree;
     }
 
+    public void addTags(Map<String, String> tags) {
+        this.tags.putAll(tags);
+    }
+
+    public void addTags(String k, String v) {
+        this.tags.put(k, v);
+    }
+
     public boolean isConnected(ONode targetNode) {
         for (OEdge e : this.edges) {
             if (e.getStartNode().getID() == targetNode.getID() ||
@@ -90,7 +98,7 @@ public class ONode {
         String coordinatesStr = ", coordinates = (" +latitude + "," + longitude + ")";
         String adjacentStr = edges.stream().map(list -> list.getEndNode().getID().toString()).collect(Collectors.joining(", "));
         adjacentStr = ", adjacent = (" + adjacentStr +")";
-        String tagsStr = tags.entrySet().stream().map(list -> list.getKey()+list.getValue()).collect(Collectors.joining(", "));
+        String tagsStr = tags.entrySet().stream().map(list -> list.getKey()+ ":" + list.getValue()).collect(Collectors.joining(", "));
         tagsStr = ", tags = (" + tagsStr +")";
 
         return "Node{" + idStr + coordinatesStr + adjacentStr + adjacentStr + tagsStr +"}";
