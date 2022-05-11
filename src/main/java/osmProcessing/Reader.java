@@ -214,7 +214,9 @@ public class Reader implements Sink {
     private final List<String> noVehicleValues = Arrays.asList( "motorway", "pedestrian", "footway", "bridleway", "steps", "path", "cycleway",
             "construction", "proposed", "bus_stop", "elevator", "street_lamp", "stop", "traffic_signals", "service", "track", "platform", "raceway",
             "abandoned", "road" , "escape" , "proposed" , "construction", "corridor", "bridleway" , "bus_guideway", "none", "motorway_link", "unclassified", "tertiary_link",
-            "secondary_link", "construction", "service", "residential", "living_street", "tertiary");
+            "secondary_link", "construction", "service", "residential"
+//            ,"living_street", "tertiary"
+    );
     // tags i pooled out "trunk",
     public final List<String> irrelevantTags = Arrays.asList("barrier");
 

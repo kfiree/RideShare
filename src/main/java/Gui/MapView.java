@@ -5,6 +5,7 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.ui.view.Viewer;
+import org.graphstream.ui.view.util.DefaultMouseManager;
 import osmProcessing.OEdge;
 import osmProcessing.OGraph;
 import osmProcessing.ONode;
@@ -49,7 +50,7 @@ public class MapView {
         displayGraph.setAttribute("ui.quality");
         displayGraph.setAttribute("ui.antialias");
         viewer.disableAutoLayout();
-        viewer.getDefaultView().setMouseManager(new CustomMouseManager());
+        viewer.getDefaultView().setMouseManager(new CustomMouseManager2());
     }
 
     private Edge drawEdge(OEdge e){

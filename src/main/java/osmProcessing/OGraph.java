@@ -53,16 +53,13 @@ public class OGraph {
 
             if (objectsOnWay.isEmpty() == false && objectsOnWay.size() >= 2) {
                 //TODO check if node have irrelevant tags
-                if(way.getID() == 551927065l){
-                    int a = 1;
-                }
                 ONode start = this.selectNode(way.getFirst());
-                start.addTags("edge", "source");
+//                start.addTags("edge", "source");
                 start.addTags(way.getTags());
                 start.addWayID(way.getID());
                 ONode target = this.selectNode(way.getLast());
                 target.addTags(way.getTags());
-                target.addTags("edge", "destination");
+//                target.addTags("edge", "destination");
                 target.addWayID(way.getID());
                 OEdge edge = new OEdge(way, start, target);
                 this.edges.put(this.calculateEdgeId(edge), edge);
@@ -71,9 +68,6 @@ public class OGraph {
                 for (MapObject object: way.getObjectsList()) {
                     // check whether the object was referenced by other ways:
                     Integer nodeReferenceNum = OGraph.getInstance().nodesQuantity.get(object.getID());
-//                    if (nodeReferenceNum > 1) {
-//
-//                    }
                     if (object.linkCounter > 1) {
                         // if so, split way into two edges at this point:
                         edge = splitEdgeAt(object, edge, way);
