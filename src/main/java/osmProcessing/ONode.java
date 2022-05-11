@@ -1,5 +1,7 @@
 package osmProcessing;
 
+import org.apache.commons.math3.util.Pair;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -14,6 +16,7 @@ public class ONode {
     private Double longitude;
     private Long osmID;
     private Map<String, String> tags;
+    private ArrayList<Long> waysID = new ArrayList<>();
 
     //degree = weight
     private Integer degree;
@@ -29,6 +32,13 @@ public class ONode {
         }
     }
 
+    public ONode(Long osmID, Pair<Double, Double> coordinates) {
+        this.key = keyGenerator++;
+        this.latitude = coordinates.getFirst();
+        this.longitude = coordinates.getSecond();
+        this.osmID = osmID;
+        this.tags = new HashMap<>();
+    }
     // GETTERS:
 
     public int getKey() {return key;}
@@ -43,6 +53,14 @@ public class ONode {
 
     public Double getLongitude() {
         return this.longitude;
+    }
+
+    public ArrayList<Long> getWaysID() {
+        return waysID;
+    }
+
+    public void addWayID(long wayID) {
+        this.waysID.add(wayID);
     }
 
     //instead of getWeight
@@ -114,8 +132,9 @@ public class ONode {
                 .collect(Collectors.joining(", "));
 
         tagsStr = ", tags = (" + tagsStr +")";
-
-        return "Node{" + idStr + coordinatesStr + adjacentStr + tagsStr +"}";
+        String ways = waysID.stream().map(element -> element.toString()).collect(Collectors.joining(", "));
+        ways = "ways = (" + ways +")";
+        return "Node{" + idStr + coordinatesStr + adjacentStr + tagsStr +"}\n"+ways;
     }
     private final List<String> irrelevantTags = Arrays.asList("name", "surface", "ref");
 

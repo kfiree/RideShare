@@ -70,10 +70,10 @@ public class MapObject {
         return this.tags;
     }
 
-    /**
-     * SETTERS
-     * @param attributes
-     */
+//    /**
+//     * SETTERS
+//     * @param attributes
+//     */
 
     public void setLatitude(Double lat) {
         this.latitude = lat;

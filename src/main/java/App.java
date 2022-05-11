@@ -13,9 +13,9 @@ import java.util.HashSet;
 public class App {
 
     public static void main(String[] args) {
-//        String filepath = ExtractMap.chooseFile();
-//        CreateGraph(filepath);
-        CreateGraph("data/arielpbf.pbf");
+        String filepath = ExtractMap.chooseFile();
+        CreateGraph(filepath);
+//        CreateGraph("data/arielpbf.pbf");
     }
 
     public static void CreateGraph(String pathToPBF) {

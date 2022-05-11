@@ -12,7 +12,7 @@ public class Reader implements Sink {
     public ArrayList<OMapWay> ways = new ArrayList<>();
     // Reference by id:
     public Map<Long, MapObject> MapObjects = new HashMap<>();
-
+    static private HashMap<Long, Long> junctions = new HashMap<>();
     static int entityNum = 0;
     static HashSet<String> nodeTags = new HashSet<>(),
     wayTags = new HashSet<>(),
@@ -37,12 +37,10 @@ public class Reader implements Sink {
      */
     public void process(EntityContainer entityContainer) {
         entityNum++;
-
         if (entityContainer instanceof BoundContainer) {
             MapObject temp;
 
             Bound bound = ((BoundContainer) entityContainer).getEntity();
-//            System.out.println(bound.toString());
             for(Tag t: bound.getTags()){
                 boundTags.add(t.getKey() + ", " + t.getValue());
             }
@@ -60,11 +58,6 @@ public class Reader implements Sink {
                 temp.setLatitude(node.getLatitude());
                 temp.setLongitude(node.getLongitude());
                 temp.addAllTags(node.getTags());
-                for (Tag t: node.getTags()) {
-                    if(t.getKey().equals("junction") || t.getValue().equals("roundabout")){
-                        int a = 1;
-                    }
-                }
             }
             else {
                 temp = new MapObject(node.getLatitude(), node.getLongitude(), node.getId(), node.getTags());
@@ -79,13 +72,23 @@ public class Reader implements Sink {
         // process your node //
         } else if (entityContainer instanceof WayContainer){
             Way way = ((WayContainer) entityContainer).getEntity();
-            if(way.getId() == 85568828l ){
-                boolean roundabout = true;
+            if(way.getId() == 551927065l ){
+                boolean stop = true;
             }
             // you can filter ways/nodes //
             if (this.isAppropriate(way)) {
                 OMapWay mway = new OMapWay(way.getId(), way.getTags());
                 // process all nodes contained in the way //
+                for(Tag t: way.getTags()){
+                    if(t.getKey().equals("junction")){
+                        WayNode first = way.getWayNodes().get(0);
+
+                        for(WayNode wn: way.getWayNodes()){
+                            junctions.put(wn.getNodeId(), first.getNodeId());
+                        }
+                        break;
+                    }
+                }
                 for(WayNode wn: way.getWayNodes()) {
                     MapObject temp;
                     // if object was already created through nodes:
@@ -97,8 +100,10 @@ public class Reader implements Sink {
                         MapObjects.put(temp.getID(), temp);
                     }
                     mway.addObject(temp);
-                    Integer nodeNum = OGraph.getInstance().nodesQuantity.get(wn.getNodeId());
-                    OGraph.getInstance().nodesQuantity.put(wn.getNodeId(), nodeNum == null? 0 : nodeNum++);
+
+//                    Integer nodeNum = OGraph.getInstance().nodesQuantity.get(wn.getNodeId());
+//                    OGraph.getInstance().nodesQuantity.put(wn.getNodeId(), nodeNum == null? 0 : nodeNum++);
+
                     // linkCounter of node counts on how many ways the node appears //
 //                    if(nodesQuantity.containsKey())
                     temp.linkCounter++;
@@ -106,19 +111,14 @@ public class Reader implements Sink {
                 }
                 this.ways.add(mway);
             }
-//            System.out.println(way.getId());
             for(Tag t: way.getTags()){
-//                System.out.println(t.getKey() + ", " + t.getValue());
+
+                if(t.getKey().equals("junction")){
+                    boolean stop = true;
+                }
                 wayTags.add(t.getKey() + ", " + t.getValue());
             }
 
-//            for (Tag myTag : way.getTags()) {
-//                if ("highway".equalsIgnoreCase(myTag.getKey())) {
-//                    System.out.println("highway: " + way.getId() + way.toString());
-//
-//                    break;
-//                }
-//            }
         // process your way //
         } else if (entityContainer instanceof RelationContainer){
 //            RelationContainer relationContainer = ((RelationContainer) entityContainer);
@@ -154,14 +154,13 @@ public class Reader implements Sink {
      */
     private boolean isAppropriate(Way way) {
         Boolean carAllowed = false;
-        List<WayNode> wayNodes = way.getWayNodes();
-        for(WayNode n : wayNodes){
-            if(n.getNodeId() == 5329461160l){
-                boolean stop = true;
-                break;
-            }
+        if(way.getId() == 787284934l){
+            int a = 1;
         }
         for (Tag tag : way.getTags()) {
+            if(this.irrelevantTags.contains(tag.getKey()) ){
+                return false;
+            }
             if (tag.getKey().equals("highway") ) {
                 carAllowed =  !this.noVehicleValues.contains(tag.getValue());
             }
@@ -210,11 +209,16 @@ public class Reader implements Sink {
      * Values of tag 'highway' of ways in OSM where no cars are allowed
      * Feel free to fill the list: https://wiki.openstreetmap.org/wiki/Key:highway
      * TODO use more efficient collection
+     * TODO check if links are useful
      */
-    private final List<String> noVehicleValues = Arrays.asList("trunk", "motorway", "pedestrian", "footway", "bridleway", "steps", "path", "cycleway",
+    private final List<String> noVehicleValues = Arrays.asList( "motorway", "pedestrian", "footway", "bridleway", "steps", "path", "cycleway",
             "construction", "proposed", "bus_stop", "elevator", "street_lamp", "stop", "traffic_signals", "service", "track", "platform", "raceway",
-            "abandoned", "road" , "escape" , "proposed" , "construction", "corridor", "bridleway" , "bus_guideway", "none", "motorway_link", "unclassified",
-            "construction", "service", "residential", "living_street", "tertiary");
+            "abandoned", "road" , "escape" , "proposed" , "construction", "corridor", "bridleway" , "bus_guideway", "none", "motorway_link", "unclassified", "tertiary_link",
+            "secondary_link", "construction", "service", "residential", "living_street", "tertiary");
+    // tags i pooled out "trunk",
+    public final List<String> irrelevantTags = Arrays.asList("barrier");
+
+
 
     /**
      * Check if a node from pbf file is appropriate for your purposes
@@ -224,5 +228,9 @@ public class Reader implements Sink {
      */
     private boolean isAppropriate(Node node) {
         return false;
+    }
+
+    public static HashMap<Long, Long> getJunctions() {
+        return junctions;
     }
 }

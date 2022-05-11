@@ -7,6 +7,7 @@ import java.util.*;
 public class OMapWay {
 
     private long id;
+    private MapObject first = null, last = null;
     // Nodes on way, referenced by id:
     private Map<Long, MapObject> objects = new HashMap<Long, MapObject>();
     // Tags referenced by tag-key:
@@ -25,6 +26,10 @@ public class OMapWay {
     }
 
     public void addObject(MapObject mo) {
+        if(first == null){
+            first = mo;
+        }
+        last = mo;
         this.objects.put(mo.getID(), mo);
     }
 
@@ -42,6 +47,14 @@ public class OMapWay {
 
     public LinkedList<MapObject> getObjectsList() {
         return new LinkedList<MapObject>(this.objects.values());
+    }
+
+    public MapObject getFirst() {
+        return first;
+    }
+
+    public MapObject getLast() {
+        return last;
     }
 
     public MapObject pollFirstObject() {
