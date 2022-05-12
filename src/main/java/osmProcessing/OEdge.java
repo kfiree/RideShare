@@ -89,4 +89,8 @@ public class OEdge {
         this.distance = Utils.getInstance().getDistance(lat1, lon1, lat2, lon2);
     }
 
+    public boolean isOpposite(OEdge other){
+        return this.getStartNode().getID() == other.getEndNode().getID() && this.getEndNode().getID() == other.getStartNode().getID();
+    }
+
 }

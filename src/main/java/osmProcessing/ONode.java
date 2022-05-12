@@ -109,7 +109,7 @@ public class ONode {
         return tags;
     }
 
-    public boolean isConnected(ONode targetNode) {
+    public boolean isAdjacent(ONode targetNode) {
         for (OEdge e : this.edges) {
             if (e.getStartNode().getID() == targetNode.getID() ||
                     e.getEndNode().getID() == targetNode.getID()) {
@@ -117,6 +117,16 @@ public class ONode {
             }
         }
         return false;
+    }
+
+    public OEdge getAdjacent(ONode targetNode) {
+        for (OEdge e : this.edges) {
+            if (e.getStartNode().getID() == targetNode.getID() ||
+                    e.getEndNode().getID() == targetNode.getID()) {
+                return e;
+            }
+        }
+        return null;
     }
 
     @Override

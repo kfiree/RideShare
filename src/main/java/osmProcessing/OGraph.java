@@ -1,7 +1,5 @@
 package osmProcessing;
 
-import org.apache.commons.math3.util.Pair;
-
 import java.util.*;
 
 public class OGraph {
@@ -37,30 +35,20 @@ public class OGraph {
     public void parseMapWays(ArrayList<OMapWay> ways, Map<Long, MapObject> objects) {
 
         for (OMapWay way: ways) {
-//            boolean right = false, left = false , roundabout = false;
-//            if(way.getID() == 85568828l ){
-//                roundabout = true;
-//            }
-//            else if(way.getID() == 155117788l ){
-//                left = true;
-//            }
-//            else if(way.getID() == 539167076l ){
-//                right = true;
-//            }
 
             // Create first edge between the first and the last objects:
             HashMap<Long, MapObject> objectsOnWay = (HashMap<Long, MapObject>) way.getObjects();
 
-            if (objectsOnWay.isEmpty() == false && objectsOnWay.size() >= 2) {
-                //TODO check if node have irrelevant tags
-                ONode start = this.selectNode(way.getFirst());
-//                start.addTags("edge", "source");
-                start.addTags(way.getTags());
-                start.addWayID(way.getID());
-                ONode target = this.selectNode(way.getLast());
-                target.addTags(way.getTags());
-//                target.addTags("edge", "destination");
-                target.addWayID(way.getID());
+            if (objectsOnWay.isEmpty() == false && objectsOnWay.size() >= 2) {//TODO check if node have irrelevant tags
+
+                ONode start = getEdgeNode(way.getFirst(), way);
+                ONode target = getEdgeNode(way.getLast(), way);
+//                if(start.getID() == 5329510675l && target.getID() == 985633358l){
+//                    boolean stop = true;
+//                }
+//                if(start.getID() == 985633358l && target.getID() == 5329510675l){
+//                    boolean stop = true;
+//                }
                 OEdge edge = new OEdge(way, start, target);
                 this.edges.put(this.calculateEdgeId(edge), edge);
 
@@ -79,29 +67,30 @@ public class OGraph {
 
         // add edges to nodes and calculate final distance:
         for (OEdge e: this.getEdgesList()) {
-            e.getStartNode().addEdge(e);
-            e.getEndNode().addEdge(e);
+            if(!e.getStartNode().isAdjacent(e.getEndNode())) {
+                // TODO make edge bi-directional if needed
+                e.getStartNode().addEdge(e);
+                e.getEndNode().addEdge(e);
+            }
+
             // calculate distance:
             e.calculateDistance();
         }
 
     }
 
+    private ONode getEdgeNode(MapObject mapObject, OMapWay way){
+        ONode node = this.selectNode(mapObject);
+
+        node.addTags(way.getTags());
+        node.addWayID(way.getID());
+
+        return node;
+    }
 
     private ONode selectNode(MapObject object) {
-        if(object.getID() == 5329510743l){
-            boolean stop = true;
-        }
-
         Long junctionID = Reader.getJunctions().get(object.getID());
         ONode node = this.nodes.get(object.getID());
-
-    //    if(object.getID() == 992691829l || object.getID() == 992691850l || object.getID() == 7222576515l){
-    ////            7222576515 right
-    ////            992691850 down
-    ////            992691829 top
-    //            boolean stop = true;
-    //        }
 
         if(junctionID == null){
             if(node == null){
@@ -110,9 +99,6 @@ public class OGraph {
             }
         }else{
             // node is part of a junction
-            if(junctionID == 985633358l){
-                boolean stop = true;
-            }
             node = this.nodes.get(junctionID);
             if(node == null){
                 node = junctionNodes.get(junctionID);
@@ -129,58 +115,6 @@ public class OGraph {
         }
         return node;
     }
-
-
-//
-//
-//
-//
-//    //node is part of a junction
-//    if(junctionID != null){
-////        ONode junctionNode1 = getJunctionNode(junctionID, object);
-//
-//
-//        ONode junctionNode = this.nodes.get(junctionID);
-//
-//        if (junctionNode == null) {
-//            junctionNode = junctionNodes.get(junctionID);
-//
-//            if(junctionNode == null){
-//                junctionNode = new ONode(object);
-//                junctionNodes.put(junctionID, junctionNode);
-//            }
-//        }
-//
-//        this.nodes.put(object.getID(), junctionNode);
-////        // if new node
-////        ONode junctionNode = this.nodes.get(junctionID);
-////        if (junctionNode == null) {
-////
-////            junctionNode = junctionNodes.get(junctionID);
-////
-////            if(junctionNode == null){
-////                junctionNodes.put(junctionID, new ONode(object));
-////            }
-////        }
-//    }else{
-//        ONode node = this.nodes.get(object.getID());
-//    }
-//
-//    if(object.getID() == 992691829l || object.getID() == 992691850l || object.getID() == 7222576515l){
-////            7222576515 right
-////            992691850 down
-////            992691829 top
-//        boolean stop = true;
-//    }
-//    return node;
-////    if (node == null) {
-////        node = new ONode(object);
-////        this.nodes.put(object.getID(), node);
-////    }
-//
-////    return node;
-//}
-
 
     /**
      * @param obj object at which edge will be splitted:

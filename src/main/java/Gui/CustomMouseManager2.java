@@ -26,9 +26,17 @@ public class CustomMouseManager2 extends DefaultMouseManager {
     }
 
 
+//    @Override
+//    public void mouseClicked(MouseEvent e) {
+//        super.mouseClicked(e);
+//        GraphicElement currentNode = view.findNodeOrSpriteAt(e.getX(), e.getY());
+//        System.out.println(e.getX()+", "+e.getY()+ ", node:" + currentNode.label);
+//
+//    }
+
     @Override
-    public void mouseClicked(MouseEvent e) {
-        super.mouseClicked(e);
+    public void mouseReleased(MouseEvent e) {
+        super.mouseReleased(e);
         GraphicElement currentNode = view.findNodeOrSpriteAt(e.getX(), e.getY());
 
         if(currentNode != null){
@@ -36,14 +44,36 @@ public class CustomMouseManager2 extends DefaultMouseManager {
 
             Random r = new Random();
             currentNode.setAttribute("ui.style", "fill-color: rgb("+r.nextInt(256)+","+r.nextInt(256)+","+r.nextInt(256)+");size: 10px, 10px; text-mode: normal;");
+
             ONode oNode = graph.getNode(Long.parseLong(currentNode.getLabel()));
             System.out.println(oNode.toString());
 
         }
 
-        if(focusedNode!= null)
+        if( focusedNode!= null && focusedNode != currentNode)
             focusedNode.setAttribute("ui.style", "fill-color: black;size: 10px, 10px; text-mode: hidden;");
 
         focusedNode = currentNode;
     }
+
+//    @Override
+//    public void mouseReleased(MouseEvent e) {
+//        super.mouseReleased(e);
+//        GraphicElement currentNode = view.findNodeOrSpriteAt(e.getX(), e.getY());
+//
+//        if(currentNode != null){
+//            OGraph graph = OGraph.getInstance();
+//
+//            Random r = new Random();
+//            currentNode.setAttribute("ui.style", "fill-color: rgb("+r.nextInt(256)+","+r.nextInt(256)+","+r.nextInt(256)+");size: 10px, 10px; text-mode: normal;");
+//            ONode oNode = graph.getNode(Long.parseLong(currentNode.getLabel()));
+//            System.out.println(oNode.toString());
+//
+//        }
+//
+//        if(focusedNode!= null)
+//            focusedNode.setAttribute("ui.style", "fill-color: red;size: 10px, 10px; text-mode: hidden;");
+//
+//        focusedNode = currentNode;
+//    }
 }
