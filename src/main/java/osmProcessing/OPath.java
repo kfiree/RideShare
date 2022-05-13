@@ -18,12 +18,6 @@ public class OPath implements Comparable<OPath>{
         End = edges.get(edges.size()-1).getEndNode();
     }
 
-//    public OPath(ONode start, ONode end) {
-//        Start = start;
-//        End = end;
-//    }
-
-
     public ArrayList<OEdge> getEdges() {
         return edges;
     }

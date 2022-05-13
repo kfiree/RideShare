@@ -17,6 +17,9 @@ public class ONode {
     private Long osmID;
     private Map<String, String> tags;
     private ArrayList<Long> waysID = new ArrayList<>();
+    public static enum userType {Driver, Rider, None};
+    private userType user = userType.None;
+
 
     //degree = weight
     private Integer degree;
@@ -127,6 +130,15 @@ public class ONode {
             }
         }
         return null;
+    }
+
+    public userType getUser() {
+        return user;
+    }
+
+    public void setUser(userType user) {
+        this.addTags("user", "driver");
+        this.user = user;
     }
 
     @Override

@@ -13,6 +13,7 @@ import osmProcessing.ONode;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MapView {
     private OGraph graph;
@@ -31,15 +32,12 @@ public class MapView {
     }
 
     public void run(){
-        List<ONode> nodesList = graph.getNodesList();
 
-        for(ONode n : nodesList){
+        for(ONode n : graph.getNodes().values()){
             drawNode(n);
         }
 
-        List<OEdge> edgesList = graph.getEdgesList();
-
-        for(OEdge e: edgesList){
+        for(OEdge e: graph.getEdges().values()){
             drawEdge(e);
         }
 

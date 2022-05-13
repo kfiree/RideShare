@@ -4,6 +4,7 @@ import org.openstreetmap.osmosis.core.container.v0_6.*;
 import org.openstreetmap.osmosis.core.domain.v0_6.*;
 import org.openstreetmap.osmosis.core.task.v0_6.Sink;
 
+import java.awt.geom.Point2D;
 import java.util.*;
 
 //osmconvert64.exe ariel2.osm > arielpbf.pbf --out-pbf
@@ -17,6 +18,7 @@ public class Reader implements Sink {
     static HashSet<String> nodeTags = new HashSet<>(),
     wayTags = new HashSet<>(),
     boundTags = new HashSet<>();
+    private Point2D mapBounds;
 
     public static HashSet<String> getNodeTags() {
         return nodeTags;
@@ -28,6 +30,14 @@ public class Reader implements Sink {
 
     public static HashSet<String> getBoundTags() {
         return boundTags;
+    }
+
+    public Point2D getMapBounds() {
+        return mapBounds;
+    }
+
+    public void setMapBounds(Point2D mapBounds) {
+        this.mapBounds = mapBounds;
     }
 
     /**
@@ -61,6 +71,7 @@ public class Reader implements Sink {
             }
             else {
                 temp = new MapObject(node.getLatitude(), node.getLongitude(), node.getId(), node.getTags());
+
                 MapObjects.put(temp.getID(), temp);
             }
 
@@ -126,9 +137,12 @@ public class Reader implements Sink {
         } else {
 //            System.out.println("Unknown Entity!");
         }
-//        System.out.println("entity number: "+ ++entityNum);
+
     }
 
+//    private boolean inBound(Double longitude, double latitude){
+//        return longitude
+//    }
     // following methods are a requirement of the Sink interface //
     @Override
     public void initialize(Map<String, Object> map) {
