@@ -8,11 +8,54 @@ import org.graphstream.ui.swingViewer.ViewPanel;
 import org.graphstream.ui.view.Viewer;
 //import org.graphstream.ui.view.util.DefaultMouseManager;
 
+import osmProcessing.GraphUtils;
 import osmProcessing.OEdge;
 import osmProcessing.OGraph;
 import osmProcessing.ONode;
 
 import java.awt.event.MouseListener;
+import java.util.Collection;
+
+/**
+ * "fill-mode" ...
+ *     "fill-color" ...
+ *     "fill-image" ...
+ *     "stroke-mode" ...
+ *     "stroke-color" ...
+ *     "stroke-width" ...
+ *     "shadow-mode" ...
+ *     "shadow-color" ...
+ *     "shadow-width" ...
+ *     "shadow-offset" ...
+ *     "text-mode" ...
+ *     "text-color" ...
+ *     "text-style" ...
+ *     "text-font" ...
+ *     "text-size" ...
+ *     "text-visibility-mode" ...
+ *     "text-visibility" ...
+ *     "text-background-mode" ...
+ *     "text-background-color" ...
+ *     "text-offset" ...
+ *     "text-padding" ...
+ *     "icon-mode" ...
+ *     "icon" ...
+ *     "padding" ...
+ *     "z-index" ...
+ *     "visibility-mode" ...
+ *     "visibility" ...
+ *     "shape" ...
+ *     "size" ...
+ *     "size-mode" ...
+ *     "shape-points" ...
+ *     "text-alignment" ...
+ *     "jcomponent" ...
+ *     "arrow-image" ...
+ *     "arrow-size" ...
+ *     "arrow-shape" ...
+ *     "sprite-orientation" ...
+ *     "canvas-color" ...
+ */
 
 public class MapView {
     private OGraph graph;
@@ -31,37 +74,32 @@ public class MapView {
     }
 
     public void run(){
-
-        for(ONode n : graph.getNodes().values()){
-            drawNode(n);
-        }
-
-        for(OEdge e: graph.getEdges().values()){
-            drawEdge(e);
-        }
-
-        for(ONode rider: graph.getRiders().values()){
-            drawRider(rider);
-        }
-
-
-        Viewer viewer = displayGraph.display();
-
+        // draw graph components
+        drawEdge(graph);
+        drawRider(graph);
+        drawPaths(GraphUtils.getInstance());
 
         displayGraph.setAttribute("ui.stylesheet", styleSheet);
         displayGraph.setAttribute("ui.quality");
         displayGraph.setAttribute("ui.antialias");
+
+        Viewer viewer = displayGraph.display();
         viewer.disableAutoLayout();
         viewer.getDefaultView();
         viewer.getDefaultView().setMouseManager(new CustomMouseManager());
     }
 
-    private Edge drawEdge(OEdge e){
-        Node start = drawNode(e.getStartNode());
-        Node end = drawNode(e.getEndNode());
+    private Boolean drawEdge(OGraph graph){
+        graph.getEdges().values().forEach(e -> {
+            Node start = drawNode(e.getStartNode());
+            Node end = drawNode(e.getEndNode());
+            Edge edge = displayGraph.addEdge(e.getEdgeId().toString(), start, end);
 
-        return displayGraph.addEdge(e.getEdgeId().toString(), start, end);
+            edge.setAttribute("ui.style", "blue");
+        });
+        return true;
     }
+
 
     private Node drawNode(ONode node){
 
@@ -82,23 +120,31 @@ public class MapView {
         return displayNode;
     }
 
-    private Node drawRider(ONode node){
-        String keyStr = String.valueOf(node.getKey());
-        Node displayNode = displayGraph.getNode(keyStr);
+    private boolean drawRider(OGraph graph){
+        graph.getRiders().values().forEach(rider->{
+            String keyStr = String.valueOf(rider.getKey());
+            Node displayNode = displayGraph.getNode(keyStr);
 
-        if(displayNode == null){
+            if(displayNode == null){
 
-            displayNode = displayGraph.addNode(keyStr);
-            displayNode.setAttribute("xy", node.getLongitude(), node.getLatitude());
-            displayNode.setAttribute("ui.label", node.getID().toString());
+                displayNode = displayGraph.addNode(keyStr);
+                displayNode.setAttribute("xy", rider.getLongitude(), rider.getLatitude());
+                displayNode.setAttribute("ui.label", rider.getID().toString());
 
-            displayNode.setAttribute("ui.style","fill-color: red;");
+                displayNode.setAttribute("ui.style","fill-color: red;");
+            }
 
-//            String image = "url('data/assets/Thumbs_up_icon.png')";
-//            displayNode.setAttribute("ui.style", "fill-mode: image-scaled; fill-image: "+ image);
+        });
+        return true;
+    }
 
-        }
-
-        return displayNode;
+    private boolean drawPaths(GraphUtils utils){
+        utils.getPaths().forEach(path -> {
+            if(path!=null)
+                path.getEdges().forEach(edge -> {
+                    displayGraph.getEdge(edge.getEdgeId().toString()).setAttribute("ui.style", "size: 5px; fill-color: blue;");
+                });
+        });
+        return true;
     }
 }

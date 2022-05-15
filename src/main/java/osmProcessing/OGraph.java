@@ -8,6 +8,7 @@ public class OGraph {
     // access through node id:
     private Map<Long, ONode> nodes;
     private Map<Long, ONode> riders;
+    private List<OPath> driversPaths = new ArrayList<>();
 
     private Map<Long, ONode> junctionNodes = new HashMap<>();
 
@@ -193,7 +194,18 @@ public class OGraph {
         return node;
     }
 
-//    public ONode addDriverNode(long userID){
+    public List<OPath> getDriversPaths() {
+        return driversPaths;
+    }
+
+    public void setDriversPaths(List<OPath> driversPaths) {
+        this.driversPaths = driversPaths;
+    }
+
+    public void addDriversPath(OPath driversPaths) {
+        this.driversPaths.add(driversPaths);
+    }
+    //    public ONode addDriverNode(long userID){
 //        ONode node = new ONode(userID, )
 //        node.setUser(ONode.userType.Rider);
 //

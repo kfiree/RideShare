@@ -1,24 +1,53 @@
 package osmProcessing;
 
+import org.jetbrains.annotations.NotNull;
+import org.openstreetmap.osmosis.core.container.v0_6.WayContainer;
+
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class OPath implements Comparable<OPath>{
-    private ArrayList<OEdge>  edges = new ArrayList<>();
+    private List<OEdge>  edges = new ArrayList<>();
+    private OGraph graph = OGraph.getInstance();
     private ONode Start, End;
 
         public OPath(ArrayList<OEdge> edges, ONode start, ONode end) {
         this.edges = edges;
         Start = start;
         End = end;
+        graph = OGraph.getInstance();
     }
 
-    public OPath(ArrayList<OEdge> edges) {
-        this.edges = edges;
-        Start = edges.get(0).getStartNode();
-        End = edges.get(edges.size()-1).getEndNode();
+    public OPath(@NotNull List<Object> objects) {
+            if(objects.isEmpty())
+                return;
+        if (objects.get(0) instanceof OEdge) {
+            this.edges = objects.stream().map(object -> (OEdge)object).collect(Collectors.toList());
+            Start = edges.get(0).getStartNode();
+            End = edges.get(edges.size() - 1).getEndNode();
+        }else if(objects.get(0) instanceof Long){
+            List<Long> pathNodesID = objects.stream().map(object -> (Long) object).collect(Collectors.toList());
+
+            List<ONode> pathNodes = new ArrayList<>();
+            ONode src, dest;
+            for (int i = 0; i<pathNodesID.size()-1;i++){
+                src = graph.getNode(pathNodesID.get(i));
+                dest = graph.getNode(pathNodesID.get(i+1));
+
+                if(dest != null && src != null){
+                    OEdge edge = src.getAdjacent(dest);
+                    if(edge!=null){
+                        this.edges.add(edge);
+                    }
+                }
+            }
+
+        }
     }
 
-    public ArrayList<OEdge> getEdges() {
+
+    public List<OEdge> getEdges() {
         return edges;
     }
 

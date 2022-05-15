@@ -1,6 +1,7 @@
 import Gui.MapView;
 import crosby.binary.osmosis.OsmosisReader;
 import org.apache.commons.math3.geometry.Point;
+import osmProcessing.GraphUtils;
 import osmProcessing.OGraph;
 import osmProcessing.Parser;
 import osmProcessing.Reader;
@@ -15,6 +16,7 @@ import java.util.*;
 
 public class App {
     private static Map<Long, Double[]> Riders = new HashMap<>();
+    private static List<Object> pathNodesID = new ArrayList<>();
     public static void main(String[] args) {
 
 //        String filepath = ExtractMap.chooseFile();
@@ -30,6 +32,19 @@ public class App {
         Riders.put(-2L, new Double[]{32.10569527212209, 35.20159203268953});
         Riders.put(-3L, new Double[]{32.100656966794055, 35.20341277647622});
         Riders.put(-4L, new Double[]{32.10551550801045, 35.1700032533693});
+    }
+
+    /**
+     * TODO get driver's path from database SQL - Motti
+     */
+    private static void addDriver(){
+        pathNodesID.add(432349397l);
+        pathNodesID.add(5329510675l);
+        pathNodesID.add(985633358l);
+        pathNodesID.add(257392128l);
+        pathNodesID.add(5224948678l);
+        pathNodesID.add(5177072076l);
+
     }
 
 
@@ -53,19 +68,24 @@ public class App {
             // initial parsing of the .pbf file:
             reader.run();
 
-            // get riders
-            addRiders();
 
-            // create graph:
-            OGraph graph = OGraph.getInstance();
-            HashSet<String> boundTags = Reader.getBoundTags(), nodeTags = Reader.getNodeTags(), wayTags = Reader.getWayTags();
+
 
             // secondary parsing of ways/creation of edges:
             Parser.parseMapWays(custom.ways, custom.MapObjects);
 
+            // get riders
+            addRiders();
+
+            // get driver path
+            addDriver();
+            GraphUtils.getInstance().addPath(pathNodesID);
+
+            OGraph graph = OGraph.getInstance();
             for (Map.Entry<Long, Double[]> entry: Riders.entrySet()) {
                 graph.addRiderNode(entry.getKey(), entry.getValue());
             }
+
             //TODO add data to map
             MapView.getInstance().run();
 

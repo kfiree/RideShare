@@ -1,10 +1,13 @@
 package osmProcessing;
 
-public class Utils {
+import java.util.ArrayList;
+import java.util.List;
 
-    private static Utils instance = new Utils();
+public class GraphUtils {
 
-    public static synchronized Utils getInstance() {
+    private static GraphUtils instance = new GraphUtils();
+    private List<OPath> paths = new ArrayList<>();
+    public static synchronized GraphUtils getInstance() {
         return instance;
     }
     /**
@@ -33,4 +36,21 @@ public class Utils {
 
         return Math.sqrt(distance);
     }
+
+//    public boolean addPath(List<Long> path){
+//        return paths.add(path);
+//    }
+    public boolean addPath(List<Object> pathNodes){
+        return paths.add(new OPath(pathNodes));
+    }
+    public void setPaths(List<OPath> paths) {
+        this.paths = paths;
+    }
+
+    public List<OPath> getPaths() {
+        return paths;
+    }
+//    551927055
+
+
 }

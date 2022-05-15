@@ -46,7 +46,7 @@ public class CustomMouseManager extends DefaultMouseManager {
             }
 
         }else{
-            System.out.println(e.getX()+", "+e.getY());
+//            System.out.println(e.getX()+", "+e.getY());
         }
 
         if( focusedNode!= null && focusedNode != currentNode)
