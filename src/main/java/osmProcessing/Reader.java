@@ -16,9 +16,15 @@ public class Reader implements Sink {
     static private HashMap<Long, Long> junctions = new HashMap<>();
     static int entityNum = 0;
     static HashSet<String> nodeTags = new HashSet<>(),
-    wayTags = new HashSet<>(),
-    boundTags = new HashSet<>();
+        wayTags = new HashSet<>(),
+        boundTags = new HashSet<>();
     private Point2D mapBounds;
+
+    public void removeTertiary() {
+        List<String> temp = new ArrayList<>(noVehicleValues);
+        temp.add("tertiary");
+        noVehicleValues = temp;
+    }
 
     public static HashSet<String> getNodeTags() {
         return nodeTags;
@@ -225,11 +231,10 @@ public class Reader implements Sink {
      * TODO use more efficient collection
      * TODO check if links are useful
      */
-    private final List<String> noVehicleValues = Arrays.asList( "motorway", "pedestrian", "footway", "bridleway", "steps", "path", "cycleway",
+    private List<String> noVehicleValues = Arrays.asList( "motorway", "pedestrian", "footway", "bridleway", "steps", "path", "cycleway",
             "construction", "proposed", "bus_stop", "elevator", "street_lamp", "stop", "traffic_signals", "service", "track", "platform", "raceway",
-            "abandoned", "road" , "escape" , "proposed" , "construction", "corridor", "bridleway" , "bus_guideway", "none", "motorway_link", "unclassified", "tertiary_link",
-            "secondary_link", "construction", "service", "residential"
-            ,"living_street", "tertiary"
+            "abandoned", "road" , "escape" , "proposed" , "construction", "corridor", "bridleway" , "bus_guideway", "none", "motorway_link",
+            "unclassified", "tertiary_link", "secondary_link", "construction", "service", "residential" ,"living_street"
     );
     // tags i pooled out "trunk",
 

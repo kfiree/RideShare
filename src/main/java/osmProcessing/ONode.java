@@ -1,6 +1,7 @@
 package osmProcessing;
 
 import org.apache.commons.math3.util.Pair;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,11 +21,10 @@ public class ONode {
     public static enum userType {Driver, Rider, None};
     private userType user = userType.None;
 
-
     //degree = weight
     private Integer degree;
 
-    public ONode(MapObject object) {
+    public ONode(@NotNull MapObject object) {
         this.key = keyGenerator++;
         this.osmID = object.getID();
         this.latitude = object.getLatitude();
@@ -35,13 +35,14 @@ public class ONode {
         }
     }
 
-    public ONode(Long osmID, Pair<Double, Double> coordinates) {
-        this.key = keyGenerator++;
-        this.latitude = coordinates.getFirst();
-        this.longitude = coordinates.getSecond();
-        this.osmID = osmID;
+    public ONode(long id, Double @NotNull [] coordinates, userType user) {
+        this.latitude = coordinates[0];
+        this.longitude = coordinates[1];
+        this.osmID = id;
+        this.user = user;
         this.tags = new HashMap<>();
     }
+
     // GETTERS:
 
     public int getKey() {return key;}

@@ -10,18 +10,28 @@ import java.awt.geom.Point2D;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 //32.101267 35.2040791
 
 public class App {
-
+    private static Map<Long, Double[]> Riders = new HashMap<>();
     public static void main(String[] args) {
 
-        String filepath = ExtractMap.chooseFile();
-        CreateGraph(filepath);
-//        CreateGraph("data/arielpbf.pbf");
+//        String filepath = ExtractMap.chooseFile();
+//        CreateGraph(filepath);
+        CreateGraph("data/arielpbf.pbf");
     }
+
+    /**
+     * TODO get riders from database SQL - Motti
+     */
+    private static void addRiders(){
+        Riders.put(-1L, new Double[]{32.10590091133335, 35.192002782079705});
+        Riders.put(-2L, new Double[]{32.10569527212209, 35.20159203268953});
+        Riders.put(-3L, new Double[]{32.100656966794055, 35.20341277647622});
+        Riders.put(-4L, new Double[]{32.10551550801045, 35.1700032533693});
+    }
+
 
     public static void CreateGraph(String pathToPBF) {
         InputStream inputStream;
@@ -35,11 +45,16 @@ public class App {
             Reader custom = new Reader();
             custom.setMapBounds(mapBounds);
             OsmosisReader reader = new OsmosisReader(inputStream);
+
+            custom.removeTertiary();
+
             reader.setSink(custom);
 
             // initial parsing of the .pbf file:
-             reader.run();
+            reader.run();
 
+            // get riders
+            addRiders();
 
             // create graph:
             OGraph graph = OGraph.getInstance();
@@ -48,6 +63,9 @@ public class App {
             // secondary parsing of ways/creation of edges:
             Parser.parseMapWays(custom.ways, custom.MapObjects);
 
+            for (Map.Entry<Long, Double[]> entry: Riders.entrySet()) {
+                graph.addRiderNode(entry.getKey(), entry.getValue());
+            }
             //TODO add data to map
             MapView.getInstance().run();
 

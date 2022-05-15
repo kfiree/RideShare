@@ -20,8 +20,9 @@ public class OGraph {
     private static OGraph INSTANCE = new OGraph();
 
     private OGraph() {
-        this.edges = new HashMap<Long, OEdge>();
-        this.nodes = new HashMap<Long, ONode>();
+        this.edges = new HashMap<>();
+        this.nodes = new HashMap<>();
+        this.riders = new HashMap<>();
     }
 
     public static OGraph getInstance() {
@@ -191,17 +192,22 @@ public class OGraph {
         return node;
     }
 
-    public ONode addDDriverNode(ONode node, long id, int userID){
-        node.setUser(ONode.userType.Rider);
+//    public ONode addDriverNode(long userID){
+//        ONode node = new ONode(userID, )
+//        node.setUser(ONode.userType.Rider);
+//
+//        return node;
+//    }
 
-        nodes.put(id, node);
+    public ONode addRiderNode(long id, Double[] coordinates){
+        ONode node = new ONode(id, coordinates, ONode.userType.Rider);
+        node.setUser(ONode.userType.Rider);
+        riders.put(id, node);
         return node;
     }
 
-    public ONode addRiderNode(ONode node, long id, int userID){
-        node.setUser(ONode.userType.Rider);
-        nodes.put(id, node);
-        return node;
+    public Map<Long, ONode> getRiders() {
+        return riders;
     }
 
     public OEdge removeEdge(long id){

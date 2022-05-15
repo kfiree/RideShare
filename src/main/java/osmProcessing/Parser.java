@@ -53,9 +53,6 @@ public class Parser {
     }
 
     private static ONode createNodeForEdge(MapObject mapObject, OMapWay way){
-        if(way.getID() == 157291254l) {
-            System.out.println(way.getID());
-        }
         ONode node = selectNode(mapObject);
 
         node.addTags(way.getTags());
