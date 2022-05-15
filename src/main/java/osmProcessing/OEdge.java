@@ -86,7 +86,8 @@ public class OEdge {
         double lon1 = this.getStartNode().getLongitude();
         double lon2 = this.getEndNode().getLongitude();
 
-        this.distance = GraphUtils.getInstance().getDistance(lat1, lon1, lat2, lon2);
+        this.distance = GraphUtils.getInstance().distance(lat1, lon1, lat2, lon2);
+
     }
 
     public boolean isOpposite(OEdge other){
