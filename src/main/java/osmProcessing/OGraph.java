@@ -171,7 +171,8 @@ public class OGraph {
     }
 
     public ONode getNode(long key){
-        return this.nodes.get(key);
+        ONode node = this.nodes.get(key);
+        return node == null? this.riders.get(key): node;
     }
 
     public Map<Long, ONode> getJunctionNodes() {

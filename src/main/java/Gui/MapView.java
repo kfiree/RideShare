@@ -4,12 +4,15 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
+import org.graphstream.ui.swingViewer.ViewPanel;
 import org.graphstream.ui.view.Viewer;
 //import org.graphstream.ui.view.util.DefaultMouseManager;
 
 import osmProcessing.OEdge;
 import osmProcessing.OGraph;
 import osmProcessing.ONode;
+
+import java.awt.event.MouseListener;
 
 public class MapView {
     private OGraph graph;
@@ -49,7 +52,8 @@ public class MapView {
         displayGraph.setAttribute("ui.quality");
         displayGraph.setAttribute("ui.antialias");
         viewer.disableAutoLayout();
-//        viewer.getDefaultView().setMouseManager(new CustomMouseManager2());
+        viewer.getDefaultView();
+        viewer.getDefaultView().setMouseManager(new CustomMouseManager());
     }
 
     private Edge drawEdge(OEdge e){
