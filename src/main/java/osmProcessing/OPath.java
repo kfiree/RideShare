@@ -12,7 +12,7 @@ public class OPath implements Comparable<OPath>{
     private OGraph graph = OGraph.getInstance();
     private ONode Start, End;
 
-        public OPath(ArrayList<OEdge> edges, ONode start, ONode end) {
+    public OPath(ArrayList<OEdge> edges, ONode start, ONode end) {
         this.edges = edges;
         Start = start;
         End = end;
@@ -20,8 +20,8 @@ public class OPath implements Comparable<OPath>{
     }
 
     public OPath(@NotNull List<Object> objects) {
-            if(objects.isEmpty())
-                return;
+        if(objects.isEmpty())
+            return;
         if (objects.get(0) instanceof OEdge) {
             this.edges = objects.stream().map(object -> (OEdge)object).collect(Collectors.toList());
             Start = edges.get(0).getStartNode();

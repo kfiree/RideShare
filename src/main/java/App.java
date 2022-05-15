@@ -78,7 +78,7 @@ public class App {
             setDriversPath();
 
             GraphUtils.getInstance().addPath(pathNodesID);
-            GraphUtils.getInstance().setRider(Riders);
+            GraphUtils.getInstance().setRiders(Riders);
             OGraph graph = OGraph.getInstance();
 
 

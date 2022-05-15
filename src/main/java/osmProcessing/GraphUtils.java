@@ -6,14 +6,21 @@ import java.util.List;
 import java.util.Map;
 
 public class GraphUtils {
-
     private static GraphUtils instance = new GraphUtils();
-    private List<OPath> paths = new ArrayList<>();
-    private Map<Long, ONode> riders = new HashMap<>();
+    private List<OPath> paths;
+    private Map<Long, ONode> riders;
+    private OGraph graph;
+
+    private GraphUtils() {
+        paths = new ArrayList<>();
+        riders = new HashMap<>();
+        graph = OGraph.getInstance();
+    }
 
     public static synchronized GraphUtils getInstance() {
         return instance;
     }
+
     /**
      * This function will be adressed by all distance calculations
      * between two nodes in space
@@ -41,12 +48,10 @@ public class GraphUtils {
         return Math.sqrt(distance);
     }
 
-//    public boolean addPath(List<Long> path){
-//        return paths.add(path);
-//    }
     public boolean addPath(List<Object> pathNodes){
         return paths.add(new OPath(pathNodes));
     }
+
     public void setPaths(List<OPath> paths) {
         this.paths = paths;
     }
@@ -55,9 +60,7 @@ public class GraphUtils {
         return paths;
     }
 
-    public boolean setRider(Map<Long, Double[]> Riders){
-//        OGraph graph = OGraph.getInstance();
-
+    public boolean setRiders(Map<Long, Double[]> Riders){
         Riders.entrySet().forEach(entry -> {
             ONode node = new ONode(entry.getKey(), entry.getValue(), ONode.userType.Rider);
             node.setUser(ONode.userType.Rider);
