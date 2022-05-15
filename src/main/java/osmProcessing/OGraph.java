@@ -7,8 +7,6 @@ public class OGraph {
     private Map<Long, OEdge> edges;
     // access through node id:
     private Map<Long, ONode> nodes;
-    private Map<Long, ONode> riders;
-    private List<OPath> driversPaths = new ArrayList<>();
 
     private Map<Long, ONode> junctionNodes = new HashMap<>();
 
@@ -23,7 +21,6 @@ public class OGraph {
     private OGraph() {
         this.edges = new HashMap<>();
         this.nodes = new HashMap<>();
-        this.riders = new HashMap<>();
     }
 
     public static OGraph getInstance() {
@@ -31,137 +28,9 @@ public class OGraph {
     }
 
 
-//    /**
-//     * Create graph edges
-//     * @param ways
-//     * @param objects
-//     */
-//    public void parseMapWays(ArrayList<OMapWay> ways, Map<Long, MapObject> objects) {
-//
-//        for (OMapWay way: ways) {
-//
-//            // Create first edge between the first and the last objects:
-//            HashMap<Long, MapObject> objectsOnWay = (HashMap<Long, MapObject>) way.getObjects();
-//
-//            if (objectsOnWay.isEmpty() == false && objectsOnWay.size() >= 2) {//TODO check if node have irrelevant tags
-//
-//                ONode start = createNodeForEdge(way.getFirst(), way);
-//                ONode target = createNodeForEdge(way.getLast(), way);
-//
-//                OEdge edge = new OEdge(way, start, target);
-//                this.edges.put(this.calculateEdgeId(edge), edge);
-//
-//                // iterate through other objects on way (first and last one polled):
-//                for (MapObject object: way.getObjectsList()) {
-//                    // check whether the object was referenced by other ways:
-//                    Integer nodeReferenceNum = OGraph.getInstance().nodesQuantity.get(object.getID());
-//                    if (object.linkCounter > 1) {
-//                        // if so, split way into two edges at this point:
-//                        edge = splitEdgeAt(object, edge, way);
-//                    }
-//
-//                }
-//            }
-//        }
-//
-//        // add edges to nodes and calculate final distance:
-//        for (OEdge e: this.getEdgesList()) {
-//            if(!e.getStartNode().isAdjacent(e.getEndNode())) {
-//                // TODO make edge bi-directional if needed
-//                e.getStartNode().addEdge(e);
-//                e.getEndNode().addEdge(e);
-//            }
-//
-//            // calculate distance:
-//            e.calculateDistance();
-//        }
-//
-//    }
-//
-//    private ONode createNodeForEdge(MapObject mapObject, OMapWay way){
-//        ONode node = this.selectNode(mapObject);
-//
-//        node.addTags(way.getTags());
-//        node.addWayID(way.getID());
-//
-//        return node;
-//    }
-//
-//    private ONode selectNode(MapObject object) {
-//        Long junctionID = Reader.getJunctions().get(object.getID());
-//        ONode node = this.nodes.get(object.getID());
-//
-//        if(junctionID == null){
-//            if(node == null){
-//                node = new ONode(object);
-//                this.nodes.put(object.getID(), node);
-//            }
-//        }else{
-//            // node is part of a junction
-//            node = this.nodes.get(junctionID);
-//            if(node == null){
-//                node = junctionNodes.get(junctionID);
-//
-//                if(node == null){
-//                    node = new ONode(object);
-//                    junctionNodes.put(junctionID, node);
-//                    this.nodes.put(object.getID(), node);
-//                }
-//
-//            }
-//
-//
-//        }
-//        return node;
-//    }
-
-//    /**
-//     * @param obj object at which edge will be splitted:
-//     * @param edge in input: start--target connection
-//     * @param baseWay base for new edge
-//     * Method creates start-X-target such connection
-//     * Where X is a new node created from @param obj
-//     * @return the right part of above connection: X-target
-//     */
-//    private OEdge splitEdgeAt(MapObject obj, OEdge edge, OMapWay baseWay) {
-//        // remove old edge between two nodes:
-//        this.edges.remove(this.calculateEdgeId(edge));
-//        // get node at the middle:
-//        ONode node = this.selectNode(obj);
-//        // connect it to start and target of edge:
-//        OEdge leftEdge = new OEdge(baseWay, edge.getStartNode(), node);
-//        OEdge rightEdge = new OEdge(baseWay, node, edge.getEndNode());
-//
-//        this.edges.put(this.calculateEdgeId(leftEdge), leftEdge);
-//        this.edges.put(this.calculateEdgeId(rightEdge), rightEdge);
-//
-//        return rightEdge;
-//    }
-
-//    /**
-//     * custom created edges have no id
-//     * TODO find more memory-efficient way to id edges
-//     * TODO e.g. by using hash values or something
-//     * @param edge
-//     * @return
-//     */
-//    private Long calculateEdgeId(OEdge edge) {
-//        return (long)(edge.getStartNode().getID()+edge.getEndNode().getID());
-//    }
-
     /**
      * Getters:
      */
-
-//    public ArrayList<OEdge> getEdges() {
-//        ArrayList<OEdge> edges = new ArrayList<OEdge>();
-//        for(ONode node : this.nodes.values()) {
-//            ArrayList<OEdge> incidentEdges = node.getIncidentEdges();
-//            edges.addAll(incidentEdges);
-//        }
-//        return edges;
-
-//    }
 
     public Map<Long, OEdge> getEdges() {
         return edges;
@@ -172,8 +41,7 @@ public class OGraph {
     }
 
     public ONode getNode(long key){
-        ONode node = this.nodes.get(key);
-        return node == null? this.riders.get(key): node;
+        return this.nodes.get(key);
     }
 
     public Map<Long, ONode> getJunctionNodes() {
@@ -192,35 +60,6 @@ public class OGraph {
     public ONode addNode(ONode node, long id){
         nodes.put(id, node);
         return node;
-    }
-
-    public List<OPath> getDriversPaths() {
-        return driversPaths;
-    }
-
-    public void setDriversPaths(List<OPath> driversPaths) {
-        this.driversPaths = driversPaths;
-    }
-
-    public void addDriversPath(OPath driversPaths) {
-        this.driversPaths.add(driversPaths);
-    }
-    //    public ONode addDriverNode(long userID){
-//        ONode node = new ONode(userID, )
-//        node.setUser(ONode.userType.Rider);
-//
-//        return node;
-//    }
-
-    public ONode addRiderNode(long id, Double[] coordinates){
-        ONode node = new ONode(id, coordinates, ONode.userType.Rider);
-        node.setUser(ONode.userType.Rider);
-        riders.put(id, node);
-        return node;
-    }
-
-    public Map<Long, ONode> getRiders() {
-        return riders;
     }
 
     public OEdge removeEdge(long id){

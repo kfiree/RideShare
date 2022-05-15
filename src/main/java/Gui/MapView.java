@@ -75,9 +75,11 @@ public class MapView {
 
     public void run(){
         // draw graph components
+        GraphUtils utils = GraphUtils.getInstance();
+
         drawEdge(graph);
-        drawRider(graph);
-        drawPaths(GraphUtils.getInstance());
+        drawRider(utils);
+        drawPaths(utils);
 
         displayGraph.setAttribute("ui.stylesheet", styleSheet);
         displayGraph.setAttribute("ui.quality");
@@ -120,8 +122,8 @@ public class MapView {
         return displayNode;
     }
 
-    private boolean drawRider(OGraph graph){
-        graph.getRiders().values().forEach(rider->{
+    private boolean drawRider(GraphUtils utils){
+        utils.getRiders().values().forEach(rider->{
             String keyStr = String.valueOf(rider.getKey());
             Node displayNode = displayGraph.getNode(keyStr);
 

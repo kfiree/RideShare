@@ -1,6 +1,5 @@
 import Gui.MapView;
 import crosby.binary.osmosis.OsmosisReader;
-import org.apache.commons.math3.geometry.Point;
 import osmProcessing.GraphUtils;
 import osmProcessing.OGraph;
 import osmProcessing.Parser;
@@ -37,14 +36,14 @@ public class App {
     /**
      * TODO get driver's path from database SQL - Motti
      */
-    private static void addDriver(){
+    private static List<Object> setDriversPath(){
         pathNodesID.add(432349397l);
         pathNodesID.add(5329510675l);
         pathNodesID.add(985633358l);
         pathNodesID.add(257392128l);
         pathNodesID.add(5224948678l);
         pathNodesID.add(5177072076l);
-
+        return pathNodesID;
     }
 
 
@@ -69,8 +68,6 @@ public class App {
             reader.run();
 
 
-
-
             // secondary parsing of ways/creation of edges:
             Parser.parseMapWays(custom.ways, custom.MapObjects);
 
@@ -78,13 +75,12 @@ public class App {
             addRiders();
 
             // get driver path
-            addDriver();
-            GraphUtils.getInstance().addPath(pathNodesID);
+            setDriversPath();
 
+            GraphUtils.getInstance().addPath(pathNodesID);
+            GraphUtils.getInstance().setRider(Riders);
             OGraph graph = OGraph.getInstance();
-            for (Map.Entry<Long, Double[]> entry: Riders.entrySet()) {
-                graph.addRiderNode(entry.getKey(), entry.getValue());
-            }
+
 
             //TODO add data to map
             MapView.getInstance().run();

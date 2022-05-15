@@ -1,12 +1,16 @@
 package osmProcessing;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GraphUtils {
 
     private static GraphUtils instance = new GraphUtils();
     private List<OPath> paths = new ArrayList<>();
+    private Map<Long, ONode> riders = new HashMap<>();
+
     public static synchronized GraphUtils getInstance() {
         return instance;
     }
@@ -50,7 +54,20 @@ public class GraphUtils {
     public List<OPath> getPaths() {
         return paths;
     }
-//    551927055
 
+    public boolean setRider(Map<Long, Double[]> Riders){
+//        OGraph graph = OGraph.getInstance();
 
+        Riders.entrySet().forEach(entry -> {
+            ONode node = new ONode(entry.getKey(), entry.getValue(), ONode.userType.Rider);
+            node.setUser(ONode.userType.Rider);
+            riders.put(entry.getKey(), node);
+        });
+
+        return true;
+    }
+
+    public Map<Long, ONode> getRiders() {
+        return riders;
+    }
 }
