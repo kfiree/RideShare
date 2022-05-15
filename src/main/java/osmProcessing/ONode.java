@@ -173,6 +173,4 @@ public class ONode {
     public int compareTo(ONode node) {
         return this.degree.compareTo(node.getDegree());
     }
-
-    //Function to get screen coordinates of node
 }
