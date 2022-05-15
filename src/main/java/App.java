@@ -46,7 +46,7 @@ public class App {
             custom.setMapBounds(mapBounds);
             OsmosisReader reader = new OsmosisReader(inputStream);
 
-            custom.removeTertiary();
+//            custom.removeTertiary();
 
             reader.setSink(custom);
 

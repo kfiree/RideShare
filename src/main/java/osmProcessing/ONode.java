@@ -39,6 +39,7 @@ public class ONode {
         this.latitude = coordinates[0];
         this.longitude = coordinates[1];
         this.osmID = id;
+        this.key = (int) id;
         this.user = user;
         this.tags = new HashMap<>();
     }

@@ -37,10 +37,10 @@ public class MapView {
             drawEdge(e);
         }
 
-//        for(ONode rider: graph.getRiders().values()){
-//            drawRider(rider);
-//        }
-//         node.setAttribute("ui.style", "size: 100px;");
+        for(ONode rider: graph.getRiders().values()){
+            drawRider(rider);
+        }
+
 
         Viewer viewer = displayGraph.display();
 
@@ -71,7 +71,7 @@ public class MapView {
             displayNode.setAttribute("ui.label", node.getID().toString());
 
             if(!node.getTags().containsKey("highway")){
-                displayNode.setAttribute("ui.style", "size: 1px;");
+                displayNode.setAttribute("ui.style", "size: 1px;fill-color: black;");
             }
         }
 
@@ -88,11 +88,11 @@ public class MapView {
             displayNode.setAttribute("xy", node.getLongitude(), node.getLatitude());
             displayNode.setAttribute("ui.label", node.getID().toString());
 
-            String image = "url('data/assets/Thumbs_up_icon.png')";
-//            url('data/assets/Thumbs_up_icon.png');
-//            if(!node.getTags().containsKey("highway")){
-                displayNode.setAttribute("ui.style", "fill-mode: image-scaled; fill-image: "+ image);
-//            }
+            displayNode.setAttribute("ui.style","fill-color: red;");
+
+//            String image = "url('data/assets/Thumbs_up_icon.png')";
+//            displayNode.setAttribute("ui.style", "fill-mode: image-scaled; fill-image: "+ image);
+
         }
 
         return displayNode;
