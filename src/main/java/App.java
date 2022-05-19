@@ -1,4 +1,5 @@
 import Gui.MapView;
+import RDS.addGraphToDB;
 import crosby.binary.osmosis.OsmosisReader;
 import osmProcessing.GraphUtils;
 import osmProcessing.OGraph;
@@ -16,8 +17,9 @@ import java.util.*;
 public class App {
     private static Map<Long, Double[]> Riders = new HashMap<>();
     private static List<Object> pathNodesID = new ArrayList<>();
-    public static void main(String[] args) {
 
+
+    public static void main(String[] args) {
 //        String filepath = ExtractMap.chooseFile();
 //        CreateGraph(filepath);
         CreateGraph("data/arielpbf.pbf");
@@ -81,6 +83,9 @@ public class App {
             GraphUtils.getInstance().setRiders(Riders);
             OGraph graph = OGraph.getInstance();
 
+            //add graph to RDS
+            addGraphToDB addGraphToDB = new addGraphToDB(graph);
+            addGraphToDB.addToDB();
 
             //TODO add data to map
             MapView.getInstance().run();

@@ -1,10 +1,10 @@
 package RDS;
 import RDS.config.*;
 import RDS.models.*;
+import RDS.querys.*;
 import org.json.simple.JSONObject;
-
 import java.sql.*;
-import java.util.UUID;
+import java.util.Arrays;
 
 public class checkQuerys {
     static Connection connection = connect.connection;
@@ -16,7 +16,7 @@ public class checkQuerys {
     static drives drives = new drives();
 
     interface getFromDB {
-        ResultSet getFromDB(Connection con , String query);
+         GeoLocation[] getFromDB(Connection con , String query);
     }
     interface addToDB {
         boolean addToDB(Connection con , String query);
@@ -31,7 +31,28 @@ public class checkQuerys {
     static getFromDB getFromDB = (con , query) -> {
     try (Statement stmt = con.createStatement()) {
         ResultSet rs = stmt.executeQuery(query);
-        return rs;
+         GeoLocation [] locations  = new GeoLocation[0];
+
+        try {
+            while (!rs.isClosed() && rs.next()) {
+                String geoLocation_Id = rs.getString("geoLocation_Id");
+                String nameLocation = rs.getString("nameLocation");
+                double latitude = rs.getDouble("latitude");
+                double longitude = rs.getDouble("longitude");
+                GeoLocation g = new GeoLocation(geoLocation_Id,latitude,longitude,nameLocation);
+
+                locations = Arrays.copyOf(locations, locations.length + 1);
+                locations[locations.length - 1] = g;
+            }
+            return locations;
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+        return null;
     } catch (SQLException e) {
         e.printStackTrace();
     }
@@ -77,109 +98,177 @@ public class checkQuerys {
 
     private static void checkGetLambda() {
         //users
-//        System.out.println("getUserById" + getFromDB.getFromDB(connection, users.getUserById("f3ede544-2a6c-4ccf-ba4c-424ea6014bae")));
-//        System.out.println("getUserByEmail" + getFromDB.getFromDB(connection, users.getUserByEmail("moti@gmail.com")));
+//        User u1 = new User();
+//        System.out.println("addUser -> " + addToDB.addToDB(connection,users.addUser(u1)));
+//        System.out.println("getUserById" + getFromDB.getFromDB(connection, users.getUserById(u1)));
+//        System.out.println("getUserByEmail" + getFromDB.getFromDB(connection, users.getUserByEmail(u1)));
 //        System.out.println("getAllUsers" + getFromDB.getFromDB(connection, users.getAllUsers()));
 
 
         //geoLocation
-//        System.out.println("getGeoLocationById -> " + getFromDB.getFromDB(connection, geoLocation.getGeoLocationById("3ffbbb79-a094-4cde-9667-8bb65a82800d")));
+//        GeoLocation g2 = new GeoLocation();
+//        System.out.println("addGeoLocation -> " + addToDB.addToDB(connection,geoLocation.addGeoLocation(g2)));
+//        System.out.println("getGeoLocationById -> " + getFromDB.getFromDB(connection, geoLocation.getGeoLocationById(g2)));
 //        System.out.println("getAllGeoLocations -> " + getFromDB.getFromDB(connection, geoLocation.getAllGeoLocations()));
 
         //universities
-//        System.out.println("getUniversityById -> " + getFromDB.getFromDB(connection,universities.getUniversityById( "42e7c07d-20a7-43e6-8dda-1adc5f346a2a")));
+//        GeoLocation g2 = new GeoLocation();
+//        System.out.println("addGeoLocation -> " + addToDB.addToDB(connection,geoLocation.addGeoLocation(g2)));
+//        University u = new University(g2.getGeoLocationId());
+//        System.out.println("addUniversity -> " + addToDB.addToDB(connection,universities.addUniversity(u)));
+//        System.out.println("getUniversityById -> " + getFromDB.getFromDB(connection,universities.getUniversityById( u)));
 //        System.out.println("getAllUniversities -> " + getFromDB.getFromDB(connection,universities.getAllUniversities()));
 
         //drives
-//        System.out.println("getDriveById -> " + getFromDB.getFromDB(connection,drives.getDriveById( "90b949d5-125c-4b36-9fc9-5bcd3716a278")));
+//        GeoLocation g3 = new GeoLocation();
+//        System.out.println("addGeoLocation -> " + addToDB.addToDB(connection,geoLocation.addGeoLocation(g3)));
+//        Drive d = new Drive(g3.getGeoLocationId(), g3.getGeoLocationId());
+//        System.out.println("addDrive -> " + addToDB.addToDB(connection,drives.addDrive(d)));
+//        System.out.println("getDriveById -> " + getFromDB.getFromDB(connection,drives.getDriveById( d)));
 //        System.out.println("getAllUniversities -> " + getFromDB.getFromDB(connection,drives.getAllUniversities()));
 
 
+        //nodes
+//        Node n = new Node();
+//        System.out.println("addDrive -> " + addToDB.addToDB(connection,nodes.addNode(n)));
+//        System.out.println("addDrive -> " + getFromDB.getFromDB(connection,nodes.getNodeById(n)));
+//        System.out.println("addDrive -> " + getFromDB.getFromDB(connection,nodes.getAllNodes()));
 
         //edges
-//            System.out.println("addDrive -> " + getFromDB.getFromDB(connection,edges.getEdgeById(123456789)));
-//            System.out.println("addDrive -> " + getFromDB.getFromDB(connection,edges.getAllEdges()));
-
-
-        //nodes
-//            System.out.println("addDrive -> " + getFromDB.getFromDB(connection,nodes.getNodeById(123456789)));
-//            System.out.println("addDrive -> " + getFromDB.getFromDB(connection,nodes.getAllNodes()));
+//        Node n = new Node();
+//        System.out.println("addDrive -> " + addToDB.addToDB(connection,nodes.addNode(n)));
+//        Edge e = new Edge(n.getNode_Id(), n.getNode_Id());
+//        System.out.println("addEdge -> " + addToDB.addToDB(connection,edges.addEdge(e)));
+//        System.out.println("addDrive -> " + getFromDB.getFromDB(connection,edges.getEdgeById(e)));
+//        System.out.println("addDrive -> " + getFromDB.getFromDB(connection,edges.getAllEdges()));
 
     }
 
     private static void checkDeleteLambda() {
         //users
-//        System.out.println("deleteUserById -> " + deleteFromDB.deleteFromDB(connection, users.deleteUserById("216c77ff-6f3d-4d6c-a3f9-c88df40c10f7")));
-//        System.out.println("deleteUserByEmail -> " + deleteFromDB.deleteFromDB(connection, users.deleteUserByEmail("moti 7@gmail.com")));
+//        User u1 = new User();
+//        System.out.println("addUser -> " + addToDB.addToDB(connection,users.addUser(u1)));
+//        System.out.println("deleteUserById -> " + deleteFromDB.deleteFromDB(connection, users.deleteUserById(u1)));
+//        System.out.println("addUser -> " + addToDB.addToDB(connection,users.addUser(u1)));
+//        System.out.println("deleteUserByEmail -> " + deleteFromDB.deleteFromDB(connection, users.deleteUserByEmail(u1)));
 
         //geoLocation
-//        System.out.println("deleteGeoLocationById -> " + deleteFromDB.deleteFromDB(connection, geoLocation.deleteGeoLocationById("05c7d943-94ac-4e58-b506-fb126abbd656")));
+//        GeoLocation g2 = new GeoLocation();
+//        System.out.println("addGeoLocation -> " + addToDB.addToDB(connection,geoLocation.addGeoLocation(g2)));
+//        System.out.println("deleteGeoLocationById -> " + deleteFromDB.deleteFromDB(connection, geoLocation.deleteGeoLocationById(g2)));
 
 
         //universities
-//            System.out.println("deleteUniversityById -> " + deleteFromDB.deleteFromDB(connection,universities.deleteUniversityById("2efe0d56-e282-4996-8755-eb3397d2a4c0")));
+//        GeoLocation g2 = new GeoLocation();
+//        System.out.println("addGeoLocation -> " + addToDB.addToDB(connection,geoLocation.addGeoLocation(g2)));
+//        University u = new University(g2.getGeoLocationId());
+//        System.out.println("addUniversity -> " + addToDB.addToDB(connection,universities.addUniversity(u)));
+//        System.out.println("deleteUniversityById -> " + deleteFromDB.deleteFromDB(connection,universities.deleteUniversityById(u)));
 
         //drives
-//            System.out.println("deleteDriveById -> " + deleteFromDB.deleteFromDB(connection,drives.deleteDriveById("90b949d0-125c-4b36-9fc9-5bcd3716a278")));
+//        GeoLocation g3 = new GeoLocation();
+//        System.out.println("addGeoLocation -> " + addToDB.addToDB(connection,geoLocation.addGeoLocation(g3)));
+//        Drive d = new Drive(g3.getGeoLocationId(), g3.getGeoLocationId());
+//        System.out.println("addDrive -> " + addToDB.addToDB(connection,drives.addDrive(d)));
+//        System.out.println("deleteDriveById -> " + deleteFromDB.deleteFromDB(connection,drives.deleteDriveById(d)));
 
-        //edges
-//        System.out.println("deleteEdgeById -> " + deleteFromDB.deleteFromDB(connection,edges.deleteEdgeById(11111111)));
 
         //nodes
-//        System.out.println("deleteNodeById -> " + deleteFromDB.deleteFromDB(connection,nodes.deleteNodeById(11111111)));
+//        Node n = new Node();
+//        System.out.println("addDrive -> " + addToDB.addToDB(connection,nodes.addNode(n)));
+//        System.out.println("deleteNodeById -> " + deleteFromDB.deleteFromDB(connection,nodes.deleteNodeById(n)));
+
+
+        //edges
+//        Node n = new Node();
+//        System.out.println("addDrive -> " + addToDB.addToDB(connection,nodes.addNode(n)));
+//        Edge e = new Edge(n.getNode_Id(), n.getNode_Id());
+//        System.out.println("addEdge -> " + addToDB.addToDB(connection,edges.addEdge(e)));
+//        System.out.println("deleteEdgeById -> " + deleteFromDB.deleteFromDB(connection,edges.deleteEdgeById(e)));
 
     }
 
     private static void checkUpdateLambda() {
         //users
-//        System.out.println("updateUser -> " + updateInDB.updateInDB(connection, users.updateUser("34ce8141-744d-4310-9c3a-850bf654da2e", "moti 8@gmail.com", "בישמעק", "בישמעק", "0525699666", "גכנגנגכנגכנגכנגכנ", "גדהדגה", "דגהדהג", "123654879")));
+//        User u = new User();
+//        System.out.println("addUser -> " + addToDB.addToDB(connection,users.addUser(u)));
+//        System.out.println("updateUser -> " + updateInDB.updateInDB(connection, users.updateUser(u)));
 
         //geoLocation
-//        System.out.println("updateGeoLocation -> " + updateInDB.updateInDB(connection, geoLocation.updateGeoLocation("05c7d943-94ac-4e58-b506-fb126abbd656", "uni changed", 22.111111,22.111111 )));
+//        GeoLocation g1 = new GeoLocation();
+//        System.out.println("addGeoLocation -> " + addToDB.addToDB(connection,geoLocation.addGeoLocation(g1)));
+//        System.out.println("updateGeoLocation -> " + updateInDB.updateInDB(connection, geoLocation.updateGeoLocation(g1 )));
 
         //universities
-//            System.out.println("updateUniversity -> " + updateInDB.updateInDB(connection,universities.updateUniversity("some change", "10b949d9-125c-4b36-9fc9-5bcd3716a278", "2efe0d56-e282-4996-8755-eb3397d2a4c0")));
+//        GeoLocation g2 = new GeoLocation();
+//        System.out.println("addGeoLocation -> " + addToDB.addToDB(connection,geoLocation.addGeoLocation(g2)));
+//        University u = new University(g2.getGeoLocationId());
+//        System.out.println("addUniversity -> " + addToDB.addToDB(connection,universities.addUniversity(u)));
+//        System.out.println("updateUniversity -> " + updateInDB.updateInDB(connection,universities.updateUniversity(u)));
 
         //drives
-//            System.out.println("updateDrive -> " + updateInDB.updateInDB(connection,drives.updateDrive("0d9e3f26-2ee5-4c5f-a4f8-e1c35a91ce7e", "0d9e3f26-2ee5-4c5f-a4f8-e1c35a91ce5e", "0d9e3f26-2ee5-4c5f-a4f8-e1c35a91ce5e", "4", "type", 5, 10.5, 10.5, "upco")));
+//        GeoLocation g3 = new GeoLocation();
+//        System.out.println("addGeoLocation -> " + addToDB.addToDB(connection,geoLocation.addGeoLocation(g3)));
+//        Drive d = new Drive(g3.getGeoLocationId(), g3.getGeoLocationId());
+//        System.out.println("addDrive -> " + addToDB.addToDB(connection,drives.addDrive(d)));
+//        System.out.println("updateDrive -> " + updateInDB.updateInDB(connection,drives.updateDrive(d)));
+
+
+
+        //nodes
+//        Node n = new Node();
+//        System.out.println("addDrive -> " + addToDB.addToDB(connection,nodes.addNode(n)));
+//        System.out.println("updateNode -> " + updateInDB.updateInDB(connection,nodes.updateNode(n)));
+
 
 
         //edges
-//        System.out.println("updateEdge -> " + updateInDB.updateInDB(connection,edges.updateEdge(11111111, 11111111, 11111111, 10, 10, "namechange", "highchange")));
-
-        JSONObject json = new JSONObject();
-        json.put("name", "foo");
-        //nodes
-//        System.out.println("updateNode -> " + updateInDB.updateInDB(connection,nodes.updateNode(11111111, 22.3333, 22.3333, 50, json, json)));
-
+//        Node src = new Node();
+//        Node dest = new Node();
+//        System.out.println("addDrive -> " + addToDB.addToDB(connection,nodes.addNode(src)));
+//        System.out.println("addDrive -> " + addToDB.addToDB(connection,nodes.addNode(dest)));
+//        Edge e = new Edge(src.getNode_Id(), dest.getNode_Id());
+//        System.out.println("addEdge -> " + addToDB.addToDB(connection,edges.addEdge(e)));
+//        System.out.println("updateEdge -> " + updateInDB.updateInDB(connection,edges.updateEdge(e)));
     }
 
     private static void checkAddLambda() {
-//        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 40; i++) {
             //users
-//            System.out.println("addUser -> " + addToDB.addToDB(connection,users.addUser("moti "+i+"@gmail.com", "sdvn", "dvsdsvdsv", "0525675171", "sdvsdvdsvdvsvdsvds", "sdvdsv", "vddvs", "sdvsdvdsvsdv")));
+//            User u = new User();
+//            System.out.println("addUser -> " + addToDB.addToDB(connection,users.addUser(u)));
 
             //geoLocation
-//            System.out.println("addGeoLocation -> " + addToDB.addToDB(connection,geoLocation.addGeoLocation(23.55555, 23.55555, "UNI")));
+//            GeoLocation g1 = new GeoLocation();
+//            System.out.println("addGeoLocation -> " + addToDB.addToDB(connection,geoLocation.addGeoLocation(g1)));
 
 
             //universities
-//            System.out.println("addUniversity -> " + addToDB.addToDB(connection,universities.addUniversity("12a39bd2-3763-467d-8aa0-e6b1cc2212de", "some name")));
+//            GeoLocation g2 = new GeoLocation();
+//            System.out.println("addGeoLocation -> " + addToDB.addToDB(connection,geoLocation.addGeoLocation(g2)));
+//            University u = new University(g2.getGeoLocationId());
+//            System.out.println("addUniversity -> " + addToDB.addToDB(connection,universities.addUniversity(u)));
 
 
             //drives
-//            System.out.println("addDrive -> " + addToDB.addToDB(connection,drives.addDrive("90b949d"+i+"-125c-4b36-9fc9-5bcd3716a278", "10b949d9-125c-4b36-9fc9-5bcd3716a278", "10b949d9-125c-4b36-9fc9-5bcd3716a278", "some", "some", 5, 5.5, 5.5, "some", "some", "some")));
+//            GeoLocation g3 = new GeoLocation();
+//            System.out.println("addGeoLocation -> " + addToDB.addToDB(connection,geoLocation.addGeoLocation(g3)));
+//            Drive d = new Drive(g3.getGeoLocationId(), g3.getGeoLocationId());
+//            System.out.println("addDrive -> " + addToDB.addToDB(connection,drives.addDrive(d)));
+
+            //nodes
+//            Node n = new Node();
+//            System.out.println("addDrive -> " + addToDB.addToDB(connection,nodes.addNode(n)));
 
 
             //edges
-//            System.out.println("addEdge -> " + addToDB.addToDB(connection,edges.addEdge(11111111, 1254789, 1254789, 50, 50, "name", "high")));
+//            Node n = new Node();
+//            System.out.println("addDrive -> " + addToDB.addToDB(connection,nodes.addNode(n)));
+//            Edge e = new Edge(n.getNode_Id(), n.getNode_Id());
+//            System.out.println("addEdge -> " + addToDB.addToDB(connection,edges.addEdge(e)));
 
-            JSONObject json = new JSONObject();
-            json.put("name", "foo");
-            //nodes
-//            System.out.println("addDrive -> " + addToDB.addToDB(connection,nodes.addNode(11111111, 22.3333, 22.3333, 50, json, json)));
 
-//        }
+        }
     }
 
 
@@ -189,6 +278,5 @@ public class checkQuerys {
         checkAddLambda();
         checkDeleteLambda();
         checkUpdateLambda();
-
     }
 }
