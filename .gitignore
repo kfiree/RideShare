@@ -1,7 +1,8 @@
 # Project exclude paths
 /server/java/target/
 /server/java/data/israel.pbf
-
+/client/node_modules
+/server/node/node_modules
 
 
 
