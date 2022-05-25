@@ -1,3 +1,7 @@
 # Project exclude paths
-/target/
-/data/israel.pbf
+/server/java/target/
+/server/java/data/israel.pbf
+
+
+
+

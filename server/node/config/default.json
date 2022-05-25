@@ -1,0 +1,10 @@
+{
+    "jwtSecret": "mySecretToken",
+    "permission": "Admin",
+    "ErrorMsg": {
+        "Notoken": "No token, authorization denied",
+        "authentication": "User authentication failed",
+        "empty": "No Result",
+        "permission": "You do not have permission to do that"
+    }
+}

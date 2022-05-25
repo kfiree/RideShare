@@ -1,0 +1,60 @@
+
+@startuml
+class Users {
+    user_Id
+    first_name
+    last_name
+    phone_Number
+    email
+    password
+    gender
+    Image_Id
+    user_Avatar
+    degree
+    createdAt
+}
+
+class Drives {
+    drive_Id
+    date
+    num_seat_available
+    price
+    AVG_Price
+    upcoming_Drives
+    passengers
+    geoLocationSrc_Id
+    geoLocationDest_Id
+}
+
+class Universities {
+    university_Id
+    university_name
+    geoLocation_Id
+}
+class Users_Drives {
+    users_Id
+    drive_Id
+}
+
+class geoLocation {
+    geoLocation_Id
+    latitude
+    latitudeDelta
+    longitude
+    longitudeDelta
+}
+class Users_Universities {
+    users_Id
+    university_Id
+}
+
+Users --|> Users_Universities : Users.user_Id == Users_Universities.user_Id
+Users_Universities--|> Universities : Users_Universities.university_Id == Universities.university_Id
+
+Users --|> Users_Drives: Users.user_Id == Users_Drives.user_Id
+Users_Drives--|> Drives: Users_Drives.drive_Id == Drives.drive_Id
+
+
+Drives --|> geoLocation: Drives.geoLocation_Id == geoLocation.geoLocation_Id
+Universities --|> geoLocation: Universities.geoLocation_Id == geoLocation.geoLocation_Id
+@enduml
