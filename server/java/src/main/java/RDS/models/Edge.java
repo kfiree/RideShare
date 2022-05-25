@@ -1,22 +1,27 @@
 package RDS.models;
+import osmProcessing.ONode;
+
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Edge {
-    int edge_Id;
-    double startNodeId , endNodeId , weight,  distance;
-    String name, highwayType;
+//    private int edge_Id;
+    private ONode startNode, endNode;
+    private String key = UUID.randomUUID().toString();
+    private double startNodeId , endNodeId , weight,  distance;
+    private String name, highwayType;
 
+//    public Edge(double startNodeId, double endNodeId, double weight, double distance, String name, String highwayType) {
+//        this.edge_Id = ThreadLocalRandom.current().nextInt(1000000, Integer.MAX_VALUE);
+//        this.startNodeId = startNodeId;
+//        this.endNodeId = endNodeId;
+//        this.weight = weight;
+//        this.distance = distance;
+//        this.name = name;
+//        this.highwayType = highwayType;
+//    }
     public Edge(double startNodeId, double endNodeId, double weight, double distance, String name, String highwayType) {
-        this.edge_Id = ThreadLocalRandom.current().nextInt(1000000, Integer.MAX_VALUE);
-        this.startNodeId = startNodeId;
-        this.endNodeId = endNodeId;
-        this.weight = weight;
-        this.distance = distance;
-        this.name = name;
-        this.highwayType = highwayType;
-    }
-    public Edge(int edge_Id, double startNodeId, double endNodeId, double weight, double distance, String name, String highwayType) {
-        this.edge_Id = edge_Id;
+//        this.edge_Id = edge_Id;
         this.startNodeId = startNodeId;
         this.endNodeId = endNodeId;
         this.weight = weight;
@@ -25,24 +30,28 @@ public class Edge {
         this.highwayType = highwayType;
     }
 
-    public Edge(double startNodeId, double endNodeId) {
-        this.edge_Id = ThreadLocalRandom.current().nextInt(1000000, Integer.MAX_VALUE);
-        this.startNodeId = startNodeId;
-        this.endNodeId = endNodeId;
-        this.weight = 50;
-        this.distance = 50;
-        this.name = "name";
-        this.highwayType = "highwayType";
-    }
+//    public Edge(double startNodeId, double endNodeId) {
+//        this.edge_Id = ThreadLocalRandom.current().nextInt(1000000, Integer.MAX_VALUE);
+//        this.startNodeId = startNodeId;
+//        this.endNodeId = endNodeId;
+//        this.weight = 50;
+//        this.distance = 50;
+//        this.name = "name";
+//        this.highwayType = "highwayType";
+//    }
 
 
-    public int getEdge_Id() {
-        return edge_Id;
+    public String getEdge_Id() {
+        return key;
     }
 
-    public void setEdge_Id(int edge_Id) {
-        this.edge_Id = edge_Id;
+    public String getKey() {
+        return key;
     }
+
+//    public void setEdge_Id(int edge_Id) {
+//        this.edge_Id = edge_Id;
+//    }
 
     public double getStartNodeId() {
         return startNodeId;
@@ -95,7 +104,7 @@ public class Edge {
     @Override
     public String toString() {
         return "edges{" +
-                "edge_Id=" + edge_Id +
+//                "edge_Id=" + edge_Id +
                 ", startNodeId=" + startNodeId +
                 ", endNodeId=" + endNodeId +
                 ", weight=" + weight +

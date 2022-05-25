@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.openstreetmap.osmosis:osmosis-pbf:0.43-RELEASE">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openstreetmap/osmosis/osmosis-pbf/0.43-RELEASE/osmosis-pbf-0.43-RELEASE.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openstreetmap/osmosis/osmosis-pbf/0.43-RELEASE/osmosis-pbf-0.43-RELEASE-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openstreetmap/osmosis/osmosis-pbf/0.43-RELEASE/osmosis-pbf-0.43-RELEASE-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

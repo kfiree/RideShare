@@ -20,9 +20,9 @@ public class App {
 
 
     public static void main(String[] args) {
-//        String filepath = ExtractMap.chooseFile();
-//        CreateGraph(filepath);
-        CreateGraph("data/arielpbf.pbf");
+        String filepath = ExtractMap.chooseFile();
+        CreateGraph(filepath);
+//        CreateGraph("data/arielpbf.pbf");
     }
 
     /**
@@ -83,9 +83,31 @@ public class App {
             GraphUtils.getInstance().setRiders(Riders);
             OGraph graph = OGraph.getInstance();
 
-            //add graph to RDS
+
+            /**
+             * flow with data base
+             */
+
+
+            /** full graph */
+
+            // set
             addGraphToDB addGraphToDB = new addGraphToDB(graph);
             addGraphToDB.addToDB();
+
+            //get
+
+
+            // set & get user
+
+            // set & get drive
+
+
+            //  set & get sub graph
+
+            // match rider and drivers
+
+            // lock drive
 
             //TODO add data to map
             MapView.getInstance().run();

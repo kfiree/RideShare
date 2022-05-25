@@ -1,5 +1,7 @@
 package osmProcessing;
 
+import java.util.UUID;
+
 public class OEdge {
 
     /**
@@ -11,18 +13,23 @@ public class OEdge {
     private Double distance;
     private Double weight;
 
+    final String key = UUID.randomUUID().toString();
+
     // The name of the street:
     private String name;
+
     // Highway type of the Edge:
     private String highwayType;
 
-    /* read from the map constructor: */
+    /** read from the map constructor: */
     public OEdge(OMapWay way, ONode start, ONode target) {
         this.startNode = start;
         this.endNode = target;
         this.name = way.getName();
         this.highwayType = way.getTags().get("highway");
     }
+
+
 
     /**
      * GETTERS

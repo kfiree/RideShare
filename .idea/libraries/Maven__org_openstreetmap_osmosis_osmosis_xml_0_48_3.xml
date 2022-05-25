@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.openstreetmap.osmosis:osmosis-xml:0.48.3">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openstreetmap/osmosis/osmosis-xml/0.48.3/osmosis-xml-0.48.3.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openstreetmap/osmosis/osmosis-xml/0.48.3/osmosis-xml-0.48.3-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openstreetmap/osmosis/osmosis-xml/0.48.3/osmosis-xml-0.48.3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

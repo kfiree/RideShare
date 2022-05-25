@@ -13,7 +13,7 @@ public class checkQuerys {
     static nodes nodes = new nodes();
     static geoLocation geoLocation = new geoLocation();
     static edges edges = new edges();
-    static drives drives = new drives();
+//    static drives drives = new drives();
 
     interface getFromDB {
          GeoLocation[] getFromDB(Connection con , String query);
@@ -130,9 +130,9 @@ public class checkQuerys {
 
         //nodes
 //        Node n = new Node();
-//        System.out.println("addDrive -> " + addToDB.addToDB(connection,nodes.addNode(n)));
-//        System.out.println("addDrive -> " + getFromDB.getFromDB(connection,nodes.getNodeById(n)));
-//        System.out.println("addDrive -> " + getFromDB.getFromDB(connection,nodes.getAllNodes()));
+//        System.out.println("add nodes -> " + addToDB.addToDB(connection,nodes.addNode(n)));
+//        System.out.println("get node by id -> " + getFromDB.getFromDB(connection,nodes.getNodeById(n)));
+//        System.out.println("get all nodes -> " + getFromDB.getFromDB(connection,nodes.getAllNodes()));
 
         //edges
 //        Node n = new Node();
@@ -265,8 +265,8 @@ public class checkQuerys {
             //edges
             Node n2 = new Node();
             System.out.println("addDrive -> " + addToDB.addToDB(connection,nodes.addNode(n2)));
-            Edge e = new Edge(n2.getNode_Id(), n2.getNode_Id());
-            System.out.println("addEdge -> " + addToDB.addToDB(connection,edges.addEdge(e)));
+//            Edge e = new Edge(n2.getNode_Id(), n2.getNode_Id());
+//            System.out.println("addEdge -> " + addToDB.addToDB(connection,edges.addEdge(e)));
 
 
         }

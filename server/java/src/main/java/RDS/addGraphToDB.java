@@ -40,7 +40,8 @@ public class addGraphToDB {
             JSONObject edges = new JSONObject();
             val.getEdges().forEach((edge) -> {
                 int index = 0;
-                Edge e = new Edge(edge.getEdgeId().intValue(), edge.getStartNode().getID(), edge.getEndNode().getID(), edge.getWeight(), edge.getWeight(), edge.getName(), edge.getHighwayType());
+//                Edge e = new Edge(edge.getEdgeId().intValue(), edge.getStartNode().getID(), edge.getEndNode().getID(), edge.getWeight(), edge.getWeight(), edge.getName(), edge.getHighwayType());
+                Edge e = new Edge(edge.getStartNode().getID(), edge.getEndNode().getID(), edge.getWeight(), edge.getWeight(), edge.getName(), edge.getHighwayType());
                 edges.put("" + (++index), "" + e.getEdge_Id());
             });
             JSONObject tags = new JSONObject();
@@ -57,8 +58,8 @@ public class addGraphToDB {
 
         this.graph.getEdges().forEach((key,val) -> {
             //edges
-            Edge e = new Edge(val.getEdgeId().intValue(), val.getStartNode().getID(), val.getEndNode().getID(), val.getWeight(), val.getWeight(), val.getName(), val.getHighwayType());
-            System.out.println("addEdge -> " + checkQuerys.addToDB.addToDB(connection, edges.addEdge(e)));
+//            Edge e = new Edge();//val.getEdgeId().intValue(), val.getStartNode().getID(), val.getEndNode().getID(), val.getWeight(), val.getWeight(), val.getName(), val.getHighwayType());
+//            System.out.println("addEdge -> " + checkQuerys.addToDB.addToDB(connection, edges.addEdge(e)));
         });
     }
     @Override

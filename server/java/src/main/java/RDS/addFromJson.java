@@ -23,7 +23,7 @@ public class addFromJson {
     static String ariel = "a612239d-dafb-474c-98d8-056a4282e989";
     static HashMap<Integer, geoLocation> geoLocations;
     static geoLocation geo = new geoLocation();
-    static drives drives = new drives();
+//    static drives drives = new drives();
     static GeoLocation [] locations  = checkQuerys.getFromDB.getFromDB(connection, geo.getAllGeoLocations());
     static User user;
     static users users = new users();
