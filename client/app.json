@@ -13,22 +13,14 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
     "android": {
-      "package": "com.Asaf.AsafApp",
-      "adaptiveIcon": {
-        "foregroundImage": "./app/assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
+      "package": "com.Asaf.AsafApp"
     },
-    "web": {
-      "favicon": "./app/assets/favicon.png"
-    },
+
     "description": "finish the project",
     "githubUrl": "https://github.com/motidahari/expo",
     "plugins": [

@@ -1,0 +1,258 @@
+	
+@startuml
+
+App --|> BenefitsPurchased: Screen Component
+class BenefitsPurchased {
+  Array_String nameBenefitsPurchased
+  Array_Images ImageBenefitsPurchased
+  Array_Amount AmountBenefitsPurchased
+
+  BenefitsPurchased Get(userId)
+  Boolean Delete(BenefitID)
+  Boolean Add(Benefit object)
+  Boolean Update(userId, BenefitID, Benefit)
+}
+
+App --|> Charges: Screen Component
+class Charges {
+  Array_String nameCharges
+  Array_String dateCharges
+  Array_Amount AmountCharges
+  Driver ID_Drive
+
+  Charges GetAll(userId)
+  Charges Get(userId,ChargeID )
+  Boolean Add(Charges object)
+  Boolean Update(userId, Charges object)
+}
+
+
+App --|> ChatDrive: Screen Component
+class ChatDrive {
+  Array_String usersConversation
+  Array_String msgsConversation
+  Array_String dateMsgsConversation
+  
+  ChatDrive Get(driveID)
+  Boolean Delete(msgID)
+  Boolean Add(driveID,MSG)
+  Boolean Update(driveID,msgID, MSG)
+}
+
+App --|> CreateDrive: Screen Component
+class CreateDrive {
+  String name
+  String src
+  String dest
+  String price
+  String date
+
+  CreateDrive Get(driveID)
+  Boolean Delete(driveID)
+  Boolean Add(Drive object)
+  Boolean Update(driveID, Drive object)
+}
+
+App --|> HomePage: Screen Component
+class HomePage {
+  String name
+  
+  String getNameUser(userID)
+  HomePage createDrive()
+  Boolean searchDrive()
+}
+
+App --|> Login: Screen Component
+class Login {
+  String email_OR_username
+  String password
+  
+  Login Login(email_OR_username, password)
+  Boolean forgotPassword(email_OR_username)
+}
+
+App --|> MyBenefits: Screen Component
+class MyBenefits {
+
+  Array_String nameMyBenefits
+  Array_Image ImageMyBenefits
+  Array_Amount AmountMyBenefits
+
+  MyBenefits GetAllBenefits(userId)
+  Boolean DeleteBenefits(BenefitId)
+  Boolean UpdateBenefits(BenefitId,Benefits object)
+}
+
+App --|> MyDrives: Screen Component
+class MyDrives {
+  Array_Drive namesDrives
+  
+  Drives Get(userID)
+  Boolean Delete(userID, driveID)
+  Boolean Add(userID, Drive object)
+  Boolean Update(driveID, Drive object)
+}
+
+App --|> MySuggestions: Screen Component
+class MySuggestions {
+  Array_Drives Drives
+  
+  MySuggestions GetAll(userID)
+}
+
+App --|> Notification: Screen Component
+class Notification {
+  Array_Notification Notification
+  
+  Notification GetAll()
+}
+
+App --|> Payments: Screen Component
+class Payments {
+  Array_Payments Payments
+  
+  Payments GetAll(userID)
+  Payments Get(PaymentID)
+}
+
+App --|> Profile: Screen Component
+class Profile {
+  Object_Profile Profile
+
+  Profile Get(userID)
+  Boolean Delete(userID)
+  Boolean Add(Profile Object)
+  Boolean Update(userID, Profile Object)
+}
+
+App --|> Registration: Screen Component
+class Registration {
+
+  Image ImageProfile
+  Array_String MailProfile
+  Array_String Password
+  Array_String Gender
+  Array_String NameUniversity
+  Array_String Degree
+  
+
+  Profile Get(userID)
+  Boolean Delete(userID)
+  Boolean Add(userID, Profile Object)
+  Boolean Update(userID, Profile Object)
+}
+
+App --|> SearchDrive: Screen Component
+class SearchDrive {
+  Array_String SRC
+  Array_String DEST
+  Image Date
+  
+  SearchDrive GetAllDrives(SRC, DEST, Date)
+}
+
+App --|> Setting: Screen Component
+class Setting {
+  Object_Setting nameProfile
+
+  Profile Get(userID)
+  Boolean Delete(userID)
+  Boolean Add(userID, Setting Object)
+  Boolean Update(userID, Setting Object)
+}
+
+App --|> TravelOfferForPassenger: Screen Component
+class TravelOfferForPassenger {
+  Array_String nameDriver
+  Array_String Date
+  Array_Amount TravelOfferForPassenger
+  
+  TravelOfferForPassenger Get(Drive_details)
+  TravelOfferForPassenger Approval(DriveID)
+  TravelOfferForPassenger Decline(DriveID)
+  Boolean CounterOffer(newPrice)
+}
+App --|> WelcomeScreen: Screen Component
+
+Footer --|> MyDrives
+Footer --|> ChatDrive
+Footer --|> MyBenefits
+Footer --|> MySuggestions
+
+Header --|> Notification
+Header --|> HomePage
+Header --|> MenuForPages
+
+
+BenefitsPurchased--|> Header: Header Component
+BenefitsPurchased--|> Footer: Footer Component
+Charges--|> Header: Header Component
+Charges--|> Footer: Footer Component
+ChatDrive--|> Header: Header Component
+ChatDrive--|> Footer: Footer Component
+CreateDrive--|> Header: Header Component
+CreateDrive--|> Footer: Footer Component
+HomePage--|> Header: Header Component
+HomePage--|> Footer: Footer Component
+MyBenefits--|> Header: Header Component
+MyBenefits--|> Footer: Footer Component
+MyDrives--|> Header: Header Component
+MyDrives--|> Footer: Footer Component
+MySuggestions--|> Header: Header Component
+MySuggestions--|> Footer: Footer Component
+Notification--|> Header: Header Component
+Notification--|> Footer: Footer Component
+Payments--|> Header: Header Component
+Payments--|> Footer: Footer Component
+Profile--|> Header: Header Component
+Profile--|> Footer: Footer Component
+SearchDrive--|> Header: Header Component
+SearchDrive--|> Footer: Footer Component
+Setting--|> Header: Header Component
+Setting--|> Footer: Footer Component
+TravelOfferForPassenger--|> Header: Header Component
+TravelOfferForPassenger--|> Footer: Footer Component
+WelcomeScreen--|> Header: Header Component
+WelcomeScreen--|> Footer: Footer Component
+
+
+BenefitsPurchased --|> API
+Charges --|> API
+ChatDrive --|> API
+CreateDrive --|> API
+HomePage --|> API
+Login --|> API
+MyBenefits --|> API
+MyDrives --|> API
+MySuggestions --|> API
+Notification --|> API
+Payments --|> API
+Profile --|> API
+Registration --|> API
+SearchDrive --|> API
+Setting --|> API
+TravelOfferForPassenger --|> API
+WelcomeScreen --|> API
+
+AUTH --|> API
+
+API --|> AUTH
+AUTH --|> classUsers
+AUTH --|> classCars
+AUTH --|> classNotification
+AUTH --|> classCity
+AUTH --|> classUniversitys
+AUTH --|> classRanks
+AUTH --|> classPayments
+AUTH --|> classDrives
+
+classUser --|> DB
+classCars --|> DB
+classNotification --|> DB
+classCity --|> DB
+classUniversitys --|> DB
+classRanks --|> DB
+classPayments --|> DB
+classDrives --|> DB
+
+@enduml

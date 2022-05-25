@@ -1,0 +1,66 @@
+	
+@startuml
+circle          Start
+circle          End
+
+Start --|> user1
+Start --|> user2
+
+user1 --|> Driver
+user2 --|> Passenger
+
+Driver --|> AddNewDrive
+Passenger --|> SearchDrive
+SearchDrive --|> GetDrive_123456789
+GetDrive_123456789 --|> confirmPrice
+confirmPrice --|> someDrive_id_123456789
+AddNewDrive --|> someDrive_id_123456789
+someDrive_id_123456789 --|> GoToDriveChat
+GoToDriveChat --|> PaymentByDrive : Accepted by both parties
+PaymentByDrive --|> End
+
+' SearchDrive --|> someDrive_id_123456789
+
+
+
+
+' Driver --|> AddNewDrive
+' start --|> Login
+' start --|> SingUp
+' Login --|> Login_succeeded
+' SingUp --|> SingUp_succeeded
+' Login_succeeded --|> SelectDrive
+' SingUp_succeeded --|> SelectDrive
+' SelectDrive --|> ChatWithDriver
+' ChatWithDriver --|> PayOnDrive
+' PayOnDrive --|> end
+@enduml
+
+
+@startuml
+User --|> HomeScreen
+HomeScreen --|> Login
+HomeScreen --|> checkAuthUser : include
+checkAuthUser --|> LoginSucceed
+Login --|> ForgetPassword : Extend
+Login --|> SignUp : Extend
+SignUp --|> Login 
+ForgetPassword --|> SendResetPassword: include
+SendResetPassword --|> ResetNewPassword: include
+ResetNewPassword --|> Login: include
+Login --|> LoginSucceed
+LoginSucceed --|> Driver: Extend
+LoginSucceed --|> Passenger: Extend
+Passenger --|> SearchDrive: Extend
+SearchDrive --|> SelectedDrive: Extend
+SelectedDrive --|> GoToChatDrive: include
+Driver --|> Profile: Extend
+Driver --|> NewDrive: Extend
+NewDrive --|> DeleteDrive: Extend
+NewDrive --|> UpdateDrive: Extend
+NewDrive --|> GoToChatDrive: include
+Passenger --|> Profile: Extend
+Profile --|> DeleteProfile : Extend
+Profile --|> UpdateProfile : Extend
+GoToChatDrive --|> PaymentForDrive : include
+@enduml

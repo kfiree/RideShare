@@ -22,8 +22,7 @@ class Drives {
     AVG_Price
     upcoming_Drives
     passengers
-    geoLocationSrc_Id
-    geoLocationDest_Id
+    geoLocation_Id
 }
 
 class Universities {

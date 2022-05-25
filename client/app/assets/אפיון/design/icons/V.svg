@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 25.4.2, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1"
+	 id="svg2160" xmlns:cc="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 128 64"
+	 style="enable-background:new 0 0 128 64;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:url(#path3141_00000155126184294738721140000006556122231658911887_);}
+	
+		.st1{fill:url(#path2168_00000030446346534593493790000001757660793484492174_);stroke:#00BE31;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:3.994;}
+	.st2{fill:#FFFFFF;}
+</style>
+<g id="g2179" transform="translate(.5 -.5)">
+	
+		<radialGradient id="path3141_00000093865481644194612230000011728582631643855515_" cx="42.9894" cy="52.2585" r="27.545" gradientTransform="matrix(0.9985 0 0 -0.9985 4.4426 71.1131)" gradientUnits="userSpaceOnUse">
+		<stop  offset="0" style="stop-color:#FFFFFF"/>
+		<stop  offset="1" style="stop-color:#00F038;stop-opacity:0"/>
+	</radialGradient>
+	<path id="path3141" style="fill:url(#path3141_00000093865481644194612230000011728582631643855515_);" d="M86.5,31.5
+		C86.5,46.7,74.2,59,59,59S31.5,46.7,31.5,31.5S43.8,4,59,4S86.5,16.3,86.5,31.5z"/>
+	
+		<radialGradient id="path2168_00000132791525031352014030000006387612226702736815_" cx="49.5659" cy="115.4828" r="27.545" gradientTransform="matrix(0.9175 0.9439 0.716 -0.696 -80.6563 54.2014)" gradientUnits="userSpaceOnUse">
+		<stop  offset="0" style="stop-color:#9BFFB3"/>
+		<stop  offset="1" style="stop-color:#00F038"/>
+	</radialGradient>
+	
+		<path id="path2168" style="fill:url(#path2168_00000132791525031352014030000006387612226702736815_);stroke:#00BE31;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:3.994;" d="
+		M86.5,31.5C86.5,46.7,74.2,59,59,59S31.5,46.7,31.5,31.5S43.8,4,59,4S86.5,16.3,86.5,31.5z"/>
+	<path id="path3167" class="st2" d="M74.8,14.7c-9.3,2.5-17.6,10-19.2,19.8c-3.9-2.6-7.2-8-12-8.2c-3.1,1.6-10.4,5.9-4.3,8.3
+		c5.5,4.3,13.8,8.1,15.1,15.6c2.7,2.5,6.2-1.1,9-2c3.5-5.6-0.4-13.4,2.9-19.3c1.7-5.6,7.8-7.9,11.3-12
+		C77.5,15.3,76.1,14.3,74.8,14.7z"/>
+</g>
+</svg>

@@ -1,0 +1,28 @@
+	
+@startuml
+User --|> HomeScreen
+HomeScreen --|> Login
+HomeScreen --|> checkAuthUser : include
+checkAuthUser --|> LoginSucceed
+Login --|> ForgetPassword : Extend
+Login --|> SignUp : Extend
+SignUp --|> Login 
+ForgetPassword --|> SendResetPassword: include
+SendResetPassword --|> ResetNewPassword: include
+ResetNewPassword --|> Login: include
+Login --|> LoginSucceed
+LoginSucceed --|> Driver: Extend
+LoginSucceed --|> Passenger: Extend
+Passenger --|> SearchDrive: Extend
+SearchDrive --|> SelectedDrive: Extend
+SelectedDrive --|> GoToDriveChat: include
+Driver --|> Profile: Extend
+Driver --|> NewDrive: Extend
+NewDrive --|> DeleteDrive: Extend
+NewDrive --|> UpdateDrive: Extend
+NewDrive --|> GoToDriveChat: include
+Passenger --|> Profile: Extend
+Profile --|> DeleteProfile : Extend
+Profile --|> UpdateProfile : Extend
+GoToDriveChat --|> PaymentForDrive : include
+@enduml

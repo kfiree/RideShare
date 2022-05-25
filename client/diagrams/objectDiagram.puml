@@ -1,0 +1,45 @@
+	
+@startuml
+User --|> App
+App --|> Registration: Screen Component
+class Registration {
+  String firstName = user105
+  String lastName = user105
+  String email = user105@gmail.com
+  String phone = +97250105105
+  String password = **********
+  String confirmPassword = **********
+  Image Gender = "F"
+  Image University = ariel
+  Image Degree = 1
+
+  Boolean Add(allData)
+}
+
+
+Registration --|> API
+
+API <|--|> AUTH
+
+API --|> validationOfData
+validationOfData --|> seccessValidator
+validationOfData --|> failedValidator
+seccessValidator --|> classUser
+failedValidator --|> false
+false --|> API
+API --|> Registration
+classUser --|> DB
+class DB {
+  String firstName = user105
+  String lastName = user105
+  String email = user105@gmail.com
+  String phone = +97250105105
+  String password = **********
+  String confirmPassword = **********
+  Image Gender = "F"
+  Image University = ariel
+  Image Degree = 1
+
+  Boolean Add(allData)
+}
+@enduml

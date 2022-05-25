@@ -1,0 +1,42 @@
+	
+@startuml
+circle          Start
+circle          End
+
+Start --|> User1 : Initial State
+User1 --|> Registration
+Registration --|> LoginSuccess
+class Registration {
+  String firstName = user105
+  String lastName = user105
+  String email = user105@gmail.com
+  String phone = +97250105105
+  String password = **********
+  String confirmPassword = **********
+  Image Gender = "F"
+  Image University = ariel
+  Image Degree = 1
+
+  Boolean UpdateProfile(allData)
+}
+LoginSuccess --|> HomePage
+HomePage --|> Setting
+Setting --|> Profile
+Profile --|> UpdateProfile
+class UpdateProfile {
+  String firstName = Yuval105
+  String lastName = Yuval105
+  String email = Yuval105@gmail.com
+  String phone = +97250105105
+  String password = **********
+  String confirmPassword = **********
+  Image Gender = "F"
+  Image University = ariel
+  Image Degree = 1
+
+}
+UpdateProfile --|> Updated
+Updated --|> End : Final State
+Updated --|> HomePage
+
+@enduml
