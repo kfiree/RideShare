@@ -70,7 +70,7 @@ function SearchDrive() {
     }
     const handleChangedDate = (val) => {
         if (val.length == 2 && isNum(val)) {
-            console.log("val = " + val)
+            //console.log("val = " + val)
             val += "/";
         }
         const regexddmmyyyy = /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/;

@@ -78,7 +78,7 @@ const users = {
 
             const body = JSON.stringify(userData);
             const res = await axios.put(requests.Users.update, body, config);
-            console.log("res.data = " + JSON.stringify(res.data));
+            //console.log("res.data = " + JSON.stringify(res.data));
             return res.data;
         } catch (err) {
             console.error(err.response.data);

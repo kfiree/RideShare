@@ -37,7 +37,7 @@ router.post(
                             ('${University.universityId}', '${University.universityName}', 
                             '${University.geoLocationId}');`;
 
-            console.log(query);
+            //console.log(query);
             await client.query(query,
                 async (err, result, fields) => {
                     if (err) return res.status(400).json({ errors: [{ msg: err }] });
@@ -87,26 +87,26 @@ router.get(
     '/',
     async (req, res) => {
         try {
-            console.log(1);
+            //console.log(1);
             const query = `SELECT * FROM asaf.universities
                             INNER JOIN asaf.geoLocation
                             ON asaf.geoLocation.geoLocation_Id = asaf.universities.geoLocation_Id;`;
-            console.log(2);
+            //console.log(2);
 
             await client.query(query,
                 async (err, result, fields) => {
                     if (err) {
-                        console.log(3);
+                        //console.log(3);
                         return res.status(400).json({ errors: [{ msg: err }] });
                     }
                     else {
-                        console.log(4);
+                        //console.log(4);
 
                         return res.send(result);
                     }
                 });
         } catch (err) {
-            console.log(5);
+            //console.log(5);
 
             console.error(err.message);
             res.status(500).send({ errors: 'Server error' });

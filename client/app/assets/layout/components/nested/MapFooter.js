@@ -66,7 +66,7 @@ const MapFooter = ({ data }) => {
             <View style={styles.container}>
                 <TouchableOpacity
                     onPress={() => {
-                        console.log('finish');
+                        //console.log('finish');
                         // finish(data.Pos)
                     }}>
                     <View style={[styles.boxSize, { backgroundColor: "white" }]} >
@@ -103,7 +103,7 @@ const MapFooter = ({ data }) => {
 
                 <TouchableOpacity
                     onPress={() => {
-                        console.log('TouchableOpacity')
+                        //console.log('TouchableOpacity')
                         // data.isDriver ? navigation.navigate("CreateDrive") : navigation.navigate("SearchDrive")
                     }}>
 

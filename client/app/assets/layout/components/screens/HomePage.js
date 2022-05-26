@@ -47,7 +47,7 @@ function HomePage() {
     if (!isSignedIn) {
         navigation.navigate("Registration")
     }
-    console.log('user data', userData);
+    //console.log('user data', userData);
 
     //
     if (!fonts) {

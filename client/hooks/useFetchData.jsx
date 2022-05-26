@@ -20,7 +20,7 @@ export const useFetchData = func => {
     setError(false);
     try {
       const res = await func(userAction);
-      console.log('res', res);
+      //console.log('res', res);
       if (res?.errors) {
         throw new Error(res?.errors);
       } else {

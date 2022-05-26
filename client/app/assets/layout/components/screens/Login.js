@@ -169,7 +169,7 @@ function Login() {
         password: data.password,
       }
       try {
-        console.log('userData', userData);
+        //console.log('userData', userData);
         const result = await Users.login(userData);
         // console.log('result', result);
         setLoadingPopup(false);
@@ -195,11 +195,14 @@ function Login() {
             updateAt: result.updateAt,
             user_Id: result.user_Id,
           })
-          setTimeout(() => {
-            navigation.navigate('HomePage')
-          }, 2000)
+          setLoadingPopup(false);
+          setShowPopup(true);
+          setIsSignedIn(true);
+          // setTimeout(() => {
+          //   navigation.navigate('HomePage')
+          // }, 2000)
 
-          setLoadingPopup(false)
+          // setLoadingPopup(false)
         } else {
           throw 'no login';
         }

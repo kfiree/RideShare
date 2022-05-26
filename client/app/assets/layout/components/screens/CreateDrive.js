@@ -270,7 +270,7 @@ function CreateDrive() {
                                     />
                                     <TouchableOpacity style={styles.logoInput}
                                         onPress={() => {
-                                            console.log("get date");
+                                            //console.log("get date");
                                         }}>
                                         <Entypo name="calendar" size={30} color={colors.search} />
                                     </TouchableOpacity>

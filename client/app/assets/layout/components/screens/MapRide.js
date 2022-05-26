@@ -541,7 +541,7 @@ export default function MapRide({ route }) {
       curr: 'MapRide',
     })
   }, []);
-  console.log('pages', pages)
+  //console.log('pages', pages)
 
   const [userMarker, setUserMarker] = useState(null);
   if (location) {
@@ -575,7 +575,7 @@ export default function MapRide({ route }) {
    */
   const [Region, setRegion] = useState(null);
   const onRegionChange = (region) => {
-    console.log('new-region', region)
+    //console.log('new-region', region)
     setRegion({ region })
   }
 
@@ -694,8 +694,8 @@ export default function MapRide({ route }) {
         onPress={(e) => { onUserLocationChange(e.nativeEvent.coordinate) }}
       >
         {listUniversities.map((university) => {
-          console.log('longitude', parseFloat(university.longitude))
-          console.log('latitude', parseFloat(university.latitude))
+          //console.log('longitude', parseFloat(university.longitude))
+          //console.log('latitude', parseFloat(university.latitude))
 
 
           return <Marker

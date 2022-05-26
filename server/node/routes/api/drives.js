@@ -63,7 +63,7 @@ router.post(
             }
             drive.src['geoLocation_Id'] = uuidv4();
             drive.dest['geoLocation_Id'] = uuidv4();
-            console.log("drive", drive);
+            // console.log("drive", drive);
 
             //insert geoLocation
             const createGeoLocartion = `INSERT INTO asaf.geoLocation (geoLocation_Id, latitude, latitudeDelta, longitude, longitudeDelta) 
@@ -75,7 +75,7 @@ router.post(
                 async (err, result, fields) => {
                     if (err) return res.status(400).json({ errors: [{ msg: err }] });
                     else {
-                        console.log('createGeoLocartion created');
+                        // console.log('createGeoLocartion created');
                         //insert Drive
                         const createDrive = `INSERT INTO asaf.drives ( drive_Id, geoLocationSrc_Id, geoLocationDest_Id, passengers, num_seat_available, price, AVG_Price, upcoming_Drives, createdAt) 
                         VALUES ('${drive.driveId}', '${drive.src.geoLocation_Id}', '${drive.dest.geoLocation_Id}', '', 
@@ -85,7 +85,7 @@ router.post(
                             async (err, result, fields) => {
                                 if (err) return res.status(400).json({ errors: [{ msg: err }] });
                                 else {
-                                    console.log('createDrive created');
+                                    // console.log('createDrive created');
                                     //insert Users_Drive
                                     const createUsersDrive = `INSERT INTO asaf.users_Drives (user_Id, drive_Id) 
                                                             VALUES 
@@ -95,7 +95,7 @@ router.post(
                                         (err, result, fields) => {
                                             if (err) return res.status(400).json({ errors: [{ msg: err }] });
                                             else {
-                                                console.log('createUsersDrive created');
+                                                // console.log('createUsersDrive created');
                                                 res.status(200).json({ msg: "msg" })
                                             }
                                         });
@@ -153,7 +153,7 @@ router.post(
                         const salt = await bcrypt.genSalt(10);
                         const encryptedPassword = await bcrypt.hash(password, salt);
                         if (result[0].email === email.toLowerCase() && bcrypt.compareSync(password, result[0].password)) {
-                            console.log('User Login successfully');
+                            //console.log('User Login successfully');
                             //Return jsonwebToken
                             const payLoad = { user: { id: result[0].userId } };
                             jwt.sign(
@@ -205,7 +205,7 @@ router.delete(
                     res.json({ msg: "User deleted" });
                     await createLogsUsers(req, res, userId, "User deleted in DB", { msg: "User deleted" });
                 } else {
-                    console.log(result)
+                    //console.log(result)
                     return res.status(400).json({ errors: "User is not founded" });
                 }
             });

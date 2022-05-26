@@ -63,7 +63,7 @@ const chats = {
                 }
             }
             const res = await axios.get(requests.Chat.getMyChats, config);
-            console.log(res.data)
+            //console.log(res.data)
             return res.data;
         } catch (err) {
             // console.error(err);

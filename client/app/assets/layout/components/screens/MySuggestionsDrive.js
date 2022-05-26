@@ -127,7 +127,7 @@ function MySuggestionsDrive() {
     }
 
     const onSubmit = async (price, offerID) => {
-        console.log("offerID = " + offerID)
+        //console.log("offerID = " + offerID)
         try {
             setLoadingPopup(true)
             if (userData.token !== "") {

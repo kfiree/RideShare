@@ -304,10 +304,10 @@ function Registration() {
   }
 
   const onSubmit = async () => {
-    console.log('onSubmit');
+    //console.log('onSubmit');
 
     if (data.isValidFirstName && data.isValidLastName && data.isValidPhoneNumber && data.isValidEmail && data.isValidPassword && data.isValidPassword2 && data.isValidUniversities && data.isValidDegree) {
-      console.log("Submit Form", data);
+      //console.log("Submit Form", data);
       setLoading(true);
       const userData = {
         first_name: data.firstName,

@@ -34,14 +34,14 @@ router.post(
         // console.log("sdvdsvsdvdsv");
         try {
             const query = `SELECT * FROM "rs_users" WHERE "email" = '${email.toLowerCase()}';`;
-            console.log('query', query);
+            //console.log('query', query);
             //Check if user is exist
             await client.query(query,
                 async (err, result, fields) => {
                     // if (err) return res.status(400).json({ errors: [{ msg: 'Error when get user by email from DB', err }] });
                     if (err) return res.status(400).json({ errors: [{ msg: err }] });
                     if (result.length > 0 && result[0].email === email.toLowerCase()) {
-                        console.log('User exist');
+                        //console.log('User exist');
                         return res.status(400).json({ errors: [{ msg: 'User exist' }] });
                     } else {
                         //Encrypt password
@@ -63,44 +63,44 @@ router.post(
                             degree,
                             token: ''
                         }
-                        console.log(
-                            JSON.stringify(user)
+                        //console.log(
+                        JSON.stringify(user)
                         );
-                        const query = `INSERT INTO "rs_users" 
+            const query = `INSERT INTO "rs_users" 
                                             ("user_Id", "first_name", "last_name", "phone_Number", "email", "password", "gender", "image_Id", "degree") 
                                         VALUES 
                                             ('${user.userId}', '${user.first_name}', '${user.last_name}', '${user.phone_Number}', 
                                             '${user.email}', '${user.password}', '${user.gender}', '${user.image_Id}', '${user.degree}');`;
-                        console.log("query", query);
+            //console.log("query", query);
 
-                        //Save user in DB
-                        await client.query(query,
-                            (err, result, fields) => {
-                                if (err) return res.status(400).json({ errors: [{ msg: err }] });
-                                else {
-                                    console.log('User created');
-                                    //Return jsonwebToken
-                                    const payLoad = { user: { id: user.id } };
-                                    jwt.sign(
-                                        payLoad,
-                                        config["jwtSecret"],
-                                        { expiresIn: 360000 },
-                                        (err, token) => {
-                                            user.token = token;
-                                            if (err) throw err;
-                                            res.json({ user });
-                                        }
-                                    );
-                                }
-                            });
+            //Save user in DB
+            await client.query(query,
+                (err, result, fields) => {
+                    if (err) return res.status(400).json({ errors: [{ msg: err }] });
+                    else {
+                        //console.log('User created');
+                        //Return jsonwebToken
+                        const payLoad = { user: { id: user.id } };
+                        jwt.sign(
+                            payLoad,
+                            config["jwtSecret"],
+                            { expiresIn: 360000 },
+                            (err, token) => {
+                                user.token = token;
+                                if (err) throw err;
+                                res.json({ user });
+                            }
+                        );
                     }
+                });
+        }
 
                     // }
                 });
         } catch (err) {
-            console.error(err.message);
-            res.status(500).send('Server error');
-        }
+    console.error(err.message);
+    res.status(500).send('Server error');
+}
     })
 
 
@@ -123,7 +123,7 @@ router.post(
         // console.log("login");
         try {
             const query = `SELECT * FROM "rs_users" WHERE "email" = '${email.toLowerCase()}';`;
-            console.log(query);
+            //console.log(query);
             //Check if user is exist
             await client.query(query,
                 async (err, result, fields) => {
@@ -147,7 +147,7 @@ router.post(
                         const salt = await bcrypt.genSalt(10);
                         const encryptedPassword = await bcrypt.hash(password, salt);
                         if (user.email === email.toLowerCase() && bcrypt.compareSync(password, user.password)) {
-                            console.log('User Login successfully');
+                            //console.log('User Login successfully');
                             //Return jsonwebToken
                             const payLoad = { user: { id: user.userId } };
                             jwt.sign(
@@ -202,7 +202,7 @@ router.delete(
                     res.json({ msg: "User deleted" });
                     await createLogsUsers(req, res, userId, "User deleted in DB", { msg: "User deleted" });
                 } else {
-                    console.log(result)
+                    //console.log(result)
                     return res.status(400).json({ errors: "User is not founded" });
                 }
             });
