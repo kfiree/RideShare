@@ -1,18 +1,18 @@
 --DB
-CREATE DATABASE "rideshare";
+-- CREATE DATABASE "rideshare";
 
 
 --Users
 CREATE TABLE IF NOT EXISTS "rs_users" (
   "user_Id" uuid NOT NULL UNIQUE,
-  "email" VARCHAR (100) UNIQUE NOT NULL,
-  "first_name" VARCHAR (50) NOT NULL,
-  "last_name" VARCHAR (50) NOT NULL,
+  "email" TEXT UNIQUE NOT NULL,
+  "first_name" TEXT NOT NULL,
+  "last_name" TEXT NOT NULL,
   "phone_Number" VARCHAR (15) NOT NULL,
-  "Image_Id" VARCHAR (50) DEFAULT NULL,
-  "degree" VARCHAR (50) NOT NULL,
-  "gender" VARCHAR (15) NOT NULL,
-  "password" VARCHAR (50) NOT NULL,
+  "image_Id" TEXT DEFAULT NULL,
+  "degree" TEXT NOT NULL,
+  "gender" TEXT NOT NULL,
+  "password" TEXT NOT NULL,
   "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   "updateAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   PRIMARY KEY ("user_Id", "email")
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS "rs_geoLocation" (
   "geoLocation_Id" uuid NOT NULL UNIQUE,
   "latitude" NUMERIC NOT NULL,
   "longitude" NUMERIC NOT NULL,
-  "nameLocation" VARCHAR(100) NOT NULL,
+  "nameLocation" TEXT NOT NULL,
   PRIMARY KEY ("geoLocation_Id", "latitude", "longitude")
 );
 
@@ -39,12 +39,12 @@ CREATE TABLE IF NOT EXISTS "rs_drives" (
   "drive_Id" uuid NOT NULL UNIQUE,
   "geoLocationSrc_Id" uuid NOT NULL,
   "geoLocationDest_Id" uuid NOT NULL,
-  "passengers" VARCHAR(250) DEFAULT NULL,
-  "type" VARCHAR(15) DEFAULT NULL,
+  "passengers" TEXT DEFAULT NULL,
+  "type" TEXT DEFAULT NULL,
   "num_seat_available" INT DEFAULT 4,
-  "price" VARCHAR(45) DEFAULT NULL,
-  "AVG_Price" VARCHAR(45) DEFAULT NULL,
-  "upcoming_Drives" VARCHAR(45) DEFAULT NULL,
+  "price" NUMERIC DEFAULT NULL,
+  "AVG_Price" NUMERIC DEFAULT NULL,
+  "upcoming_Drives" TEXT DEFAULT NULL,
   "leaveTime" TIMESTAMP DEFAULT NULL,
   "path_Id" uuid NOT NULL,
   "createdAt" DATE DEFAULT NULL,
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS "rs_drives" (
 --Universities
 CREATE TABLE IF NOT EXISTS "rs_universities" (
   "university_Id" uuid PRIMARY KEY NOT NULL UNIQUE,
-  "university_name" VARCHAR(100) NOT NULL,
+  "university_name" TEXT NOT NULL,
   "geoLocation_Id" uuid NOT NULL,
   FOREIGN KEY ("geoLocation_Id") REFERENCES "rs_geoLocation"("geoLocation_Id")
 );
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS "rs_nodes" (
   "degree" NUMERIC DEFAULT NULL,
   "edges" JSON,
   "tags" JSON,
-  PRIMARY KEY ("node_Id","osm_id", "latitude", "longitude")
+  PRIMARY KEY ("node_Id","osm_Id", "latitude", "longitude")
 );
 
 --edges
@@ -103,8 +103,8 @@ CREATE TABLE IF NOT EXISTS "rs_edges" (
   "endNodeId" uuid NOT NULL,
   "distance" NUMERIC DEFAULT NULL,
   "weight" NUMERIC DEFAULT NULL,
-  "name" VARCHAR(100) DEFAULT NULL,
-  "highwayType" VARCHAR(100) DEFAULT NULL,
+  "name" TEXT DEFAULT NULL,
+  "highwayType" TEXT DEFAULT NULL,
   PRIMARY KEY ("edge_Id", "startNodeId", "endNodeId"),
   FOREIGN KEY ("startNodeId") REFERENCES "rs_nodes"("node_Id"),
   FOREIGN KEY ("endNodeId") REFERENCES "rs_nodes"("node_Id")
