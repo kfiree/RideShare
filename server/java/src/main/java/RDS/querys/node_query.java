@@ -3,10 +3,15 @@ package RDS.querys;
 import RDS.models.Node;
 
 public class node_query {
+//    static public String addNode(Node n){
+//       return "INSERT INTO \"public\".\"rs_nodes\" (\"osm_Id\", \"node_Id\", \"latitude\", \"longitude\", \"degree\", \"edges\", \"tags\") " +
+//                "VALUES " +
+//                "('"+n.getOsm_Id()+"','"+ n.getNode_id() +"', "+n.getLatitude()+", "+n.getLongitude()+", "+n.getDegree()+", '"+n.getEdges()+"', '"+n.getTags()+"');";
+//    }
     static public String addNode(Node n){
-       return "INSERT INTO \"public\".\"rs_nodes\" (\"osm_Id\", \"node_Id\", \"latitude\", \"longitude\", \"degree\", \"edges\", \"tags\") " +
+        return "INSERT INTO \"public\".\"rs_nodes\" (\"node_Id\", \"osm_ Id\", \"latitude\", \"longitude\", \"degree\", \"edges\", \"tags\") " +
                 "VALUES " +
-                "('"+n.getOsm_Id()+"','"+ n.getNode_id() +"', "+n.getLatitude()+", "+n.getLongitude()+", "+n.getDegree()+", '"+n.getEdges()+"', '"+n.getTags()+"');";
+                "('"+n.getNode_id()+"','"+ n.getOsm_Id() +"', "+n.getLatitude()+", "+n.getLongitude()+", "+n.getDegree()+", '"+n.getEdges()+"', '"+n.getTags()+"');";
     }
     static public String updateNode(Node n) {
         return "UPDATE \"public\".\"rs_nodes\" SET " +

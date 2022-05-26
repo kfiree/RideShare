@@ -14,12 +14,14 @@ public class Node {
     public Node(Long id, Double latitude, Double longitude, Integer degree, JSONObject edges, JSONObject tags) {
         this.osm_Id = id;
         this.node_id = UUID.randomUUID().toString();
+
         this.latitude = latitude;
         this.longitude = longitude;
         this.degree = degree;
         this.edges = edges;
         this.tags = tags;
     }
+
 
 //    public Node(double latitude, double longitude, double degree, JSONObject edges, JSONObject tags) {
 //        this.node_Id = ThreadLocalRandom.current().nextLong(1000000, Integer.MAX_VALUE);;
@@ -63,13 +65,18 @@ public class Node {
 //    }
 
 
+    public String getNode_id() {
+        return node_id;
+    }
+
+
 
     public Long getOsm_Id() {
         return osm_Id;
     }
 
-    public String getNode_id() {
-        return node_id;
+    public void setOsm_Id(Long osm_Id) {
+        this.osm_Id = osm_Id;
     }
 
     public double getLatitude() {
