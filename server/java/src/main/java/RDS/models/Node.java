@@ -2,16 +2,19 @@ package RDS.models;
 
 import org.json.simple.JSONObject;
 
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Node {
 
-    private Long node_Id;
+    private Long osm_Id;
+    private String node_Id;
     private double latitude, longitude, degree;
     private JSONObject edges, tags;
 
-    public Node(Long id, Double latitude, Double longitude, Integer degree, JSONObject edges, JSONObject tags) {
-        this.node_Id = id;
+    public Node(Long osm_Id, Double latitude, Double longitude, Integer degree, JSONObject edges, JSONObject tags) {
+        this.osm_Id = osm_Id;
+        this.node_Id = UUID.randomUUID().toString();;
         this.latitude = latitude;
         this.longitude = longitude;
         this.degree = degree;
@@ -20,7 +23,7 @@ public class Node {
     }
 
     public Node(double latitude, double longitude, double degree, JSONObject edges, JSONObject tags) {
-        this.node_Id = ThreadLocalRandom.current().nextLong(1000000, Integer.MAX_VALUE);;
+        this.node_Id = UUID.randomUUID().toString();;
         this.latitude = latitude;
         this.longitude = longitude;
         this.degree = degree;
@@ -29,7 +32,7 @@ public class Node {
     }
 
     public Node(JSONObject edges) {
-        this.node_Id = ThreadLocalRandom.current().nextLong(1000000, Integer.MAX_VALUE);;
+        this.node_Id = UUID.randomUUID().toString();;
         this.latitude = 23.2222;
         this.longitude = 23.2222;
         this.degree = 23.2222;
@@ -41,7 +44,7 @@ public class Node {
     }
 
     public Node(Long node_Id, double latitude, double longitude, double degree, JSONObject edges, JSONObject tags) {
-        this.node_Id = node_Id;
+        this.node_Id = UUID.randomUUID().toString();;
         this.latitude = latitude;
         this.longitude = longitude;
         this.degree = degree;
@@ -49,7 +52,7 @@ public class Node {
         this.tags = tags;
     }
     public Node() {
-        this.node_Id = ThreadLocalRandom.current().nextLong(1000000, Integer.MAX_VALUE);;
+        this.node_Id = UUID.randomUUID().toString();;
         this.latitude = 3513212.20211231233123123187812313130;
         this.longitude = 3123325.201231231231231131312321218780;
         this.degree = 35.20218780;
@@ -62,12 +65,22 @@ public class Node {
 
 
 
-    public Long getNode_Id() {
+    public String getNode_Id() {
         return node_Id;
     }
 
-    public void setNode_Id(Long node_Id) {
+    public void setNode_Id(String osm_Id) {
         this.node_Id = node_Id;
+    }
+
+
+
+    public Long getOsm_Id() {
+        return osm_Id;
+    }
+
+    public void setOsm_Id(Long osm_Id) {
+        this.osm_Id = osm_Id;
     }
 
     public double getLatitude() {
