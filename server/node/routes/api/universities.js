@@ -1,6 +1,6 @@
 const express = require('express');
 const { json } = require('express/lib/response');
-const connection = require('../../config/DB');
+const client = require('../../config/DB');
 const { check, validationResult } = require('express-validator');
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcryptjs');
@@ -38,9 +38,9 @@ router.post(
                             '${University.geoLocationId}');`;
 
             console.log(query);
-            await connection.query(query,
+            await client.query(query,
                 async (err, result, fields) => {
-                    if (err) return res.status(400).json({ errors: [{ err: err, msg: 'error when create new university' }] });
+                    if (err) return res.status(400).json({ errors: [{ msg: err }] });
                     else {
                         res.send({ msg: 'new university added to DB' });
                     }
@@ -66,9 +66,9 @@ router.delete(
         try {
             const query = `DELETE FROM asaf.universities 
                             WHERE university_Id = ('${universityId}');`;
-            await connection.query(query,
+            await client.query(query,
                 async (err, result, fields) => {
-                    if (err) return res.status(400).json({ errors: [{ msg: 'error when delete university by id' }] });
+                    if (err) return res.status(400).json({ errors: [{ msg: err }] });
                     else {
                         res.send({ msg: 'university deleted from DB' });
                     }
@@ -93,7 +93,7 @@ router.get(
                             ON asaf.geoLocation.geoLocation_Id = asaf.universities.geoLocation_Id;`;
             console.log(2);
 
-            await connection.query(query,
+            await client.query(query,
                 async (err, result, fields) => {
                     if (err) {
                         console.log(3);
@@ -140,9 +140,9 @@ router.put(
             geoLocation_Id = '${geoLocationId}' 
                 WHERE 
                 university_Id = '${universityId}';`;
-            await connection.query(query,
+            await client.query(query,
                 async (err, result, fields) => {
-                    if (err) return res.status(400).json({ errors: [{ msg: 'Error when update university by universityId in DB' }] });
+                    if (err) return res.status(400).json({ errors: [{ msg: err }] });
                     else {
                         res.send({ msg: 'university updated' })
                     }

@@ -1,6 +1,6 @@
 const express = require('express');
 const { json } = require('express/lib/response');
-const connection = require('../../config/DB');
+const client = require('../../config/DB');
 const { check, validationResult } = require('express-validator');
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcryptjs');
@@ -39,7 +39,7 @@ router.post(
 
             // const queryGetAllUsers = `SELECT * FROM asaf.users;`;
             // //insert Users_Drive in db
-            // await connection.query(queryGetAllUsers,
+            // await client.query(queryGetAllUsers,
             //     (err, result, fields) => {
             //         if (err) return res.status(400).json({ errors: [{ msg: err }] });
             //         else {
@@ -71,7 +71,7 @@ router.post(
                                         ('${drive.src.geoLocation_Id}',${drive.src.latitude}, ${drive.src.latitudeDelta}, ${drive.src.longitude}, ${drive.src.longitudeDelta}),
                                         ('${drive.dest.geoLocation_Id}',${drive.dest.latitude}, ${drive.dest.latitudeDelta}, ${drive.dest.longitude}, ${drive.src.longitudeDelta});`;
             //insert geoLocation in db
-            await connection.query(createGeoLocartion,
+            await client.query(createGeoLocartion,
                 async (err, result, fields) => {
                     if (err) return res.status(400).json({ errors: [{ msg: err }] });
                     else {
@@ -81,7 +81,7 @@ router.post(
                         VALUES ('${drive.driveId}', '${drive.src.geoLocation_Id}', '${drive.dest.geoLocation_Id}', '', 
                         ${drive.seats}, '${drive.price}', '${drive.AVG_Price}', '${drive.upcoming_Drives}', now());`;
                         //insert Drive in db
-                        await connection.query(createDrive,
+                        await client.query(createDrive,
                             async (err, result, fields) => {
                                 if (err) return res.status(400).json({ errors: [{ msg: err }] });
                                 else {
@@ -91,7 +91,7 @@ router.post(
                                                             VALUES 
                                                                 ( '${drive.user_Id}', '${drive.driveId}')`;
                                     //insert Users_Drive in db
-                                    await connection.query(createUsersDrive,
+                                    await client.query(createUsersDrive,
                                         (err, result, fields) => {
                                             if (err) return res.status(400).json({ errors: [{ msg: err }] });
                                             else {
@@ -130,7 +130,7 @@ router.post(
         try {
             const query = `SELECT * FROM asaf.users WHERE email = '${email.toLowerCase()}';`;
             //Check if user is exist
-            await connection.query(query,
+            await client.query(query,
                 async (err, result, fields) => {
                     if (err) return res.status(400).json({ errors: err });
                     else if (result.length > 0) {
@@ -199,7 +199,7 @@ router.delete(
         const { userId } = req.body;
         try {
             //Check if user is exist
-            await connection.query(`DELETE FROM asaf.users WHERE user_Id = '${userId}'`, async (err, result, fields) => {
+            await client.query(`DELETE FROM asaf.users WHERE user_Id = '${userId}'`, async (err, result, fields) => {
                 if (err) return res.status(400).json({ err });
                 else if (result.affectedRows > 0) {
                     res.json({ msg: "User deleted" });
@@ -242,7 +242,7 @@ router.put(
         const { userId, last_name, first_name, phone_Number, email, password, gender, user_Avatar, degree } = req.body;
         try {
             //Check if user is exist
-            await connection.query(`SELECT * FROM asaf.users WHERE user_Id = '${userId}'; `,
+            await client.query(`SELECT * FROM asaf.users WHERE user_Id = '${userId}'; `,
                 async (err, result, fields) => {
                     if (err) return res.status(400).json({ errors: [{ msg: 'Error when get user by userId from DB' }] });
                     else if (result.length > 0 && result[0].email === email.toLowerCase()) {
@@ -262,7 +262,7 @@ router.put(
                         WHERE (user_Id = '${userId}') AND (email = '${email.toLowerCase()}');`;
                         // console.log("query", query);
                         //Update user in DB
-                        await connection.query(query, (err, result, fields) => {
+                        await client.query(query, (err, result, fields) => {
                             if (err) return res.status(400).json({ errors: [{ msg: err }] });
                             else {
                                 return res.send({ msg: 'User updated in DB' });

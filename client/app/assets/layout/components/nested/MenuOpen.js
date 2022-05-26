@@ -94,6 +94,7 @@ const MenuOpen = () => {
                             <ItemMenu namePage={"הוספת נסיעה"} navigateToPage={"CreateDrive"} />
                             <ItemMenu namePage={"חיפוש נסיעה"} navigateToPage={"SearchDrive"} />
                             <ItemMenu namePage={"ההצעות שלי"} navigateToPage={"MySuggestions"} />
+                            <ItemMenu namePage={"התנתקות"} navigateToPage={"Registration"} />
 
                             {/* <ItemMenu namePage={"ההצעות שלי 2"} navigateToPage={"MySuggestionsPassenger"} /> */}
                             {/* <ItemMenu namePage={"צ'אט נסיעה"} navigateToPage={"ChatDrive"} />
@@ -106,8 +107,7 @@ const MenuOpen = () => {
                             <ItemMenu namePage={"דירוג"} navigateToPage={"Rating"} />
                             <ItemMenu namePage={"הרשמה"} navigateToPage={"Registration"} />
                             <ItemMenu namePage={"הגדרות"} navigateToPage={"Setting"} />
-                            <ItemMenu namePage={"מסך עמודים"} navigateToPage={"WelcomeScreen"} />
-                            <ItemMenu namePage={"התנתקות"} navigateToPage={"Registration"} /> */}
+                            <ItemMenu namePage={"מסך עמודים"} navigateToPage={"WelcomeScreen"} />*/}
                         </ScrollView>
                     </View>
                 </SafeAreaView>

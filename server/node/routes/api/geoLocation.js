@@ -1,6 +1,6 @@
 const express = require('express');
 const { json } = require('express/lib/response');
-const connection = require('../../config/DB');
+const client = require('../../config/DB');
 const { check, validationResult } = require('express-validator');
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcryptjs');
@@ -39,9 +39,9 @@ router.post(
                             '${geo.nameLocation}');`;
 
             //Check if user is exist
-            await connection.query(query,
+            await client.query(query,
                 async (err, result, fields) => {
-                    if (err) return res.status(400).json({ errors: [{ msg: 'error when create new geoLocation' }] });
+                    if (err) return res.status(400).json({ errors: [{ msg: err }] });
                     else {
                         res.send({ msg: 'new geoLocation added to DB' });
                     }
@@ -67,9 +67,9 @@ router.delete(
         try {
             const query = `DELETE FROM asaf.universities 
                             WHERE geoLocation_Id = ('${geoLocationId}');`;
-            await connection.query(query,
+            await client.query(query,
                 async (err, result, fields) => {
-                    if (err) return res.status(400).json({ errors: [{ msg: 'error when delete geoLocation by id' }] });
+                    if (err) return res.status(400).json({ errors: [{ msg: err }] });
                     else {
                         res.send({ msg: 'geoLocation deleted from DB' });
                     }
@@ -90,9 +90,9 @@ router.get(
         try {
 
             const query = `SELECT * FROM asaf.geoLocation;`;
-            await connection.query(query,
+            await client.query(query,
                 async (err, result, fields) => {
-                    if (err) return res.status(400).json({ errors: [{ err: err, msg: 'error when get all geoLocation' }] });
+                    if (err) return res.status(400).json({ errors: [{ msg: err }] });
                     else {
                         res.send(result);
                     }
@@ -131,9 +131,9 @@ router.put(
              nameLocation = '${nameLocation}' 
              WHERE 
              geoLocation_Id = '${geoLocationId}';`;
-            await connection.query(query,
+            await client.query(query,
                 async (err, result, fields) => {
-                    if (err) return res.status(400).json({ errors: [{ msg: 'Error when update geoLocation by geoLocationId in DB' }] });
+                    if (err) return res.status(400).json({ errors: [{ msg: err }] });
                     else {
                         res.send({ msg: 'geoLocation updated' })
                     }

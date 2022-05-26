@@ -13,7 +13,7 @@ const users = {
             }
             const body = JSON.stringify(userData);
             const res = await axios.post(requests.Users.registration, body, config);
-            await token.addTokenToStorage(res.data.token)
+            // await token.addTokenToStorage(res.data.token)
 
             return true;
         } catch (err) {
@@ -109,8 +109,8 @@ const users = {
             }
             const body = JSON.stringify(userData);
             const res = await axios.post(requests.Users.login, body, config);
-            await token.addTokenToStorage(res.data["token"])
-            return res.data["token"];
+            // await token.addTokenToStorage(res.data["token"])
+            return res.data.user;
         } catch (err) {
             console.error(err);
             console.error("request failed");

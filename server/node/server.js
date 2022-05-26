@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 
-const connection = require('./config/DB');
+const client = require('./config/DB');
 const { check, validationResult } = require('express-validator');
 //Init Middleware
 app.use(cors())
@@ -14,7 +14,7 @@ app.use('/api/drives', require('./routes/api/drives'));
 app.use('/api/universities', require('./routes/api/universities'));
 app.use('/api/geoLocation', require('./routes/api/geoLocation'));
 
-const PORT = process.env.PORT || 5002;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, async () => {
   console.log(`Server started on port ${PORT}`)
 });

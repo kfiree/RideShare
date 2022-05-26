@@ -50,8 +50,8 @@ function Login() {
   const navigation = useNavigation();
   const [showPopup, setShowPopup] = React.useState(false);
   const [data, setData] = React.useState({
-    email: "",
-    password: "",
+    email: "motidaharii@gmail.com",
+    password: "123456",
 
     isValidEmail: true,
     isValidPassword: true,
@@ -110,54 +110,54 @@ function Login() {
 
     };
   }
-  const getUserDetailsByToken = async (token) => {
+  // const getUserDetailsByToken = async (token) => {
 
-    try {
-      const res = await Users.getUser(token)
-      if (res !== null) {
-        //console.log(JSON.stringify(res));
-        setUserData({
-          ...userData,
-          token: token,
-          id: res.email,
-          firstName: res.firstName,
-          lastName: res.lastName,
-          email: res.email,
-          phoneNumber: res.phoneNumber,
-          gender: res.gender,
-          imageUniversity: res.universityImage,
-          imageId: res.avatar,
-          university: res.university,
-          degree: res.degree,
-          rating: res.rating,
-          numRating: res.ratingNum,
-          numDrives: 0,
-          modelCar: (res.carModel !== null) ? res.carModel : "",
-          colorCar: (res.colorCar !== null) ? res.colorCar : "",
-          dateOfBirth: (res.carColor !== null) ? res.carColor : "",
-        })
-        setLoadingPopup(false);
-        setShowPopup(true);
-        setIsSignedIn(true);
-        setTimeout(() => {
-          setShowPopup(false);
-          navigation.navigate('HomePage')
-        }, 1000)
-        setLoadingPopup(false)
-      } else {
-        throw "can not get user details"
-      }
-      await sendNotificationToClient("התחברות הצליחה", "התחברת בהצלחה למערכת שלנו")
-    } catch (err) {
-      console.error(err);
-      console.error("request failed");
-      setLoadingPopup(false);
-      setIsSignedIn(false);
-      setShowPopup(false);
-      await sendNotificationToClient("התחברות נכשלה", "משהו לא תקין בנתונים שהבאת לנו")
+  //   try {
+  //     const res = await Users.getUser(token)
+  //     if (res !== null) {
+  //       //console.log(JSON.stringify(res));
+  //       setUserData({
+  //         ...userData,
+  //         token: token,
+  //         id: res.email,
+  //         firstName: res.firstName,
+  //         lastName: res.lastName,
+  //         email: res.email,
+  //         phoneNumber: res.phoneNumber,
+  //         gender: res.gender,
+  //         imageUniversity: res.universityImage,
+  //         imageId: res.avatar,
+  //         university: res.university,
+  //         degree: res.degree,
+  //         rating: res.rating,
+  //         numRating: res.ratingNum,
+  //         numDrives: 0,
+  //         modelCar: (res.carModel !== null) ? res.carModel : "",
+  //         colorCar: (res.colorCar !== null) ? res.colorCar : "",
+  //         dateOfBirth: (res.carColor !== null) ? res.carColor : "",
+  //       })
+  //       setLoadingPopup(false);
+  //       setShowPopup(true);
+  //       setIsSignedIn(true);
+  //       setTimeout(() => {
+  //         setShowPopup(false);
+  //         navigation.navigate('HomePage')
+  //       }, 1000)
+  //       setLoadingPopup(false)
+  //     } else {
+  //       throw "can not get user details"
+  //     }
+  //     await sendNotificationToClient("התחברות הצליחה", "התחברת בהצלחה למערכת שלנו")
+  //   } catch (err) {
+  //     console.error(err);
+  //     console.error("request failed");
+  //     setLoadingPopup(false);
+  //     setIsSignedIn(false);
+  //     setShowPopup(false);
+  //     await sendNotificationToClient("התחברות נכשלה", "משהו לא תקין בנתונים שהבאת לנו")
 
-    }
-  };
+  //   }
+  // };
 
 
   const onSubmit = async () => {
@@ -165,18 +165,40 @@ function Login() {
     if (data.isValidEmail && data.isValidPassword) {
       setLoadingPopup(true);
       const userData = {
-        email: data.email,
+        email: data.email.toLowerCase(),
         password: data.password,
       }
       try {
+        console.log('userData', userData);
         const result = await Users.login(userData);
-        if (result.length > 0) {
+        // console.log('result', result);
+        setLoadingPopup(false);
+
+        if (!result?.errors) {
+          // console.log("no errors");
+          setUserData(result);
+
+          // setIsSignedIn(false);
+          // // await getUserDetailsByToken(result)
           setUserData({
-            ...userData,
-            token: result,
+            ...result,
+            createdAt: result.createdAt,
+            degree: result.degree,
+            email: result.email,
+            first_name: result.first_name,
+            gender: result.gender,
+            image_Id: result.image_Id,
+            last_name: result.last_name,
+            password: result.password,
+            phone_Number: result.phone_Number,
+            token: result.token,
+            updateAt: result.updateAt,
+            user_Id: result.user_Id,
           })
-          setIsSignedIn(false);
-          await getUserDetailsByToken(result)
+          setTimeout(() => {
+            navigation.navigate('HomePage')
+          }, 2000)
+
           setLoadingPopup(false)
         } else {
           throw 'no login';
@@ -237,6 +259,7 @@ function Login() {
             <KeyboardAvoidingView style={styles.form}>
               <View style={styles.inputsBox}>
                 <TextInput
+                  value='motidaharii@gmail.com'
                   onChangeText={(text) => inputChange("email", text)}
                   onEndEditing={(e) => handleValidUser("email", e.nativeEvent.text)}
                   placeholder="דוא''ל"
@@ -253,6 +276,8 @@ function Login() {
 
 
                 <TextInput
+                  value='123456'
+
                   onChangeText={(text) => inputChange("password", text)}
                   onEndEditing={(e) => handleValidUser("password", e.nativeEvent.text)}
                   autoComplete={"password"}

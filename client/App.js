@@ -228,7 +228,10 @@ export default function App() {
               <Stack.Screen name="Registration" component={Registration} options={{ headerShown: false }} />
             </>) :
             (<> */}
+          <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
 
+
+          <Stack.Screen name="Registration" component={Registration} options={{ headerShown: false }} />
 
           <Stack.Screen name="HomePage" component={HomePage} options={{ headerShown: false }} />
           <Stack.Screen name="ChatDrive" component={ChatDrive} options={{ headerShown: false }} />
@@ -249,8 +252,6 @@ export default function App() {
           <Stack.Screen name="MyDrives" component={MyDrives} options={{ headerShown: false }} />
           <Stack.Screen name="MySuggestions" component={MySuggestions} options={{ headerShown: false }} />
           <Stack.Screen name="Setting" component={Setting} options={{ headerShown: false }} />
-          <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-          <Stack.Screen name="Registration" component={Registration} options={{ headerShown: false }} />
           {/* <Stack.Screen name="MapRide" component={MapRide} options={{ headerShown: false }} /> */}
           {/* </>)
           } */}
