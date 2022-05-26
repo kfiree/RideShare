@@ -160,23 +160,19 @@ const styles = StyleSheet.create({
         width: "80%",
         height: "100%",
         paddingRight: 10,
-        // backgroundColor: "green",
         justifyContent: 'center',
         alignItems: 'flex-end',
     },
     iconItem: {
         width: "20%",
         height: "100%",
-        // backgroundColor: "black",
         justifyContent: 'center',
         alignItems: 'center',
-
     },
     textMenuItem: {
         color: colors.black,
         fontSize: (Platform.OS === 'android') ? 25 : 30,
         fontFamily: "CalibriRegular",
-        // fontWeight: "bold",
     },
 })
 export default ItemMenu

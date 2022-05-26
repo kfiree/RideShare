@@ -1,6 +1,7 @@
 --DB
 CREATE DATABASE "rideshare";
 
+
 --Users
 CREATE TABLE IF NOT EXISTS "rs_users" (
   "user_Id" uuid NOT NULL UNIQUE,
@@ -15,6 +16,13 @@ CREATE TABLE IF NOT EXISTS "rs_users" (
   "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   "updateAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   PRIMARY KEY ("user_Id", "email")
+);
+
+--path
+CREATE TABLE IF NOT EXISTS "rs_paths" (
+  "path_Id" uuid NOT NULL UNIQUE,
+  "edges" JSON,
+  PRIMARY KEY ("path_Id")
 );
 
 --geoLocation
@@ -38,7 +46,9 @@ CREATE TABLE IF NOT EXISTS "rs_drives" (
   "AVG_Price" VARCHAR(45) DEFAULT NULL,
   "upcoming_Drives" VARCHAR(45) DEFAULT NULL,
   "leaveTime" TIMESTAMP DEFAULT NULL,
+  "path_Id" uuid NOT NULL,
   "createdAt" DATE DEFAULT NULL,
+  FOREIGN KEY("path_Id") REFERENCES "rs_paths"("path_Id"),
   FOREIGN KEY("geoLocationSrc_Id") REFERENCES "rs_geoLocation"("geoLocation_Id"),
   FOREIGN KEY("geoLocationDest_Id") REFERENCES "rs_geoLocation"("geoLocation_Id"),
   PRIMARY KEY (
@@ -76,20 +86,21 @@ CREATE TABLE IF NOT EXISTS "rs_users_drives" (
 
 --nodes
 CREATE TABLE IF NOT EXISTS "rs_nodes" (
-  "node_Id" bigint NOT NULL UNIQUE,
+  "osm_id" bigint NOT NULL UNIQUE,
+  "node_Id" uuid NOT NULL UNIQUE,
   "latitude" NUMERIC NOT NULL,
   "longitude" NUMERIC NOT NULL,
   "degree" NUMERIC DEFAULT NULL,
   "edges" JSON,
   "tags" JSON,
-  PRIMARY KEY ("node_Id", "latitude", "longitude")
+  PRIMARY KEY ("node_Id","osm_id", "latitude", "longitude")
 );
 
 --edges
 CREATE TABLE IF NOT EXISTS "rs_edges" (
-  "edge_Id" bigint NOT NULL UNIQUE,
-  "startNodeId" bigint NOT NULL,
-  "endNodeId" bigint NOT NULL,
+  "edge_Id" uuid NOT NULL UNIQUE,
+  "startNodeId" uuid NOT NULL,
+  "endNodeId" uuid NOT NULL,
   "distance" NUMERIC DEFAULT NULL,
   "weight" NUMERIC DEFAULT NULL,
   "name" VARCHAR(100) DEFAULT NULL,
@@ -98,3 +109,5 @@ CREATE TABLE IF NOT EXISTS "rs_edges" (
   FOREIGN KEY ("startNodeId") REFERENCES "rs_nodes"("node_Id"),
   FOREIGN KEY ("endNodeId") REFERENCES "rs_nodes"("node_Id")
 );
+
+

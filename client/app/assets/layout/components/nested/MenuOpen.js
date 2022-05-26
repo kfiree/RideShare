@@ -125,7 +125,6 @@ const styles = StyleSheet.create({
         right: 0,
         backgroundColor: colors.menuOpen,
         zIndex: 100000,
-
     },
     ProfileDetails: {
         width: "100%",
@@ -140,27 +139,20 @@ const styles = StyleSheet.create({
     },
     profileBox: {
         width: "100%",
-        // height: 200,
-        // backgroundColor: "black",
         flexDirection: 'row',
     },
     menuItems: {
         width: "100%",
         height: 500,
-        // backgroundColor: "white",
     },
 
     imageUser: {
-        // width: "30%",
-        // height: 100,
-        // backgroundColor: "black",
         justifyContent: 'center',
         alignItems: 'center',
     },
     nameUser: {
         width: "70%",
         height: 100,
-        // backgroundColor: "green",
         justifyContent: 'flex-end',
         alignItems: 'center',
         flexDirection: 'row',
@@ -181,10 +173,5 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginRight: 25,
     },
-
-
-
-
-
 })
 export default MenuOpen
