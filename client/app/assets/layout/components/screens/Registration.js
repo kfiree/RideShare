@@ -304,18 +304,21 @@ function Registration() {
   }
 
   const onSubmit = async () => {
-    //console.log("Submit Form");
+    //console.log('onSubmit');
+
     if (data.isValidFirstName && data.isValidLastName && data.isValidPhoneNumber && data.isValidEmail && data.isValidPassword && data.isValidPassword2 && data.isValidUniversities && data.isValidDegree) {
+      //console.log("Submit Form", data);
       setLoading(true);
       const userData = {
-        firstName: data.firstName,
-        lastName: data.lastName,
+        first_name: data.firstName,
+        last_name: data.lastName,
         email: data.email,
         password: data.password,
-        phoneNumber: data.phoneNumber,
+        phone_Number: data.phoneNumber,
         gender: data.gender,
         imageUniversity: (data.imageUniversity !== null) ? data.imageUniversity : "",
-        imageId: (data.imageId !== null) ? data.imageId : "",
+        image_Id: "some image",
+        // (data.imageId !== null) ? data.imageId : "some image",
         university: data.university,
         degree: data.degree
       }
@@ -323,10 +326,10 @@ function Registration() {
         if (await Users.registration(userData)) {
           setLoading(false);
           setShowPopup(true);
-          setTimeout(() => {
-            setShowPopup(false);
-            navigation.navigate('Login')
-          }, 1000)
+          // setTimeout(() => {
+          //   setShowPopup(false);
+          //   navigation.navigate('Login')
+          // }, 1000)
         } else {
           throw 'no registration';
         }

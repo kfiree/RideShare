@@ -1,6 +1,6 @@
 const express = require('express');
 const { json } = require('express/lib/response');
-const connection = require('../../config/DB');
+const client = require('../../config/DB');
 const { check, validationResult } = require('express-validator');
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcryptjs');
@@ -22,7 +22,7 @@ router.post(
         check('email', 'Please include a valid Email').isEmail(),
         check('password', 'Please enter a password with 6  or more characters').isLength({ min: 6 }),
         check('gender', 'gender is required').not().isEmpty(),
-        check('user_Avatar', 'user_Avatar is required').not().isEmpty(),
+        check('image_Id', 'image_Id is required').not().isEmpty(),
         check('degree', 'degree is required').not().isEmpty()
     ],
     async (req, res) => {
@@ -30,14 +30,18 @@ router.post(
         if (!(errors.isEmpty())) {
             return res.status(400).json({ errors: errors.array() });
         }
-        const { last_name, first_name, phone_Number, email, password, gender, user_Avatar, degree } = req.body;
+        const { last_name, first_name, phone_Number, email, password, gender, image_Id, degree, university } = req.body;
+        // console.log("sdvdsvsdvdsv");
         try {
+            const query = `SELECT * FROM "rs_users" WHERE "email" = '${email.toLowerCase()}';`;
+            //console.log('query', query);
             //Check if user is exist
-            await connection.query(`SELECT * FROM asaf.users WHERE email = '${email.toLowerCase()}';`,
+            await client.query(query,
                 async (err, result, fields) => {
-                    if (err) return res.status(400).json({ errors: [{ msg: 'Error when get user by email from DB' }] });
+                    // if (err) return res.status(400).json({ errors: [{ msg: 'Error when get user by email from DB', err }] });
+                    if (err) return res.status(400).json({ errors: [{ msg: err }] });
                     if (result.length > 0 && result[0].email === email.toLowerCase()) {
-                        console.log('User exist');
+                        //console.log('User exist');
                         return res.status(400).json({ errors: [{ msg: 'User exist' }] });
                     } else {
                         //Encrypt password
@@ -50,53 +54,53 @@ router.post(
                         let user = {
                             userId: uuidv4(),
                             password: encryptedPassword,
-                            email: `${emailS[0]} ${emailS[1]}`,
+                            email,
                             first_name,
                             last_name,
                             phone_Number,
                             gender,
-                            user_Avatar,
+                            image_Id,
                             degree,
                             token: ''
                         }
-                        console.log(
-                            JSON.stringify(user)
+                        //console.log(
+                        JSON.stringify(user)
                         );
-                        const query = `INSERT INTO asaf.users 
-                                            (user_Id, first_name, last_name, phone_Number, email, password, gender, user_Avatar, degree) 
+            const query = `INSERT INTO "rs_users" 
+                                            ("user_Id", "first_name", "last_name", "phone_Number", "email", "password", "gender", "image_Id", "degree") 
                                         VALUES 
                                             ('${user.userId}', '${user.first_name}', '${user.last_name}', '${user.phone_Number}', 
-                                            '${user.email}', '${user.password}', '${user.gender}', '${user.user_Avatar}', '${user.degree}');`;
-                        // console.log("query", query);
+                                            '${user.email}', '${user.password}', '${user.gender}', '${user.image_Id}', '${user.degree}');`;
+            //console.log("query", query);
 
-                        //Save user in DB
-                        await connection.query(query,
-                            (err, result, fields) => {
-                                if (err) return res.status(400).json({ errors: [{ msg: 'Error when create user' }] });
-                                else {
-                                    console.log('User created');
-                                    //Return jsonwebToken
-                                    const payLoad = { user: { id: user.id } };
-                                    jwt.sign(
-                                        payLoad,
-                                        config["jwtSecret"],
-                                        { expiresIn: 360000 },
-                                        (err, token) => {
-                                            user.token = token;
-                                            if (err) throw err;
-                                            res.json({ user });
-                                        }
-                                    );
-                                }
-                            });
+            //Save user in DB
+            await client.query(query,
+                (err, result, fields) => {
+                    if (err) return res.status(400).json({ errors: [{ msg: err }] });
+                    else {
+                        //console.log('User created');
+                        //Return jsonwebToken
+                        const payLoad = { user: { id: user.id } };
+                        jwt.sign(
+                            payLoad,
+                            config["jwtSecret"],
+                            { expiresIn: 360000 },
+                            (err, token) => {
+                                user.token = token;
+                                if (err) throw err;
+                                res.json({ user });
+                            }
+                        );
                     }
+                });
+        }
 
                     // }
                 });
         } catch (err) {
-            console.error(err.message);
-            res.status(500).send('Server error');
-        }
+    console.error(err.message);
+    res.status(500).send('Server error');
+}
     })
 
 
@@ -118,40 +122,40 @@ router.post(
         const { email, password } = req.body;
         // console.log("login");
         try {
-            const query = `SELECT * FROM asaf.users WHERE email = '${email.toLowerCase()}';`;
+            const query = `SELECT * FROM "rs_users" WHERE "email" = '${email.toLowerCase()}';`;
+            //console.log(query);
             //Check if user is exist
-            await connection.query(query,
+            await client.query(query,
                 async (err, result, fields) => {
-                    if (err) return res.status(400).json({ errors: err });
-                    else if (result.length > 0) {
-                        if (result[0].permission === '') {
-                            return res.status(400).json({ errors: 'the administrator has not yet authorized this user, please contact your organization manager' });
-                        }
+                    if (err) return res.status(400).json({ errors: [{ msg: err }] });
+                    else if (result.rows.length > 0) {
                         const user = {
-                            userId: result[0].user_Id,
-                            password: result[0].password,
-                            email: result[0].email.toLowerCase(),
-                            first_name: result[0].first_name,
-                            last_name: result[0].last_name,
-                            phone_Number: result[0].phone_Number,
-                            gender: result[0].gender,
-                            user_Avatar: result[0].user_Avatar,
-                            degree: result[0].degree,
+                            user_Id: result.rows[0].user_Id,
+                            password: result.rows[0].password,
+                            email: result.rows[0].email.toLowerCase(),
+                            first_name: result.rows[0].first_name,
+                            last_name: result.rows[0].last_name,
+                            phone_Number: result.rows[0].phone_Number,
+                            gender: result.rows[0].gender,
+                            image_Id: result.rows[0].image_Id,
+                            degree: result.rows[0].degree,
+                            createdAt: result.rows[0].createdAt,
+                            updateAt: result.rows[0].updateAt,
                             token: "",
                         };
                         //Encrypt password
                         const salt = await bcrypt.genSalt(10);
                         const encryptedPassword = await bcrypt.hash(password, salt);
-                        if (result[0].email === email.toLowerCase() && bcrypt.compareSync(password, result[0].password)) {
-                            console.log('User Login successfully');
+                        if (user.email === email.toLowerCase() && bcrypt.compareSync(password, user.password)) {
+                            //console.log('User Login successfully');
                             //Return jsonwebToken
-                            const payLoad = { user: { id: result[0].userId } };
+                            const payLoad = { user: { id: user.userId } };
                             jwt.sign(
                                 payLoad,
                                 config["jwtSecret"],
                                 { expiresIn: 360000 },
                                 (err, token) => {
-                                    if (err) return res.status(400).json({ errors: err });
+                                    if (err) return res.status(400).json({ errors: [{ msg: err }] });
                                     else {
                                         user.token = token;
                                         return res.json({ user })
@@ -162,7 +166,10 @@ router.post(
                             // console.log('User authentication failed');
                             return res.status(400).json({ errors: "User authentication failed" });
                         }
-                    } else {
+
+                    }
+
+                    else {
                         return res.status(400).json({ errors: 'The user is not exist' });
                     }
                 });
@@ -189,13 +196,13 @@ router.delete(
         const { userId } = req.body;
         try {
             //Check if user is exist
-            await connection.query(`DELETE FROM asaf.users WHERE user_Id = '${userId}'`, async (err, result, fields) => {
-                if (err) return res.status(400).json({ err });
+            await client.query(`DELETE FROM asaf.users WHERE user_Id = '${userId}'`, async (err, result, fields) => {
+                if (err) return res.status(400).json({ errors: [{ msg: err }] });
                 else if (result.affectedRows > 0) {
                     res.json({ msg: "User deleted" });
                     await createLogsUsers(req, res, userId, "User deleted in DB", { msg: "User deleted" });
                 } else {
-                    console.log(result)
+                    //console.log(result)
                     return res.status(400).json({ errors: "User is not founded" });
                 }
             });
@@ -232,9 +239,9 @@ router.put(
         const { userId, last_name, first_name, phone_Number, email, password, gender, user_Avatar, degree } = req.body;
         try {
             //Check if user is exist
-            await connection.query(`SELECT * FROM asaf.users WHERE user_Id = '${userId}'; `,
+            await client.query(`SELECT * FROM asaf.users WHERE user_Id = '${userId}'; `,
                 async (err, result, fields) => {
-                    if (err) return res.status(400).json({ errors: [{ msg: 'Error when get user by userId from DB' }] });
+                    if (err) return res.status(400).json({ errors: [{ msg: err }] });
                     else if (result.length > 0 && result[0].email === email.toLowerCase()) {
                         //Encrypt password
                         const salt = await bcrypt.genSalt(10);
@@ -252,7 +259,7 @@ router.put(
                         WHERE (user_Id = '${userId}') AND (email = '${email.toLowerCase()}');`;
                         // console.log("query", query);
                         //Update user in DB
-                        await connection.query(query, (err, result, fields) => {
+                        await client.query(query, (err, result, fields) => {
                             if (err) return res.status(400).json({ errors: [{ msg: err }] });
                             else {
                                 return res.send({ msg: 'User updated in DB' });
@@ -296,9 +303,9 @@ router.put(
         const { userId, last_name, first_name, phone_Number, email, password, gender, user_Avatar, degree } = req.body;
         try {
             //Check if user is exist
-            await connection.query(`SELECT * FROM asaf.users WHERE user_Id = '${userId}'; `,
+            await client.query(`SELECT * FROM asaf.users WHERE user_Id = '${userId}'; `,
                 async (err, result, fields) => {
-                    if (err) return res.status(400).json({ errors: [{ msg: 'Error when get user by userId from DB' }] });
+                    if (err) return res.status(400).json({ errors: [{ msg: err }] });
                     else if (result.length > 0 && result[0].email === email.toLowerCase()) {
                         //Encrypt password
                         const salt = await bcrypt.genSalt(10);
@@ -316,7 +323,7 @@ router.put(
                         WHERE (user_Id = '${userId}') AND (email = '${email.toLowerCase()}');`;
                         // console.log("query", query);
                         //Update user in DB
-                        await connection.query(query, (err, result, fields) => {
+                        await client.query(query, (err, result, fields) => {
                             if (err) return res.status(400).json({ errors: [{ msg: err }] });
                             else {
                                 return res.send({ msg: 'User updated in DB' });

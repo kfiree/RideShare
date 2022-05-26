@@ -175,7 +175,7 @@ const drives = {
             return true;
         } catch (err) {
             // console.error(err.response.data);
-            console.log("request failed");
+            //console.log("request failed");
             return false;
         }
     },

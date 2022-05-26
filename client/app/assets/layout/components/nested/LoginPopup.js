@@ -36,11 +36,17 @@ const windowHeight = Dimensions.get('screen').height;
 
 
 const LoginPopup = () => {
+
     const { sendNotificationToClient, userData, setUserData, loadingPopup, setLoadingPopup, isSignedIn, setIsSignedIn } = useContext(Context)
     const [fonts] = useFonts({
         CalibriRegular: require('./../../../fonts/Calibri-Regular.ttf'),
     });
     const navigation = useNavigation();
+    // useEffect(() => {
+    //     setTimeout(() => {
+    //         navigation.navigate('HomePage')
+    //     }, 3000)
+    // }, []);
     if (!fonts) {
         return null;
     } else {
@@ -58,7 +64,7 @@ const LoginPopup = () => {
                         <Text style={styles.titlePopup}>ההתחברות בוצעה בהצלחה!</Text>
                     </View>
                     <View style={styles.rowBox}>
-                        <Text style={styles.textPopup}>אנחנו מעבירים אותך לעמוד הבית</Text>
+                        <Text style={styles.textPopup}>לחץ אישור למעבר לעמוד הבית</Text>
                     </View>
 
                     <View style={styles.ButtonConfirm}>

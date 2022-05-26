@@ -473,10 +473,10 @@ let locations_id = 0;
 function createUsers() {
     const id_counter = users.length;
     const num_of_users_to_create = Object.keys(data).length;
-    
+
     for (let i = 0; i < num_of_users_to_create; i++) {
         let user = {
-            id: i+id_counter+'',
+            id: i + id_counter + '',
             role: data[i].role,
             daysPerWeek: data[i].daysPerWeek,
             leaveAvg: new Date(2023, 0, 1, data[i].leaveAvg.split(":")[0], data[i].leaveAvg.split(":")[1], 0, 0, 0),
@@ -485,7 +485,7 @@ function createUsers() {
             driverTrips: [],
         };
         users.push(user);
-        user_objects.push(new User(i+'', '' + i, '' + i, '0501234567', '123456', 'mail@mail.com', 'Male', 'Image_Id', 'avatar', 'degree', ariel_university));
+        user_objects.push(new User(i + '', '' + i, '' + i, '0501234567', '123456', 'mail@mail.com', 'Male', 'Image_Id', 'avatar', 'degree', ariel_university));
     }
     return users;
 }
@@ -508,7 +508,7 @@ function createTripsPerWeek(numOfDay, location) {
             for (let j = 0; j < userTripsPerWeek; j++) {
                 let dayOfTrip = 0; //Sunday
                 let tripTo = {
-                    id: id+'',
+                    id: id + '',
                     owner: users[i].id,
                     passengers: [],
                     leaveTime: userLeaveArr[j],
@@ -516,7 +516,7 @@ function createTripsPerWeek(numOfDay, location) {
                 };
                 users[i].driverTrips.push(tripTo);
                 drives.push(new Drive(
-                    id+'',
+                    id + '',
                     homeAddress.geo_loaction_id,
                     ariel_geo_location.geo_loaction_id,
                     tripTo.leaveTime,
@@ -526,7 +526,7 @@ function createTripsPerWeek(numOfDay, location) {
                 ));
                 id += 1;
                 let tripFrom = {
-                    id: id+'',
+                    id: id + '',
                     owner: users[i].id,
                     passengers: [],
                     leaveTime: userBackArr[j],
@@ -534,14 +534,14 @@ function createTripsPerWeek(numOfDay, location) {
                 };
                 users[i].driverTrips.push(tripFrom);
                 drives.push(new Drive(
-                    id+'',
+                    id + '',
                     ariel_geo_location.geo_loaction_id,
                     homeAddress.geo_loaction_id,
                     tripFrom.leaveTime,
                     3,
                     15,
                     user_objects[i].id,
-                    ));
+                ));
                 id += 1;
             }
 
@@ -574,7 +574,7 @@ function createUsersAndTrips(city) {
     createTripsPerWeek(1, city_geo_location);
     createTripsPerWeek(8, city_geo_location);
     createTripsPerWeek(15, city_geo_location);
-    createTripsPerWeek(22, city_geo_location);    
+    createTripsPerWeek(22, city_geo_location);
 }
 
 //Create users and trips for each city
@@ -589,12 +589,12 @@ trips.forEach(trip => {
 // Create the JSON file to hold the data we have created.
 fs.writeFile('trips.json', JSON.stringify(drives), (err) => {
     if (err) throw err;
-    console.log('File has been created');
+    //console.log('File has been created');
 });
 
 fs.writeFile('locations.json', JSON.stringify(locations_created), (err) => {
     if (err) throw err;
-    console.log('File has been created');
+    //console.log('File has been created');
 });
 
 //Print some data to the console.
@@ -718,7 +718,7 @@ function generateRandomPoint(center, radius) {
     var xp = x / Math.cos(y0);
 
     // Resulting point.
-    let ans = new Geo_Location(locations_id+'', '' + (y + parseFloat(y0)), '' + (xp + parseFloat(x0)), 'User Address');
+    let ans = new Geo_Location(locations_id + '', '' + (y + parseFloat(y0)), '' + (xp + parseFloat(x0)), 'User Address');
     locations_id++;
     return ans;
     // return { 'lat': y + y0, 'lng': xp + x0 };

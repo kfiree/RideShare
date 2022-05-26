@@ -81,26 +81,26 @@ function MySuggestionsPassenger() {
     useEffect(async () => {
         if (!search) {
             setTitle("ההצעות שלי")
-            try {
-                if (isSignedIn && userData.token.length > 0) {
-                    setLoadingPopup(true);
-                    const res = await drives.getPassengerOffers(userData.token);
-                    // console.log("res = " + JSON.stringify(res));
-                    setSearchDrive(res);
-                    setLoadingPopup(false);
-                    if (res.length > 0) {
-                        setLoadingPopup(false);
-                    } else {
-                        setLoadingPopup(false);
-                        setNoResultPopup(true);
-                    }
-                } else {
-                    throw "user is no login"
-                }
-            } catch (error) {
-                setLoadingPopup(false);
-                navigation.navigate("Registration")
-            }
+            // try {
+            //     if (isSignedIn && userData.token.length > 0) {
+            //         setLoadingPopup(true);
+            //         const res = await drives.getPassengerOffers(userData.token);
+            //         // console.log("res = " + JSON.stringify(res));
+            //         setSearchDrive(res);
+            //         setLoadingPopup(false);
+            //         if (res.length > 0) {
+            //             setLoadingPopup(false);
+            //         } else {
+            //             setLoadingPopup(false);
+            //             setNoResultPopup(true);
+            //         }
+            //     } else {
+            //         throw "user is no login"
+            //     }
+            // } catch (error) {
+            //     setLoadingPopup(false);
+            //     navigation.navigate("Registration")
+            // }
         } else {
             setTitle("תוצאות חיפוש")
         }

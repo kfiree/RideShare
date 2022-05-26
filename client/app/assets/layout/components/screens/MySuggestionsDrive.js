@@ -75,27 +75,27 @@ function MySuggestionsDrive() {
     });
 
 
-    useEffect(async () => {
-        try {
-            if (isSignedIn && userData.token.length > 0) {
-                setLoadingPopup(true);
-                const res = await drives.getDriverOffers(userData.token);
-                setSuggestionsDriver(res);
-                // //console.log("setMySuggestions(res);" + JSON.stringify(res))
-                if (res.length > 0) {
-                    setLoadingPopup(false);
-                } else {
-                    setLoadingPopup(false);
-                    setNoResultPopup(true);
-                }
-            } else {
-                throw "user is no login"
-            }
-        } catch (error) {
-            setLoadingPopup(false);
-            navigation.navigate("Registration")
-        }
-    }, [])
+    // useEffect(async () => {
+    //     try {
+    //         if (isSignedIn && userData.token.length > 0) {
+    //             setLoadingPopup(true);
+    //             const res = await drives.getDriverOffers(userData.token);
+    //             setSuggestionsDriver(res);
+    //             // //console.log("setMySuggestions(res);" + JSON.stringify(res))
+    //             if (res.length > 0) {
+    //                 setLoadingPopup(false);
+    //             } else {
+    //                 setLoadingPopup(false);
+    //                 setNoResultPopup(true);
+    //             }
+    //         } else {
+    //             throw "user is no login"
+    //         }
+    //     } catch (error) {
+    //         setLoadingPopup(false);
+    //         navigation.navigate("Registration")
+    //     }
+    // }, [])
 
 
     const getDay = (day) => {
@@ -127,7 +127,7 @@ function MySuggestionsDrive() {
     }
 
     const onSubmit = async (price, offerID) => {
-        console.log("offerID = " + offerID)
+        //console.log("offerID = " + offerID)
         try {
             setLoadingPopup(true)
             if (userData.token !== "") {
