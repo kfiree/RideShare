@@ -4,17 +4,12 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
-import org.graphstream.ui.swingViewer.ViewPanel;
 import org.graphstream.ui.view.Viewer;
 //import org.graphstream.ui.view.util.DefaultMouseManager;
 
 import osmProcessing.GraphUtils;
-import osmProcessing.OEdge;
 import osmProcessing.OGraph;
 import osmProcessing.ONode;
-
-import java.awt.event.MouseListener;
-import java.util.Collection;
 
 /**
  * "fill-mode" ...
@@ -105,14 +100,14 @@ public class MapView {
 
     private Node drawNode(ONode node){
 
-        String keyStr = String.valueOf(node.getOsmID());
+        String keyStr = String.valueOf(node.getOsm_Id());
         Node displayNode = displayGraph.getNode(keyStr);
 
         if(displayNode == null){
 
             displayNode = displayGraph.addNode(keyStr);
             displayNode.setAttribute("xy", node.getLongitude(), node.getLatitude());
-            displayNode.setAttribute("ui.label", node.getOsmID().toString());
+            displayNode.setAttribute("ui.label", node.getOsm_Id().toString());
 
             if(!node.getTags().containsKey("highway")){
                 displayNode.setAttribute("ui.style", "size: 1px;fill-color: black;");
@@ -124,14 +119,14 @@ public class MapView {
 
     private boolean drawRider(GraphUtils utils){
         utils.getRiders().values().forEach(rider->{
-            String keyStr = String.valueOf(rider.getOsmID());
+            String keyStr = String.valueOf(rider.getOsm_Id());
             Node displayNode = displayGraph.getNode(keyStr);
 
             if(displayNode == null){
 
                 displayNode = displayGraph.addNode(keyStr);
                 displayNode.setAttribute("xy", rider.getLongitude(), rider.getLatitude());
-                displayNode.setAttribute("ui.label", rider.getOsmID().toString());
+                displayNode.setAttribute("ui.label", rider.getOsm_Id().toString());
 
                 displayNode.setAttribute("ui.style","fill-color: red;");
             }

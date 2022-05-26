@@ -22,54 +22,9 @@ public class Node {
         this.tags = tags;
     }
 
-
-//    public Node(double latitude, double longitude, double degree, JSONObject edges, JSONObject tags) {
-//        this.node_Id = ThreadLocalRandom.current().nextLong(1000000, Integer.MAX_VALUE);;
-//        this.latitude = latitude;
-//        this.longitude = longitude;
-//        this.degree = degree;
-//        this.edges = edges;
-//        this.tags = tags;
-//    }
-//
-//    public Node(JSONObject edges) {
-//        this.node_Id = ThreadLocalRandom.current().nextLong(1000000, Integer.MAX_VALUE);;
-//        this.latitude = 23.2222;
-//        this.longitude = 23.2222;
-//        this.degree = 23.2222;
-//        this.edges = edges;
-//
-//        JSONObject json = new JSONObject();
-//        json.put("name", "foo");
-//        this.tags = json;
-//    }
-//
-//    public Node(Long node_Id, double latitude, double longitude, double degree, JSONObject edges, JSONObject tags) {
-//        this.node_Id = node_Id;
-//        this.latitude = latitude;
-//        this.longitude = longitude;
-//        this.degree = degree;
-//        this.edges = edges;
-//        this.tags = tags;
-//    }
-//    public Node() {
-//        this.node_Id = ThreadLocalRandom.current().nextLong(1000000, Integer.MAX_VALUE);;
-//        this.latitude = 3513212.20211231233123123187812313130;
-//        this.longitude = 3123325.201231231231231131312321218780;
-//        this.degree = 35.20218780;
-//
-//        JSONObject json = new JSONObject();
-//        json.put("name", "foo");
-//        this.edges = json;
-//        this.tags = json;
-//    }
-
-
     public String getNode_id() {
         return node_id;
     }
-
-
 
     public Long getOsm_Id() {
         return osm_Id;

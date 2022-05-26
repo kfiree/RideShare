@@ -1,5 +1,4 @@
 package RDS;
-import RDS.config.*;
 import RDS.models.*;
 import RDS.querys.*;
 

@@ -2,8 +2,8 @@ package osmProcessing;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class Parser {
     private static OGraph graph;
@@ -11,7 +11,7 @@ public class Parser {
     public static void parseMapWays(ArrayList<OMapWay> ways, Map<Long, MapObject> objects) {
         graph = OGraph.getInstance();
 
-        Map<Long, OEdge> edges = graph.getEdges();
+        Map<String, OEdge> edges = graph.getEdges();
         for (OMapWay way: ways) {
 
             // Create first edge between the first and the last objects:
@@ -23,7 +23,7 @@ public class Parser {
                 ONode target = createNodeForEdge(way.getLast(), way);
 
                 OEdge edge = new OEdge(way, start, target);
-                edges.put(calculateEdgeId(edge), edge);
+                edges.put(UUID.randomUUID().toString(), edge);
 
                 // iterate through other objects on way (first and last one polled):
                 for (MapObject object: way.getObjectsList()) {
@@ -111,8 +111,8 @@ public class Parser {
         OEdge leftEdge = new OEdge(baseWay, edge.getStartNode(), node);
         OEdge rightEdge = new OEdge(baseWay, node, edge.getEndNode());
 
-        graph.addEdge(calculateEdgeId(leftEdge), leftEdge);
-        graph.addEdge(calculateEdgeId(rightEdge), rightEdge);
+        graph.addEdge(UUID.randomUUID().toString(), leftEdge);
+        graph.addEdge(UUID.randomUUID().toString(), rightEdge);
 
         return rightEdge;
     }
@@ -125,7 +125,7 @@ public class Parser {
      * @return
      */
     private static Long calculateEdgeId(OEdge edge) {
-        return (long)(edge.getStartNode().getOsmID()+edge.getEndNode().getOsmID());
+        return (long)(edge.getStartNode().getOsm_Id()+edge.getEndNode().getOsm_Id());
     }
 
 }

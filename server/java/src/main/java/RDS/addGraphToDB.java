@@ -3,6 +3,7 @@ package RDS;
 import RDS.models.*;
 import RDS.querys.*;
 import org.json.simple.JSONObject;
+import osmProcessing.OEdge;
 import osmProcessing.OGraph;
 
 import static RDS.checkQuerys.connection;
@@ -34,7 +35,7 @@ public class addGraphToDB {
             val.getEdges().forEach((edge) -> {
                 int index = 0;
 //                Edge e = new Edge(edge.getEdgeId().intValue(), edge.getStartNode().getID(), edge.getEndNode().getID(), edge.getWeight(), edge.getWeight(), edge.getName(), edge.getHighwayType());
-                Edge e = new Edge(edge.getStartNode().getOsmID(), edge.getEndNode().getOsmID(), edge.getWeight(), edge.getWeight(), edge.getName(), edge.getHighwayType());
+                OEdge e = new OEdge(edge.getStartNode().getOsm_Id(), edge.getEndNode().getOsm_Id(), edge.getWeight(), edge.getWeight(), edge.getName(), edge.getHighwayType());
                 edges.put("" + (++index), "" + e.getEdge_Id());
             });
             JSONObject tags = new JSONObject();
@@ -45,13 +46,13 @@ public class addGraphToDB {
                 valTag =  valTag.replace("\'", "");
                 tags.put(keyTag , valTag);
             });
-            Node n = new Node(val.getOsmID(), val.getLatitude(), val.getLongitude(), val.getDegree(), edges, tags);
+            Node n = new Node(val.getOsm_Id(), val.getLatitude(), val.getLongitude(), val.getDegree(), edges, tags);
             System.out.println("addNode -> " + checkQuerys.addToDB.addToDB(connection, node_query.addNode(n)));
         });
 
         graph.getEdges().forEach((key,val) -> {
             //edges
-            Edge e = new Edge(val.getStartNode().getOsmID(), val.getEndNode().getOsmID(), val.getWeight(), val.getWeight(), val.getName(), val.getHighwayType());
+            OEdge e = new OEdge(val.getStartNode().getOsm_Id(), val.getEndNode().getOsm_Id(), val.getWeight(), val.getWeight(), val.getName(), val.getHighwayType());
             System.out.println("addEdge -> " + checkQuerys.addToDB.addToDB(connection, edge_query.addEdge(e)));
         });
     }

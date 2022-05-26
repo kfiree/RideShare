@@ -7,43 +7,41 @@ public class OEdge {
     /**
      * PROPERTIES:
      */
-    private ONode startNode;
-    private ONode endNode;
+    private ONode startNode, endNode;
 
-    private Double distance;
-    private Double weight;
+    private Double distance, weight; //TODO clean redundant field
 
-    private String key;
+    private String id = "", name, highwayType;
 
-    // The name of the street:
-    private String name;
+    private OEdge(String id, ONode startNode, ONode endNode,Double weight, Double distance, String name, String highwayType){
+        this.startNode = startNode;
+        this.endNode = endNode;
+        this.id = id.equals("") ? UUID.randomUUID().toString() : id;
+        this.name = name;
+        this.highwayType = highwayType;
+        this.distance = distance;
+        this.weight = weight;
+    }
 
-    // Highway type of the Edge:
-    private String highwayType;
+    public OEdge(OMapWay way, ONode startNode, ONode endNode) {
+        this("", startNode, endNode,0.0,0.0, way.getName(), way.getTags().get("highway"));//TODO fix weight calculation
+    }
 
-    /** read from the map constructor: */
-    public OEdge(OMapWay way, ONode start, ONode target) {
-        this.key = UUID.randomUUID().toString();
-        this.startNode = start;
-        this.endNode = target;
-        this.name = way.getName();
-        this.highwayType = way.getTags().get("highway");
+    public OEdge(ONode startNode, ONode endNode, Double weight, Double distance, String id, String name, String highwayType) {
+        this(id, startNode, endNode,distance, weight, name, highwayType);
+    }
+    public OEdge(String id, Long startNodeId, Long endNodeID, Double weight, Double distance, String name, String highwayType) {
+        this(id, OGraph.getInstance().getNode(startNodeId), OGraph.getInstance().getNode(endNodeID), weight, distance, name, highwayType);
+    }
+    public OEdge(Long startNodeId, Long endNodeID, Double weight, Double distance, String name, String highwayType) {
+        this(OGraph.getInstance().getNode(startNodeId),OGraph.getInstance().getNode(endNodeID), weight, distance, "", name, highwayType);
     }
 
 
     /**
      * GETTERS
      */
-
-    public Double getDistance() {
-        return this.distance;
-    }
-
-    public String getEdge_Id() { return key; }
-
-    public Double getWeight() {
-        return this.weight == null ? 0 : this.weight;
-    }
+    public String getEdge_Id() { return id; }
 
     public String getName() {
         return this.name;
@@ -61,23 +59,22 @@ public class OEdge {
         return this.endNode;
     }
 
-    public String getStartNodeId() { return this.startNode.getKey(); }
+    public Double getDistance() {
+        return this.distance;
+    }
 
-    public String getEndNodeId() { return this.endNode.getKey(); }
+    public Double getWeight() {
+        return this.weight == null ? 0 : this.weight;
+    }
 
-//    /**
-//     * @param
-//     * @return
-//     */
-//    public Long getEdgeId() { return (long)(this.getStartNode().getOsmID()+this.getEndNode().getOsmID());
-//    }
+
 
     /**
      * SETTERS
      */
-    public void setWeight(double weight) {
-        this.weight = weight;
-    }
+//    public void setWeight(double weight) {
+//        this.weight = weight;
+//    }
 
     public void setName(String name) {
         this.name = name;
@@ -92,19 +89,20 @@ public class OEdge {
      * using Haversine Method and store it in distance
      * attribute of the object
      */
-    public void calculateDistance() {
+    public Double calculateDistance() {
 
         double lat1 = this.getStartNode().getLatitude();
         double lat2 = this.getEndNode().getLatitude();
         double lon1 = this.getStartNode().getLongitude();
         double lon2 = this.getEndNode().getLongitude();
 
-        this.distance = GraphUtils.getInstance().distance(lat1, lon1, lat2, lon2);
-
+        return GraphUtils.getInstance().distance(lat1, lon1, lat2, lon2);
     }
+
 
     public boolean isOpposite(OEdge other){
-        return this.getStartNode().getOsmID() == other.getEndNode().getOsmID() && this.getEndNode().getOsmID() == other.getStartNode().getOsmID();
+        return this.getStartNode().getOsm_Id() == other.getEndNode().getOsm_Id() && this.getEndNode().getOsm_Id() == other.getStartNode().getOsm_Id();
     }
+
 
 }

@@ -1,53 +1,48 @@
 package osmProcessing;
 
-import org.apache.commons.math3.util.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class ONode {
-    /**
-     * PROPERTIES:
-     */
-    private LinkedList<OEdge> edges = new LinkedList<OEdge>();
-    private String key;
-    private Double latitude;
-    private Double longitude;
-    private Long osmID;
-    private Map<String, String> tags;
-    private ArrayList<Long> waysID = new ArrayList<>();
-    public static enum userType {Driver, Rider, None};
-    private userType user = userType.None;
 
-    //degree = weight
-    private Integer degree;
+    private String id;
+    private Long osmID;
+    private Double latitude, longitude;
+
+    private LinkedList<OEdge> edges;
+    private Map<String, String> tags;
+    private ArrayList<Long> waysID;
+
+    public static enum userType {Driver, Rider, None};
+    private userType user = userType.None; //TODO check id used
 
     public ONode(@NotNull MapObject object) {
-        this.key = UUID.randomUUID().toString();
-        this.osmID = object.getID();
-        this.latitude = object.getLatitude();
-        this.longitude = object.getLongitude();
-        this.tags = object.getTags();
-        if(!tags.isEmpty()){
-            int a = 1;
-        }
+        this("", object.getID(), object.getLatitude(), object.getLongitude(), null, object.getTags(), null, userType.None);
     }
 
-    public ONode(Long id, Double @NotNull [] coordinates, userType user) {
-        this.latitude = coordinates[0];
-        this.longitude = coordinates[1];
-        this.osmID = id;
-        this.key = UUID.randomUUID().toString();
+    public ONode(Long osmID, Double @NotNull [] coordinates, userType user) {
+        this("", osmID, coordinates[0], coordinates[1], null, null, null, user);
+    }
+    public ONode(Long osmID, String nodeID, Double latitude, Double longitude, LinkedList<OEdge> edges,Map<String, String> tags) {
+        this(nodeID, osmID, latitude, longitude, edges, tags, null, userType.None);
+    }
+    private ONode(String id, Long osmID, Double latitude, Double longitude, LinkedList<OEdge> edges, Map<String, String> tags, ArrayList<Long> waysID, userType user) {
+        this.id = id.equals("") ? UUID.randomUUID().toString(): id;
+        this.osmID = osmID;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.user = user;
-        this.tags = new HashMap<>();
+        this.edges = edges == null ? new LinkedList<>(): edges;
+        this.tags = tags == null? new HashMap<>(): tags;
+        this.waysID = waysID == null ?new ArrayList<>(): waysID;
     }
 
-    // GETTERS:
+// GETTERS:
+    public String getNode_id() {return id;}
 
-    public String getKey() {return key;}
-
-    public Long getOsmID() {
+    public Long getOsm_Id() {
         return this.osmID;
     }
 
@@ -68,9 +63,7 @@ public class ONode {
     }
 
     //instead of getWeight
-    public Integer getDegree() {
-        return this.degree == null ? 0 : this.degree;
-    }
+    public Integer getDegree() { return this.edges == null ? 0 :this.edges.size(); }
 
     public ArrayList<ONode> getAdjacentNodes() {
         ArrayList<ONode> adjacentNodes = new ArrayList<>();
@@ -84,13 +77,18 @@ public class ONode {
         return new ArrayList<OEdge>(edges);
     }
 
-    // SETTERS:
-    public void addEdge(OEdge edge) {
-        this.edges.add(edge);
+    public Map<String, String> getTags() {
+        return tags;
     }
 
-    public void setDegree(int degree) {
-        this.degree = degree;
+    public LinkedList<OEdge> getEdges() {
+        return edges;
+    }
+
+    // SETTERS:
+
+    public void addEdge(OEdge edge) {
+        this.edges.add(edge);
     }
 
     public void addTags(Map<String, String> tags) {
@@ -101,18 +99,19 @@ public class ONode {
         this.tags.put(k, v);
     }
 
-    public LinkedList<OEdge> getEdges() {
-        return edges;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
-    public Map<String, String> getTags() {
-        return tags;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
+
 
     public boolean isAdjacent(ONode targetNode) {
         for (OEdge e : this.edges) {
-            if (e.getStartNode().getOsmID() == targetNode.getOsmID() ||
-                    e.getEndNode().getOsmID() == targetNode.getOsmID()) {
+            if (e.getStartNode().getOsm_Id() == targetNode.getOsm_Id() ||
+                    e.getEndNode().getOsm_Id() == targetNode.getOsm_Id()) {
                 return true;
             }
         }
@@ -121,8 +120,8 @@ public class ONode {
 
     public OEdge getAdjacent(ONode targetNode) {
         for (OEdge e : this.edges) {
-            if (e.getStartNode().getOsmID() == targetNode.getOsmID() ||
-                    e.getEndNode().getOsmID() == targetNode.getOsmID()) {
+            if (e.getStartNode().getOsm_Id() == targetNode.getOsm_Id() ||
+                    e.getEndNode().getOsm_Id() == targetNode.getOsm_Id()) {
                 return e;
             }
         }
@@ -143,7 +142,7 @@ public class ONode {
 
         String idStr = "id = " + osmID;
         String coordinatesStr = ", coordinates = (" +latitude + "," + longitude + ")";
-        String adjacentStr = edges.stream().map(list -> list.getEndNode().getOsmID().toString()).collect(Collectors.joining(", "));
+        String adjacentStr = edges.stream().map(list -> list.getEndNode().getOsm_Id().toString()).collect(Collectors.joining(", "));
         adjacentStr = ", adjacent = (" + adjacentStr +")";
         String tagsStr = tags.entrySet().stream()
                 .filter(entry -> relevantTags(entry.getKey()))
@@ -166,6 +165,6 @@ public class ONode {
     }
 
     public int compareTo(ONode node) {
-        return this.degree.compareTo(node.getDegree());
+        return this.getDegree().compareTo(node.getDegree());
     }
 }
