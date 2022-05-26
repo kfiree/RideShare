@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
         height: 300, //(Platform.OS === 'android') ? (windowHeight - (windowWidth)) : (windowHeight - (windowWidth / 1.2)),
         width: (windowWidth - 80),
         position: 'absolute',
-        backgroundColor: 'black',
+        // backgroundColor: 'black',
         alignSelf: 'center',
         backgroundColor: colors.popupBackground,
         borderColor: colors.black,

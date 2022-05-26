@@ -594,11 +594,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    checkBoxText: {
-        color: colors.black,
-        fontSize: 21,
-        fontFamily: "CalibriRegular",
-    },
+    // checkBoxText: {
+    //     color: colors.black,
+    //     fontSize: 21,
+    //     fontFamily: "CalibriRegular",
+    // },
     checkBoxInput: {
         marginStart: 10,
     },

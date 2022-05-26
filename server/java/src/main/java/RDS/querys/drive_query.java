@@ -2,7 +2,7 @@ package RDS.querys;
 
 import RDS.models.Drive;
 
-public class drives {
+public class drive_query {
     static public String addDrive(Drive d) {
         return "INSERT INTO \"public\".\"rs_drives\" (\"drive_Id\", \"geoLocationSrc_Id\", \"geoLocationDest_Id\"," +
                 " \"passengers\", \"type\", \"num_seat_available\", \"price\", \"AVG_Price\", \"upcoming_Drives\") " +

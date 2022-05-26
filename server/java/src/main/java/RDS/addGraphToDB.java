@@ -2,40 +2,33 @@ package RDS;
 
 import RDS.models.*;
 import RDS.querys.*;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import osmProcessing.OGraph;
-
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.HashMap;
 
 import static RDS.checkQuerys.connection;
 
 public class addGraphToDB {
 
-    private OGraph graph;
-    nodes nodes = new nodes();
-    edges edges = new edges();
-    public addGraphToDB(OGraph graph) {
-        this.graph = graph;
-    }
+//    nodes nodes = new nodes();
+//    edges edges = new edges();
+//    public addGraphToDB(OGraph graph) {
+//        this.graph = graph;
+//    }
 
-    public OGraph getGraph() {
-        return graph;
-    }
-
-    public void setGraph(OGraph graph) {
-        this.graph = graph;
-    }
-
+//    public OGraph getGraph() {
+//        return graph;
+//    }
+//
+//    public void setGraph(OGraph graph) {
+//        this.graph = graph;
+//    }
 
 
-    public void addToDB() {
-        this.graph.getNodes().forEach((key,val) -> {
+
+    static public void addToDB() {
+        OGraph graph = OGraph.getInstance();
+
+        graph.getNodes().forEach((key,val) -> {
             //nodes
             JSONObject edges = new JSONObject();
             val.getEdges().forEach((edge) -> {
@@ -53,19 +46,19 @@ public class addGraphToDB {
                 tags.put(keyTag , valTag);
             });
             Node n = new Node(val.getID(), val.getLatitude(), val.getLongitude(), val.getDegree(), edges, tags);
-            System.out.println("addNode -> " + checkQuerys.addToDB.addToDB(connection, nodes.addNode(n)));
+            System.out.println("addNode -> " + checkQuerys.addToDB.addToDB(connection, node_query.addNode(n)));
         });
 
-        this.graph.getEdges().forEach((key,val) -> {
+        graph.getEdges().forEach((key,val) -> {
             //edges
-//            Edge e = new Edge();//val.getEdgeId().intValue(), val.getStartNode().getID(), val.getEndNode().getID(), val.getWeight(), val.getWeight(), val.getName(), val.getHighwayType());
-//            System.out.println("addEdge -> " + checkQuerys.addToDB.addToDB(connection, edges.addEdge(e)));
+            Edge e = new Edge(val.getStartNode().getID(), val.getEndNode().getID(), val.getWeight(), val.getWeight(), val.getName(), val.getHighwayType());
+            System.out.println("addEdge -> " + checkQuerys.addToDB.addToDB(connection, edge_query.addEdge(e)));
         });
     }
     @Override
     public String toString() {
         return "addGraphToDB{" +
-                "graph=" + graph +
+                "graph=" + OGraph.getInstance() +
                 '}';
     }
 }

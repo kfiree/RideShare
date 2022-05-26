@@ -92,7 +92,7 @@ public class App {
             /** full graph */
 
             // set
-            addGraphToDB addGraphToDB = new addGraphToDB(graph);
+//            addGraphToDB addGraphToDB = new addGraphToDB(graph);
             addGraphToDB.addToDB();
 
             //get
@@ -109,10 +109,10 @@ public class App {
 
             // lock drive
 
-            //TODO add data to map
-            MapView.getInstance().run();
-
-            //TODO add algorithms here
+//            //TODO add data to map
+//            MapView.getInstance().run();
+//
+//            //TODO add algorithms here
             System.out.println(graph.toString());
 
         } catch (FileNotFoundException e) {

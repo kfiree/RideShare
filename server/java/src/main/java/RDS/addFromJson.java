@@ -12,8 +12,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.sql.*;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import static RDS.checkQuerys.addToDB;
@@ -21,13 +19,12 @@ import static RDS.checkQuerys.connection;
 
 public class addFromJson {
     static String ariel = "a612239d-dafb-474c-98d8-056a4282e989";
-    static HashMap<Integer, geoLocation> geoLocations;
-    static geoLocation geo = new geoLocation();
+    static HashMap<Integer, geoLocation_query> geoLocations;
 //    static drives drives = new drives();
-    static GeoLocation [] locations  = checkQuerys.getFromDB.getFromDB(connection, geo.getAllGeoLocations());
+    static GeoLocation [] locations  = checkQuerys.getFromDB.getFromDB(connection, geoLocation_query.getAllGeoLocations());
     static User user;
-    static users users = new users();
-    static users_drives users_drives = new users_drives();
+//    static user_query users = new user_query();
+//    static user_drive_query user_drive_query = new user_drive_query();
     static int indexGeo = 0;
     static int num = 0;
 
@@ -36,9 +33,8 @@ public class addFromJson {
         String longtitude = (String) location.get("longtitude");
         String name = (String) location.get("name") + num++;
 
-        GeoLocation geoLocation = new GeoLocation(Double.parseDouble(latitude), Double.parseDouble(longtitude), name);
-        geoLocation geoLocationRDS = new geoLocation();
-        System.out.println("addGeoLocation -> " + checkQuerys.addToDB.addToDB(connection,geoLocationRDS.addGeoLocation(geoLocation)));
+        GeoLocation geoLoc = new GeoLocation(Double.parseDouble(latitude), Double.parseDouble(longtitude), name);
+        System.out.println("addGeoLocation -> " + checkQuerys.addToDB.addToDB(connection, geoLocation_query.addGeoLocation(geoLoc)));
     }
 
 //    private static GeoLocation[] getAllGeoLocation() {
@@ -97,12 +93,12 @@ public class addFromJson {
                 15
             );
         }
-            System.out.println("addDrive -> " + checkQuerys.addToDB.addToDB(connection,drives.addDrive(drive)));
+            System.out.println("addDrive -> " + checkQuerys.addToDB.addToDB(connection, drive_query.addDrive(drive)));
             String  email = "email" + (++indexGeo) + "@gmail.com";
             User user = new User("user" + (indexGeo)+ "@gmail.com" );
-            System.out.println("addUser -> " + checkQuerys.addToDB.addToDB(connection,users.addUser(user)));
-            System.out.println("addDrive -> " + checkQuerys.addToDB.addToDB(connection,drives.addDrive(drive)));
-            System.out.println("addUsers_drives -> " + checkQuerys.addToDB.addToDB(connection,users_drives.addUsersDrives( drive,user)));
+            System.out.println("addUser -> " + checkQuerys.addToDB.addToDB(connection,user_query.addUser(user)));
+            System.out.println("addDrive -> " + checkQuerys.addToDB.addToDB(connection, drive_query.addDrive(drive)));
+            System.out.println("addUsers_drives -> " + checkQuerys.addToDB.addToDB(connection, user_drive_query.addUsersDrives( drive,user)));
         }
     }
 

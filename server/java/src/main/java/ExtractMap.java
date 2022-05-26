@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 public class ExtractMap {
     public static String chooseFile() {
 //        JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-        JFileChooser jfc = new JFileChooser("data");
+        JFileChooser jfc = new JFileChooser("server/java/data");
         jfc.setDialogTitle("Select .osm.pbf file to read");
         int returnValue = jfc.showOpenDialog(null);
         if (returnValue == JFileChooser.APPROVE_OPTION) {

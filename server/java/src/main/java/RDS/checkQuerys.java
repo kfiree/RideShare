@@ -2,17 +2,17 @@ package RDS;
 import RDS.config.*;
 import RDS.models.*;
 import RDS.querys.*;
-import org.json.simple.JSONObject;
+
 import java.sql.*;
 import java.util.Arrays;
 
 public class checkQuerys {
     static Connection connection = connect.connection;
-    static users users = new users();
-    static universities universities = new universities();
-    static nodes nodes = new nodes();
-    static geoLocation geoLocation = new geoLocation();
-    static edges edges = new edges();
+//    static user_query users = new user_query();
+//    static universities_query universities = new universities_query();
+//    static nodes nodes = new nodes();
+    static geoLocation_query geoLocation_query = new geoLocation_query();
+//    static edge_q edges = new edge_q();
 //    static drives drives = new drives();
 
     interface getFromDB {
@@ -236,35 +236,35 @@ public class checkQuerys {
         for (int i = 0; i < 40; i++) {
             //users
             User u = new User();
-            System.out.println("addUser -> " + addToDB.addToDB(connection,users.addUser(u)));
+            System.out.println("addUser -> " + addToDB.addToDB(connection,user_query.addUser(u)));
 
             //geoLocation
             GeoLocation g1 = new GeoLocation();
-            System.out.println("addGeoLocation -> " + addToDB.addToDB(connection,geoLocation.addGeoLocation(g1)));
+            System.out.println("addGeoLocation -> " + addToDB.addToDB(connection, geoLocation_query.addGeoLocation(g1)));
 
 
             //universities
             GeoLocation g2 = new GeoLocation();
-            System.out.println("addGeoLocation -> " + addToDB.addToDB(connection,geoLocation.addGeoLocation(g2)));
+            System.out.println("addGeoLocation -> " + addToDB.addToDB(connection, geoLocation_query.addGeoLocation(g2)));
             University un = new University(g2.getGeoLocationId());
-            System.out.println("addUniversity -> " + addToDB.addToDB(connection,universities.addUniversity(un)));
+            System.out.println("addUniversity -> " + addToDB.addToDB(connection, university_query.addUniversity(un)));
 
 
             //drives
             GeoLocation g3 = new GeoLocation();
-            System.out.println("addGeoLocation -> " + addToDB.addToDB(connection,geoLocation.addGeoLocation(g3)));
+            System.out.println("addGeoLocation -> " + addToDB.addToDB(connection, geoLocation_query.addGeoLocation(g3)));
             Drive d = new Drive(g3.getGeoLocationId(), g3.getGeoLocationId());
-            System.out.println("addDrive -> " + addToDB.addToDB(connection,drives.addDrive(d)));
+            System.out.println("addDrive -> " + addToDB.addToDB(connection, drive_query.addDrive(d)));
 
             //nodes
-            Node n = new Node();
-            System.out.println("addNode -> " + addToDB.addToDB(connection,nodes.addNode(n)));
-            System.out.println("Node -> " + n);
-
-
-            //edges
-            Node n2 = new Node();
-            System.out.println("addDrive -> " + addToDB.addToDB(connection,nodes.addNode(n2)));
+//            Node n = new Node();
+//            System.out.println("addNode -> " + addToDB.addToDB(connection,nodes.addNode(n)));
+//            System.out.println("Node -> " + n);
+//
+//
+//            //edges
+//            Node n2 = new Node();
+//            System.out.println("addDrive -> " + addToDB.addToDB(connection,nodes.addNode(n2)));
 //            Edge e = new Edge(n2.getNode_Id(), n2.getNode_Id());
 //            System.out.println("addEdge -> " + addToDB.addToDB(connection,edges.addEdge(e)));
 
