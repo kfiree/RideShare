@@ -125,7 +125,7 @@ public class Parser {
      * @return
      */
     private static Long calculateEdgeId(OEdge edge) {
-        return (long)(edge.getStartNode().getID()+edge.getEndNode().getID());
+        return (long)(edge.getStartNode().getOsmID()+edge.getEndNode().getOsmID());
     }
 
 }

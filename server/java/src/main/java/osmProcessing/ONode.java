@@ -11,8 +11,7 @@ public class ONode {
      * PROPERTIES:
      */
     private LinkedList<OEdge> edges = new LinkedList<OEdge>();
-    static int keyGenerator = 0;
-    private int key;
+    private String key;
     private Double latitude;
     private Double longitude;
     private Long osmID;
@@ -25,7 +24,7 @@ public class ONode {
     private Integer degree;
 
     public ONode(@NotNull MapObject object) {
-        this.key = keyGenerator++;
+        this.key = UUID.randomUUID().toString();
         this.osmID = object.getID();
         this.latitude = object.getLatitude();
         this.longitude = object.getLongitude();
@@ -35,20 +34,20 @@ public class ONode {
         }
     }
 
-    public ONode(long id, Double @NotNull [] coordinates, userType user) {
+    public ONode(Long id, Double @NotNull [] coordinates, userType user) {
         this.latitude = coordinates[0];
         this.longitude = coordinates[1];
         this.osmID = id;
-        this.key = (int) id;
+        this.key = UUID.randomUUID().toString();
         this.user = user;
         this.tags = new HashMap<>();
     }
 
     // GETTERS:
 
-    public int getKey() {return key;}
+    public String getKey() {return key;}
 
-    public Long getID() {
+    public Long getOsmID() {
         return this.osmID;
     }
 
@@ -106,18 +105,14 @@ public class ONode {
         return edges;
     }
 
-    public Long getOsmID() {
-        return osmID;
-    }
-
     public Map<String, String> getTags() {
         return tags;
     }
 
     public boolean isAdjacent(ONode targetNode) {
         for (OEdge e : this.edges) {
-            if (e.getStartNode().getID() == targetNode.getID() ||
-                    e.getEndNode().getID() == targetNode.getID()) {
+            if (e.getStartNode().getOsmID() == targetNode.getOsmID() ||
+                    e.getEndNode().getOsmID() == targetNode.getOsmID()) {
                 return true;
             }
         }
@@ -126,8 +121,8 @@ public class ONode {
 
     public OEdge getAdjacent(ONode targetNode) {
         for (OEdge e : this.edges) {
-            if (e.getStartNode().getID() == targetNode.getID() ||
-                    e.getEndNode().getID() == targetNode.getID()) {
+            if (e.getStartNode().getOsmID() == targetNode.getOsmID() ||
+                    e.getEndNode().getOsmID() == targetNode.getOsmID()) {
                 return e;
             }
         }
@@ -148,7 +143,7 @@ public class ONode {
 
         String idStr = "id = " + osmID;
         String coordinatesStr = ", coordinates = (" +latitude + "," + longitude + ")";
-        String adjacentStr = edges.stream().map(list -> list.getEndNode().getID().toString()).collect(Collectors.joining(", "));
+        String adjacentStr = edges.stream().map(list -> list.getEndNode().getOsmID().toString()).collect(Collectors.joining(", "));
         adjacentStr = ", adjacent = (" + adjacentStr +")";
         String tagsStr = tags.entrySet().stream()
                 .filter(entry -> relevantTags(entry.getKey()))

@@ -13,7 +13,7 @@ public class OEdge {
     private Double distance;
     private Double weight;
 
-    final String key = UUID.randomUUID().toString();
+    private String key;
 
     // The name of the street:
     private String name;
@@ -23,6 +23,7 @@ public class OEdge {
 
     /** read from the map constructor: */
     public OEdge(OMapWay way, ONode start, ONode target) {
+        this.key = UUID.randomUUID().toString();
         this.startNode = start;
         this.endNode = target;
         this.name = way.getName();
@@ -30,13 +31,15 @@ public class OEdge {
     }
 
 
-
     /**
      * GETTERS
      */
+
     public Double getDistance() {
         return this.distance;
     }
+
+    public String getEdge_Id() { return key; }
 
     public Double getWeight() {
         return this.weight == null ? 0 : this.weight;
@@ -58,13 +61,16 @@ public class OEdge {
         return this.endNode;
     }
 
-    /**
-     * @param
-     * @return
-     */
-    public Long getEdgeId() {
-        return (long)(this.getStartNode().getID()+this.getEndNode().getID());
-    }
+    public String getStartNodeId() { return this.startNode.getKey(); }
+
+    public String getEndNodeId() { return this.endNode.getKey(); }
+
+//    /**
+//     * @param
+//     * @return
+//     */
+//    public Long getEdgeId() { return (long)(this.getStartNode().getOsmID()+this.getEndNode().getOsmID());
+//    }
 
     /**
      * SETTERS
@@ -98,7 +104,7 @@ public class OEdge {
     }
 
     public boolean isOpposite(OEdge other){
-        return this.getStartNode().getID() == other.getEndNode().getID() && this.getEndNode().getID() == other.getStartNode().getID();
+        return this.getStartNode().getOsmID() == other.getEndNode().getOsmID() && this.getEndNode().getOsmID() == other.getStartNode().getOsmID();
     }
 
 }

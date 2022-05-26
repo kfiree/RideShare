@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS "rs_users_drives" (
 
 --nodes
 CREATE TABLE IF NOT EXISTS "rs_nodes" (
-  "osm_id" bigint NOT NULL UNIQUE,
+  "osm_Id" bigint NOT NULL UNIQUE,
   "node_Id" uuid NOT NULL UNIQUE,
   "latitude" NUMERIC NOT NULL,
   "longitude" NUMERIC NOT NULL,

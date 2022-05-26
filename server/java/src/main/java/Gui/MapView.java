@@ -95,7 +95,7 @@ public class MapView {
         graph.getEdges().values().forEach(e -> {
             Node start = drawNode(e.getStartNode());
             Node end = drawNode(e.getEndNode());
-            Edge edge = displayGraph.addEdge(e.getEdgeId().toString(), start, end);
+            Edge edge = displayGraph.addEdge(e.getEdge_Id(), start, end);
 
             edge.setAttribute("ui.style", "blue");
         });
@@ -105,14 +105,14 @@ public class MapView {
 
     private Node drawNode(ONode node){
 
-        String keyStr = String.valueOf(node.getKey());
+        String keyStr = String.valueOf(node.getOsmID());
         Node displayNode = displayGraph.getNode(keyStr);
 
         if(displayNode == null){
 
             displayNode = displayGraph.addNode(keyStr);
             displayNode.setAttribute("xy", node.getLongitude(), node.getLatitude());
-            displayNode.setAttribute("ui.label", node.getID().toString());
+            displayNode.setAttribute("ui.label", node.getOsmID().toString());
 
             if(!node.getTags().containsKey("highway")){
                 displayNode.setAttribute("ui.style", "size: 1px;fill-color: black;");
@@ -124,14 +124,14 @@ public class MapView {
 
     private boolean drawRider(GraphUtils utils){
         utils.getRiders().values().forEach(rider->{
-            String keyStr = String.valueOf(rider.getKey());
+            String keyStr = String.valueOf(rider.getOsmID());
             Node displayNode = displayGraph.getNode(keyStr);
 
             if(displayNode == null){
 
                 displayNode = displayGraph.addNode(keyStr);
                 displayNode.setAttribute("xy", rider.getLongitude(), rider.getLatitude());
-                displayNode.setAttribute("ui.label", rider.getID().toString());
+                displayNode.setAttribute("ui.label", rider.getOsmID().toString());
 
                 displayNode.setAttribute("ui.style","fill-color: red;");
             }
@@ -144,7 +144,7 @@ public class MapView {
         utils.getPaths().forEach(path -> {
             if(path!=null)
                 path.getEdges().forEach(edge -> {
-                    displayGraph.getEdge(edge.getEdgeId().toString()).setAttribute("ui.style", "size: 5px; fill-color: blue;");
+                    displayGraph.getEdge(edge.getEdge_Id()).setAttribute("ui.style", "size: 5px; fill-color: blue;");
                 });
         });
         return true;

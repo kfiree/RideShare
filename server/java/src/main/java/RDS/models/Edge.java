@@ -7,21 +7,12 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Edge {
 //    private int edge_Id;
     private ONode startNode, endNode;
-    private String key = UUID.randomUUID().toString();
+    private String key;
     private double startNodeId , endNodeId , weight,  distance;
     private String name, highwayType;
 
-//    public Edge(double startNodeId, double endNodeId, double weight, double distance, String name, String highwayType) {
-//        this.edge_Id = ThreadLocalRandom.current().nextInt(1000000, Integer.MAX_VALUE);
-//        this.startNodeId = startNodeId;
-//        this.endNodeId = endNodeId;
-//        this.weight = weight;
-//        this.distance = distance;
-//        this.name = name;
-//        this.highwayType = highwayType;
-//    }
     public Edge(double startNodeId, double endNodeId, double weight, double distance, String name, String highwayType) {
-//        this.edge_Id = edge_Id;
+        this.key = UUID.randomUUID().toString();
         this.startNodeId = startNodeId;
         this.endNodeId = endNodeId;
         this.weight = weight;
@@ -30,28 +21,11 @@ public class Edge {
         this.highwayType = highwayType;
     }
 
-//    public Edge(double startNodeId, double endNodeId) {
-//        this.edge_Id = ThreadLocalRandom.current().nextInt(1000000, Integer.MAX_VALUE);
-//        this.startNodeId = startNodeId;
-//        this.endNodeId = endNodeId;
-//        this.weight = 50;
-//        this.distance = 50;
-//        this.name = "name";
-//        this.highwayType = "highwayType";
-//    }
 
 
     public String getEdge_Id() {
         return key;
     }
-
-    public String getKey() {
-        return key;
-    }
-
-//    public void setEdge_Id(int edge_Id) {
-//        this.edge_Id = edge_Id;
-//    }
 
     public double getStartNodeId() {
         return startNodeId;

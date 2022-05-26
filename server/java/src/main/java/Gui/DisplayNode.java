@@ -9,7 +9,7 @@ public class DisplayNode extends MultiNode {
     private ONode nodeData;
 
     public DisplayNode(AbstractGraph graph, ONode node) {
-        super(graph, node.getID().toString());
+        super(graph, node.getOsmID().toString());
 
         this.nodeData = node;
     }
