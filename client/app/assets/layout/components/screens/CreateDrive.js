@@ -2,6 +2,9 @@ import React, { useState, useLayoutEffect, useRef, useEffect, createContext, use
 import { Context } from '../../../../../Context';
 import { ContextOtherOffer } from '../../../../../ContextOtherOffer';
 import { useFonts } from 'expo-font';
+// import { RNDateTimePicker } from '@react-native-community/datetimepicker';
+// import DatePicker from 'react-native-date-picker'
+
 
 import {
     SafeAreaView,
@@ -54,6 +57,12 @@ function CreateDrive() {
     const [fonts] = useFonts({
         CalibriRegular: require('./../../../fonts/Calibri-Regular.ttf'),
     });
+
+    const [date, setDate] = useState(new Date())
+    const [open, setOpen] = useState(false)
+
+
+
     const navigation = useNavigation();
     const [showPopup, setShowPopup] = useState(false);
     const [validation, setValidation] = useState({
@@ -75,7 +84,7 @@ function CreateDrive() {
     const [dest, setDest] = useState("אריאל");
     const [destType, setDestType] = useState("city");
 
-    const [date, setDate] = useState();
+    // const [date, setDate] = useState();
     const [validDate, setValidDate] = useState(true);
 
     const [hour, setHour] = useState();
@@ -259,9 +268,12 @@ function CreateDrive() {
                                     <TextInput placeholder="DD/MM/YYYY" style={styles.inputText}
                                         onEndEditing={(e) => handleChangedDate(e.nativeEvent.text)}
                                     />
-                                    <View style={styles.logoInput}>
+                                    <TouchableOpacity style={styles.logoInput}
+                                        onPress={() => {
+                                            console.log("get date");
+                                        }}>
                                         <Entypo name="calendar" size={30} color={colors.search} />
-                                    </View>
+                                    </TouchableOpacity>
                                 </View>
 
                                 <View style={styles.rightBlock}>
@@ -295,31 +307,7 @@ function CreateDrive() {
                                     <Text style={styles.text}>באיזו שעה?</Text>
                                 </View>
                             </View>
-                            {/* <View style={styles.textAndInput}>
-                                <View style={
-                                    validHour ? styles.leftBlock : styles.leftBlockError
-                                }>
-                                    <GooglePlacesAutocomplete
-                                        placeholder='Search'
-                                        onPress={(data, details = null) => {
-                                            // 'details' is provided when fetchDetails = true
-                                            console.log(data, details);
-                                        }}
-                                        query={{
-                                            key: 'AIzaSyAd5hzjCJvSsInyFrQ45-XZB5mfqdDmFYQ',
-                                            language: 'en',
-                                        }}
-                                        />
-                                    <View style={styles.logoInput}>  
-                                        <Entypo name="map" size={35} color={colors.search} 
-                                            onPress={() => {navigation.navigate("MapRide", {isDriver: true,})}}
-                                        />                                    
-                                    </View>
-                                </View>
-                                <View style={styles.rightBlock}>
-                                    <Text style={styles.text}>מאיפה?</Text>
-                                </View>
-                            </View> */}
+
                             <View style={styles.textAndInput}>
                                 <View style={styles.leftBlock}>
                                     <TouchableOpacity style={styles.logoInputLeft}

@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     bigBox: {
-        height: (windowHeight - (2.5 * sizeHeader)),
+        height: windowHeight,
         width: "100%",
     },
 })
