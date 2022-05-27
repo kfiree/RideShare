@@ -29,6 +29,7 @@ public class jsonHandler {
             throw new IllegalStateException("Invalid JSON: " + jsonNode, e);
         }
     }
+
     static public OEdge jsonToEdge(String jsonNode){
         try {
             JSONParser parser = new JSONParser();

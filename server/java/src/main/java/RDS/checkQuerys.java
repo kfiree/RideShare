@@ -1,4 +1,6 @@
 package RDS;
+
+import RDS.config.connect;
 import RDS.models.*;
 import RDS.querys.*;
 

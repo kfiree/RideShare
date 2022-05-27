@@ -18,7 +18,7 @@ public class Reader implements Sink {
     static HashSet<String> nodeTags = new HashSet<>(),
         wayTags = new HashSet<>(),
         boundTags = new HashSet<>();
-    private Point2D mapBounds;
+    private Point2D topRight, bottomLeft;
 
     public void removeTertiary() {
         List<String> temp = new ArrayList<>(noVehicleValues);
@@ -38,12 +38,13 @@ public class Reader implements Sink {
         return boundTags;
     }
 
-    public Point2D getMapBounds() {
-        return mapBounds;
-    }
+//    public Point2D getMapBounds() {
+//        return mapBounds;
+//    }
 
-    public void setMapBounds(Point2D mapBounds) {
-        this.mapBounds = mapBounds;
+    public void setMapBounds(Point2D topRight, Point2D bottomLeft) {
+        this.topRight = topRight;
+        this.bottomLeft = bottomLeft;
     }
 
     /**
@@ -64,6 +65,12 @@ public class Reader implements Sink {
             MapObject temp;
 
             Node node = ((NodeContainer) entityContainer).getEntity();
+            if(!inBound(node)){
+
+                return;
+            }else{
+//                System.out.println("node in bound, lat: " + node.getLatitude() +", lon: "+ node.getLongitude());
+            }
             temp = new MapObject(node.getLatitude(), node.getLongitude(), node.getId(), node.getTags());
             MapObjects.put(temp.getID(), temp);
             OGraph.getInstance().nodesQuantity.put(temp.getID(), 0);
@@ -89,9 +96,6 @@ public class Reader implements Sink {
         // process your node //
         } else if (entityContainer instanceof WayContainer){
             Way way = ((WayContainer) entityContainer).getEntity();
-            if(way.getId() == 551927065l ){
-                boolean stop = true;
-            }
             // you can filter ways/nodes //
             if (this.isAppropriate(way)) {
                 OMapWay mway = new OMapWay(way.getId(), way.getTags());
@@ -108,23 +112,31 @@ public class Reader implements Sink {
                 }
                 for(WayNode wn: way.getWayNodes()) {
                     MapObject temp;
+
                     // if object was already created through nodes:
                     if (MapObjects.get(wn.getNodeId()) != null) {
                         temp = MapObjects.get(wn.getNodeId());
+
+                        // outside of if
+                        mway.addObject(temp);
+                        temp.linkCounter++;
+                        temp.addWay(mway);
                     }
                     else {
-                        temp = new MapObject(wn.getNodeId());
-                        MapObjects.put(temp.getID(), temp);
+                        int a = 1;
+//                        temp = new MapObject(wn.getNodeId());
+//                        MapObjects.put(temp.getID(), temp);
                     }
-                    mway.addObject(temp);
+//                    mway.addObject(temp);
 
 //                    Integer nodeNum = OGraph.getInstance().nodesQuantity.get(wn.getNodeId());
 //                    OGraph.getInstance().nodesQuantity.put(wn.getNodeId(), nodeNum == null? 0 : nodeNum++);
 
                     // linkCounter of node counts on how many ways the node appears //
 //                    if(nodesQuantity.containsKey())
-                    temp.linkCounter++;
-                    temp.addWay(mway);
+
+//                    temp.linkCounter++;
+//                    temp.addWay(mway);
                 }
                 this.ways.add(mway);
             }
@@ -149,6 +161,18 @@ public class Reader implements Sink {
 //    private boolean inBound(Double longitude, double latitude){
 //        return longitude
 //    }
+    private boolean inBound(Node node){
+        if((node.getLatitude() == 32.0755374 && node.getLongitude() == 34.783446600000005) ||
+                (node.getLongitude() == 32.0755374 && node.getLatitude() == 34.783446600000005)){
+            int a = 1;
+        }
+
+//        return mapObject.getLongitude() <= topRight.getY() && mapObject.getLongitude() >= bottomLeft.getY() &&
+//        return node.getLatitude() <= topRight.getX() && node.getLatitude() >= bottomLeft.getX();
+//        32.10602376451233
+        return node.getLatitude() <= 32.13073917015928 && node.getLatitude() >= 32.0449580796914 && node.getLongitude() <=35.21676154847741;
+    }
+
     // following methods are a requirement of the Sink interface //
     @Override
     public void initialize(Map<String, Object> map) {

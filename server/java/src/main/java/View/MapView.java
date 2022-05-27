@@ -1,4 +1,4 @@
-package Gui;
+package View;
 
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
@@ -92,7 +92,7 @@ public class MapView {
             Node end = drawNode(e.getEndNode());
             Edge edge = displayGraph.addEdge(e.getEdge_Id(), start, end);
 
-            edge.setAttribute("ui.style", "blue");
+//            edge.setAttribute("ui.style", "blue");
         });
         return true;
     }

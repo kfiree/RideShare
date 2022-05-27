@@ -1,4 +1,4 @@
-package Gui;
+package View;
 
 import org.graphstream.ui.graphicGraph.GraphicElement;
 import org.graphstream.ui.graphicGraph.GraphicGraph;

@@ -1,5 +1,6 @@
 package osmProcessing;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,10 +8,15 @@ import java.util.UUID;
 
 public class Parser {
     private static OGraph graph;
+    private static Point2D.Double topRight = new Point2D.Double(32.10070229573369, 34.84550004660088), bottomLeft = new Point2D.Double(32.10070229573369, 34.84550004660088);
 
+    public static void setBounds(Point2D.Double upRight, Point2D.Double downLeft){
+        topRight = upRight;
+        bottomLeft = downLeft;
+
+    }
     public static void parseMapWays(ArrayList<OMapWay> ways, Map<Long, MapObject> objects) {
         graph = OGraph.getInstance();
-
         Map<String, OEdge> edges = graph.getEdges();
         for (OMapWay way: ways) {
 
@@ -19,6 +25,10 @@ public class Parser {
 
             if (objectsOnWay.isEmpty() == false && objectsOnWay.size() >= 2) {//TODO check if node have irrelevant tags
 
+                if(!(inBound(way.getFirst()) && inBound(way.getLast()))) {
+                    System.out.println("parser node out of bound");
+                    break;
+                }
                 ONode start = createNodeForEdge(way.getFirst(), way);
                 ONode target = createNodeForEdge(way.getLast(), way);
 
@@ -52,6 +62,17 @@ public class Parser {
 
     }
 
+    private static boolean inBound(MapObject mapObject){
+//        if((mapObject.getLatitude() == 32.0755374 && mapObject.getLongitude() == 34.783446600000005) ||
+//                (mapObject.getLongitude() == 32.0755374 && mapObject.getLatitude() == 34.783446600000005)){
+//            int a = 1;
+//        }
+////        return true;
+//        return mapObject.getLongitude() <= topRight.y && mapObject.getLongitude() >= bottomLeft.y &&
+//            mapObject.getLatitude() <= topRight.x && mapObject.getLatitude() >= bottomLeft.x;
+
+        return true;
+    }
     private static ONode createNodeForEdge(MapObject mapObject, OMapWay way){
         ONode node = selectNode(mapObject);
 

@@ -1,5 +1,4 @@
-import Gui.MapView;
-import RDS.addGraphToDB;
+import View.MapView;
 import crosby.binary.osmosis.OsmosisReader;
 import osmProcessing.GraphUtils;
 import osmProcessing.OGraph;
@@ -48,6 +47,7 @@ public class App {
         return pathNodesID;
     }
 
+    static Point2D.Double topRight = new Point2D.Double(32.10070229573369, 34.84550004660088), bottomLeft = new Point2D.Double(32.10070229573369, 34.84550004660088);
 
     public static void CreateGraph(String pathToPBF) {
         InputStream inputStream;
@@ -59,10 +59,15 @@ public class App {
             Point2D.Double mapBounds = new Point2D.Double(31.99721786061472, 34.72968352639412);
 
             Reader custom = new Reader();
-            custom.setMapBounds(mapBounds);
+            custom.setMapBounds(topRight, bottomLeft);
             OsmosisReader reader = new OsmosisReader(inputStream);
 
 //            custom.removeTertiary();
+
+            // bottom left  31.999919131519913, 34.72920639507035
+            // top right 32.10070229573369, 34.84550004660088
+
+
 
             reader.setSink(custom);
 
@@ -93,7 +98,7 @@ public class App {
 
             // set
 //            addGraphToDB addGraphToDB = new addGraphToDB(graph);
-            addGraphToDB.addToDB();
+//            addGraphToDB.addToDB();
 
             //get
 
@@ -110,7 +115,7 @@ public class App {
             // lock drive
 
 //            //TODO add data to map
-//            MapView.getInstance().run();
+            MapView.getInstance().run();
 //
 //            //TODO add algorithms here
             System.out.println(graph.toString());

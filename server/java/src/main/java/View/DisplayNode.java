@@ -1,4 +1,4 @@
-package Gui;
+package View;
 
 import org.graphstream.graph.implementations.AbstractGraph;
 import org.graphstream.graph.implementations.MultiNode;
