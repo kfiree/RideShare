@@ -1,9 +1,9 @@
 const geoLocation_query = {
     addGeoLocation: (geoLocation) => {
         return `INSERT INTO "public"."rs_geoLocation" 
-        ("geoLocation_Id", "latitude", "longitude") 
+        ("geoLocation_Id", "nameLocation", "latitude", "longitude") 
         VALUES 
-        ('${geoLocation.geoLocation_Id}', ${geoLocation.latitude}, ${geoLocation.longitude});`;
+        ('${geoLocation.geoLocation_Id}','${geoLocation.nameLocation}', ${geoLocation.latitude}, ${geoLocation.longitude});`;
     },
     updateGeoLocation: (geoLocation) => {
         return `UPDATE "public"."rs_geoLocation" SET 
@@ -24,4 +24,4 @@ const geoLocation_query = {
     getAllGeoLocations: () => { return `SELECT * FROM "public"."rs_geoLocation";`; },
 }
 
-export default geoLocation_query;
+module.exports = geoLocation_query;

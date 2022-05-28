@@ -15,7 +15,7 @@ const driveQuerys = {
                 ${drive.price}, 
                 ${drive.AVG_Price}, 
                 '${drive.upcoming_Drives}', 
-                ${drive.leaveTime}, 
+                '${drive.leaveTime}', 
                 '${drive.path_Id}', 
                 NOW());`;
     },
@@ -29,8 +29,8 @@ const driveQuerys = {
                     "price" = ${drive.price},
                     "AVG_Price" = ${drive.AVG_Price},
                     "upcoming_Drives" = '${drive.upcoming_Drives}',
-                    "leaveTime" = ${drive.leaveTime},
-                    "path_Id" = '${drive.path_Id}',
+                    "leaveTime" = '${drive.leaveTime}',
+                    "path_Id" = '${drive.path_Id}'
                 WHERE "drive_Id" = '${drive.drive_Id}';`;
     },
     deleteDriveById: (drive) => {
@@ -44,4 +44,4 @@ const driveQuerys = {
     getAllUniversities: () => { return `SELECT * FROM "public"."rs_drives";`; },
 }
 
-export default driveQuerys;
+module.exports = driveQuerys;

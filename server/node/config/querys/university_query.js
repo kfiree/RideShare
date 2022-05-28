@@ -15,14 +15,22 @@ const university_query = {
         return `DELETE FROM "public"."rs_universities" 
         WHERE "university_Id" = '${university.university_Id}';`;
     },
+    deleteUniversityByGeoLocationId: (university) => {
+        return `DELETE FROM "public"."rs_universities" 
+        WHERE "geoLocation_Id" = '${university.geoLocation_Id}';`;
+    },
     getUniversityById: (university) => {
         return `SELECT * FROM "public"."rs_universities"
                 WHERE "university_Id" = '${university.university_Id}';`;
+    },
+    getUniversityByGeoLocationId: (university) => {
+        return `SELECT * FROM "public"."rs_universities"
+                WHERE "geoLocation_Id" = '${university.geoLocation_Id}';`;
     },
     getAllUniversities: () => {
         return `SELECT * FROM "public"."rs_universities";`;
     },
 }
 
-export default university_query;
+module.exports = university_query;
 

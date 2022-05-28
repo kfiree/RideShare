@@ -26,5 +26,5 @@ const edge_query = {
     getAllEdges: () => { return `SELECT * FROM "public"."rs_edges";`; },
 }
 
-export default edge_query;
+module.exports = edge_query;
 

@@ -79,7 +79,6 @@ CREATE TABLE IF NOT EXISTS "rs_users_universities" (
 CREATE TABLE IF NOT EXISTS "rs_users_drives" (
   "user_Id" uuid NOT NULL,
   "drive_Id" uuid NOT NULL,
-  PRIMARY KEY ( "user_Id", "drive_Id"),
   FOREIGN KEY ("user_Id") REFERENCES "rs_users"("user_Id"),
   FOREIGN KEY ("drive_Id") REFERENCES "rs_drives"("drive_Id")
 );

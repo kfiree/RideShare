@@ -23,4 +23,4 @@ const pathQuerys = {
     getAllUPaths: () => { return `SELECT * FROM "public"."rs_paths";`; },
 }
 
-export default pathQuerys;
+module.exports = pathQuerys;

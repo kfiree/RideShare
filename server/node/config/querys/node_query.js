@@ -19,6 +19,10 @@ const node_query = {
         return `DELETE FROM "public"."rs_nodes" 
                 WHERE "node_Id" = '${node.node_Id}';`;
     },
+    deleteNodeByOSMId: (node) => {
+        return `DELETE FROM "public"."rs_nodes" 
+                WHERE "osm_Id" = '${node.osm_Id}';`;
+    },
     getNodeById: (node) => {
         return `SELECT * FROM "public"."rs_nodes" 
         WHERE "node_Id" = '${node.node_Id}';`;
@@ -28,4 +32,4 @@ const node_query = {
     },
 }
 
-export default node_query;
+module.exports = node_query;
