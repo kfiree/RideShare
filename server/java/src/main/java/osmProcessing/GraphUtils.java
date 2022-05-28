@@ -1,14 +1,12 @@
 package osmProcessing;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GraphUtils {
 
     private static GraphUtils instance = new GraphUtils();
     private List<OPath> paths;
+    private Hashtable<OPath, String> labeledPaths;
     private Map<Long, ONode> riders;
     private OGraph graph;
 
@@ -16,8 +14,8 @@ public class GraphUtils {
         paths = new ArrayList<>();
         riders = new HashMap<>();
         graph = OGraph.getInstance();
+        labeledPaths = new Hashtable<>();
     }
-
 
     public static synchronized GraphUtils getInstance() {
         return instance;
@@ -69,6 +67,9 @@ public class GraphUtils {
         return paths.add(new OPath(pathNodes));
     }
 
+    public String addLabeledPath(List<Object> pathNodes, String label){
+        return labeledPaths.put(new OPath(pathNodes), label);
+    }
 
     public void setPaths(List<OPath> paths) {
         this.paths = paths;
@@ -76,6 +77,10 @@ public class GraphUtils {
 
     public List<OPath> getPaths() {
         return paths;
+    }
+
+    public Hashtable<OPath, String> getLabeledPaths(){
+        return labeledPaths;
     }
 
     public boolean setRiders(Map<Long, Double[]> Riders){
@@ -91,5 +96,96 @@ public class GraphUtils {
 
     public Map<Long, ONode> getRiders() {
         return riders;
+    }
+
+    public List<ONode> AStar(ONode start, ONode end){
+        Hashtable<String, ONode> CloseSet = new Hashtable<>();
+        Hashtable<String, ONode> OpenSet = new Hashtable<>();
+        PriorityQueue<ONode> PQ_OpenSet = new PriorityQueue<>();
+        Hashtable<ONode, ONode> cameFrom = new Hashtable<>();
+
+        start.setH(end);
+        start.setG(0);
+        start.setF(start.getG() + start.getH());
+
+        OpenSet.put(start.getNode_id(), start);
+        PQ_OpenSet.add(start);
+
+        while(!OpenSet.isEmpty()){
+            ONode current = PQ_OpenSet.poll();
+            if(current.equals(end)){
+                return reconstructPath(cameFrom, end);
+            }
+
+            OpenSet.remove(current.getNode_id());
+            CloseSet.put(current.getNode_id(), current);
+            for(ONode neighbor : current.getAdjacentNodes()){
+                if(CloseSet.containsKey(neighbor.getNode_id())){
+                    continue;
+                }
+                double TentativeGScore = current.getG() + distance(current.getLatitude(), current.getLongitude(), neighbor.getLatitude(), neighbor.getLongitude());
+                if(!OpenSet.containsKey(neighbor.getNode_id()) || TentativeGScore < neighbor.getG()){
+                    cameFrom.put(neighbor, current);
+                    neighbor.setG(TentativeGScore);
+                    neighbor.setH(end);
+                    neighbor.setF(neighbor.getG() + neighbor.getH());
+                    if(!OpenSet.containsKey(neighbor.getNode_id())){
+                        OpenSet.put(neighbor.getNode_id(), neighbor);
+                        PQ_OpenSet.add(neighbor);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+//    public List<ONode> AStar(ONode start, ONode end){
+//        Hashtable<String, ONode> C = new Hashtable<>();
+//        Hashtable<String, ONode> L1 = new Hashtable<>();
+//        PriorityQueue<ONode> L = new PriorityQueue<>();
+//        Hashtable<ONode, ONode> cameFrom = new Hashtable<>();
+//
+//        start.setH(end);
+//        start.setG(0);
+//        start.setF(start.getG() + start.getH());
+//
+//        L.add(start);
+//        L1.put(start.getNode_id(), start);
+//        while(!L.isEmpty()){
+//            ONode n = L.poll();
+//            if(n.equals(end)){
+//                return reconstructPath(n);
+//            }
+//            C.put(n.getNode_id(), n);
+//
+//            for(ONode m : n.getAdjacentNodes()){
+//                ONode neighbor = m;
+//                neighbor.setH(end);
+//                neighbor.setG(n.getG() + distance(n.getLatitude(), n.getLongitude(), neighbor.getLatitude(), neighbor.getLongitude()));
+//                neighbor.setF(neighbor.getG() + neighbor.getH());
+//                if(!C.containsKey(neighbor.getNode_id()) && !L1.containsKey(neighbor.getNode_id())){
+//                    L.add(neighbor);
+//                    L1.put(neighbor.getNode_id(), neighbor);
+//                }
+//                else if(L1.containsKey(neighbor.getNode_id())){
+//                    if(L1.get(neighbor.getNode_id()).getF() > neighbor.getF()){
+//                        L.remove(neighbor);
+//                        L.add(neighbor);
+//                        L1.put(neighbor.getNode_id(), neighbor);
+//                    }
+//                }
+//            }
+//        }
+//        return  null;
+//    }
+
+    private List<ONode> reconstructPath(Hashtable<ONode, ONode> cameFrom, ONode n){
+        List<ONode> path = new ArrayList<>();
+        while(cameFrom.containsKey(n)){
+            n = cameFrom.get(n);
+            path.add(n);
+        }
+        Collections.reverse(path);
+        return path;
     }
 }

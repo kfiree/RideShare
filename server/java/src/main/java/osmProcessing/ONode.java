@@ -5,7 +5,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ONode {
+import static java.util.stream.Collectors.toCollection;
+
+public class ONode implements Comparable<ONode> {
 
     private String id;
     private Long osmID;
@@ -14,6 +16,10 @@ public class ONode {
     private LinkedList<OEdge> edges;
     private Map<String, String> tags;
     private ArrayList<Long> waysID;
+
+    private double H;
+    private double G;
+    private double F;
 
     public static enum userType {Driver, Rider, None};
     private userType user = userType.None; //TODO check id used
@@ -66,11 +72,13 @@ public class ONode {
     public Integer getDegree() { return this.edges == null ? 0 :this.edges.size(); }
 
     public ArrayList<ONode> getAdjacentNodes() {
-        ArrayList<ONode> adjacentNodes = new ArrayList<>();
-        for(OEdge edge : edges) {
-            adjacentNodes.add(edge.getEndNode());
-        }
-        return adjacentNodes;
+        Set<ONode> adjacentNodes = new HashSet<>();
+        OGraph.getInstance().getEdges().values().stream().filter(edge -> edge.getStartNode().equals(this))
+                                                            .forEach(edge -> {
+                                                                adjacentNodes.add(edge.getEndNode());
+                                                            });
+        return adjacentNodes.stream().collect(toCollection(ArrayList::new));
+
     }
 
     public ArrayList<OEdge> getIncidentEdges() {
@@ -85,7 +93,31 @@ public class ONode {
         return edges;
     }
 
+    public double getH() {
+        return H;
+    }
+
+    public double getG() {
+        return G;
+    }
+
+    public double getF() {
+        return F;
+    }
+
     // SETTERS:
+
+    public void setH(ONode node) {
+        this. H = GraphUtils.getInstance().distance(this.latitude, this.longitude, node.getLatitude(), node.getLongitude());
+    }
+
+    public void setG(double g) {
+        G = g;
+    }
+
+    public void setF(double f) {
+        F = f;
+    }
 
     public void addEdge(OEdge edge) {
         this.edges.add(edge);
@@ -164,7 +196,36 @@ public class ONode {
         return true;
     }
 
+    @Override
     public int compareTo(ONode node) {
-        return this.getDegree().compareTo(node.getDegree());
+        if(node.getF() < this.F){
+            return 1;
+        }
+        else if(node.getF() > this.F){
+            return -1;
+        }
+        else{
+            if(node.getNode_id().compareTo(this.id) < 0){
+                return -1;
+            }
+            else if(node.getNode_id().compareTo(this.id) > 0){
+                return 1;
+            }
+            else{
+                return 0;
+            }
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof ONode){
+            ONode node = (ONode) o;
+            if(node.getLatitude() == this.latitude && node.getLongitude() == this.longitude){
+                return true;
+            }
+            return false;
+        }
+        return false;
     }
 }

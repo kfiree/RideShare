@@ -1,5 +1,6 @@
 package osmProcessing;
 
+import java.util.Hashtable;
 import java.util.UUID;
 
 public class OEdge {
@@ -9,9 +10,18 @@ public class OEdge {
      */
     private ONode startNode, endNode;
 
-    private Double distance, weight; //TODO clean redundant field
+    private Double distance, weight, length; //TODO clean redundant field
 
     private String id = "", name, highwayType;
+
+    private final Hashtable<String, Integer> SPEED_LIMITS =  new Hashtable<>()
+    {{
+                put("motorway", 110);
+                put("trunk", 100);
+                put("primary", 90);
+                put("secondary", 70);
+                put("tertiary", 50);
+    }};
 
     private OEdge(String id, ONode startNode, ONode endNode,Double weight, Double distance, String name, String highwayType){
         this.startNode = startNode;
@@ -99,6 +109,13 @@ public class OEdge {
         return GraphUtils.getInstance().distance(lat1, lon1, lat2, lon2);
     }
 
+    public double getSpeedLimit() {
+        return SPEED_LIMITS.get(this.highwayType);
+    }
+
+    public double getTime() {
+        return this.distance / this.getSpeedLimit();
+    }
 
     public boolean isOpposite(OEdge other){
         return this.getStartNode().getOsm_Id() == other.getEndNode().getOsm_Id() && this.getEndNode().getOsm_Id() == other.getStartNode().getOsm_Id();
