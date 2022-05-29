@@ -135,12 +135,26 @@ public class MapView {
         return true;
     }
 
-    private boolean drawPaths(GraphUtils utils){
-        utils.getPaths().forEach(path -> {
-            if(path!=null)
-                path.getEdges().forEach(edge -> {
-                    displayGraph.getEdge(edge.getEdge_Id()).setAttribute("ui.style", "size: 5px; fill-color: blue;");
-                });
+    private boolean drawPaths(GraphUtils utils) {
+//        utils.getPaths().forEach(path -> {
+//            if(path!=null)
+//                path.getEdges().forEach(edge -> {
+//                    displayGraph.getEdge(edge.getEdge_Id()).setAttribute("ui.style", "size: 5px; fill-color: blue;");
+//                });
+//        });
+
+        utils.getLabeledPaths().keySet().forEach(path -> {
+            if (path != null) {
+                if (utils.getLabeledPaths().get(path).equals("Passenger")) {
+                    path.getEdges().forEach(edge -> {
+                        displayGraph.getEdge(edge.getEdge_Id()).setAttribute("ui.style", "size: 5px; fill-color: blue;");
+                    });
+                } else if (utils.getLabeledPaths().get(path).equals("Driver")) {
+                    path.getEdges().forEach(edge -> {
+                        displayGraph.getEdge(edge.getEdge_Id()).setAttribute("ui.style", "size: 5px; fill-color: red;");
+                    });
+                }
+            }
         });
         return true;
     }

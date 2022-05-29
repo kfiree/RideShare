@@ -1,9 +1,6 @@
 import View.MapView;
 import crosby.binary.osmosis.OsmosisReader;
-import osmProcessing.GraphUtils;
-import osmProcessing.OGraph;
-import osmProcessing.Parser;
-import osmProcessing.Reader;
+import osmProcessing.*;
 
 import javax.swing.*;
 import java.awt.geom.Point2D;
@@ -19,9 +16,9 @@ public class App {
 
 
     public static void main(String[] args) {
-        String filepath = ExtractMap.chooseFile();
-        CreateGraph(filepath);
-//        CreateGraph("data/arielpbf.pbf");
+//        String filepath = ExtractMap.chooseFile();
+//        CreateGraph(filepath);
+        CreateGraph("/Users/amitha/Desktop/RideShare/server/java/data/arielpbf.pbf");
     }
 
     /**
@@ -85,6 +82,7 @@ public class App {
             setDriversPath();
 
             GraphUtils.getInstance().addPath(pathNodesID);
+            GraphUtils.getInstance().addLabeledPath(pathNodesID, "Passenger");
             GraphUtils.getInstance().setRiders(Riders);
             OGraph graph = OGraph.getInstance();
 
@@ -115,6 +113,11 @@ public class App {
             // lock drive
 
 //            //TODO add data to map
+            List<ONode> path = GraphUtils.getInstance().AStar(graph.getNode(Long.parseLong("5341771424")), graph.getNode(Long.parseLong("5216093401")));
+            List<Object> nodeIDs = new ArrayList<>();
+            path.forEach(node -> nodeIDs.add(node.getOsm_Id()));
+            GraphUtils.getInstance().addPath(nodeIDs);
+            GraphUtils.getInstance().addLabeledPath(nodeIDs, "Driver");
             MapView.getInstance().run();
 //
 //            //TODO add algorithms here
