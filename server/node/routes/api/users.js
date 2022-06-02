@@ -65,42 +65,42 @@ router.post(
                         }
                         //console.log(
                         JSON.stringify(user)
-                        );
-            const query = `INSERT INTO "rs_users" 
+
+                        const query = `INSERT INTO "rs_users" 
                                             ("user_Id", "first_name", "last_name", "phone_Number", "email", "password", "gender", "image_Id", "degree") 
                                         VALUES 
                                             ('${user.userId}', '${user.first_name}', '${user.last_name}', '${user.phone_Number}', 
                                             '${user.email}', '${user.password}', '${user.gender}', '${user.image_Id}', '${user.degree}');`;
-            //console.log("query", query);
+                        //console.log("query", query);
 
-            //Save user in DB
-            await client.query(query,
-                (err, result, fields) => {
-                    if (err) return res.status(400).json({ errors: [{ msg: err }] });
-                    else {
-                        //console.log('User created');
-                        //Return jsonwebToken
-                        const payLoad = { user: { id: user.id } };
-                        jwt.sign(
-                            payLoad,
-                            config["jwtSecret"],
-                            { expiresIn: 360000 },
-                            (err, token) => {
-                                user.token = token;
-                                if (err) throw err;
-                                res.json({ user });
-                            }
-                        );
+                        //Save user in DB
+                        await client.query(query,
+                            (err, result, fields) => {
+                                if (err) return res.status(400).json({ errors: [{ msg: err }] });
+                                else {
+                                    //console.log('User created');
+                                    //Return jsonwebToken
+                                    const payLoad = { user: { id: user.id } };
+                                    jwt.sign(
+                                        payLoad,
+                                        config["jwtSecret"],
+                                        { expiresIn: 360000 },
+                                        (err, token) => {
+                                            user.token = token;
+                                            if (err) throw err;
+                                            res.json({ user });
+                                        }
+                                    );
+                                }
+                            });
                     }
-                });
-        }
 
                     // }
                 });
         } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
-}
+            console.error(err.message);
+            res.status(500).send('Server error');
+        }
     })
 
 
