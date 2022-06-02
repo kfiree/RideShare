@@ -139,46 +139,6 @@ public class GraphUtils {
         return null;
     }
 
-//    public List<ONode> AStar(ONode start, ONode end){
-//        Hashtable<String, ONode> C = new Hashtable<>();
-//        Hashtable<String, ONode> L1 = new Hashtable<>();
-//        PriorityQueue<ONode> L = new PriorityQueue<>();
-//        Hashtable<ONode, ONode> cameFrom = new Hashtable<>();
-//
-//        start.setH(end);
-//        start.setG(0);
-//        start.setF(start.getG() + start.getH());
-//
-//        L.add(start);
-//        L1.put(start.getNode_id(), start);
-//        while(!L.isEmpty()){
-//            ONode n = L.poll();
-//            if(n.equals(end)){
-//                return reconstructPath(n);
-//            }
-//            C.put(n.getNode_id(), n);
-//
-//            for(ONode m : n.getAdjacentNodes()){
-//                ONode neighbor = m;
-//                neighbor.setH(end);
-//                neighbor.setG(n.getG() + distance(n.getLatitude(), n.getLongitude(), neighbor.getLatitude(), neighbor.getLongitude()));
-//                neighbor.setF(neighbor.getG() + neighbor.getH());
-//                if(!C.containsKey(neighbor.getNode_id()) && !L1.containsKey(neighbor.getNode_id())){
-//                    L.add(neighbor);
-//                    L1.put(neighbor.getNode_id(), neighbor);
-//                }
-//                else if(L1.containsKey(neighbor.getNode_id())){
-//                    if(L1.get(neighbor.getNode_id()).getF() > neighbor.getF()){
-//                        L.remove(neighbor);
-//                        L.add(neighbor);
-//                        L1.put(neighbor.getNode_id(), neighbor);
-//                    }
-//                }
-//            }
-//        }
-//        return  null;
-//    }
-
     private List<ONode> reconstructPath(Hashtable<ONode, ONode> cameFrom, ONode n){
         List<ONode> path = new ArrayList<>();
         while(cameFrom.containsKey(n)){
