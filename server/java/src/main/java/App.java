@@ -24,7 +24,7 @@ public class App {
     public static void main(String[] args) {
 //        String filepath = ExtractMap.chooseFile();
 //        CreateGraph(filepath);
-        CreateGraph("server/java/data/israel-and-palestine-latest.osm.pbf");
+        CreateGraph("server/java/data/israel.pbf");
 
     }
 

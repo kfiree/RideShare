@@ -6,7 +6,7 @@ public class edge_query {
     static public String addEdge(OEdge e) {
         return "INSERT INTO \"public\".\"rs_edges\" (\"edge_Id\", \"startNodeId\", \"endNodeId\", \"weight\", \"distance\", \"name\", \"highwayType\") " +
                 "VALUES " +
-                "("+e.getEdge_Id()+", "+e.getStartNode().getOsm_Id()+", "+e.getEndNode().getOsm_Id()+", "+e.getWeight()+", "+e.getDistance()+", '"+e.getName()+"', '"+e.getHighwayType()+"');";
+                "("+e.getEdge_Id()+", "+e.getStartNode().getNode_id()+", "+e.getEndNode().getNode_id()+", "+e.getWeight()+", "+e.getDistance()+", '"+e.getName()+"', '"+e.getHighwayType()+"');";
     }
     static public String updateEdge(OEdge e) {
         return "UPDATE \"public\".\"rs_edges\" SET " +
