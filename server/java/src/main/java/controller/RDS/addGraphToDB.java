@@ -25,10 +25,11 @@ public class addGraphToDB {
 //    }
 
 
-
-    static public void addToDB() {
-        OGraph graph = OGraph.getInstance();
-
+    static public void addToDB(OGraph graph) {
+//        uploadNodes(graph);
+        uploadEdges(graph);
+    }
+    public static void uploadNodes(OGraph graph){
         graph.getNodes().forEach((key,val) -> {
             //nodes
             JSONObject edges = new JSONObject();
@@ -47,15 +48,23 @@ public class addGraphToDB {
                 tags.put(keyTag , valTag);
             });
             Node n = new Node(val.getOsm_Id(), val.getLatitude(), val.getLongitude(), val.getDegree(), edges, tags);
+
             System.out.println("addNode -> " + checkQuerys.addToDB.addToDB(connection, node_query.addNode(n)));
         });
 
+
+    }
+
+    public static void uploadEdges(OGraph graph){
         graph.getEdges().forEach(edge -> {
             //edges
-            OEdge e = new OEdge(edge.getStartNode().getOsm_Id(), edge.getEndNode().getOsm_Id(), edge.getWeight(), edge.getWeight(), edge.getName(), edge.getHighwayType());
-            System.out.println("addEdge -> " + checkQuerys.addToDB.addToDB(connection, edge_query.addEdge(e)));
+//            OEdge e = new OEdge(edge.getStartNode().getOsm_Id(), edge.getEndNode().getOsm_Id(), edge.getWeight(), edge.getWeight(), edge.getName(), edge.getHighwayType());
+            System.out.println(edge_query.addEdge(edge));
+            System.out.println("addEdge -> " + checkQuerys.addToDB.addToDB(connection, edge_query.addEdge(edge)));
         });
     }
+
+
     @Override
     public String toString() {
         return "addGraphToDB{" +

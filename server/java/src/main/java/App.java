@@ -1,5 +1,6 @@
 import View.MapView;
 import controller.GraphUtils;
+import controller.RDS.addGraphToDB;
 import crosby.binary.osmosis.OsmosisReader;
 import model.OGraph;
 import model.ONode;
@@ -66,8 +67,8 @@ public class App {
 
             /** full graph */
 
-//            addGraphToDB addGraphToDB = new addGraphToDB(graph);
-//            addGraphToDB.addToDB();
+            addGraphToDB.addToDB(graph);
+
 
             // TODO set & get graph user drive | sub graph | match rider and drivers | lock drive
 
