@@ -1,4 +1,7 @@
-package osmProcessing;
+package model;
+
+import controller.osmProcessing.OMapWay;
+import controller.GraphUtils;
 
 import java.util.Hashtable;
 import java.util.UUID;
@@ -77,6 +80,10 @@ public class OEdge {
         return this.weight == null ? 0 : this.weight;
     }
 
+    public ONode getOtherEnd(long nodeId){
+        return nodeId == endNode.getOsm_Id() ? startNode : endNode;
+    }
+
 
 
     /**
@@ -106,7 +113,7 @@ public class OEdge {
         double lon1 = this.getStartNode().getLongitude();
         double lon2 = this.getEndNode().getLongitude();
 
-        return GraphUtils.getInstance().distance(lat1, lon1, lat2, lon2);
+        return GraphUtils.distance(lat1, lon1, lat2, lon2);
     }
 
     public double getSpeedLimit() {

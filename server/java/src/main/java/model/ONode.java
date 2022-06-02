@@ -25,7 +25,6 @@ public class ONode implements Comparable<ONode> {
 
     public static enum userType {Driver, Rider, None};
     private userType user = userType.None; //TODO check id used
-    private userType user = userType.None;
 
     private ONode(String id, Long osmID, Double latitude, Double longitude, LinkedList<OEdge> edges, Map<String, String> tags, ArrayList<Long> waysID, userType user) {
         this.id = id.equals("") ? GraphUtils.generateId(this) : id;
@@ -76,10 +75,20 @@ public class ONode implements Comparable<ONode> {
     //instead of getWeight
     public Integer getDegree() { return this.edges == null ? 0 :this.edges.size(); }
 
-    public ArrayList<ONode> getAdjacentNodes() {
+    public ArrayList<ONode> getAdjacentNodesFromGraph() {
         ArrayList<ONode> adjacentNodes = new ArrayList<>();
         for(OEdge edge : edges) {
             adjacentNodes.add(edge.getEndNode());
+        }
+        return adjacentNodes;
+    }
+
+    public ArrayList<ONode> getAdjacentNodes() {
+        ArrayList<ONode> adjacentNodes = new ArrayList<>();
+        for(OEdge edge : edges) {
+//            if(edge.getEndNode().osmID
+            adjacentNodes.add(edge.getOtherEnd(this.osmID));
+//            adjacentNodes.add(this.osmID != edge.getEndNode().osmID ? edge.getEndNode():edge.getStartNode());
         }
         return adjacentNodes;
     }
@@ -111,7 +120,7 @@ public class ONode implements Comparable<ONode> {
     // SETTERS:
 
     public void setH(ONode node) {
-        this. H = GraphUtils.getInstance().distance(this.latitude, this.longitude, node.getLatitude(), node.getLongitude());
+        this. H = GraphUtils.distance(this.latitude, this.longitude, node.getLatitude(), node.getLongitude());
     }
 
     public void setG(double g) {
@@ -177,16 +186,6 @@ public class ONode implements Comparable<ONode> {
         if(edge!=null){
             this.edges.remove(edge);
         }
-    }
-
-    private final List<String> irrelevantTags = Arrays.asList("name", "surface", "ref");
-
-    private boolean relevantTags(String tag){
-        for (String s: irrelevantTags) {
-            if(tag.contains(s))
-                return false;
-        }
-        return true;
     }
 
 //    public int compareTo(ONode node) {
