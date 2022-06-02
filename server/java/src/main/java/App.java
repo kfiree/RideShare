@@ -1,27 +1,88 @@
 import View.MapView;
+import controller.GraphUtils;
 import crosby.binary.osmosis.OsmosisReader;
-import osmProcessing.GraphUtils;
-import osmProcessing.OGraph;
-import osmProcessing.Parser;
-import osmProcessing.Reader;
+import model.OGraph;
+import model.ONode;
+import controller.osmProcessing.*;
 
 import javax.swing.*;
 import java.awt.geom.Point2D;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.*;
-//32.101267 35.2040791
+
+//osmconvert64.exe ariel2.osm > arielpbf.pbf --out-pbf
 
 public class App {
     private static Map<Long, Double[]> Riders = new HashMap<>();
     private static List<Object> pathNodesID = new ArrayList<>();
 
-
     public static void main(String[] args) {
-        String filepath = ExtractMap.chooseFile();
-        CreateGraph(filepath);
-//        CreateGraph("data/arielpbf.pbf");
+//        String filepath = ExtractMap.chooseFile();
+//        CreateGraph(filepath);
+        CreateGraph("server/java/data/israel.pbf");
+
+    }
+
+    static Point2D.Double topRight = new Point2D.Double(32.10070229573369, 34.84550004660088), bottomLeft = new Point2D.Double(32.10070229573369, 34.84550004660088);
+
+    public static void CreateGraph(String pathToPBF) {
+        InputStream inputStream;
+
+        try {
+            inputStream = new FileInputStream(pathToPBF);
+
+            // read from osm pbf file:
+            Reader custom = new Reader();
+            OsmosisReader reader = new OsmosisReader(inputStream);
+
+            reader.setSink(custom);
+
+            // initial parsing of the .pbf file:
+            reader.run();
+
+            // secondary parsing of ways/creation of edges:
+            Parser.parseMapWays(custom.ways, custom.MapObjects);
+
+            // get riders & drivers
+            OGraph graph = OGraph.getInstance();
+
+            //delete unconnected nodes
+            List<ONode> subGraph = GraphUtils.getConnectedComponent(graph.getNode(2432701015l));
+
+//            toDelete = graph.getNodes().entrySet().stream()
+//                    .filter(e -> !subGraph.contains(e.getValue()))
+//                    .map(e -> e.getKey())
+//                    .collect(Collectors.toList());
+
+
+//            String fileName = "removed.json";
+//            jsonManager.saveList(toDelete,fileName);
+
+//            graph.removeNodes(jsonManager.readList(fileName));
+
+
+            /** full graph */
+
+//            addGraphToDB addGraphToDB = new addGraphToDB(graph);
+//            addGraphToDB.addToDB();
+
+            // TODO set & get graph user drive | sub graph | match rider and drivers | lock drive
+
+            System.out.println(graph);
+
+            /** show graph */
+            MapView.getInstance().run();
+
+
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(new JFrame(), "File not found!", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            // exit after error //
+            System.exit(0);
+        }
     }
 
     /**
@@ -47,84 +108,15 @@ public class App {
         return pathNodesID;
     }
 
-    static Point2D.Double topRight = new Point2D.Double(32.10070229573369, 34.84550004660088), bottomLeft = new Point2D.Double(32.10070229573369, 34.84550004660088);
-
-    public static void CreateGraph(String pathToPBF) {
-        InputStream inputStream;
-
-        try {
-            inputStream = new FileInputStream(pathToPBF);
-
-            // read from osm pbf file:
-            Point2D.Double mapBounds = new Point2D.Double(31.99721786061472, 34.72968352639412);
-
-            Reader custom = new Reader();
-            custom.setMapBounds(topRight, bottomLeft);
-            OsmosisReader reader = new OsmosisReader(inputStream);
-
-//            custom.removeTertiary();
-
-            // bottom left  31.999919131519913, 34.72920639507035
-            // top right 32.10070229573369, 34.84550004660088
-
-
-
-            reader.setSink(custom);
-
-            // initial parsing of the .pbf file:
-            reader.run();
-
-
-            // secondary parsing of ways/creation of edges:
-            Parser.parseMapWays(custom.ways, custom.MapObjects);
-
-            // get riders
-            addRiders();
-
-            // get driver path
-            setDriversPath();
-
-            GraphUtils.getInstance().addPath(pathNodesID);
-            GraphUtils.getInstance().setRiders(Riders);
-            OGraph graph = OGraph.getInstance();
-
-
-            /**
-             * flow with data base
-             */
-
-
-            /** full graph */
-
-            // set
-//            addGraphToDB addGraphToDB = new addGraphToDB(graph);
-//            addGraphToDB.addToDB();
-
-            //get
-
-
-            // set & get user
-
-            // set & get drive
-
-
-            //  set & get sub graph
-
-            // match rider and drivers
-
-            // lock drive
-
-//            //TODO add data to map
-            MapView.getInstance().run();
-//
-//            //TODO add algorithms here
-            System.out.println(graph.toString());
-
-        } catch (FileNotFoundException e) {
-            JOptionPane.showMessageDialog(new JFrame(), "File not found!", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            // exit after error //
-            System.exit(0);
+    private static String chooseFile() {
+        // JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        JFileChooser jfc = new JFileChooser("server/java/data");
+        jfc.setDialogTitle("Select .osm.pbf file to read");
+        int returnValue = jfc.showOpenDialog(null);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = jfc.getSelectedFile();
+            return selectedFile.getAbsolutePath();
         }
+        return null;
     }
 }

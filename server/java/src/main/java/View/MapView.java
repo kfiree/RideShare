@@ -7,9 +7,9 @@ import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.ui.view.Viewer;
 //import org.graphstream.ui.view.util.DefaultMouseManager;
 
-import osmProcessing.GraphUtils;
-import osmProcessing.OGraph;
-import osmProcessing.ONode;
+import controller.GraphUtils;
+import model.OGraph;
+import model.ONode;
 
 /**
  * "fill-mode" ...
@@ -70,11 +70,10 @@ public class MapView {
 
     public void run(){
         // draw graph components
-        GraphUtils utils = GraphUtils.getInstance();
 
         drawEdge(graph);
-        drawRider(utils);
-        drawPaths(utils);
+//        drawRider(utils);
+//        drawPaths(utils);
 
         displayGraph.setAttribute("ui.stylesheet", styleSheet);
         displayGraph.setAttribute("ui.quality");
@@ -87,12 +86,11 @@ public class MapView {
     }
 
     private Boolean drawEdge(OGraph graph){
-        graph.getEdges().values().forEach(e -> {
+        graph.getEdges().forEach(e -> {
+
             Node start = drawNode(e.getStartNode());
             Node end = drawNode(e.getEndNode());
-            Edge edge = displayGraph.addEdge(e.getEdge_Id(), start, end);
-
-//            edge.setAttribute("ui.style", "blue");
+            displayGraph.addEdge(e.getEdge_Id(), start, end);
         });
         return true;
     }
@@ -109,9 +107,17 @@ public class MapView {
             displayNode.setAttribute("xy", node.getLongitude(), node.getLatitude());
             displayNode.setAttribute("ui.label", node.getOsm_Id().toString());
 
-            if(!node.getTags().containsKey("highway")){
-                displayNode.setAttribute("ui.style", "size: 1px;fill-color: black;");
+            displayNode.setAttribute("ui.style", "z-index: 1; size: 3px;");
+
+            if(node.getOsm_Id() == 2432701015l){
+                displayNode.setAttribute("ui.style", "z-index: 2; size: 10px; fill-color: green;");
+            } else if(node.getUser() == ONode.userType.Rider){
+                displayNode.setAttribute("ui.style", "fill-color: blue;");
+            } else if(node.getUser() == ONode.userType.Driver) {
+                displayNode.setAttribute("ui.style", "fill-color: red;");
             }
+
+
         }
 
         return displayNode;
