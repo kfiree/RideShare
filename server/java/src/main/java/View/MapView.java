@@ -1,5 +1,6 @@
 package View;
 
+import controller.RDS.utils.utils;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -73,7 +74,7 @@ public class MapView {
 
         drawEdge(graph);
 //        drawRider(utils);
-//        drawPaths(utils);
+        drawPaths();
 
         displayGraph.setAttribute("ui.stylesheet", styleSheet);
         displayGraph.setAttribute("ui.quality");
@@ -141,12 +142,26 @@ public class MapView {
         return true;
     }
 
-    private boolean drawPaths(GraphUtils utils){
-        utils.getPaths().forEach(path -> {
-            if(path!=null)
-                path.getEdges().forEach(edge -> {
-                    displayGraph.getEdge(edge.getEdge_Id()).setAttribute("ui.style", "size: 5px; fill-color: blue;");
-                });
+    private boolean drawPaths() {
+//        utils.getPaths().forEach(path -> {
+//            if(path!=null)
+//                path.getEdges().forEach(edge -> {
+//                    displayGraph.getEdge(edge.getEdge_Id()).setAttribute("ui.style", "size: 5px; fill-color: blue;");
+//                });
+//        });
+
+        GraphUtils.getLabeledPaths().keySet().forEach(path -> {
+            if (path != null) {
+                if (GraphUtils.getLabeledPaths().get(path).equals("Passenger")) {
+                    path.getEdges().forEach(edge -> {
+                        displayGraph.getEdge(edge.getEdge_Id()).setAttribute("ui.style", "size: 5px; fill-color: blue;");
+                    });
+                } else if (GraphUtils.getLabeledPaths().get(path).equals("Driver")) {
+                    path.getEdges().forEach(edge -> {
+                        displayGraph.getEdge(edge.getEdge_Id()).setAttribute("ui.style", "size: 5px; fill-color: red;");
+                    });
+                }
+            }
         });
         return true;
     }

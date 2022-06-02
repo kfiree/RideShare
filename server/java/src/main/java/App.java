@@ -20,10 +20,11 @@ public class App {
     private static Map<Long, Double[]> Riders = new HashMap<>();
     private static List<Object> pathNodesID = new ArrayList<>();
 
+
     public static void main(String[] args) {
 //        String filepath = ExtractMap.chooseFile();
 //        CreateGraph(filepath);
-        CreateGraph("server/java/data/israel.pbf");
+        CreateGraph("server/java/data/israel-and-palestine-latest.osm.pbf");
 
     }
 
@@ -52,6 +53,10 @@ public class App {
 
             //delete unconnected nodes
             List<ONode> subGraph = GraphUtils.getConnectedComponent(graph.getNode(2432701015l));
+            ONode src = graph.getNode(412833951);
+            ONode dst = graph.getNode(354033541);
+//            List<Object> path = GraphUtils.AStar(src, dst);
+//            GraphUtils.addLabeledPath(path, "Driver");
 
 //            toDelete = graph.getNodes().entrySet().stream()
 //                    .filter(e -> !subGraph.contains(e.getValue()))

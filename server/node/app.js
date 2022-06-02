@@ -28,15 +28,17 @@ class University {
 }
 
 class Drive {
-    constructor(id, src, dest, dateAndTime, seats, price, driver_id) {
+    constructor(id, src, dest, dateAndTime, seats, price, driver_id, type) {
         this.id = id;
-        this.src = src; //Geo_Location object
-        this.dest = dest; //Geo_Location object
+        this.src = src; //Geo_Location id
+        this.dest = dest; //Geo_Location id
         this.date = dateAndTime; //Date object
         this.seats = seats; //Number
         this.price = price; //Number
         this.driver_id = driver_id; //User.id
         this.passengers = []; //List of User_Drives.id
+        this.path_id = ''; //Should be changed when inserting to DB
+        this.type = type; //String
     }
 }
 
@@ -498,7 +500,7 @@ function createUsers() {
  */
 function createTripsPerWeek(numOfDay, location) {
     for (let i = 0; i < users.length; i++) {
-        if (users[i].role === 'Driver') {
+        // if (users[i].role === 'Driver') {
             let userTripsPerWeek = users[i].daysPerWeek;
             let homeAddress = generateRandomPoint({ 'lat': location.latitude, 'lng': location.longtitude }, 2000);
             locations_created.push(homeAddress);
@@ -523,6 +525,7 @@ function createTripsPerWeek(numOfDay, location) {
                     3,
                     15,
                     user_objects[i].id,
+                    users[i].role,
                 ));
                 id += 1;
                 let tripFrom = {
@@ -555,7 +558,7 @@ function createTripsPerWeek(numOfDay, location) {
 
             // delete all trips from driver trips list
             users[i].driverTrips = [];
-        }
+        // }
     }
     return trips;
 }
@@ -572,9 +575,9 @@ function createUsersAndTrips(city) {
 
     //Create trips for each week.
     createTripsPerWeek(1, city_geo_location);
-    createTripsPerWeek(8, city_geo_location);
-    createTripsPerWeek(15, city_geo_location);
-    createTripsPerWeek(22, city_geo_location);
+    // createTripsPerWeek(8, city_geo_location);
+    // createTripsPerWeek(15, city_geo_location);
+    // createTripsPerWeek(22, city_geo_location);
 }
 
 //Create users and trips for each city
@@ -587,7 +590,7 @@ trips.forEach(trip => {
     trip.leaveTime = moment(trip.leaveTime).add(3, 'hours').toDate();
 });
 // Create the JSON file to hold the data we have created.
-fs.writeFile('trips.json', JSON.stringify(drives), (err) => {
+fs.writeFile('drives.json', JSON.stringify(drives), (err) => {
     if (err) throw err;
     //console.log('File has been created');
 });
