@@ -1,9 +1,6 @@
 package controller;
 
-import model.OEdge;
-import model.OGraph;
-import model.ONode;
-import model.OPath;
+import model.*;
 
 import java.util.*;
 
@@ -11,6 +8,8 @@ public class GraphUtils {
     private static List<OPath> _paths =  new ArrayList<>();
     private static Hashtable<OPath, String> labeledPaths = new Hashtable<>();
     private static Map<Long, ONode> _riders = new HashMap<>();
+    private static Map<String, ONode> locations = new HashMap<>();
+    private static Map<String, Drive> drives = new HashMap<>();
     private static OGraph graph = OGraph.getInstance();
 
     /**
@@ -87,6 +86,14 @@ public class GraphUtils {
         }else{
             nodeEdges.get(n2.getOsm_Id()).put(n1.getOsm_Id(), e);
         }
+    }
+
+    public static Map<String, ONode> getLocations() {
+        return locations;
+    }
+
+    public static void setLocations(Map<String, ONode> locations) {
+        GraphUtils.locations = locations;
     }
 
     public static void setPaths(List<OPath> paths) {
