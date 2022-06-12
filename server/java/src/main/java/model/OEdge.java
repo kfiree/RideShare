@@ -33,7 +33,7 @@ public class OEdge {
         this.name = name;
         this.highwayType = highwayType;
         this.distance = GraphUtils.distance(startNode.getLatitude(), startNode.getLongitude(), endNode.getLatitude(), endNode.getLongitude());
-        this.weight = this.distance/SPEED_LIMITS.get(highwayType);
+        this.weight = this.distance/SPEED_LIMITS.getOrDefault(highwayType, 50);
     }
 
     public OEdge(OMapWay way, ONode startNode, ONode endNode) {
