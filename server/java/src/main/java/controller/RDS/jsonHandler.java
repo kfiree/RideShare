@@ -1,19 +1,18 @@
 package controller.RDS;
 
+import controller.GraphUtils;
+import model.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import model.OEdge;
-import model.OGraph;
-import model.ONode;
 import org.json.simple.parser.ParseException;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class jsonHandler {
     static public ONode jsonToNode(String jsonNode){
@@ -102,5 +101,76 @@ public class jsonHandler {
             e.printStackTrace();
         }
         return list;
+    }
+
+    public static void jsonDrivesToPath(String filePath) {
+        //First set locations in GraphUtils
+        jsonLocationsToNodes("server/node/locations.json");
+
+        JSONParser jsonParser = new JSONParser();
+        List<Drive> drives = new ArrayList<>();
+
+        // Read JSON file
+        try (FileReader reader = new FileReader(filePath)) {
+            Object obj = jsonParser.parse(reader);
+
+            JSONArray drivesJsonArray = (JSONArray) obj;
+
+            //Iterate over drives array
+            drivesJsonArray.forEach(drive -> {
+                JSONObject jsonDrive = (JSONObject) drive;
+                String driverType = (String) jsonDrive.get("type");
+                String driveOwnerId = (String) jsonDrive.get("driver_id");
+                Date leaveTime = null;
+
+                try {
+                    leaveTime = parseJsonDate(jsonDrive.get("leaveTime").toString());
+                } catch (java.text.ParseException e) {
+                    e.printStackTrace();
+                }
+
+                String srcId = (String) jsonDrive.get("src");
+                String dstId = (String) jsonDrive.get("dest");
+
+                ONode src = OGraph.getInstance().findClosestNode(GraphUtils.getLocations().get(srcId));
+                ONode dst = OGraph.getInstance().findClosestNode(GraphUtils.getLocations().get(dstId));
+                List<Object> path = GraphUtils.AStar(src, dst);
+                drives.add(new Drive(path, driverType, driveOwnerId, leaveTime));
+            });
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void jsonLocationsToNodes(String filePath) {
+        JSONParser jsonParser = new JSONParser();
+        HashMap<String, ONode> locations = new HashMap<>();
+
+        // Read JSON file
+        try (FileReader reader = new FileReader(filePath)) {
+            Object obj = jsonParser.parse(reader);
+
+            JSONArray jsonLocationsArray = (JSONArray) obj;
+
+            //Iterate over drives array
+            jsonLocationsArray.forEach(location -> {
+                JSONObject jsonObj = (JSONObject) location;
+                String locationId = (String) jsonObj.get("geo_loaction_id");
+                String latitude = (String) jsonObj.get("latitude");
+                String longtitude = (String) jsonObj.get("longtitude");
+
+                locations.put(locationId, new ONode(null, locationId, Double.parseDouble(latitude), Double.parseDouble(longtitude), null, null));
+            });
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+        GraphUtils.setLocations(locations);
+    }
+
+    // method to parse ISO String to Date object
+    public static Date parseJsonDate(String date) throws java.text.ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return format.parse(date);
     }
 }
