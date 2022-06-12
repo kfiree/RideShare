@@ -72,7 +72,7 @@ public class App {
 
             /** full graph */
 
-            addGraphToDB.addToDB(graph);
+//            addGraphToDB.addToDB(graph);
 
 
             // TODO set & get graph user drive | sub graph | match rider and drivers | lock drive
