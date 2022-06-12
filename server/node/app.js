@@ -544,6 +544,7 @@ function createTripsPerWeek(numOfDay, location) {
                     3,
                     15,
                     user_objects[i].id,
+                    users[i].role,
                 ));
                 id += 1;
             }
@@ -596,6 +597,11 @@ fs.writeFile('drives.json', JSON.stringify(drives), (err) => {
 });
 
 fs.writeFile('locations.json', JSON.stringify(locations_created), (err) => {
+    if (err) throw err;
+    //console.log('File has been created');
+});
+
+fs.writeFile('users.json', JSON.stringify(users), (err) => {
     if (err) throw err;
     //console.log('File has been created');
 });
