@@ -32,8 +32,8 @@ public class OEdge {
         this.id = id.equals("") ? UUID.randomUUID().toString() : id;
         this.name = name;
         this.highwayType = highwayType;
-        this.distance = distance;
-        this.weight = weight;
+        this.distance = GraphUtils.distance(startNode.getLatitude(), startNode.getLongitude(), endNode.getLatitude(), endNode.getLongitude());
+        this.weight = this.distance/SPEED_LIMITS.get(highwayType);
     }
 
     public OEdge(OMapWay way, ONode startNode, ONode endNode) {
