@@ -1,6 +1,6 @@
 package RDS.querys;
 
-import osmProcessing.OEdge;
+import model.OEdge;
 
 public class edge_query {
     static public String addEdge(OEdge e) {
