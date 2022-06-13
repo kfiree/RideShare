@@ -65,6 +65,28 @@
     <inspection_tool class="ExceptionNameDoesntEndWithException" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="ExtendsThread" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="FieldMayBeStatic" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="FieldNamingConvention" enabled="true" level="WARNING" enabled_by_default="true">
+      <extension name="ConstantNamingConvention" enabled="true">
+        <option name="m_regex" value="[A-Z][A-Z_]*" />
+        <option name="m_minLength" value="0" />
+        <option name="m_maxLength" value="128" />
+      </extension>
+      <extension name="ConstantWithMutableFieldTypeNamingConvention" enabled="true">
+        <option name="m_regex" value="[A-Z][A-Z_]*" />
+        <option name="m_minLength" value="0" />
+        <option name="m_maxLength" value="128" />
+      </extension>
+      <extension name="InstanceVariableNamingConvention" enabled="true">
+        <option name="m_regex" value="[a-z][A-Za-z\d]*" />
+        <option name="m_minLength" value="0" />
+        <option name="m_maxLength" value="128" />
+      </extension>
+      <extension name="StaticVariableNamingConvention" enabled="false">
+        <option name="m_regex" value="s_[a-z][A-Za-z\d]*" />
+        <option name="m_minLength" value="5" />
+        <option name="m_maxLength" value="32" />
+      </extension>
+    </inspection_tool>
     <inspection_tool class="FindAndMapToApply" enabled="true" level="Practice" enabled_by_default="true" />
     <inspection_tool class="ForwardReference" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="FunctionTupleSyntacticSugar" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -94,7 +116,7 @@
       <option name="REPORT_CATCH_PARAMETERS" value="false" />
       <option name="REPORT_FOREACH_PARAMETERS" value="false" />
     </inspection_tool>
-    <inspection_tool class="LocalVariableNamingConvention" enabled="true" level="ERROR" enabled_by_default="true">
+    <inspection_tool class="LocalVariableNamingConvention" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="m_ignoreForLoopParameters" value="false" />
       <option name="m_ignoreCatchParameters" value="false" />
       <option name="m_regex" value="[a-z][A-Za-z\d]*" />
@@ -102,7 +124,7 @@
       <option name="m_maxLength" value="128" />
     </inspection_tool>
     <inspection_tool class="LoopVariableNotUpdated" enabled="true" level="ERROR" enabled_by_default="true" />
-    <inspection_tool class="MethodNameSameAsClassName" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="MethodNameSameAsClassName" enabled="true" level="SERVER PROBLEM" enabled_by_default="true" />
     <inspection_tool class="MethodNameSameAsParentName" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="MethodNamesDifferOnlyByCase" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="MissingOverrideAnnotation" enabled="true" level="WEAK WARNING" enabled_by_default="true">
@@ -136,7 +158,7 @@
       <option name="ignoreInconvertibleTypes" value="true" />
     </inspection_tool>
     <inspection_tool class="OverloadedVarargsMethod" enabled="false" level="ERROR" enabled_by_default="false" />
-    <inspection_tool class="PackageNamingConvention" enabled="true" level="ERROR" enabled_by_default="true">
+    <inspection_tool class="PackageNamingConvention" enabled="true" level="SERVER PROBLEM" enabled_by_default="true">
       <option name="m_regex" value="[a-z\d]*" />
       <option name="m_minLength" value="0" />
       <option name="m_maxLength" value="128" />
@@ -145,7 +167,7 @@
       <option name="m_ignoreSingleCharacterNames" value="false" />
       <option name="m_ignoreOverridesOfLibraryMethods" value="false" />
     </inspection_tool>
-    <inspection_tool class="ParameterNamingConvention" enabled="true" level="ERROR" enabled_by_default="true">
+    <inspection_tool class="ParameterNamingConvention" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="m_regex" value="[a-z_][A-Za-z_\d]*" />
       <option name="m_minLength" value="0" />
       <option name="m_maxLength" value="128" />
@@ -216,7 +238,7 @@
     <inspection_tool class="UnnecessarySuperConstructor" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnnecessarySuperQualifier" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnnecessaryThis" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="UpperCaseFieldNameNotConstant" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="UpperCaseFieldNameNotConstant" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UtilityClassWithPublicConstructor" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UtilityClassWithoutPrivateConstructor" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignorableAnnotations">

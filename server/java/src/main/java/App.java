@@ -1,6 +1,11 @@
-import View.MapView;
+import controller.algorithms.GraphAlgo;
+import controller.rds.jsonHandler;
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.implementations.MultiGraph;
+import org.graphstream.ui.view.Viewer;
+import view.MapView;
 import controller.GraphUtils;
-import controller.RDS.addGraphToDB;
+import controller.rds.addGraphToDB;
 import crosby.binary.osmosis.OsmosisReader;
 import model.OGraph;
 import model.ONode;
@@ -13,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 //osmconvert64.exe ariel2.osm > arielpbf.pbf --out-pbf
 
@@ -25,7 +31,6 @@ public class App {
 //        String filepath = ExtractMap.chooseFile();
 //        CreateGraph(filepath);
         CreateGraph("server/java/data/israel.pbf");
-
     }
 
     static Point2D.Double topRight = new Point2D.Double(32.10070229573369, 34.84550004660088), bottomLeft = new Point2D.Double(32.10070229573369, 34.84550004660088);
@@ -51,31 +56,7 @@ public class App {
             // get riders & drivers
             OGraph graph = OGraph.getInstance();
 
-            //delete unconnected nodes
-            List<ONode> subGraph = GraphUtils.getConnectedComponent(graph.getNode(2432701015l));
-            ONode src = graph.getNode(412833951);
-            ONode dst = graph.getNode(354033541);
-//            List<Object> path = GraphUtils.AStar(src, dst);
-//            GraphUtils.addLabeledPath(path, "Driver");
-
-//            toDelete = graph.getNodes().entrySet().stream()
-//                    .filter(e -> !subGraph.contains(e.getValue()))
-//                    .map(e -> e.getKey())
-//                    .collect(Collectors.toList());
-
-
-//            String fileName = "removed.json";
-//            jsonManager.saveList(toDelete,fileName);
-
-//            graph.removeNodes(jsonManager.readList(fileName));
-
-
-            /** full graph */
-
-            addGraphToDB.addToDB(graph);
-
-
-            // TODO set & get graph user drive | sub graph | match rider and drivers | lock drive
+            GraphAlgo.removeNodesThatNotConnectedTo(graph.getNode(2432701015l));
 
             System.out.println(graph);
 
@@ -86,7 +67,7 @@ public class App {
         } catch (FileNotFoundException e) {
             JOptionPane.showMessageDialog(new JFrame(), "File not found!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
-            // exit after error //
+
             System.exit(0);
         }
     }
@@ -126,3 +107,4 @@ public class App {
         return null;
     }
 }
+// TODO set & get graph user drive | sub graph | match rider and drivers | lock drive

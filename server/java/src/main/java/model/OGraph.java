@@ -1,6 +1,8 @@
 package model;
 
 import controller.GraphUtils;
+import controller.algorithms.GraphAlgo;
+import controller.osmProcessing.OMapWay;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -52,13 +54,53 @@ public class OGraph {
      * Setters:
      */
 
-    public OEdge addEdge(OEdge e){
-        this.edges.add(e);
-        return e;
+    public void setEdges(Set<OEdge> edges) {
+        this.edges = edges;
+    }
+
+    /** add edge from osm file */
+    public OEdge addEdge(ONode src, ONode dst, OMapWay way){
+        boolean srcToDst = src.isAdjacent(dst);
+        boolean dstToSrc = dst.isAdjacent(src);
+
+        OEdge edge = null;
+
+        if(srcToDst && dstToSrc){
+            return src.getEdgeTo(dst);
+        }else if(dstToSrc){
+            edge = dst.getEdgeTo(src);
+        }else if(!srcToDst){
+            edge = new OEdge(way, src, dst);
+        }
+
+        src.addEdge(edge);
+        this.edges.add(edge);
+
+        return edge;
+    }
+
+    /** add edge from DB */
+    public OEdge addEdge(String id, Long startNodeId, Long endNodeID, Double weight, String highwayType) {
+        OEdge edge = new OEdge(id, startNodeId, endNodeID, weight, 0.0, "", highwayType);
+        addEdge(edge);
+
+        return edge;
+    }
+
+    private void addEdge(OEdge e){
+        if(!e.getStartNode().isAdjacent(e.getEndNode())) {
+            e.getStartNode().addEdge(e);
+            e.getEndNode().addEdge(e);
+//            e.getLength();
+            edges.add(e);
+        }else{
+            e.setDirected(true);
+        }
     }
 
     public void setNodeQuantity(Long l, int i) { this.nodesQuantity.put(l, 0); }
 
+    //TODO make private
     public ONode addNode(ONode node, long id){
         nodes.put(id, node);
         return node;
@@ -69,28 +111,57 @@ public class OGraph {
         return node;
     }
 
-    public ONode removeNode(long id){
-        ONode removed = this.nodes.remove(id);
-
-        Iterator<OEdge> itr = removed.getEdges().iterator();
-        while(itr.hasNext()){
-            removeEdge(itr.next());
-        }
-        return removed;
+    public ONode addNode(String id, Long osmID, Double latitude, Double longitude, ONode.userType user){
+        ONode node = new ONode(id, osmID, latitude, longitude, ONode.userType.None);
+        return addNode(node);
     }
 
-    public void removeNodes(List<Long> nodeKeys){
+    public ONode removeNode(long id){
+        ONode node = this.nodes.remove(id);
 
-        for(int i = 0; i < nodeKeys.size(); i++){
-            Long id = nodeKeys.get(i);
+        node.getEdges().forEach(edge ->{
+            ONode otherEnd = edge.getOtherEnd(node.getId());
+            otherEnd.removeEdgeTo(node);
+            edges.remove(edge);
+        });
 
-            ONode removed = this.nodes.remove(id);
-            ArrayList<OEdge> oEdgesCopy = new ArrayList<>(removed.getEdges());
-            for (OEdge e:oEdgesCopy) {
-                removeEdge(e);
+        return nodes.remove(id);
+    }
+
+    public void removeNodes(List<ONode> nodes){
+
+        List<OEdge> edgesToRemove = new ArrayList<>();
+        int a = 0;
+        for(ONode node:nodes) {
+            this.nodes.remove(node.getOsm_Id());
+            if(node.getOsm_Id() == 560149987l || node.getOsm_Id() == 560149995l){
+                int stop = 0;
+            }
+            for (OEdge edge : node.getEdges()) {
+//                System.out.println(a++);
+//                ONode otherEnd = edge.getOtherEnd(node.getId());
+//                otherEnd.removeEdge(edge);//removeEd(node);
+                edgesToRemove.add(edge);
             }
         }
+
+
+        edges.removeAll(edgesToRemove);
+//        this.nodes.removeAll(nodes);
     }
+
+//    public void removeNodes(List<Long> nodeKeys){
+//
+//        for(int i = 0; i < nodeKeys.size(); i++){
+//            Long id = nodeKeys.get(i);
+//
+//            ONode removed = this.nodes.remove(id);
+//            ArrayList<OEdge> oEdgesCopy = new ArrayList<>(removed.getEdges());
+//            for (OEdge e:oEdgesCopy) {
+//                removeEdge(e);
+//            }
+//        }
+//    }
 
     public boolean removeEdge(OEdge e){
         e.getEndNode().removeEdgeTo(e.getStartNode());
@@ -120,11 +191,11 @@ public class OGraph {
 
         //Loop through all the nodes that are not from Rider type, and find the closest one
         this.nodes.values().stream().filter(n -> n.getUser() != ONode.userType.Rider)
-                .forEach(n -> {
-                    double dist = GraphUtils.distance(latitude, longitude, n.getLatitude(), n.getLongitude());
+                .forEach(other -> {
+                    double dist = GraphAlgo.distance(node, other);
                     if(dist < minDistance.get()){
                         minDistance.set(dist);
-                        closestNode.set(n);
+                        closestNode.set(other);
                     }
                 });
 

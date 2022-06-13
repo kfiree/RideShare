@@ -35,7 +35,7 @@ public class OPath implements Comparable<OPath>{
                 dest = graph.getNode(pathNodesID.get(i+1));
 
                 if(dest != null && src != null){
-                    OEdge edge = src.getEdgeBetween(dest);
+                    OEdge edge = src.getEdgeTo(dest);
                     if(edge!=null){
                         this.edges.add(edge);
                     }

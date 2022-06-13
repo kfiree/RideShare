@@ -1,13 +1,12 @@
 package model;
 
 import controller.GraphUtils;
+import controller.algorithms.GraphAlgo;
 import org.jetbrains.annotations.NotNull;
 import controller.osmProcessing.MapObject;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toCollection;
 
 public class ONode implements Comparable<ONode> {
 
@@ -15,9 +14,11 @@ public class ONode implements Comparable<ONode> {
     private Long osmID;
     private Double latitude, longitude;
 
-    private LinkedList<OEdge> edges;
-    private Map<String, String> tags;
-    private ArrayList<Long> waysID;
+    private List<OEdge> edges = new LinkedList<>();
+    private Map<String, String> tags = new HashMap<>();
+    private ArrayList<Long> waysID = new ArrayList<>();
+    static public Set<String> tagNames = new HashSet<>();
+    static Map<String, String> tagsMap = new HashMap<>();
 
     private double H;
     private double G;
@@ -26,31 +27,26 @@ public class ONode implements Comparable<ONode> {
     public static enum userType {Driver, Rider, None};
     private userType user = userType.None; //TODO check id used
 
-    private ONode(String id, Long osmID, Double latitude, Double longitude, LinkedList<OEdge> edges, Map<String, String> tags, ArrayList<Long> waysID, userType user) {
+    public ONode(String id, Long osmID, Double latitude, Double longitude, userType user) {
         this.id = id.equals("") ? GraphUtils.generateId(this) : id;
         this.osmID = osmID;
         this.latitude = latitude;
         this.longitude = longitude;
         this.user = user;
-        this.edges = edges == null ? new LinkedList<>(): edges;
-        this.tags = tags == null? new HashMap<>(): tags;
-        this.waysID = waysID == null ?new ArrayList<>(): waysID;
+//        this.edges = edges == null ? new LinkedList<>(): edges;
+//        this.tags = tags == null? new HashMap<>(): tags;
+//        this.waysID = waysID == null ?new ArrayList<>(): waysID;
     }
 
     public ONode(@NotNull MapObject object) {
-        this("", object.getID(), object.getLatitude(), object.getLongitude(), null, object.getTags(), null, userType.None);
+        this("", object.getID(), object.getLatitude(), object.getLongitude(), userType.None);
+        this.tags = object.getTags();
     }
 
-    public ONode(Long osmID, Double @NotNull [] coordinates, userType user) {
-        this("", osmID, coordinates[0], coordinates[1], null, null, null, user);
-    }
-    public ONode(Long osmID, String nodeID, Double latitude, Double longitude, LinkedList<OEdge> edges,Map<String, String> tags) {
-        this(nodeID, osmID, latitude, longitude, edges, tags, null, userType.None);
-    }
 
 
 // GETTERS:
-    public String getNode_id() {return id;}
+    public String getId() {return id;}
 
     public Long getOsm_Id() {
         return this.osmID;
@@ -87,7 +83,7 @@ public class ONode implements Comparable<ONode> {
         ArrayList<ONode> adjacentNodes = new ArrayList<>();
         for(OEdge edge : edges) {
 //            if(edge.getEndNode().osmID
-            adjacentNodes.add(edge.getOtherEnd(this.osmID));
+            adjacentNodes.add(edge.getOtherEnd(this.getId()));
 //            adjacentNodes.add(this.osmID != edge.getEndNode().osmID ? edge.getEndNode():edge.getStartNode());
         }
         return adjacentNodes;
@@ -101,7 +97,7 @@ public class ONode implements Comparable<ONode> {
         return tags;
     }
 
-    public LinkedList<OEdge> getEdges() {
+    public List<OEdge> getEdges() {
         return edges;
     }
 
@@ -119,8 +115,8 @@ public class ONode implements Comparable<ONode> {
 
     // SETTERS:
 
-    public void setH(ONode node) {
-        this. H = GraphUtils.distance(this.latitude, this.longitude, node.getLatitude(), node.getLongitude());
+    public void setH(ONode other) {
+        this. H = GraphAlgo.distance(this, other);
     }
 
     public void setG(double g) {
@@ -131,12 +127,31 @@ public class ONode implements Comparable<ONode> {
         F = f;
     }
 
-    public void addEdge(OEdge edge) {
+    public void addEdge(@NotNull OEdge edge) {
+
         this.edges.add(edge);
     }
 
     public void addTags(Map<String, String> tags) {
-        this.tags.putAll(tags);
+        if(tags.containsKey("maxspeed")) {
+            this.tags.put("maxspeed", tags.get("maxspeed"));
+//            System.out.println(tags.get("maxspeed") + getOsm_Id());
+        }
+        if(tags.containsKey("oneway")) {
+            this.tags.put("oneway", tags.get("oneway"));
+//            System.out.println("oneway = " + tags.get("oneway")+ ", id =  " + getOsm_Id());
+        }else{
+            this.tags.put("oneway", "no");
+        }
+//
+        tags.forEach((tag,tagValue)->{
+            if(tag.equals("one")){
+
+            }
+            tagNames.add(tag);
+            tagsMap.put(tag,tagValue);
+        });
+//        this.tags.putAll(tags);
     }
 
     public void addTags(String k, String v) {
@@ -151,9 +166,13 @@ public class ONode implements Comparable<ONode> {
         this.latitude = latitude;
     }
 
-
+static int a = 0;
     public boolean isAdjacent(ONode targetNode) {
         for (OEdge e : this.edges) {
+//            System.out.println(e.key);
+            if (e == null || e.getEndNode() == null || e.getStartNode() == null){
+                int a = 0;
+            }else
             if (e.getStartNode().getOsm_Id() == targetNode.getOsm_Id() ||
                     e.getEndNode().getOsm_Id() == targetNode.getOsm_Id()) {
                 return true;
@@ -162,7 +181,7 @@ public class ONode implements Comparable<ONode> {
         return false;
     }
 
-    public OEdge getEdgeBetween(ONode targetNode) {
+    public OEdge getEdgeTo(ONode targetNode) {
         for (OEdge e : this.edges) {
             if (e.getStartNode().getOsm_Id() == targetNode.getOsm_Id() ||
                     e.getEndNode().getOsm_Id() == targetNode.getOsm_Id()) {
@@ -171,7 +190,9 @@ public class ONode implements Comparable<ONode> {
         }
         return null;
     }
-
+    public boolean removeEdge(OEdge edge){
+        return edges.remove(edge);
+    }
     public userType getUser() {
         return user;
     }
@@ -182,45 +203,25 @@ public class ONode implements Comparable<ONode> {
     }
 
     public void removeEdgeTo(ONode other){
-        OEdge edge = getEdgeBetween(other);
+        OEdge edge = getEdgeTo(other);
         if(edge!=null){
-            this.edges.remove(edge);
+            edges.remove(edge);
         }
     }
 
-//    public int compareTo(ONode node) {
-//        return this.getDegree().compareTo(node.getDegree());
-//    }
-
-    @Override
-    public String toString() {
-        String idStr = "id = " + osmID;
-        String coordinatesStr = ", coordinates = (" +latitude + "," + longitude + ")";
-        String adjacentStr = edges.stream()
-                .map(edge ->edge.getOtherEnd(this.osmID).getOsm_Id().toString())
-                .collect(Collectors.joining(", "));
-
-        adjacentStr = ", adjacent = (" + adjacentStr +")";
-        String tagsStr = tags.entrySet().stream()
-                .filter(entry -> relevantTags(entry.getKey()))
-                .map(entry -> entry.getKey() + ":" + entry.getValue())
-                .collect(Collectors.joining(", "));
-
-        tagsStr = ", tags = (" + tagsStr +")";
-        String ways = waysID.stream().map(element -> element.toString()).collect(Collectors.joining(", "));
-        ways = "ways = (" + ways +")";
-
-        return "Node{" + idStr + coordinatesStr + adjacentStr + tagsStr +"}\n"+ways;
-    }
-    private final List<String> irrelevantTags = Arrays.asList("name", "surface", "ref");
+    private final String[] irrelevantTags = {"name","bicycle", "maxspeed:type", "lanes", "maxheight"};
 
     private boolean relevantTags(String tag){
+
         for (String s: irrelevantTags) {
             if(tag.contains(s))
                 return false;
         }
         return true;
     }
+//    public boolean stringContainsItemFromList(String inputStr) {
+//        return Arrays.stream(relevantTags).anyMatch(inputStr::contains);
+//    }
 
     @Override
     public int compareTo(ONode node) {
@@ -231,10 +232,10 @@ public class ONode implements Comparable<ONode> {
             return -1;
         }
         else{
-            if(node.getNode_id().compareTo(this.id) < 0){
+            if(node.getId().compareTo(this.id) < 0){
                 return -1;
             }
-            else if(node.getNode_id().compareTo(this.id) > 0){
+            else if(node.getId().compareTo(this.id) > 0){
                 return 1;
             }
             else{
@@ -253,5 +254,26 @@ public class ONode implements Comparable<ONode> {
             return false;
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        String idStr = "id = " + osmID;
+        String coordinatesStr = ", coordinates = (" +latitude + "," + longitude + ")";
+        String adjacentStr = edges.stream()
+                .map(edge ->edge.getOtherEnd(this.getId()).getOsm_Id().toString())
+                .collect(Collectors.joining(", "));
+
+        adjacentStr = ", adjacent = (" + adjacentStr +")";
+        String tagsStr = tags.entrySet().stream()
+                .filter(entry -> relevantTags(entry.getKey()))
+                .map(entry -> entry.getKey() + ":" + entry.getValue())
+                .collect(Collectors.joining(", "));
+
+        tagsStr = ", tags = (" + tagsStr +")";
+        String ways = waysID.stream().map(element -> element.toString()).collect(Collectors.joining(", "));
+        ways = "ways = (" + ways +")";
+
+        return "Node{" + idStr + coordinatesStr + adjacentStr + tagsStr +"}\n"+ways;
     }
 }

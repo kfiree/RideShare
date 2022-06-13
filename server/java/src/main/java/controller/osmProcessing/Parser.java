@@ -1,7 +1,5 @@
 package controller.osmProcessing;
 
-import controller.GraphUtils;
-import controller.RDS.jsonHandler;
 import model.OEdge;
 import model.OGraph;
 import model.ONode;
@@ -9,8 +7,8 @@ import model.ONode;
 import java.util.*;
 
 public class Parser {
-    private static OGraph graph;
-    private static List<Long> longs = jsonHandler.readList("removed.json");
+    private static OGraph graph = OGraph.getInstance();
+//    private static List<Long> longs = jsonHandler.readList("removed.json");
 //    private static Point2D.Double topRight = new Point2D.Double(32.10070229573369, 34.84550004660088),
 //              bottomLeft = new Point2D.Double(32.10070229573369, 34.84550004660088);
 
@@ -19,38 +17,48 @@ public class Parser {
 //        bottomLeft = downLeft;
 //
 //    }
+    private static HashMap<OEdge, OMapWay> _waysMap = new HashMap<>();
+    private static Set<OEdge> _edges = new HashSet<>();
+//    private static Set<ONode> _nodes = new HashSet<>();
+
+    private static void clean(){
+         _waysMap = new HashMap<>();
+         _edges = new HashSet<>();
+//         _nodes = new HashSet<>();
+    }
     public static void parseMapWays(ArrayList<OMapWay> ways, Map<Long, MapObject> objects) {
-        graph = OGraph.getInstance();
-        Set<OEdge> edges = graph.getEdges();
+//        Set<OEdge> edges = graph.getEdges();
+
         for (OMapWay way: ways) {
             // Create first edge between the first and the last objects:
             HashMap<Long, MapObject> objectsOnWay = (HashMap<Long, MapObject>) way.getObjects();
 
             if (objectsOnWay.isEmpty() == false && objectsOnWay.size() >= 2) {//TODO check if node have irrelevant tags
 
-                if(!isPartOfMainComponent(way)){
-                    continue;
-                }
+//                if(!isPartOfMainComponent(way)){
+//                    continue;
+//                }
 
                 ONode start = createNodeForEdge(way.getFirst(), way);
                 ONode target = createNodeForEdge(way.getLast(), way);
-                OEdge edge = new OEdge(way, start, target);
 
-                if(longs.contains(start.getOsm_Id()) || longs.contains(target.getOsm_Id())){
-                    GraphUtils.addEdgeToMap(start, target, edge);
-                }
+//                if((start.getOsm_Id() == 560149987l && target.getOsm_Id() ==  560149995l) || (start.getOsm_Id() == 560149995l && target.getOsm_Id() == 560149987l)){
+//                    System.out.println("stop");
+//                }
 
-                edges.add(edge);
+
+//                OEdge edge = new OEdge(way, start, target);
+
+                OEdge edge = addEdge(start, target, way);
+                _waysMap.put(edge, way);
 
                 // iterate through other objects on way (first and last one polled):
                 for (MapObject object: way.getObjectsList()) {
 
                     // check whether the object was referenced by other ways:
-                    Integer nodeReferenceNum = OGraph.getInstance().getNodeQuantity(object.getID());
-
                     if (object.linkCounter > 1) {
                         // if so, split way into two edges at this point:
-                        edge = splitEdgeAt(object, edge, way);
+                        splitEdgeAt(object, edge, way);
                     }
 
                 }
@@ -58,8 +66,24 @@ public class Parser {
         }
 
         // add edges to nodes and calculate final distance:
-        for (OEdge e: edges) {
-            setNodeEdge(e);
+        for (OEdge e: _edges) {
+            ONode start = e.getStartNode(), target = e.getEndNode();
+
+//            if((start.getOsm_Id() == 560149987l && target.getOsm_Id() ==  560149995l) || (start.getOsm_Id() == 560149995l && target.getOsm_Id() == 560149987l)){
+//                System.out.println("stop");
+//            }
+
+            if(!(target.isAdjacent(start) || start.isAdjacent(target)) ){
+                start.addEdge(e);
+                target.addEdge(e);
+                addEdge(start, target, _waysMap.get(e));
+            }
+
+            e.getLength();
+
+
+//            setNodeEdge(e);
+
 //            if(!e.getStartNode().isAdjacent(e.getEndNode())) {
 //                // TODO make edge bi-directional if needed
 //                e.getStartNode().addEdge(e);
@@ -67,18 +91,20 @@ public class Parser {
 //            }
 //
 //            // calculate distance:
-//            e.calculateDistance();// 560149995 560149987 560149985
+//            e.getLength();// 560149995 560149987 560149985
         }
 
+        graph.setEdges(_edges);
+//        clean();
     }
 
-    private static boolean isPartOfMainComponent(OMapWay way){
-        return !(longs.contains(way.getFirst().getID()) || longs.contains(way.getLast().getID()));
-    }
+//    private static boolean isPartOfMainComponent(OMapWay way){
+//        return true;
+////        return !(longs.contains(way.getFirst().getID()) || longs.contains(way.getLast().getID()));
+//    }
 
     private static ONode createNodeForEdge(MapObject mapObject, OMapWay way){
         ONode node = selectNode(mapObject);
-
         node.addTags(way.getTags());
         node.addWayID(way.getID());
 
@@ -117,32 +143,59 @@ public class Parser {
      * Where X is a new node created from @param obj
      * @return the right part of above connection: X-target
      */
-    private static OEdge splitEdgeAt(MapObject obj, OEdge edge, OMapWay baseWay) {
+    private static void splitEdgeAt(MapObject obj, OEdge edge, OMapWay baseWay) {
         // remove old edge between two nodes:
         if(obj.getID() == edge.getStartNode().getOsm_Id() || obj.getID() == edge.getEndNode().getOsm_Id())
-            return edge;
-
-        graph.removeEdge(edge);
+            return;
 
         // get node at the middle:
         ONode node = selectNode(obj);
 
-        if(longs.contains(edge.getStartNode().getOsm_Id()) || longs.contains(edge.getEndNode().getOsm_Id()) || longs.contains(node.getOsm_Id())){
-            GraphUtils.addEdgeToMap(edge.getStartNode(), node, edge);
-            GraphUtils.addEdgeToMap(node, edge.getStartNode(), edge);
-        }
+//        if(longs.contains(edge.getStartNode().getOsm_Id()) || longs.contains(edge.getEndNode().getOsm_Id()) || longs.contains(node.getOsm_Id())){
+        OEdge leftEdge = addEdge(edge.getEndNode(), node, baseWay);
+        OEdge rightEdge = addEdge(node, edge.getStartNode(), baseWay);
+
+        if(leftEdge != null) _edges.add(leftEdge);
+        if(rightEdge != null) _edges.add(rightEdge);//TODO check if need to switch nodes
+
+        _edges.remove(edge);
+//        GraphUtils.addEdgeToMap(edge.getEndNode(), node, edge);
+//        GraphUtils.addEdgeToMap(node, edge.getStartNode(), edge);
+//        }
 
         // connect it to start and target of edge:
-        OEdge leftEdge = new OEdge(baseWay, edge.getStartNode(), node);
-        OEdge rightEdge = new OEdge(baseWay, node, edge.getEndNode());
+//        OEdge leftEdge = new OEdge(baseWay, edge.getStartNode(), node);
+//        OEdge rightEdge = new OEdge(baseWay, node, edge.getEndNode());
 
-        graph.addEdge(leftEdge);
-        graph.addEdge(rightEdge);
+//        graph.addEdge(baseWay, edge.getStartNode(), node);
+//        graph.addEdge(baseWay, node, edge.getEndNode());
 
-        setNodeEdge(leftEdge);
-        setNodeEdge(rightEdge);
+//        return rightEdge;
+    }
 
-        return rightEdge;
+    private static OEdge addEdge(ONode src, ONode dst,  OMapWay way){
+//        public OEdge addEdge(ONode src, ONode dst, OMapWay way){
+        boolean srcToDst = src.isAdjacent(dst);
+        boolean dstToSrc = dst.isAdjacent(src);
+
+        OEdge edge = new OEdge(way, src, dst);
+//        if((src.getOsm_Id() == 560149987l && dst.getOsm_Id() ==  560149995l) || (src.getOsm_Id() == 560149995l && dst.getOsm_Id() == 560149987l)){
+//            System.out.println("");
+//        }
+//        if(srcToDst && dstToSrc){
+//            return src.getEdgeTo(dst);
+//        }else
+        if(dstToSrc){
+            edge = dst.getEdgeTo(src);
+        }
+
+//        if(edge != null){
+        src.addEdge(edge);
+        _edges.add(edge);
+//        }
+
+        return edge;
+
     }
 
     private static void setNodeEdge(OEdge e){
@@ -152,6 +205,6 @@ public class Parser {
             e.getEndNode().addEdge(e);
         }
 
-        e.calculateDistance();
+        e.getLength();
     }
 }

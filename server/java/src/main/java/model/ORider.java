@@ -10,7 +10,7 @@ public class ORider extends ONode {
         super(object);
     }
 
-    public ORider(long id, Double @NotNull [] coordinates, userType user) {
-        super(id, coordinates, user);
+    public ORider(long id, Double latitude, Double longitude, userType user) {
+        super(null, id, latitude, longitude, user);
     }
 }
