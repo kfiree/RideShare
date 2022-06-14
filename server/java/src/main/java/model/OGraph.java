@@ -1,7 +1,6 @@
 package model;
 
-import controller.GraphUtils;
-import controller.algorithms.GraphAlgo;
+import controller.utils.GraphAlgo;
 import controller.osmProcessing.OMapWay;
 
 import java.util.*;

@@ -1,6 +1,6 @@
 package controller.rds.models;
 
-import controller.GraphUtils;
+import controller.utils.GraphUtils;
 
 import java.util.Random;
 

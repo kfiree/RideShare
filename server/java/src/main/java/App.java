@@ -1,41 +1,45 @@
-import controller.algorithms.GraphAlgo;
-import controller.rds.jsonHandler;
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.implementations.MultiGraph;
-import org.graphstream.ui.view.Viewer;
+import controller.utils.GraphAlgo;
 import view.MapView;
-import controller.GraphUtils;
-import controller.rds.addGraphToDB;
 import crosby.binary.osmosis.OsmosisReader;
 import model.OGraph;
-import model.ONode;
 import controller.osmProcessing.*;
 
 import javax.swing.*;
-import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.stream.Collectors;
 
 //osmconvert64.exe ariel2.osm > arielpbf.pbf --out-pbf
 
-public class App {
+public class App implements Runnable{
     private static Map<Long, Double[]> Riders = new HashMap<>();
     private static List<Object> pathNodesID = new ArrayList<>();
-
+    private static Thread client;
 
     public static void main(String[] args) {
 //        String filepath = ExtractMap.chooseFile();
 //        CreateGraph(filepath);
         CreateGraph("server/java/data/israel.pbf");
+
+        System.out.println("graph is ready.\n" + OGraph.getInstance());
+
+        MapView.getInstance().show();
+
+//        startThread();
+
+        System.exit(0);
     }
 
-    static Point2D.Double topRight = new Point2D.Double(32.10070229573369, 34.84550004660088), bottomLeft = new Point2D.Double(32.10070229573369, 34.84550004660088);
+    public static void startThread(){
+//        client = new Thread(new App());
+//        client.start();
+//
+//        System.out.println("thread id is " + client.getId());
+    }
 
-    public static void CreateGraph(String pathToPBF) {
+    public static OGraph CreateGraph(String pathToPBF) {
         InputStream inputStream;
 
         try {
@@ -58,41 +62,13 @@ public class App {
 
             GraphAlgo.removeNodesThatNotConnectedTo(graph.getNode(2432701015l));
 
-            System.out.println(graph);
-
-            /** show graph */
-            MapView.getInstance().run();
-
-
         } catch (FileNotFoundException e) {
             JOptionPane.showMessageDialog(new JFrame(), "File not found!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
 
             System.exit(0);
         }
-    }
-
-    /**
-     * TODO get riders from database SQL - Motti
-     */
-    private static void addRiders(){
-        Riders.put(-1L, new Double[]{32.10590091133335, 35.192002782079705});
-        Riders.put(-2L, new Double[]{32.10569527212209, 35.20159203268953});
-        Riders.put(-3L, new Double[]{32.100656966794055, 35.20341277647622});
-        Riders.put(-4L, new Double[]{32.10551550801045, 35.1700032533693});
-    }
-
-    /**
-     * TODO get driver's path from database SQL - Motti
-     */
-    private static List<Object> setDriversPath(){
-        pathNodesID.add(432349397l);
-        pathNodesID.add(5329510675l);
-        pathNodesID.add(985633358l);
-        pathNodesID.add(257392128l);
-        pathNodesID.add(5224948678l);
-        pathNodesID.add(5177072076l);
-        return pathNodesID;
+        return OGraph.getInstance();
     }
 
     private static String chooseFile() {
@@ -105,6 +81,35 @@ public class App {
             return selectedFile.getAbsolutePath();
         }
         return null;
+    }
+
+    @Override
+    public void run() {
+        System.out.println("start running");
+        MapView map = MapView.getInstance();
+
+        map.show();
+
+        MapView.getInstance().show();
+        long sleepTime = 100;
+
+        int time = 10000;
+
+        while(time > 0){//server.isRunning()) {
+//          TODO  synchronized (Thread.currentThread())  ??
+            time--;
+            if(time % 100 == 0){
+                System.out.println("time left - "+ time + " seconds.");
+            }
+//            server.getUpdates();
+
+            try {
+//                map.repaint();
+                Thread.sleep(sleepTime);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
 // TODO set & get graph user drive | sub graph | match rider and drivers | lock drive

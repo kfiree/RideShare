@@ -1,6 +1,6 @@
 package controller.rds.models;
 
-import controller.GraphUtils;
+import controller.utils.GraphUtils;
 
 
 public class GeoLocation {

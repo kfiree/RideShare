@@ -47,6 +47,7 @@ public class CustomMouseManager extends DefaultMouseManager {
                     System.out.println(oNode);
                 }
             }
+            MapView.getInstance().setDest(currentNode.getLabel());
 
         }else{
 //            System.out.println(e.getX()+", "+e.getY());

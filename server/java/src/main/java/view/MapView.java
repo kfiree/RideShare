@@ -1,57 +1,113 @@
+
+
 package view;
 
+import controller.utils.GraphAlgo;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
+import org.graphstream.ui.j2dviewer.J2DGraphRenderer;
 import org.graphstream.ui.view.Viewer;
 //import org.graphstream.ui.view.util.DefaultMouseManager;
 
-import controller.GraphUtils;
+import controller.utils.GraphUtils;
 import model.OGraph;
 import model.ONode;
+import org.graphstream.ui.view.ViewerPipe;
+
+import java.util.List;
 
 public class MapView {
     private OGraph graph;
     private Graph displayGraph;
     private String styleSheet = "node {	text-mode: hidden; }";
+    private ONode dest;
+    private boolean newPath = false;
 
-    private static MapView instance = new MapView();
+    private static MapView instance = new view.MapView();
 
     private MapView() {
-        this.displayGraph = new MultiGraph("map simulation");
-        this.graph = OGraph.getInstance();
+        displayGraph = new MultiGraph("map simulation");
+        graph = OGraph.getInstance();
+        dest = graph.getNode(2432701015l);
     }
 
     public static MapView getInstance() {
         return instance;
     }
 
-    public void run(){
+    public void show(){
         // draw graph components
+        Viewer viewer = new Viewer(displayGraph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+        ViewerPipe pipeIn = viewer.newViewerPipe();
+        viewer.addView("view1", new J2DGraphRenderer());
+        viewer.disableAutoLayout();
+        viewer.getView("view1").setMouseManager(new CustomMouseManager());
 
-        drawEdge(graph);
+        pipeIn.addAttributeSink( displayGraph );
+        pipeIn.pump();
+
+        drawEdge();
 //        drawRider(utils);
-        drawPaths();
+//        drawPaths();
 
         displayGraph.setAttribute("ui.stylesheet", styleSheet);
         displayGraph.setAttribute("ui.quality");
         displayGraph.setAttribute("ui.antialias");
 
-        Viewer viewer = displayGraph.display();
-        viewer.disableAutoLayout();
-        viewer.getDefaultView();
-        viewer.getDefaultView().setMouseManager(new CustomMouseManager());
+        ONode src = graph.getNode(1671579963l);
+
+        int i = 1;
+        List<ONode> path = GraphAlgo.AStar(src, dest);
+        path.remove(0);//path.remove(path.size());
+        assert path != null;
+        Node nextInPath = displayGraph.getNode(String.valueOf(path.get(0).getOsm_Id()));
+
+        while(true){
+            pipeIn.pump();
+            sleep(1);
+
+            if(src != dest){
+                ONode node = path.get(i);
+
+                 if(!(node.getOsm_Id().equals(dest.getOsm_Id()) || node.getOsm_Id().equals(src.getOsm_Id()))) {
+
+                     nextInPath.setAttribute("ui.style", "z-index: 1; size: 3px; fill-color: black;");
+
+                     nextInPath = displayGraph.getNode(String.valueOf(node.getOsm_Id()));
+
+                     nextInPath.setAttribute("ui.style", "z-index: 2; size: 10px; fill-color: blue;");
+                 }
+//                System.out.println(i);
+                i = (i + 1) % path.size();
+
+            }
+        }
     }
 
-    private Boolean drawEdge(OGraph graph){
-        graph.getEdges().forEach(e -> {
+    public void setDest(String key) {
+        dest = graph.getNode(Long.parseLong(key));
+    }
 
-            Node start = drawNode(e.getStartNode());
-            Node end = drawNode(e.getEndNode());
-            Edge edge = displayGraph.addEdge(e.getId(), start, end, e.isDirected());
-            if(e.isDirected())
-                edge.setAttribute("ui.style", "arrow-size: 1px;");
+    private void sleep(long seconds ) {
+//        seconds *= 1000;
+        seconds = 500;
+        try { Thread.sleep( seconds ) ; }
+        catch (InterruptedException e) { e.printStackTrace(); }
+    }
+
+    private Boolean drawEdge(){
+        graph.getEdges().forEach(e -> {
+            if(displayGraph.getEdge(e.getId()) == null) {
+                Node start = drawNode(e.getStartNode());
+                Node end = drawNode(e.getEndNode());
+                Edge edge = displayGraph.addEdge(e.getId(), start, end);//, e.isDirected());
+
+                //            if(e.isDirected())
+                //                edge.setAttribute("ui.style", "arrow-size: 1px;");
+            }
+
         });
         return true;
     }
@@ -70,7 +126,7 @@ public class MapView {
 
             displayNode.setAttribute("ui.style", "z-index: 1; size: 3px;");
 
-            if(node.getOsm_Id() == 2432701015l){
+            if(node.getOsm_Id() == 2432701015l || node.getOsm_Id() == 1671579963l){
                 displayNode.setAttribute("ui.style", "z-index: 2; size: 10px; fill-color: green;");
             } else if(node.getUser() == ONode.userType.Rider){
                 displayNode.setAttribute("ui.style", "fill-color: blue;");

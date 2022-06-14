@@ -1,10 +1,9 @@
 package model;
 
-import controller.algorithms.GraphAlgo;
+import controller.utils.GraphAlgo;
 import controller.osmProcessing.OMapWay;
-import controller.GraphUtils;
+import controller.utils.GraphUtils;
 
-import java.sql.SQLOutput;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;

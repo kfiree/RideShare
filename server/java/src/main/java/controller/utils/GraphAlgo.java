@@ -1,4 +1,4 @@
-package controller.algorithms;
+package controller.utils;
 
 import model.OGraph;
 import model.ONode;
@@ -102,7 +102,7 @@ public class GraphAlgo {
         return visited.stream().toList();
     }
 
-    public static List<Object> AStar(ONode start, ONode end){
+    public static List<ONode> AStar(ONode start, ONode end){
         Hashtable<String, ONode> CloseSet = new Hashtable<>();
         Hashtable<String, ONode> OpenSet = new Hashtable<>();
         PriorityQueue<ONode> PQ_OpenSet = new PriorityQueue<>();
@@ -143,8 +143,8 @@ public class GraphAlgo {
         return null;
     }
 
-    private static List<Object> reconstructPath(Hashtable<ONode, ONode> cameFrom, ONode n){
-        List<Object> path = new ArrayList<>();
+    private static List<ONode> reconstructPath(Hashtable<ONode, ONode> cameFrom, ONode n){
+        List<ONode> path = new ArrayList<>();
         while(cameFrom.containsKey(n)){
             n = cameFrom.get(n);
             path.add(n);

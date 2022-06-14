@@ -1,7 +1,7 @@
 package model;
 
-import controller.GraphUtils;
-import controller.algorithms.GraphAlgo;
+import controller.utils.GraphUtils;
+import controller.utils.GraphAlgo;
 import org.jetbrains.annotations.NotNull;
 import controller.osmProcessing.MapObject;
 
