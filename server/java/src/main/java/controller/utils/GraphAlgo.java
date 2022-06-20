@@ -1,11 +1,29 @@
 package controller.utils;
 
-import model.OGraph;
-import model.ONode;
+import model.RegionMap;
+import model.Node;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+/**
+ *      |==================================|
+ *      |==========| GRAPH ALGO |==========|
+ *      |==================================|
+ *
+ *   algorithms on graph:
+ *      - find nearest Node to
+ *      - get distance between nodes in multiply formats
+ *      - get connected component of a given node
+ *      - get path using A*
+ *      - remove nodes that are not part of a given node connected component
+ *
+ *
+ * @author  Kfir Ettinger & Amit Hajaj & Motti Dahari
+ * @version 1.0
+ * @since   2021-06-20
+ */
 public class GraphAlgo {
 
 
@@ -24,6 +42,29 @@ public class GraphAlgo {
 //        }
 //        return (dist);
 //    }
+
+    public Node findClosestNode(Node node){
+    //Get the coordinates of the node
+    Double latitude = node.getLatitude();
+    Double longitude = node.getLongitude();
+
+    //Assign default variables
+    AtomicReference<Double> minDistance = new AtomicReference<>(Double.MAX_VALUE);
+    AtomicReference<Node> closestNode = new AtomicReference<>(node);
+
+    //Loop through all the nodes that are not from Rider type, and find the closest one
+    RegionMap.getInstance().getNodes().values().stream().filter(n -> n.getUser() != Node.userType.Rider)
+            .forEach(other -> {
+                double dist = GraphAlgo.distance(node, other);
+                if(dist < minDistance.get()){
+                    minDistance.set(dist);
+                    closestNode.set(other);
+                }
+            });
+
+    return closestNode.get();
+}
+
     /**
      * This function will be adressed by all distance calculations
      * between two nodes in space
@@ -35,7 +76,11 @@ public class GraphAlgo {
      * @return calculated distance between two nodes
      */
 
-
+    /**
+     * Function to find the closest node to a given point
+     * @param node- the node to which the closest node is to be found
+     * @return the closest node to the given node
+     */
     /**
      This function will be adressed by all distance calculations
      * between two nodes in space
@@ -46,7 +91,7 @@ public class GraphAlgo {
      * @param unit
      * @return calculated distance between two nodes by coordinates
      */
-    public static double distance(ONode node1, ONode node2, String... unit) {
+    public static double distance(Node node1, Node node2, String... unit) {
         double lat1 = node1.getLatitude(), lon1 = node1.getLongitude(), lat2 = node2.getLatitude(), lon2 = node2.getLongitude();
 
         String unit1 = unit.length > 0 ? unit[0] : "K";
@@ -71,15 +116,15 @@ public class GraphAlgo {
      * @param node
      * @return
      */
-    public static List<ONode> getConnectedComponent(ONode node){
+    public static List<Node> getConnectedComponent(Node node){
         ArrayList<Long> problems = new ArrayList<>(Arrays.asList(340375216l, 289499143l, 3988271550l)); //TODO debug
 
         // Mark all the vertices as not visited(By default
         // set as false)
-        HashSet<ONode> visited = new HashSet<>();
+        HashSet<Node> visited = new HashSet<>();
 
         // Create a queue for BFS
-        LinkedList<ONode> queue = new LinkedList<>();
+        LinkedList<Node> queue = new LinkedList<>();
 
         // Mark the current node as visited and enqueue it
         queue.add(node);
@@ -88,8 +133,8 @@ public class GraphAlgo {
         {
             // Dequeue a vertex from queue and print it
             node = queue.poll();
-            for(ONode n : node.getAdjacentNodes()){
-                if(problems.contains(n.getOsm_Id())){
+            for(Node n : node.getAdjacentNodes()){
+                if(problems.contains(n.getOsmID())){
                     boolean a = true;
                 }
                 if(!visited.contains(n)){
@@ -102,37 +147,55 @@ public class GraphAlgo {
         return visited.stream().toList();
     }
 
-    public static List<ONode> AStar(ONode start, ONode end){
-        Hashtable<String, ONode> CloseSet = new Hashtable<>();
-        Hashtable<String, ONode> OpenSet = new Hashtable<>();
-        PriorityQueue<ONode> PQ_OpenSet = new PriorityQueue<>();
-        Hashtable<ONode, ONode> cameFrom = new Hashtable<>();
+    private static HashMap<Node, Double> NodesH = new HashMap<>(), NodesG = new HashMap<>(), NodesF = new HashMap<>();
 
-        start.setH(end);
-        start.setG(0);
-        start.setF(start.getG() + start.getH());
+    private static void setH(Node node, Node other){ NodesH.put(node, distance(node, other)); }
 
-        OpenSet.put(start.getId(), start);
-        PQ_OpenSet.add(start);
+    private static void setG(Node node, double g){ NodesG.put(node, g); }
+
+    private static Double getH(Node node){ return NodesH.get(node); }
+
+    private static Double getG(Node node){ return NodesG.get(node); }
+
+    /**
+     * calculate shortest path using A*
+     *
+     * @param src origin
+     * @param dest destination
+     * @return shortest path from src to dest
+     */
+    public static List<Node> getShortestPathBetween(Node src, Node dest){
+
+        Hashtable<String, Node> CloseSet = new Hashtable<>();
+        Hashtable<String, Node> OpenSet = new Hashtable<>();
+        PriorityQueue<Node> PQ_OpenSet = new PriorityQueue<>();
+        Hashtable<Node, Node> cameFrom = new Hashtable<>();
+
+        setH(src,dest);
+        setG(src, 0);
+        src.setF(getG(src) + getH(src));
+
+        OpenSet.put(src.getId(), src);
+        PQ_OpenSet.add(src);
 
         while(!OpenSet.isEmpty()){
-            ONode current = PQ_OpenSet.poll();
-            if(current.equals(end)){
-                return reconstructPath(cameFrom, end);
+            Node current = PQ_OpenSet.poll();
+            if(current.equals(dest)){
+                return reconstructPath(cameFrom, dest);
             }
 
             OpenSet.remove(current.getId());
             CloseSet.put(current.getId(), current);
-            for(ONode neighbor : current.getAdjacentNodesFromGraph()){
+            for(Node neighbor : current.getAdjacentNodesFromGraph()){
                 if(CloseSet.containsKey(neighbor.getId())){
                     continue;
                 }
-                double TentativeGScore = current.getG() + distance(current, neighbor);
-                if(!OpenSet.containsKey(neighbor.getId()) || TentativeGScore < neighbor.getG()){
+                double TentativeGScore = getG(current) + distance(current, neighbor);
+                if(!OpenSet.containsKey(neighbor.getId()) || TentativeGScore < getG(neighbor)){
                     cameFrom.put(neighbor, current);
-                    neighbor.setG(TentativeGScore);
-                    neighbor.setH(end);
-                    neighbor.setF(neighbor.getG() + neighbor.getH());
+                    setG(neighbor, TentativeGScore);
+                    setH(neighbor, dest);
+                    neighbor.setF(getG(neighbor) + getH(neighbor));
                     if(!OpenSet.containsKey(neighbor.getId())){
                         OpenSet.put(neighbor.getId(), neighbor);
                         PQ_OpenSet.add(neighbor);
@@ -143,8 +206,8 @@ public class GraphAlgo {
         return null;
     }
 
-    private static List<ONode> reconstructPath(Hashtable<ONode, ONode> cameFrom, ONode n){
-        List<ONode> path = new ArrayList<>();
+    private static List<Node> reconstructPath(Hashtable<Node, Node> cameFrom, Node n){
+        List<Node> path = new ArrayList<>();
         while(cameFrom.containsKey(n)){
             n = cameFrom.get(n);
             path.add(n);
@@ -153,17 +216,17 @@ public class GraphAlgo {
         return path;
     }
 
-    public static void removeNodesThatNotConnectedTo(ONode src){
-        OGraph graph = OGraph.getInstance();
+    public static void removeNodesThatNotConnectedTo(Node src){
+        RegionMap map = RegionMap.getInstance();
         //delete node that aren't connected to src
-        List<ONode> connectedComponent = getConnectedComponent(src);
+        List<Node> connectedComponent = getConnectedComponent(src);
 
-        List<ONode> notPartOfComponent = graph.getNodes().entrySet().stream()
+        List<Node> notPartOfComponent = map.getNodes().entrySet().stream()
                 .filter(e -> !connectedComponent.contains(e.getValue()))
                 .map(e -> e.getValue())
                 .collect(Collectors.toList());
 
-        graph.removeNodes(notPartOfComponent);
+        map.removeNodes(notPartOfComponent);
     }
 
     /**
@@ -190,8 +253,8 @@ public class GraphAlgo {
 //        problems.add(3988271550l);
 //
 //        for(ONode node: notPartOfComponent){
-//            Long nodeId = node.getOsm_Id();
-//            problems.remove(node.getOsm_Id());
+//            Long nodeId = node.getOsmID();
+//            problems.remove(node.getOsmID());
 //
 //        }
 //        if(!problems.isEmpty()){
@@ -205,8 +268,8 @@ public class GraphAlgo {
 //        problems.add(289499143l);
 //        problems.add(3988271550l);
 //        for(ONode node: connectedComponent){
-//            Long nodeId = node.getOsm_Id();
-//            problems.remove(node.getOsm_Id());
+//            Long nodeId = node.getOsmID();
+//            problems.remove(node.getOsmID());
 //
 //        }
 //        if(!problems.isEmpty()){

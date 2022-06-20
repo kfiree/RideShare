@@ -1,30 +1,30 @@
 package controller.rds.querys;
 
-import model.OEdge;
+import model.Edge;
 
 public class edge_query {
-    static public String addEdge(OEdge e) {
-        return "INSERT INTO \"public\".\"rs_edges\" (\"edge_Id\", \"startNodeId\", \"endNodeId\", \"weight\", \"distance\", \"name\", \"highwayType\") " +
+    static public String addEdge(Edge e) {
+        return "INSERT INTO \"public\".\"rs_edges\" (\"edge_Id\", \"startNodeId\", \"endNodeId\", \"weight\", \"distance\", \"highwayType\") " +
                 "VALUES " +
-                "('"+e.getId()+"', '"+e.getStartNode().getId()+"', '"+e.getEndNode().getId()+"', "+e.getWeight()+", "+e.getDistance()+", '"+e.getName()+"', '"+e.getHighwayType()+"');";
+                "('"+e.getId()+"', '"+e.getStartNode().getId()+"', '"+e.getEndNode().getId()+"', "+e.getWeight()+", "+e.getDistance()+", '"+e.getHighwayType()+"');";
     }
-    static public String updateEdge(OEdge e) {
+    static public String updateEdge(Edge e) {
         return "UPDATE \"public\".\"rs_edges\" SET " +
-                "\"startNodeId\" = "+e.getStartNode().getOsm_Id()+", " +
-                "\"endNodeId\" = "+e.getEndNode().getOsm_Id()+"," +
+                "\"startNodeId\" = "+e.getStartNode().getOsmID()+", " +
+                "\"endNodeId\" = "+e.getEndNode().getOsmID()+"," +
                 " \"weight\" = "+e.getWeight()+", " +
                 "\"distance\" = '"+e.getDistance()+"', " +
-                "\"name\" = '"+e.getName()+"', " +
+//                "\"name\" = '"+e.getName()+"', " +
                 "\"highwayType\" = '"+e.getHighwayType()+"' " +
                 "WHERE \"edge_Id\" = '"+e.getId()+"';";
     }
     static public String deleteEdgeById(String id) {
         return "DELETE FROM \"public\".\"rs_edges\" WHERE \"edge_Id\" = '"+id+"';";
     }
-    static public String deleteEdgeById(OEdge e) {
+    static public String deleteEdgeById(Edge e) {
         return deleteEdgeById(e.getId());
     }
-    static public String getEdgeById(OEdge e) {
+    static public String getEdgeById(Edge e) {
         return "SELECT * FROM \"public\".\"rs_edges\" WHERE \"edge_Id\" = '"+e.getId()+"';";
     }
     static public String getAllEdges() {

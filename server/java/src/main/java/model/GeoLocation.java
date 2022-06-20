@@ -2,18 +2,28 @@ package model;
 
 import java.awt.geom.Point2D;
 
+/**
+ *      |==================================|
+ *      |=========| GEO LOCATION  |========|
+ *      |==================================|
+ *
+ *  geo location extends 'java.awt.geom.Point2D.Double'
+ *
+ *
+ * @author  Kfir Ettinger & Amit Hajaj & Motti Dahari
+ * @version 1.0
+ * @since   2021-06-20
+ */
 public class GeoLocation extends Point2D.Double{
-
-//    private Double longitude = 0.0;
-//    private Point2D.Double location = new Point2D.Double(0,132.2);
-
-
-    public GeoLocation(double x, double y) {
-        super(x, y);
+    public GeoLocation(double latitude, double longitude) {
+        super(latitude, longitude);
     }
 
-    @Override
-    public double distance(Point2D pt) {
-        return super.distance(pt);
+    public double getLatitude() {
+        return getX();
+    }
+
+    public double getLongitude() {
+        return getY();
     }
 }

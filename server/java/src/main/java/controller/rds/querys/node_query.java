@@ -1,15 +1,15 @@
 package controller.rds.querys;
 
-import model.ONode;
+import model.Node;
 import org.json.simple.JSONObject;
 
 public class node_query {
 //    static public String addNode(Node n){
 //       return "INSERT INTO \"public\".\"rs_nodes\" (\"osm_Id\", \"node_Id\", \"latitude\", \"longitude\", \"degree\", \"edges\", \"tags\") " +
 //                "VALUES " +
-//                "('"+n.getOsm_Id()+"','"+ n.getId() +"', "+n.getLatitude()+", "+n.getLongitude()+", "+n.getDegree()+", '"+n.getEdges()+"', '"+n.getTags()+"');";
+//                "('"+n.getOsmID()+"','"+ n.getId() +"', "+n.getLatitude()+", "+n.getLongitude()+", "+n.getDegree()+", '"+n.getEdges()+"', '"+n.getTags()+"');";
 //    }
-    static public String addNode(ONode n){
+    static public String addNode(Node n){
         JSONObject edges = new JSONObject();
         n.getEdges().forEach(e -> {
             int index = 0;
@@ -25,9 +25,9 @@ public class node_query {
         });
         return "INSERT INTO \"public\".\"rs_nodes\" (\"osm_Id\", \"node_Id\", \"latitude\", \"longitude\", \"degree\", \"edges\", \"tags\") " +
                 "VALUES " +
-                "('"+n.getOsm_Id()+"','"+ n.getId() +"', "+n.getLatitude()+", "+n.getLongitude()+", "+n.getDegree()+", '"+edges+"', '"+tags+"');";
+                "('"+n.getOsmID()+"','"+ n.getId() +"', "+n.getLatitude()+", "+n.getLongitude()+", "+n.getDegree()+", '"+edges+"', '"+tags+"');";
     }
-    static public String updateNode(ONode n) {
+    static public String updateNode(Node n) {
         JSONObject edges = new JSONObject();
         n.getEdges().forEach(e -> {
             int index = 0;
@@ -49,10 +49,10 @@ public class node_query {
                 "\"tags\" = '"+tags+"' " +
                 "WHERE \"node_Id\" = '"+n.getId()+"';";
     }
-    static public String deleteNodeById(ONode n) {
+    static public String deleteNodeById(Node n) {
         return "DELETE FROM \"public\".\"rs_nodes\" WHERE \"node_Id\" = '"+n.getId()+"';";
     }
-    static public String getNodeById(ONode n) {
+    static public String getNodeById(Node n) {
         return "SELECT * FROM \"public\".\"rs_nodes\" WHERE \"node_Id\" = '"+n.getId()+"';";
     }
     static public String getAllNodes() {

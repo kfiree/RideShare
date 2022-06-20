@@ -1,36 +1,32 @@
-
-
 package view;
 
 import controller.utils.GraphAlgo;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
-import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.ui.j2dviewer.J2DGraphRenderer;
 import org.graphstream.ui.view.Viewer;
-//import org.graphstream.ui.view.util.DefaultMouseManager;
-
-import controller.utils.GraphUtils;
-import model.OGraph;
-import model.ONode;
 import org.graphstream.ui.view.ViewerPipe;
+
+import controller.utils.MapUtils;
+import model.RegionMap;
+import model.Node;
 
 import java.util.List;
 
 public class MapView {
-    private OGraph graph;
+    private RegionMap map;
     private Graph displayGraph;
     private String styleSheet = "node {	text-mode: hidden; }";
-    private ONode dest;
+    private Node dest;
     private boolean newPath = false;
 
     private static MapView instance = new view.MapView();
 
     private MapView() {
         displayGraph = new MultiGraph("map simulation");
-        graph = OGraph.getInstance();
-        dest = graph.getNode(2432701015l);
+        map = RegionMap.getInstance();
+        dest = map.getNode(2432701015l);
     }
 
     public static MapView getInstance() {
@@ -38,7 +34,7 @@ public class MapView {
     }
 
     public void show(){
-        // draw graph components
+        // draw map components
         Viewer viewer = new Viewer(displayGraph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         ViewerPipe pipeIn = viewer.newViewerPipe();
         viewer.addView("view1", new J2DGraphRenderer());
@@ -56,26 +52,31 @@ public class MapView {
         displayGraph.setAttribute("ui.quality");
         displayGraph.setAttribute("ui.antialias");
 
-        ONode src = graph.getNode(1671579963l);
+        Node src = map.getNode(1671579963l);
 
         int i = 1;
-        List<ONode> path = GraphAlgo.AStar(src, dest);
+        List<Node> path = GraphAlgo.getShortestPathBetween(src, dest);
         path.remove(0);//path.remove(path.size());
         assert path != null;
-        Node nextInPath = displayGraph.getNode(String.valueOf(path.get(0).getOsm_Id()));
+        org.graphstream.graph.Node nextInPath = displayGraph.getNode(String.valueOf(path.get(0).getOsmID()));
 
         while(true){
             pipeIn.pump();
+
             sleep(1);
 
-            if(src != dest){
-                ONode node = path.get(i);
 
-                 if(!(node.getOsm_Id().equals(dest.getOsm_Id()) || node.getOsm_Id().equals(src.getOsm_Id()))) {
+            //TODO           event: +drive    +passenger     {type, timestamp, id , src, dest}
+//            getUpdates();
+
+            if(src != dest){
+                Node node = path.get(i);
+
+                 if(!(node.getOsmID().equals(dest.getOsmID()) || node.getOsmID().equals(src.getOsmID()))) {
 
                      nextInPath.setAttribute("ui.style", "z-index: 1; size: 3px; fill-color: black;");
 
-                     nextInPath = displayGraph.getNode(String.valueOf(node.getOsm_Id()));
+                     nextInPath = displayGraph.getNode(String.valueOf(node.getOsmID()));
 
                      nextInPath.setAttribute("ui.style", "z-index: 2; size: 10px; fill-color: blue;");
                  }
@@ -87,7 +88,7 @@ public class MapView {
     }
 
     public void setDest(String key) {
-        dest = graph.getNode(Long.parseLong(key));
+        dest = map.getNode(Long.parseLong(key));
     }
 
     private void sleep(long seconds ) {
@@ -98,10 +99,10 @@ public class MapView {
     }
 
     private Boolean drawEdge(){
-        graph.getEdges().forEach(e -> {
+        map.getEdges().forEach(e -> {
             if(displayGraph.getEdge(e.getId()) == null) {
-                Node start = drawNode(e.getStartNode());
-                Node end = drawNode(e.getEndNode());
+                org.graphstream.graph.Node start = drawNode(e.getStartNode());
+                org.graphstream.graph.Node end = drawNode(e.getEndNode());
                 Edge edge = displayGraph.addEdge(e.getId(), start, end);//, e.isDirected());
 
                 //            if(e.isDirected())
@@ -113,24 +114,24 @@ public class MapView {
     }
 
 
-    private Node drawNode(ONode node){
+    private org.graphstream.graph.Node drawNode(Node node){
 
-        String keyStr = String.valueOf(node.getOsm_Id());
-        Node displayNode = displayGraph.getNode(keyStr);
+        String keyStr = String.valueOf(node.getOsmID());
+        org.graphstream.graph.Node displayNode = displayGraph.getNode(keyStr);
 
         if(displayNode == null){
 
             displayNode = displayGraph.addNode(keyStr);
             displayNode.setAttribute("xy", node.getLongitude(), node.getLatitude());
-            displayNode.setAttribute("ui.label", node.getOsm_Id().toString());
+            displayNode.setAttribute("ui.label", node.getOsmID().toString());
 
             displayNode.setAttribute("ui.style", "z-index: 1; size: 3px;");
 
-            if(node.getOsm_Id() == 2432701015l || node.getOsm_Id() == 1671579963l){
+            if(node.getOsmID() == 2432701015l || node.getOsmID() == 1671579963l){
                 displayNode.setAttribute("ui.style", "z-index: 2; size: 10px; fill-color: green;");
-            } else if(node.getUser() == ONode.userType.Rider){
+            } else if(node.getUser() == Node.userType.Rider){
                 displayNode.setAttribute("ui.style", "fill-color: blue;");
-            } else if(node.getUser() == ONode.userType.Driver) {
+            } else if(node.getUser() == Node.userType.Driver) {
                 displayNode.setAttribute("ui.style", "fill-color: red;");
             }
 
@@ -140,16 +141,16 @@ public class MapView {
         return displayNode;
     }
 
-    private boolean drawRider(GraphUtils utils){
+    private boolean drawRider(MapUtils utils){
         utils.getRiders().values().forEach(rider->{
-            String keyStr = String.valueOf(rider.getOsm_Id());
-            Node displayNode = displayGraph.getNode(keyStr);
+            String keyStr = String.valueOf(rider.getOsmID());
+            org.graphstream.graph.Node displayNode = displayGraph.getNode(keyStr);
 
             if(displayNode == null){
 
                 displayNode = displayGraph.addNode(keyStr);
                 displayNode.setAttribute("xy", rider.getLongitude(), rider.getLatitude());
-                displayNode.setAttribute("ui.label", rider.getOsm_Id().toString());
+                displayNode.setAttribute("ui.label", rider.getOsmID().toString());
 
                 displayNode.setAttribute("ui.style","fill-color: red;");
             }
@@ -166,13 +167,13 @@ public class MapView {
 //                });
 //        });
 
-        GraphUtils.getLabeledPaths().keySet().forEach(path -> {
+        MapUtils.getLabeledPaths().keySet().forEach(path -> {
             if (path != null) {
-                if (GraphUtils.getLabeledPaths().get(path).equals("Passenger")) {
+                if (MapUtils.getLabeledPaths().get(path).equals("Passenger")) {
                     path.getEdges().forEach(edge -> {
                         displayGraph.getEdge(edge.getId()).setAttribute("ui.style", "size: 5px; fill-color: blue;");
                     });
-                } else if (GraphUtils.getLabeledPaths().get(path).equals("Driver")) {
+                } else if (MapUtils.getLabeledPaths().get(path).equals("Driver")) {
                     path.getEdges().forEach(edge -> {
                         displayGraph.getEdge(edge.getId()).setAttribute("ui.style", "size: 5px; fill-color: red;");
                     });

@@ -1,66 +1,57 @@
-import controller.utils.GraphAlgo;
+import controller.utils.MapUtils;
 import view.MapView;
 import crosby.binary.osmosis.OsmosisReader;
-import model.OGraph;
-import controller.osmProcessing.*;
+import model.RegionMap;
+import controller.osm_processing.*;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.*;
 
 //osmconvert64.exe ariel2.osm > arielpbf.pbf --out-pbf
+// add "server/java/data/israel.pbf"; as input in configuration
+public final class App{
 
-public class App implements Runnable{
-    private static Map<Long, Double[]> Riders = new HashMap<>();
-    private static List<Object> pathNodesID = new ArrayList<>();
-    private static Thread client;
+    private App() {}
 
     public static void main(String[] args) {
-//        String filepath = ExtractMap.chooseFile();
-//        CreateGraph(filepath);
-        CreateGraph("server/java/data/israel.pbf");
+        String pbfFilePath = args.length == 0 ? chooseFile() : args[0];
 
-        System.out.println("graph is ready.\n" + OGraph.getInstance());
+        System.out.println("start parsing map : '" + pbfFilePath+"'");
+
+        MapUtils.setBounds(true);
+
+        CreateMap(pbfFilePath);
+
+        System.out.println("map is ready.\n" + RegionMap.getInstance());
 
         MapView.getInstance().show();
-
-//        startThread();
 
         System.exit(0);
     }
 
-    public static void startThread(){
-//        client = new Thread(new App());
-//        client.start();
-//
-//        System.out.println("thread id is " + client.getId());
-    }
-
-    public static OGraph CreateGraph(String pathToPBF) {
+    public static RegionMap CreateMap(String pathToPBF) {
         InputStream inputStream;
 
         try {
             inputStream = new FileInputStream(pathToPBF);
 
             // read from osm pbf file:
-            Reader custom = new Reader();
-            OsmosisReader reader = new OsmosisReader(inputStream);
-
-            reader.setSink(custom);
+//            Reader reader = new Reader(new GeoLocation(32.18276629498098, 35.05028293864246), new GeoLocation(31.943290520866952, 34.70846861419407));
+            Reader reader = new Reader();
+            OsmosisReader osmosisReader = new OsmosisReader(inputStream);
+            osmosisReader.setSink(reader);
 
             // initial parsing of the .pbf file:
-            reader.run();
+            osmosisReader.run();
 
             // secondary parsing of ways/creation of edges:
-            Parser.parseMapWays(custom.ways, custom.MapObjects);
+            Parser.parseMapWays(reader.getWays());//reader.getWays(), reader.getMapObjects());
 
             // get riders & drivers
-            OGraph graph = OGraph.getInstance();
-
-            GraphAlgo.removeNodesThatNotConnectedTo(graph.getNode(2432701015l));
+//            GraphAlgo.removeNodesThatNotConnectedTo(map.getNode(2432701015l));
 
         } catch (FileNotFoundException e) {
             JOptionPane.showMessageDialog(new JFrame(), "File not found!", "ERROR",
@@ -68,7 +59,7 @@ public class App implements Runnable{
 
             System.exit(0);
         }
-        return OGraph.getInstance();
+        return RegionMap.getInstance();
     }
 
     private static String chooseFile() {
@@ -80,36 +71,11 @@ public class App implements Runnable{
             File selectedFile = jfc.getSelectedFile();
             return selectedFile.getAbsolutePath();
         }
-        return null;
+        return "Not A Valid Path";
     }
 
-    @Override
-    public void run() {
-        System.out.println("start running");
-        MapView map = MapView.getInstance();
 
-        map.show();
-
-        MapView.getInstance().show();
-        long sleepTime = 100;
-
-        int time = 10000;
-
-        while(time > 0){//server.isRunning()) {
-//          TODO  synchronized (Thread.currentThread())  ??
-            time--;
-            if(time % 100 == 0){
-                System.out.println("time left - "+ time + " seconds.");
-            }
-//            server.getUpdates();
-
-            try {
-//                map.repaint();
-                Thread.sleep(sleepTime);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
+    // TODO set & get map user drive | sub map | match rider and drivers | lock drive
 }
-// TODO set & get graph user drive | sub graph | match rider and drivers | lock drive
+
+

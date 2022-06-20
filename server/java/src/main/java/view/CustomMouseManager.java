@@ -5,8 +5,8 @@ import org.graphstream.ui.graphicGraph.GraphicGraph;
 import org.graphstream.ui.view.util.DefaultMouseManager;
 import org.graphstream.ui.view.View;
 
-import model.OGraph;
-import model.ONode;
+import model.RegionMap;
+import model.Node;
 
 
 import java.awt.event.MouseEvent;
@@ -14,15 +14,15 @@ import java.util.Random;
 
 public class CustomMouseManager extends DefaultMouseManager {
     protected View view;
-    protected GraphicGraph graph;
+    protected GraphicGraph displayGraph;
     private GraphicElement focusedNode;
 
 
 
     @Override
-    public void init(GraphicGraph graph, View view) {
-        super.init(graph, view);
-        this.graph = graph;
+    public void init(GraphicGraph displayGraph, View view) {
+        super.init(displayGraph, view);
+        this.displayGraph = displayGraph;
         this.view = view;
         view.addMouseListener(this);
         view.addMouseMotionListener(this);
@@ -34,17 +34,17 @@ public class CustomMouseManager extends DefaultMouseManager {
         GraphicElement currentNode = view.findNodeOrSpriteAt(e.getX(), e.getY());
 
         if(currentNode != null && currentNode != focusedNode){
-            OGraph graph = OGraph.getInstance();
-            ONode oNode = graph.getNode(Long.parseLong(currentNode.getLabel()));
-            if(oNode == null) {
+            RegionMap map = RegionMap.getInstance();
+            Node node = map.getNode(Long.parseLong(currentNode.getLabel()));
+            if(node == null) {
                 System.out.println("removed node " + currentNode.getLabel());
             }else{
-                if (oNode.getUser() == ONode.userType.Rider) {
+                if (node.getUser() == Node.userType.Rider) {
                     currentNode.setAttribute("ui.style", "size: 10px, 10px; text-mode: normal;");
                 } else {
                     Random r = new Random();
                     currentNode.setAttribute("ui.style", "fill-color: rgb(" + r.nextInt(256) + "," + r.nextInt(256) + "," + r.nextInt(256) + ");size: 10px, 10px; text-mode: normal;");
-                    System.out.println(oNode);
+                    System.out.println(node);
                 }
             }
             MapView.getInstance().setDest(currentNode.getLabel());

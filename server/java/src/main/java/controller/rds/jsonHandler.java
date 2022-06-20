@@ -3,20 +3,16 @@ package controller.rds;
 import model.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import scala.util.parsing.json.JSON;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
 
 public enum jsonHandler {
-    NodeType, EdgeType, GraphType, PathType, RiderType, ListType, MapType; //, IntegerType, DoubleType, StringType;
+    NodeType, EdgeType, MapType, PathType, RiderType, ListType, HashMapType; //, IntegerType, DoubleType, StringType;
 
     /** json to object */
     public <T> T jsonToObj(String json) throws ParseException {
@@ -25,16 +21,16 @@ public enum jsonHandler {
                 return (T) jsonToNode(json);
             case EdgeType:
                 return (T) jsonToEdge(json);
-            case GraphType:
-                return (T) jsonToGraph(json);
+            case MapType:
+                return (T) jsonToMap(json);
             case PathType:
                 return (T) jsonToPath(json);
             case RiderType:
                 return (T) jsonToRider(json);
             case ListType:
                 return (T) jsonToList(json);
-            case MapType:
-                return (T) jsonToMap(json);
+            case HashMapType:
+                return (T) jsonToHashMap(json);
 //            case DoubleType:
 //                break;
 //            case StringType:
@@ -46,9 +42,9 @@ public enum jsonHandler {
         }
     }
 
-    private static OEdge jsonToGraph(String jsonNode){return null;}
+    private static Edge jsonToMap(String jsonNode){return null;}
 
-    private static ONode jsonToNode(String jsonString) throws ParseException {
+    private static Node jsonToNode(String jsonString) throws ParseException {
 
         JSONParser parser = new JSONParser();
         JSONObject jsonObject = (JSONObject) parser.parse(jsonString);
@@ -56,39 +52,39 @@ public enum jsonHandler {
         String nodeId = (String) jsonObject.get("node_Id");
         double latitude = (double) jsonObject.get("latitude");
         double longitude = (double) jsonObject.get("longitude");
-        List<OEdge> edges = jsonToEdges((JSONArray) jsonObject.get("edges"));
+        List<Edge> edges = jsonToEdges((JSONArray) jsonObject.get("edges"));
 
-        ONode node = OGraph.getInstance().addNode(nodeId, osmId, latitude, longitude, ONode.userType.None);
+        Node node = RegionMap.getInstance().addNode(nodeId, osmId, latitude, longitude, Node.userType.None);
         edges.forEach(e->node.addEdge(e));
 
         return node;
 
     }
 
-    private static List<OEdge> jsonToEdges(JSONArray jsonEdges){
-        List<OEdge> edges = new ArrayList<>();
+    private static List<Edge> jsonToEdges(JSONArray jsonEdges){
+        List<Edge> edges = new ArrayList<>();
         jsonEdges.forEach(jsonEdge -> edges.add(jsonToEdge( (JSONObject) jsonEdge)));
         return edges;
     }
 
-    private static OEdge jsonToEdge(String jsonString) throws ParseException {
+    private static Edge jsonToEdge(String jsonString) throws ParseException {
         JSONParser parser = new JSONParser();
         return jsonToEdge((JSONObject) parser.parse(jsonString));
     }
 
-    private static OEdge jsonToEdge(JSONObject jsonObj){
+    private static Edge jsonToEdge(JSONObject jsonObj){
         String edgeId = (String) jsonObj.get("edge_Id");
         Long startNodeId = (Long) jsonObj.get("startNodeId");
         Long endNodeId = (Long) jsonObj.get("endNodeId");
         Double weight = (Double) jsonObj.get("weight");
         String highwayType = (String) jsonObj.get("highwayType");
 
-        return OGraph.getInstance().addEdge(edgeId, startNodeId, endNodeId, weight, highwayType);
+        return RegionMap.getInstance().addEdge(edgeId, startNodeId, endNodeId, weight, highwayType);
     }
 
-    private static OEdge jsonToPath(String jsonNode){return null;}
+    private static Edge jsonToPath(String jsonNode){return null;}
 
-    private static OEdge jsonToRider(String jsonNode){return null;}
+    private static Edge jsonToRider(String jsonNode){return null;}
 
     private static List<Object> jsonToList(String json) throws ParseException {
         JSONParser jsonParser = new JSONParser();
@@ -104,7 +100,7 @@ public enum jsonHandler {
         }
     }
 
-    private static Map<Object, Object> jsonToMap(String json) throws ParseException {
+    private static Map<Object, Object> jsonToHashMap(String json) throws ParseException {
         try {
             JSONParser parser = new JSONParser();
             Object obj = parser.parse(json);
@@ -122,16 +118,16 @@ public enum jsonHandler {
 //                return (T) jsonToNode(obj);
             case EdgeType:
 //                return (T) jsonToEdge(obj);
-            case GraphType:
-//                return (T) jsonToGraph(obj);
+            case MapType:
+//                return (T) jsonToMap(obj);
             case PathType:
 //                return (T) jsonToPath(obj);
             case RiderType:
 //                return (T) jsonToRider(obj);
             case ListType:
 //                return (T) jsonToList(obj);
-            case MapType:
-//                return (T) jsonToMap(obj);
+            case HashMapType:
+//                return (T) jsonToHashMap(obj);
 //            case DoubleType:
 //                break;
 //            case StringType:
@@ -149,7 +145,7 @@ public enum jsonHandler {
 //            return "";
 //        else  if (obj instanceof OEdge)
 //            return "";
-//        else if (obj instanceof OGraph)
+//        else if (obj instanceof OMap)
 //            return "";
 //        else if (obj instanceof OPath)
 //            return "";
@@ -162,13 +158,13 @@ public enum jsonHandler {
     }
 
 
-    private static String graphToJson(OGraph jsonGraph){return null;}
+    private static String MapToJson(RegionMap map){return null;}
 
-    private static JSONObject nodeToJson(ONode node) throws ParseException {
+    private static JSONObject nodeToJson(Node node) throws ParseException {
         JSONObject obj = new JSONObject();
 
         obj.put("node_Id", node.getId());
-        obj.put("osm_Id", node.getOsm_Id());
+        obj.put("osm_Id", node.getOsmID());
         obj.put("latitude", node.getLatitude());
         obj.put("longitude", node.getLongitude());
         obj.put("edges", listToJson(node.getEdges()));
@@ -179,7 +175,7 @@ public enum jsonHandler {
 
 
 
-    private static JSONObject edgeToJson(OEdge edge){
+    private static JSONObject edgeToJson(Edge edge){
         JSONObject obj = new JSONObject();
 
         obj.put("edge_Id", edge.getId());

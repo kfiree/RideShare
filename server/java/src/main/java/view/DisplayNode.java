@@ -2,19 +2,19 @@ package view;
 
 import org.graphstream.graph.implementations.AbstractGraph;
 import org.graphstream.graph.implementations.MultiNode;
-import model.ONode;
+import model.Node;
 
 public class DisplayNode extends MultiNode {
 
-    private ONode nodeData;
+    private Node nodeData;
 
-    public DisplayNode(AbstractGraph graph, ONode node) {
-        super(graph, node.getOsm_Id().toString());
+    public DisplayNode(AbstractGraph displayGraph, Node node) {
+        super(displayGraph, node.getOsmID().toString());
 
         this.nodeData = node;
     }
 
-    public ONode getData() {
+    public Node getData() {
         return nodeData;
     }
 }

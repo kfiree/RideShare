@@ -1,6 +1,6 @@
 package controller.rds.models;
 
-import controller.utils.GraphUtils;
+import controller.utils.MapUtils;
 
 
 public class GeoLocation {
@@ -14,13 +14,13 @@ public class GeoLocation {
         this.nameLocation = nameLocation;
     }
     public GeoLocation(double latitude, double longitude, String nameLocation) {
-        this.geoLocationId = GraphUtils.generateId(this);
+        this.geoLocationId = MapUtils.generateId(this);
         this.latitude = latitude;
         this.longitude = longitude;
         this.nameLocation = nameLocation;
     }
     public GeoLocation() {
-        this.geoLocationId = GraphUtils.generateId(this);
+        this.geoLocationId = MapUtils.generateId(this);
         this.latitude = 23.2222;
         this.longitude = 23.2222;
         this.nameLocation = "nameLocation";

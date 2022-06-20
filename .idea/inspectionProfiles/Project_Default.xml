@@ -65,7 +65,7 @@
     <inspection_tool class="ExceptionNameDoesntEndWithException" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="ExtendsThread" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="FieldMayBeStatic" enabled="true" level="ERROR" enabled_by_default="true" />
-    <inspection_tool class="FieldNamingConvention" enabled="true" level="WARNING" enabled_by_default="true">
+    <inspection_tool class="FieldNamingConvention" enabled="false" level="WARNING" enabled_by_default="false">
       <extension name="ConstantNamingConvention" enabled="true">
         <option name="m_regex" value="[A-Z][A-Z_]*" />
         <option name="m_minLength" value="0" />
@@ -143,6 +143,13 @@
       <option name="m_maxLength" value="128" />
     </inspection_tool>
     <inspection_tool class="NestedSwitchStatement" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="NewClassNamingConvention" enabled="false" level="WARNING" enabled_by_default="false">
+      <extension name="ClassNamingConvention" enabled="true">
+        <option name="m_regex" value="[A-Z][A-Za-z\d]*" />
+        <option name="m_minLength" value="1" />
+        <option name="m_maxLength" value="128" />
+      </extension>
+    </inspection_tool>
     <inspection_tool class="NonBooleanMethodNameMayNotStartWithQuestion" enabled="false" level="ERROR" enabled_by_default="false">
       <option name="questionString" value="is,can,has,should,could,will,shall,check,contains,equals,startsWith,endsWith" />
       <option name="ignoreBooleanMethods" value="false" />
@@ -159,7 +166,7 @@
     </inspection_tool>
     <inspection_tool class="OverloadedVarargsMethod" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="PackageNamingConvention" enabled="true" level="SERVER PROBLEM" enabled_by_default="true">
-      <option name="m_regex" value="[a-z\d]*" />
+      <option name="m_regex" value="[a-z\d]*[_a-z\d]*" />
       <option name="m_minLength" value="0" />
       <option name="m_maxLength" value="128" />
     </inspection_tool>

@@ -2,33 +2,33 @@ package controller.rds;
 
 import controller.rds.querys.*;
 import org.json.simple.JSONObject;
-import model.OGraph;
+import model.RegionMap;
 
 import static controller.rds.checkQuerys.connection;
 
-public class addGraphToDB {
+public class addMapToDB {
 
 //    nodes nodes = new nodes();
 //    edges edges = new edges();
-//    public addGraphToDB(OGraph graph) {
-//        this.graph = graph;
+//    public addMapToDB(OMap map) {
+//        this.map = map;
 //    }
 
-//    public OGraph getGraph() {
-//        return graph;
+//    public OMap getMap() {
+//        return map;
 //    }
 //
-//    public void setGraph(OGraph graph) {
-//        this.graph = graph;
+//    public void setMap(OMap map) {
+//        this.map = map;
 //    }
 
 
-    static public void addToDB(OGraph graph) {
-        uploadNodes(graph);
-        uploadEdges(graph);
+    static public void addToDB(RegionMap map) {
+        uploadNodes(map);
+        uploadEdges(map);
     }
-    public static void uploadNodes(OGraph graph){
-        graph.getNodes().forEach((key,val) -> {
+    public static void uploadNodes(RegionMap map){
+        map.getNodes().forEach((key,val) -> {
             //nodes
             JSONObject edges = new JSONObject();
             val.getEdges().forEach(e -> {
@@ -48,10 +48,10 @@ public class addGraphToDB {
         });
     }
 
-    public static void uploadEdges(OGraph graph){
-        graph.getEdges().forEach(edge -> {
+    public static void uploadEdges(RegionMap map){
+        map.getEdges().forEach(edge -> {
             //edges
-//            OEdge e = new OEdge(edge.getStartNode().getOsm_Id(), edge.getEndNode().getOsm_Id(), edge.getWeight(), edge.getWeight(), edge.getName(), edge.getHighwayType());
+//            OEdge e = new OEdge(edge.getStartNode().getOsmID(), edge.getEndNode().getOsmID(), edge.getWeight(), edge.getWeight(), edge.getName(), edge.getHighwayType());
             System.out.println(edge_query.addEdge(edge));
             System.out.println("addEdge -> " + checkQuerys.addToDB.addToDB(connection, edge_query.addEdge(edge)));
         });
@@ -60,8 +60,8 @@ public class addGraphToDB {
 
     @Override
     public String toString() {
-        return "addGraphToDB{" +
-                "graph=" + OGraph.getInstance() +
+        return "addMapToDB{" +
+                "map=" + RegionMap.getInstance() +
                 '}';
     }
 }
