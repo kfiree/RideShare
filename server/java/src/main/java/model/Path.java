@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  *      |==================================|
@@ -19,44 +18,65 @@ import java.util.stream.Collectors;
  */
 public class Path implements Comparable<Path>{
     private List<Edge>  edges = new ArrayList<>();
-    private RegionMap map = RegionMap.getInstance();
-    private Node Start, End;
+    private RoadMap map = RoadMap.getInstance();
+    private Node _src, _dest;
     private int curr;
 
 
-    public Path(ArrayList<Edge> edges, Node start, Node end) {
-        this.edges = edges;
-        Start = start;
-        End = end;
-        map = RegionMap.getInstance();
-    }
+//    public Path(ArrayList<Edge> edges, Node start, Node end) {
+//        this.edges = edges;
+//        Start = start;
+//        End = end;
+//        map = RegionMap.getInstance();
+//    }
 
-    public Path(@NotNull List<Object> objects) {
-        if(objects.isEmpty())
-            return;
-        if (objects.get(0) instanceof Edge) {
-            this.edges = objects.stream().map(object -> (Edge)object).collect(Collectors.toList());
-            Start = edges.get(0).getStartNode();
-            End = edges.get(edges.size() - 1).getEndNode();
-        }else if(objects.get(0) instanceof Long){
-            List<Long> pathNodesID = objects.stream().map(object -> (Long) object).collect(Collectors.toList());
 
-            List<Node> pathNodes = new ArrayList<>();
-            Node src, dest;
-            for (int i = 0; i<pathNodesID.size()-1;i++){
-                src = map.getNode(pathNodesID.get(i));
-                dest = map.getNode(pathNodesID.get(i+1));
-
-                if(dest != null && src != null){
-                    Edge edge = src.getEdgeTo(dest);
-                    if(edge!=null){
-                        this.edges.add(edge);
-                    }
-                }
+    public Path(@NotNull List<Node>  nodes) {
+        if(nodes.isEmpty()){
+            try {
+                throw new Exception("Path constructor. Nodes can not be empty.");
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+        }
+        _src = nodes.get(0);
+        _dest = nodes.get(nodes.size()-1);
 
+        Node edgeSrc, EdgeDest;
+
+        for (int i = 0; i<nodes.size()-1; i++){
+            edgeSrc = nodes.get(i);
+            EdgeDest = nodes.get(i+1);
+            edges.add(edgeSrc.getEdgeTo(EdgeDest));
         }
     }
+
+//    public Path(@NotNull List<Object> objects) { TODO fix that sh*t
+//        if(objects.isEmpty())
+//            return;
+//        if (objects.get(0) instanceof Edge) {
+//            edges = objects.stream().map(object -> (Edge)object).collect(Collectors.toList());
+//            _src = edges.get(0).getStartNode();
+//            _dest = edges.get(edges.size() - 1).getEndNode();
+//        }else if(objects.get(0) instanceof Long){
+//            List<Long> pathNodesID = objects.stream().map(object -> (Long) object).collect(Collectors.toList());
+//
+//            List<Node> pathNodes = new ArrayList<>();
+//            Node src, dest;
+//            for (int i = 0; i<pathNodesID.size()-1;i++){
+//                src = map.getNode(pathNodesID.get(i));
+//                dest = map.getNode(pathNodesID.get(i+1));
+//
+//                if(dest != null && src != null){
+//                    Edge edge = src.getEdgeTo(dest);
+//                    if(edge!=null){
+//                        this.edges.add(edge);
+//                    }
+//                }
+//            }
+//
+//        }
+//    }
 
 
     public List<Edge> getEdges() {
@@ -74,20 +94,20 @@ public class Path implements Comparable<Path>{
         return null;
     }
 
-    public Node getStart() {
-        return Start;
+    public Node get_src() {
+        return _src;
     }
 
-    public void setStart(Node start) {
-        Start = start;
+    public void set_src(Node _src) {
+        this._src = _src;
     }
 
-    public Node getEnd() {
-        return End;
+    public Node get_dest() {
+        return _dest;
     }
 
-    public void setEnd(Node end) {
-        End = end;
+    public void set_dest(Node _dest) {
+        this._dest = _dest;
     }
 
     public double length(){

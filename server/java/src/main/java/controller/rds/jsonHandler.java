@@ -1,13 +1,17 @@
 package controller.rds;
 
+import controller.utils.GraphAlgo;
+import controller.utils.MapUtils;
 import model.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -54,7 +58,7 @@ public enum jsonHandler {
         double longitude = (double) jsonObject.get("longitude");
         List<Edge> edges = jsonToEdges((JSONArray) jsonObject.get("edges"));
 
-        Node node = RegionMap.getInstance().addNode(nodeId, osmId, latitude, longitude, Node.userType.None);
+        Node node = RoadMap.getInstance().addNode(nodeId, osmId, latitude, longitude, Node.userType.None);
         edges.forEach(e->node.addEdge(e));
 
         return node;
@@ -79,7 +83,7 @@ public enum jsonHandler {
         Double weight = (Double) jsonObj.get("weight");
         String highwayType = (String) jsonObj.get("highwayType");
 
-        return RegionMap.getInstance().addEdge(edgeId, startNodeId, endNodeId, weight, highwayType);
+        return RoadMap.getInstance().addEdge(edgeId, startNodeId, endNodeId, weight, highwayType);
     }
 
     private static Edge jsonToPath(String jsonNode){return null;}
@@ -157,8 +161,7 @@ public enum jsonHandler {
 //        return JSONValue.toJSONString(obj);
     }
 
-
-    private static String MapToJson(RegionMap map){return null;}
+    private static String MapToJson(RoadMap map){return null;}
 
     private static JSONObject nodeToJson(Node node) throws ParseException {
         JSONObject obj = new JSONObject();
@@ -172,8 +175,6 @@ public enum jsonHandler {
 
         return obj;
     }
-
-
 
     private static JSONObject edgeToJson(Edge edge){
         JSONObject obj = new JSONObject();
@@ -230,6 +231,81 @@ public enum jsonHandler {
 //    }
 
 
+    public static void jsonDrivesToPath(String filePath) {
+        //First set locations in GraphUtils
+        jsonLocationsToNodes("server/node/locations.json");
+
+        JSONParser jsonParser = new JSONParser();
+        List<Drive> drives = new ArrayList<>();
+
+        // Read JSON file
+        try (FileReader reader = new FileReader(filePath)) {
+            Object obj = jsonParser.parse(reader);
+
+            JSONArray drivesJsonArray = (JSONArray) obj;
+
+            //Iterate over drives array
+            drivesJsonArray.forEach(drive -> {
+                JSONObject jsonDrive = (JSONObject) drive;
+                String driverType = (String) jsonDrive.get("type");
+                String driveOwnerId = (String) jsonDrive.get("driver_id");
+                Date leaveTime = null;
+
+                try {
+                    leaveTime = parseJsonDate(jsonDrive.get("leaveTime").toString());
+                } catch (java.text.ParseException e) {
+                    e.printStackTrace();
+                }
+
+                String srcId = (String) jsonDrive.get("src");
+                String dstId = (String) jsonDrive.get("dest");
+
+                Node src = GraphAlgo.findClosestNode(MapUtils.getLocations().get(srcId));
+                Node dst = GraphAlgo.findClosestNode(MapUtils.getLocations().get(dstId));
+                List<Node> path = GraphAlgo.getShortestPath(src, dst);
+                drives.add(new Drive(path, driverType, driveOwnerId, leaveTime));
+            });
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void jsonLocationsToNodes(String filePath) {
+        JSONParser jsonParser = new JSONParser();
+        HashMap<String, Node> locations = new HashMap<>();
+
+        // Read JSON file
+        try (FileReader reader = new FileReader(filePath)) {
+            Object obj = jsonParser.parse(reader);
+
+            JSONArray jsonLocationsArray = (JSONArray) obj;
+
+            //Iterate over drives array
+            jsonLocationsArray.forEach(location -> {
+                JSONObject jsonObj = (JSONObject) location;
+                String locationId = (String) jsonObj.get("geo_loaction_id");
+                Double latitude = Double.parseDouble(( (String) jsonObj.get("latitude")));
+                Double longtitude = Double.parseDouble(( (String) jsonObj.get("longtitude")));
+
+                locations.put(locationId, new Node(locationId, null, new GeoLocation(latitude, longtitude), Node.userType.None));
+            });
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+        MapUtils.setLocations(locations);
+    }
+
+    // method to parse ISO String to Date object
+    public static Date parseJsonDate(String date) throws java.text.ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return format.parse(date);
+    }
+
+
+
+
+
     /** write & read file */
     public static void jsonToFile(String jsonObj, String filePath){
         System.out.println("saving to " + filePath);
@@ -244,6 +320,10 @@ public enum jsonHandler {
             e.printStackTrace();
         }
     }
+
+//    public static String fileToJson(String filePath){
+//
+//    }
 
 //    public static List fileToList(String filePath){
 //        JSONParser jsonParser = new JSONParser();

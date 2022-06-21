@@ -1,7 +1,7 @@
 package controller.osm_processing;
 
 import model.Edge;
-import model.RegionMap;
+import model.RoadMap;
 import model.Node;
 
 import java.util.*;
@@ -66,7 +66,7 @@ public final class Parser {
 
         }
 
-        RegionMap.getInstance().setEdges(EDGES);
+        RoadMap.getInstance().setEdges(EDGES);
     }
 
     private static Node createNodeForEdge(OsmObject osmObject, OsmWay way){
@@ -77,7 +77,7 @@ public final class Parser {
     }
 
     private static Node selectNode(OsmObject object) {
-        RegionMap map = RegionMap.getInstance();
+        RoadMap map = RoadMap.getInstance();
         Long junctionID = Reader.getJunctions().get(object.getID());
         Node node = map.getNode(object.getID());
 

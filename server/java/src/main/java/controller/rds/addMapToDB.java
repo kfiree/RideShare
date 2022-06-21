@@ -2,7 +2,7 @@ package controller.rds;
 
 import controller.rds.querys.*;
 import org.json.simple.JSONObject;
-import model.RegionMap;
+import model.RoadMap;
 
 import static controller.rds.checkQuerys.connection;
 
@@ -23,11 +23,11 @@ public class addMapToDB {
 //    }
 
 
-    static public void addToDB(RegionMap map) {
+    static public void addToDB(RoadMap map) {
         uploadNodes(map);
         uploadEdges(map);
     }
-    public static void uploadNodes(RegionMap map){
+    public static void uploadNodes(RoadMap map){
         map.getNodes().forEach((key,val) -> {
             //nodes
             JSONObject edges = new JSONObject();
@@ -48,7 +48,7 @@ public class addMapToDB {
         });
     }
 
-    public static void uploadEdges(RegionMap map){
+    public static void uploadEdges(RoadMap map){
         map.getEdges().forEach(edge -> {
             //edges
 //            OEdge e = new OEdge(edge.getStartNode().getOsmID(), edge.getEndNode().getOsmID(), edge.getWeight(), edge.getWeight(), edge.getName(), edge.getHighwayType());
@@ -61,7 +61,7 @@ public class addMapToDB {
     @Override
     public String toString() {
         return "addMapToDB{" +
-                "map=" + RegionMap.getInstance() +
+                "map=" + RoadMap.getInstance() +
                 '}';
     }
 }

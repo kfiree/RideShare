@@ -22,8 +22,7 @@ import java.util.*;
  */
 public class MapUtils {
     private static List<Path> _paths =  new ArrayList<>();
-    private static Hashtable<Path, String> labeledPaths = new Hashtable<>();
-    private static Map<Long, Node> _riders = new HashMap<>();
+    private static Map<String, Node> _riders = new HashMap<>(), locations= new HashMap<>(), drives = new HashMap<>();
     private static Double _topLongitude, _bottomLongitude, _topLatitude, _bottomLatitude;
     private static boolean bound;
 
@@ -95,13 +94,10 @@ public class MapUtils {
 
     /** GETTERS */
 
-    public static boolean addPath(List<Object> pathNodes){
-        return _paths.add(new Path(pathNodes));
-    }
+//    public static boolean addPath(List<Object> pathNodes){
+//        return _paths.add(new Path(pathNodes));
+//    } TODO fix
 
-    public static String addLabeledPath(List<Object> pathNodes, String label){
-        return labeledPaths.put(new Path(pathNodes), label);
-    }
 
     public static void setPaths(List<Path> paths) {
         _paths.addAll(paths);
@@ -118,17 +114,29 @@ public class MapUtils {
         return true;
     }
 
+    public static Map<String, Node> getLocations() {
+        return locations;
+    }
+
+    public static Map<String, Node> getDrives() {
+        return drives;
+    }
+
     /** SETTERS */
 
-    public static Hashtable<Path, String> getLabeledPaths(){
-        return labeledPaths;
+    public static void setLocations(Map<String, Node> locations) {
+        MapUtils.locations.putAll(locations);
+    }
+
+    public static void setDrives(Map<String, Node> drives) {
+        MapUtils.drives.putAll(drives);
     }
 
     public static List<Path> getPaths() {
         return _paths;
     }
 
-    public static Map<Long, Node> getRiders() {
+    public static Map<String, Node> getRiders() {
         return _riders;
     }
 

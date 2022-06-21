@@ -43,9 +43,7 @@ public class Edge {
         this.endNode = endNode;
         this.id = id == null ? MapUtils.generateId(this) : id;
         this.highwayType = highwayType;
-        this.weight = weight;
-
-        //TODO init weight by length and max speed
+        this.weight = weight == 0.0 ? GraphAlgo.distance(startNode, endNode)/ SPEED_LIMIT.getOrDefault(highwayType, 50) : weight;
     }
 
     public Edge(OsmWay way, Node startNode, Node endNode) {
@@ -53,7 +51,7 @@ public class Edge {
     }
 
     public Edge(String id, Long startNodeId, Long endNodeID, Double weight, String highwayType) {
-        this(id, RegionMap.getInstance().getNode(startNodeId), RegionMap.getInstance().getNode(endNodeID), weight, highwayType);
+        this(id, RoadMap.getInstance().getNode(startNodeId), RoadMap.getInstance().getNode(endNodeID), weight, highwayType);
     }
 
     /**

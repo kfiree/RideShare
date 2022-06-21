@@ -8,14 +8,13 @@ import org.graphstream.ui.j2dviewer.J2DGraphRenderer;
 import org.graphstream.ui.view.Viewer;
 import org.graphstream.ui.view.ViewerPipe;
 
-import controller.utils.MapUtils;
-import model.RegionMap;
+import model.RoadMap;
 import model.Node;
 
 import java.util.List;
 
 public class MapView {
-    private RegionMap map;
+    private RoadMap map;
     private Graph displayGraph;
     private String styleSheet = "node {	text-mode: hidden; }";
     private Node dest;
@@ -25,7 +24,7 @@ public class MapView {
 
     private MapView() {
         displayGraph = new MultiGraph("map simulation");
-        map = RegionMap.getInstance();
+        map = RoadMap.getInstance();
         dest = map.getNode(2432701015l);
     }
 
@@ -55,7 +54,7 @@ public class MapView {
         Node src = map.getNode(1671579963l);
 
         int i = 1;
-        List<Node> path = GraphAlgo.getShortestPathBetween(src, dest);
+        List<Node> path = GraphAlgo.getShortestPath(src, dest);
         path.remove(0);//path.remove(path.size());
         assert path != null;
         org.graphstream.graph.Node nextInPath = displayGraph.getNode(String.valueOf(path.get(0).getOsmID()));
@@ -141,47 +140,47 @@ public class MapView {
         return displayNode;
     }
 
-    private boolean drawRider(MapUtils utils){
-        utils.getRiders().values().forEach(rider->{
-            String keyStr = String.valueOf(rider.getOsmID());
-            org.graphstream.graph.Node displayNode = displayGraph.getNode(keyStr);
-
-            if(displayNode == null){
-
-                displayNode = displayGraph.addNode(keyStr);
-                displayNode.setAttribute("xy", rider.getLongitude(), rider.getLatitude());
-                displayNode.setAttribute("ui.label", rider.getOsmID().toString());
-
-                displayNode.setAttribute("ui.style","fill-color: red;");
-            }
-
-        });
-        return true;
-    }
-
-    private boolean drawPaths() {
-//        utils.getPaths().forEach(path -> {
-//            if(path!=null)
-//                path.getEdges().forEach(edge -> {
-//                    displayGraph.getEdge(edge.getId()).setAttribute("ui.style", "size: 5px; fill-color: blue;");
-//                });
+//    private boolean drawRider(MapUtils utils){
+//        utils.getRiders().values().forEach(rider->{
+//            String keyStr = rider.getOsmID();
+//            org.graphstream.graph.Node displayNode = displayGraph.getNode(keyStr);
+//
+//            if(displayNode == null){
+//
+//                displayNode = displayGraph.addNode(keyStr);
+//                displayNode.setAttribute("xy", rider.getLongitude(), rider.getLatitude());
+//                displayNode.setAttribute("ui.label", rider.getOsmID().toString());
+//
+//                displayNode.setAttribute("ui.style","fill-color: red;");
+//            }
+//
 //        });
-
-        MapUtils.getLabeledPaths().keySet().forEach(path -> {
-            if (path != null) {
-                if (MapUtils.getLabeledPaths().get(path).equals("Passenger")) {
-                    path.getEdges().forEach(edge -> {
-                        displayGraph.getEdge(edge.getId()).setAttribute("ui.style", "size: 5px; fill-color: blue;");
-                    });
-                } else if (MapUtils.getLabeledPaths().get(path).equals("Driver")) {
-                    path.getEdges().forEach(edge -> {
-                        displayGraph.getEdge(edge.getId()).setAttribute("ui.style", "size: 5px; fill-color: red;");
-                    });
-                }
-            }
-        });
-        return true;
-    }
+//        return true;
+//    }
+//
+//    private boolean drawPaths() {
+////        utils.getPaths().forEach(path -> {
+////            if(path!=null)
+////                path.getEdges().forEach(edge -> {
+////                    displayGraph.getEdge(edge.getId()).setAttribute("ui.style", "size: 5px; fill-color: blue;");
+////                });
+////        });
+//
+//        MapUtils.getLabeledPaths().keySet().forEach(path -> {
+//            if (path != null) {
+//                if (MapUtils.getLabeledPaths().get(path).equals("Passenger")) {
+//                    path.getEdges().forEach(edge -> {
+//                        displayGraph.getEdge(edge.getId()).setAttribute("ui.style", "size: 5px; fill-color: blue;");
+//                    });
+//                } else if (MapUtils.getLabeledPaths().get(path).equals("Driver")) {
+//                    path.getEdges().forEach(edge -> {
+//                        displayGraph.getEdge(edge.getId()).setAttribute("ui.style", "size: 5px; fill-color: red;");
+//                    });
+//                }
+//            }
+//        });
+//        return true;
+//    }
 }
 
 /**

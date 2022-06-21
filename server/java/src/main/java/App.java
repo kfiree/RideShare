@@ -1,7 +1,7 @@
 import controller.utils.MapUtils;
 import view.MapView;
 import crosby.binary.osmosis.OsmosisReader;
-import model.RegionMap;
+import model.RoadMap;
 import controller.osm_processing.*;
 
 import javax.swing.*;
@@ -25,14 +25,14 @@ public final class App{
 
         CreateMap(pbfFilePath);
 
-        System.out.println("map is ready.\n" + RegionMap.getInstance());
+        System.out.println("map is ready.\n" + RoadMap.getInstance());
 
         MapView.getInstance().show();
 
         System.exit(0);
     }
 
-    public static RegionMap CreateMap(String pathToPBF) {
+    public static RoadMap CreateMap(String pathToPBF) {
         InputStream inputStream;
 
         try {
@@ -59,7 +59,7 @@ public final class App{
 
             System.exit(0);
         }
-        return RegionMap.getInstance();
+        return RoadMap.getInstance();
     }
 
     private static String chooseFile() {

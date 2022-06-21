@@ -1,14 +1,12 @@
 package model;
 
-import controller.utils.GraphAlgo;
 import controller.osm_processing.OsmWay;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  *      |==================================|
- *      |==========| REGION MAP  |=========|
+ *      |==========| Road MAP  |=========|
  *      |==================================|
  *
  *
@@ -18,22 +16,22 @@ import java.util.concurrent.atomic.AtomicReference;
  * @version 1.0
  * @since   2021-06-20
  */
-public final class RegionMap {
+public final class RoadMap {
 
     private Set<Edge> edges;
     private final Map<Long, Node> nodes;
     private final Map<Long, Node> junctionNodes = new HashMap<>();
 
     /** CONSTRUCTORS */
-    private RegionMap() {
+    private RoadMap() {
         edges = new HashSet<>();
         nodes = new HashMap<>();
     }
 
     /**  Singleton specific properties */
-    private static final RegionMap INSTANCE = new RegionMap();
+    private static final RoadMap INSTANCE = new RoadMap();
 
-    public static RegionMap getInstance() {
+    public static RoadMap getInstance() {
         return INSTANCE;
     }
 

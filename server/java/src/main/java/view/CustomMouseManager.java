@@ -5,7 +5,7 @@ import org.graphstream.ui.graphicGraph.GraphicGraph;
 import org.graphstream.ui.view.util.DefaultMouseManager;
 import org.graphstream.ui.view.View;
 
-import model.RegionMap;
+import model.RoadMap;
 import model.Node;
 
 
@@ -34,7 +34,7 @@ public class CustomMouseManager extends DefaultMouseManager {
         GraphicElement currentNode = view.findNodeOrSpriteAt(e.getX(), e.getY());
 
         if(currentNode != null && currentNode != focusedNode){
-            RegionMap map = RegionMap.getInstance();
+            RoadMap map = RoadMap.getInstance();
             Node node = map.getNode(Long.parseLong(currentNode.getLabel()));
             if(node == null) {
                 System.out.println("removed node " + currentNode.getLabel());

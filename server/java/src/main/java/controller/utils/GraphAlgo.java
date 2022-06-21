@@ -1,6 +1,6 @@
 package controller.utils;
 
-import model.RegionMap;
+import model.RoadMap;
 import model.Node;
 
 import java.util.*;
@@ -43,7 +43,7 @@ public class GraphAlgo {
 //        return (dist);
 //    }
 
-    public Node findClosestNode(Node node){
+    public static Node findClosestNode(Node node){
     //Get the coordinates of the node
     Double latitude = node.getLatitude();
     Double longitude = node.getLongitude();
@@ -53,7 +53,7 @@ public class GraphAlgo {
     AtomicReference<Node> closestNode = new AtomicReference<>(node);
 
     //Loop through all the nodes that are not from Rider type, and find the closest one
-    RegionMap.getInstance().getNodes().values().stream().filter(n -> n.getUser() != Node.userType.Rider)
+    RoadMap.getInstance().getNodes().values().stream().filter(n -> n.getUser() != Node.userType.Rider)
             .forEach(other -> {
                 double dist = GraphAlgo.distance(node, other);
                 if(dist < minDistance.get()){
@@ -147,7 +147,7 @@ public class GraphAlgo {
         return visited.stream().toList();
     }
 
-    private static HashMap<Node, Double> NodesH = new HashMap<>(), NodesG = new HashMap<>(), NodesF = new HashMap<>();
+    private static HashMap<Node, Double> NodesH = new HashMap<>(), NodesG = new HashMap<>();
 
     private static void setH(Node node, Node other){ NodesH.put(node, distance(node, other)); }
 
@@ -164,7 +164,7 @@ public class GraphAlgo {
      * @param dest destination
      * @return shortest path from src to dest
      */
-    public static List<Node> getShortestPathBetween(Node src, Node dest){
+    public static List<Node> getShortestPath(Node src, Node dest){
 
         Hashtable<String, Node> CloseSet = new Hashtable<>();
         Hashtable<String, Node> OpenSet = new Hashtable<>();
@@ -217,7 +217,7 @@ public class GraphAlgo {
     }
 
     public static void removeNodesThatNotConnectedTo(Node src){
-        RegionMap map = RegionMap.getInstance();
+        RoadMap map = RoadMap.getInstance();
         //delete node that aren't connected to src
         List<Node> connectedComponent = getConnectedComponent(src);
 
