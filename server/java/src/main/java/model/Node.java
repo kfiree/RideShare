@@ -1,7 +1,6 @@
 package model;
 
 import controller.utils.MapUtils;
-import controller.utils.GraphAlgo;
 import org.jetbrains.annotations.NotNull;
 import controller.osm_processing.OsmObject;
 
@@ -18,11 +17,11 @@ import java.util.stream.Collectors;
  * @version 1.0
  * @since   2021-06-20
  */
-public class Node implements Comparable<Node> {
+public class Node implements Comparable<Node>, model.MapObject {
 
     private final String id;
     private final Long osmID;
-    private Double latitude, longitude;
+    private final GeoLocation coordinates;
     private final List<Edge> edges = new LinkedList<>();
     public enum userType {Driver, Rider, None}
     private userType user;
@@ -32,8 +31,7 @@ public class Node implements Comparable<Node> {
     public Node(String id, Long osmID, GeoLocation coordinates, userType user) {
         this.id = id.equals("") ? MapUtils.generateId(this) : id;
         this.osmID = osmID;
-        latitude = coordinates.getLatitude();
-        longitude = coordinates.getLongitude(); //todo save as geolocation
+        this.coordinates = coordinates;
         this.user = user;
     }
 
@@ -52,6 +50,7 @@ public class Node implements Comparable<Node> {
     }
 
     // GETTERS:
+    @Override
     public String getId() {return id;}
 
     public Long getOsmID() {
@@ -59,24 +58,26 @@ public class Node implements Comparable<Node> {
     }
 
     public Double getLatitude() {
-        return latitude;
+        return coordinates.getLatitude();
     }
 
     public Double getLongitude() {
-        return longitude;
+        return coordinates.getLongitude();
     }
+
+    @Override
+    public GeoLocation getCoordinates() { return coordinates; }
 
     //instead of getWeight
     public Integer getDegree() { return edges.size(); }
 
-    public ArrayList<Node> getAdjacentNodesFromGraph() {
+    public ArrayList<Node> getAdjacentNodesFromGraph() {//TODO check why redundant
         ArrayList<Node> adjacentNodes = new ArrayList<>();
         for(Edge edge : edges) {
             adjacentNodes.add(edge.getEndNode());
         }
         return adjacentNodes;
     }
-
     public ArrayList<Node> getAdjacentNodes() {
         ArrayList<Node> adjacentNodes = new ArrayList<>();
         for(Edge edge : edges) {
@@ -114,12 +115,8 @@ public class Node implements Comparable<Node> {
         tags.put(k, v);
     }
 
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
+    public void setCoordinates(double longitude, double latitude){
+        coordinates.setCoordinates(longitude, latitude);
     }
 
     public boolean isAdjacent(Node targetNode) {
@@ -146,11 +143,11 @@ public class Node implements Comparable<Node> {
 //        return edges.remove(edge);
 //    }
 
-    public userType getUser() {
+    public userType getType() {
         return user;
     }
 
-    public void setUser(userType user) {
+    public void setType(userType user) {
         addTags("user", "driver");
         this.user = user;
     }
@@ -181,7 +178,7 @@ public class Node implements Comparable<Node> {
     @Override
     public boolean equals(Object o) {
         if(o instanceof Node node){
-            return node.getLatitude().equals(latitude) && node.getLongitude().equals(longitude);
+            return node.getLatitude().equals(coordinates.getLatitude()) && node.getLongitude().equals(coordinates.getLongitude());
         }
         return false;
     }
@@ -189,7 +186,7 @@ public class Node implements Comparable<Node> {
     @Override
     public String toString() {
         String idStr = "id = " + osmID;
-        String coordinatesStr = ", coordinates = (" +latitude + "," + longitude + ")";
+        String coordinatesStr = ", "+ coordinates;
         String adjacentStr = edges.stream()
                 .map(edge ->edge.getOtherEnd(getId()).getOsmID().toString())
                 .collect(Collectors.joining(", "));

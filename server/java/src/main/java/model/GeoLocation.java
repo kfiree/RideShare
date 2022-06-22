@@ -26,4 +26,14 @@ public class GeoLocation extends Point2D.Double{
     public double getLongitude() {
         return getY();
     }
+
+    public void setCoordinates(double latitude, double longitude) {
+        x = latitude ;
+        y = longitude;
+    }
+
+    @Override
+    public String toString() {
+        return "coordinates = (" +getLatitude() + "," + getLongitude() + ")";
+    }
 }

@@ -1,9 +1,10 @@
 package model;
 
+import controller.utils.MapUtils;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *      |==================================|
@@ -17,74 +18,49 @@ import java.util.List;
  * @since   2021-06-20
  */
 public class Path implements Comparable<Path>{
-    private List<Edge>  edges = new ArrayList<>();
-    private RoadMap map = RoadMap.getInstance();
+    private final List<Edge>  edges = new ArrayList<>();
+    private final RoadMap map = RoadMap.getInstance();
     private Node _src, _dest;
     private int curr;
 
+    public Path(List objects) {
+        if(objects.isEmpty()){
+            MapUtils.throwException("Path constructor. Nodes can not be empty.");
+        }else if (objects.get(0) instanceof Edge) {
+            objects.forEach(o->{
+                if(o instanceof Node) {
+                    MapUtils.throwException("node in edges list.");
+                }else{
+                    edges.add((Edge)o);
+                }
+                _src = edges.get(0).getStartNode();
+                _dest = edges.get(edges.size() - 1).getEndNode();
+            });
+        }else if (objects.get(0) instanceof Node) {
 
-//    public Path(ArrayList<Edge> edges, Node start, Node end) {
-//        this.edges = edges;
-//        Start = start;
-//        End = end;
-//        map = RegionMap.getInstance();
-//    }
+            Node edgeSrc, EdgeDest;
 
-
-    public Path(@NotNull List<Node>  nodes) {
-        if(nodes.isEmpty()){
-            try {
-                throw new Exception("Path constructor. Nodes can not be empty.");
-            } catch (Exception e) {
-                e.printStackTrace();
+            for (int i = 0; i<objects.size()-1; i++){
+                if(objects.get(i+1) instanceof Node) {
+                    MapUtils.throwException("edge in nodes list.");
+                }
+                edgeSrc = (Node) objects.get(i);
+                EdgeDest = (Node) objects.get(i+1);
+                edges.add(edgeSrc.getEdgeTo(EdgeDest));
             }
-        }
-        _src = nodes.get(0);
-        _dest = nodes.get(nodes.size()-1);
-
-        Node edgeSrc, EdgeDest;
-
-        for (int i = 0; i<nodes.size()-1; i++){
-            edgeSrc = nodes.get(i);
-            EdgeDest = nodes.get(i+1);
-            edges.add(edgeSrc.getEdgeTo(EdgeDest));
+            _src = (Node) objects.get(0);
+            _dest = (Node) objects.get(objects.size()-1);
+        }else{
+            MapUtils.throwException("Path constructor accepts only List<Node> or List<Edges>.");
         }
     }
-
-//    public Path(@NotNull List<Object> objects) { TODO fix that sh*t
-//        if(objects.isEmpty())
-//            return;
-//        if (objects.get(0) instanceof Edge) {
-//            edges = objects.stream().map(object -> (Edge)object).collect(Collectors.toList());
-//            _src = edges.get(0).getStartNode();
-//            _dest = edges.get(edges.size() - 1).getEndNode();
-//        }else if(objects.get(0) instanceof Long){
-//            List<Long> pathNodesID = objects.stream().map(object -> (Long) object).collect(Collectors.toList());
-//
-//            List<Node> pathNodes = new ArrayList<>();
-//            Node src, dest;
-//            for (int i = 0; i<pathNodesID.size()-1;i++){
-//                src = map.getNode(pathNodesID.get(i));
-//                dest = map.getNode(pathNodesID.get(i+1));
-//
-//                if(dest != null && src != null){
-//                    Edge edge = src.getEdgeTo(dest);
-//                    if(edge!=null){
-//                        this.edges.add(edge);
-//                    }
-//                }
-//            }
-//
-//        }
-//    }
-
 
     public List<Edge> getEdges() {
         return edges;
     }
 
     public void setEdges(ArrayList<Edge> edges) {
-        this.edges = edges;
+        this.edges.addAll(edges);
     }
 
     public Node getNext(){
@@ -120,6 +96,6 @@ public class Path implements Comparable<Path>{
 
     @Override
     public int compareTo(Path other) {
-        return (int)(this.length() - other.length());
+        return (int)(length() - other.length());
     }
 }

@@ -108,7 +108,7 @@ public enum jsonHandler {
         try {
             JSONParser parser = new JSONParser();
             Object obj = parser.parse(json);
-            return (Map)obj;
+            return (Map<Object, Object>)obj;
         } catch (ParseException e) {
             throw e;
         }

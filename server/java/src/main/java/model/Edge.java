@@ -18,7 +18,7 @@ import java.util.Set;
  * @version 1.0
  * @since   2021-06-20
  */
-public class Edge {
+public class Edge implements model.MapObject {
 
     private final Node startNode, endNode;
     private final double weight;
@@ -35,7 +35,7 @@ public class Edge {
                 put("tertiary", 50);
     }};
 
-    private Edge(String id, Node startNode, Node endNode, Double weight, String highwayType){
+    public Edge(String id, Node startNode, Node endNode, Double weight, String highwayType){
 //        if(startNode.getTags().get("oneway").equals("yes"))
 //        directed = startNode.getTags().get("oneway") != null && startNode.getTags().get("oneway").equals("yes");
         tagNames.add(highwayType);
@@ -57,6 +57,7 @@ public class Edge {
     /**
      * GETTERS
      */
+    @Override
     public String getId() { return id; }
 
     public String getHighwayType() {
@@ -86,6 +87,11 @@ public class Edge {
             return endNode;
         }
         return null;
+    }
+
+    @Override
+    public GeoLocation getCoordinates(){
+        return startNode.getCoordinates();
     }
 
 

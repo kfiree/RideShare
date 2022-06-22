@@ -128,9 +128,9 @@ public class MapView {
 
             if(node.getOsmID() == 2432701015l || node.getOsmID() == 1671579963l){
                 displayNode.setAttribute("ui.style", "z-index: 2; size: 10px; fill-color: green;");
-            } else if(node.getUser() == Node.userType.Rider){
+            } else if(node.getType() == Node.userType.Rider){
                 displayNode.setAttribute("ui.style", "fill-color: blue;");
-            } else if(node.getUser() == Node.userType.Driver) {
+            } else if(node.getType() == Node.userType.Driver) {
                 displayNode.setAttribute("ui.style", "fill-color: red;");
             }
 

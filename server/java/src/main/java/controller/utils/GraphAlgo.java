@@ -53,7 +53,7 @@ public class GraphAlgo {
     AtomicReference<Node> closestNode = new AtomicReference<>(node);
 
     //Loop through all the nodes that are not from Rider type, and find the closest one
-    RoadMap.getInstance().getNodes().values().stream().filter(n -> n.getUser() != Node.userType.Rider)
+    RoadMap.getInstance().getNodes().values().stream().filter(n -> n.getType() != Node.userType.Rider)
             .forEach(other -> {
                 double dist = GraphAlgo.distance(node, other);
                 if(dist < minDistance.get()){

@@ -48,7 +48,7 @@ public class MapUtils {
         MapUtils.bound = bound;
     }
 
-    public static void updateBounds(@NotNull Double topLatitude, @NotNull Double bottomLatitude, @NotNull Double topLongitude, @NotNull Double bottomLongitude) throws Exception {
+    public static void updateBounds(@NotNull Double topLatitude, @NotNull Double bottomLatitude, @NotNull Double topLongitude, @NotNull Double bottomLongitude){
 
         _topLatitude = topLatitude;
         _bottomLatitude = bottomLatitude;
@@ -56,19 +56,16 @@ public class MapUtils {
         _bottomLongitude = bottomLongitude;
 
         if(topLatitude <bottomLatitude || topLongitude < bottomLongitude) {
-
             boolean longitudeException = topLongitude < bottomLongitude;
-
             String coordinateType = longitudeException? "Longitude" : "Latitude";
             Double top = longitudeException? topLongitude : topLatitude,
                     bottom = longitudeException? bottomLongitude: bottomLatitude ;
-
-            throw new Exception("Illegal Map Bounds. Top " + coordinateType + " bound can not be smaller then bottom " + coordinateType + ". " + top + " < " + bottom + ".");
+            throwException("Illegal Map Bounds. Top " + coordinateType + " bound can not be smaller then bottom " + coordinateType + ". " + top + " < " + bottom + ".");
         }
 
     }
 
-    public static void updateBounds(@NotNull GeoLocation topRightBound, @NotNull GeoLocation bottomLeftBound) throws Exception {
+    public static void updateBounds(@NotNull GeoLocation topRightBound, @NotNull GeoLocation bottomLeftBound){
         updateBounds(topRightBound.getLatitude(), bottomLeftBound.getLatitude(), topRightBound.getLongitude(), bottomLeftBound.getLongitude());
     }
 
@@ -107,7 +104,7 @@ public class MapUtils {
 
 //        Riders.entrySet().forEach(entry -> {
 //            Node node = new Node(null, entry.getKey(), entry.getValue()[0], entry.getValue()[1], Node.userType.Rider);
-//            node.setUser(Node.userType.Rider);
+//            node.setType(Node.userType.Rider);
 //            _riders.put(entry.getKey(), node);
 //        });
 
@@ -143,6 +140,14 @@ public class MapUtils {
     /** create uuid */
     public static String generateId(Object object) {
         return UUID.randomUUID().toString();
+    }
+
+    public static void throwException(String msg){
+        try {
+            throw new Exception(msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 

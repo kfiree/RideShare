@@ -39,7 +39,7 @@ public class CustomMouseManager extends DefaultMouseManager {
             if(node == null) {
                 System.out.println("removed node " + currentNode.getLabel());
             }else{
-                if (node.getUser() == Node.userType.Rider) {
+                if (node.getType() == Node.userType.Rider) {
                     currentNode.setAttribute("ui.style", "size: 10px, 10px; text-mode: normal;");
                 } else {
                     Random r = new Random();
