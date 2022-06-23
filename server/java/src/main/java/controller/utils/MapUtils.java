@@ -1,5 +1,6 @@
 package controller.utils;
 
+import model.Drive;
 import model.GeoLocation;
 import model.Node;
 import model.Path;
@@ -22,7 +23,8 @@ import java.util.*;
  */
 public class MapUtils {
     private static List<Path> _paths =  new ArrayList<>();
-    private static Map<String, Node> _riders = new HashMap<>(), locations= new HashMap<>(), drives = new HashMap<>();
+    private static Map<String, Node> _riders = new HashMap<>(), locations= new HashMap<>();
+    private static Map<String, Drive>   drives = new HashMap<>();
     private static Double _topLongitude, _bottomLongitude, _topLatitude, _bottomLatitude;
     private static boolean bound;
 
@@ -115,7 +117,7 @@ public class MapUtils {
         return locations;
     }
 
-    public static Map<String, Node> getDrives() {
+    public static Map<String, Drive> getDrives() {
         return drives;
     }
 
@@ -125,7 +127,7 @@ public class MapUtils {
         MapUtils.locations.putAll(locations);
     }
 
-    public static void setDrives(Map<String, Node> drives) {
+    public static void setDrives(Map<String, Drive> drives) {
         MapUtils.drives.putAll(drives);
     }
 

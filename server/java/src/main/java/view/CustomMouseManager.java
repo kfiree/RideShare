@@ -39,7 +39,7 @@ public class CustomMouseManager extends DefaultMouseManager {
             if(node == null) {
                 System.out.println("removed node " + currentNode.getLabel());
             }else{
-                if (node.getType() == Node.userType.Rider) {
+                if (node.getType() == Node.userType.Passenger) {
                     currentNode.setAttribute("ui.style", "size: 10px, 10px; text-mode: normal;");
                 } else {
                     Random r = new Random();
@@ -47,7 +47,7 @@ public class CustomMouseManager extends DefaultMouseManager {
                     System.out.println(node);
                 }
             }
-            MapView.getInstance().setDest(currentNode.getLabel());
+//            MapView.getInstance().setDest(currentNode.getLabel());
 
         }else{
 //            System.out.println(e.getX()+", "+e.getY());

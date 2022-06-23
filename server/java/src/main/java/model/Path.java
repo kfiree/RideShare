@@ -3,7 +3,10 @@ package model;
 import controller.utils.MapUtils;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Spliterator;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -13,15 +16,16 @@ import java.util.stream.Collectors;
  *
  *   path on the map contains list of 'EDGE'
  *
- * @author  Kfir Ettinger & Amit Hajaj & Motti Dahari
+ * Note: this class has a natural ordering that is inconsistent with equals.
+ * @author Kfir Ettinger & Amit Hajaj & Motti Dahari
  * @version 1.0
- * @since   2021-06-20
+ * @since 2021-06-20
  */
-public class Path implements Comparable<Path>{
+public class Path implements Comparable<Path> , Iterable<Edge>{
     private final List<Edge>  edges = new ArrayList<>();
     private final RoadMap map = RoadMap.getInstance();
     private Node _src, _dest;
-    private int curr;
+    private Iterator<Edge> iterator;
 
     public Path(List objects) {
         if(objects.isEmpty()){
@@ -63,9 +67,13 @@ public class Path implements Comparable<Path>{
         this.edges.addAll(edges);
     }
 
-    public Node getNext(){
-        if(curr>edges.size()){
-            return edges.get(curr++).getEndNode();
+    public Edge getNext(){
+        if(iterator == null) {
+            iterator = edges.iterator();
+        }
+
+        if(iterator.hasNext()){
+            return iterator.next();
         }
         return null;
     }
@@ -74,9 +82,8 @@ public class Path implements Comparable<Path>{
         return _src;
     }
 
-    public void set_src(Node _src) {
-        this._src = _src;
-    }
+    public void set_src(Node _src) { this._src = _src; }
+    //TODO run A* After every change of dest or src
 
     public Node get_dest() {
         return _dest;
@@ -98,4 +105,11 @@ public class Path implements Comparable<Path>{
     public int compareTo(Path other) {
         return (int)(length() - other.length());
     }
+
+    @NotNull
+    @Override
+    public Iterator iterator() {
+        return edges.iterator();
+    }
+
 }

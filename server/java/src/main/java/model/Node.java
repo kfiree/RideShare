@@ -23,7 +23,7 @@ public class Node implements Comparable<Node>, model.MapObject {
     private final Long osmID;
     private final GeoLocation coordinates;
     private final List<Edge> edges = new LinkedList<>();
-    public enum userType {Driver, Rider, None}
+    public enum userType {Driver, Passenger, None}
     private userType user;
     private Map<String, String> tags = new HashMap<>();
     private double f;
