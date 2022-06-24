@@ -41,11 +41,7 @@ public class MapUtils {
 
     public static void setBounds(boolean bound){
         if(!MapUtils.bound){
-            try {
-                updateBounds(32.13073917015928, 32.0449580796914, 34.852006, 0.0);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            updateBounds(32.13073917015928, 32.0449580796914, 34.852006, 0.0);
         }
         MapUtils.bound = bound;
     }
@@ -69,6 +65,10 @@ public class MapUtils {
 
     public static void updateBounds(@NotNull GeoLocation topRightBound, @NotNull GeoLocation bottomLeftBound){
         updateBounds(topRightBound.getLatitude(), bottomLeftBound.getLatitude(), topRightBound.getLongitude(), bottomLeftBound.getLongitude());
+    }
+
+    public static boolean inBound( GeoLocation location){
+        return inBound(location.getLongitude(), location.getLatitude());
     }
 
     public static boolean inBound(double longitude, double latitude ){
@@ -144,9 +144,16 @@ public class MapUtils {
         return UUID.randomUUID().toString();
     }
 
-    public static void throwException(String msg){
+    public static void validate(boolean condition, String errorMsg){
+        if(!condition) {
+            throwException(errorMsg);
+        }
+
+    }
+
+    public static void throwException(String errorMsg){
         try {
-            throw new Exception(msg);
+            throw new Exception(errorMsg);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -6,12 +6,12 @@ public class edge_query {
     static public String addEdge(Edge e) {
         return "INSERT INTO \"public\".\"rs_edges\" (\"edge_Id\", \"startNodeId\", \"endNodeId\", \"weight\", \"distance\", \"highwayType\") " +
                 "VALUES " +
-                "('"+e.getId()+"', '"+e.getStartNode().getId()+"', '"+e.getEndNode().getId()+"', "+e.getWeight()+", "+e.getDistance()+", '"+e.getHighwayType()+"');";
+                "('"+e.getId()+"', '"+e.getNode1().getId()+"', '"+e.getNode2().getId()+"', "+e.getWeight()+", "+e.getDistance()+", '"+e.getHighwayType()+"');";
     }
     static public String updateEdge(Edge e) {
         return "UPDATE \"public\".\"rs_edges\" SET " +
-                "\"startNodeId\" = "+e.getStartNode().getOsmID()+", " +
-                "\"endNodeId\" = "+e.getEndNode().getOsmID()+"," +
+                "\"startNodeId\" = "+e.getNode1().getOsmID()+", " +
+                "\"endNodeId\" = "+e.getNode2().getOsmID()+"," +
                 " \"weight\" = "+e.getWeight()+", " +
                 "\"distance\" = '"+e.getDistance()+"', " +
 //                "\"name\" = '"+e.getName()+"', " +

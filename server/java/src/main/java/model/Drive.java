@@ -3,7 +3,7 @@ package model;
 import controller.utils.MapUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -31,9 +31,9 @@ public class Drive extends Path implements Runnable  {
 
     @Override
     public void run() {
-        if(path == null){
-            MapUtils.throwException("can't start a drive if path is null");
-        }
+
+        MapUtils.validate(path != null, "can't start a drive if path is null");
+
         do{
             currentEdge = path.getNext();
             sleep(currentEdge.getWeight());
@@ -81,5 +81,17 @@ public class Drive extends Path implements Runnable  {
         long ms = (long) (hour * 3600000);
         try { Thread.sleep( ms ) ; }
         catch (InterruptedException e) { e.printStackTrace(); }
+    }
+
+    @Override
+    public String toString() {
+        return "Drive{" +
+                "driverType='" + driverType + '\'' +
+                ", driveOwnerId='" + driveOwnerId + '\'' +
+                ", passengers=" + Arrays.toString(passengers) +
+                ", leaveTime=" + leaveTime +
+                ", path=" + path +
+                ", currentEdge=" + currentEdge +
+                '}';
     }
 }

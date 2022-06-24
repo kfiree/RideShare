@@ -5,9 +5,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Spliterator;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  *      |==================================|
@@ -28,26 +25,27 @@ public class Path implements Comparable<Path> , Iterable<Edge>{
     private Iterator<Edge> iterator;
 
     public Path(List objects) {
-        if(objects.isEmpty()){
-            MapUtils.throwException("Path constructor. Nodes can not be empty.");
-        }else if (objects.get(0) instanceof Edge) {
+
+        MapUtils.validate(!objects.isEmpty(),"Path constructor. Nodes can not be empty.");
+
+        if (objects.get(0) instanceof Edge) {
             objects.forEach(o->{
-                if(o instanceof Node) {
-                    MapUtils.throwException("node in edges list.");
-                }else{
-                    edges.add((Edge)o);
-                }
-                _src = edges.get(0).getStartNode();
-                _dest = edges.get(edges.size() - 1).getEndNode();
+
+                MapUtils.validate(o instanceof Edge,"node in edges list.");
+
+                edges.add((Edge)o);
+
+                _src = edges.get(0).getNode1();
+                _dest = edges.get(edges.size() - 1).getNode2();
             });
         }else if (objects.get(0) instanceof Node) {
 
             Node edgeSrc, EdgeDest;
 
             for (int i = 0; i<objects.size()-1; i++){
-                if(objects.get(i+1) instanceof Node) {
-                    MapUtils.throwException("edge in nodes list.");
-                }
+
+                MapUtils.validate(objects.get(i+1) instanceof Node, "edge in nodes list.");
+
                 edgeSrc = (Node) objects.get(i);
                 EdgeDest = (Node) objects.get(i+1);
                 edges.add(edgeSrc.getEdgeTo(EdgeDest));

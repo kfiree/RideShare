@@ -3,6 +3,8 @@ package model;
 import controller.utils.GraphAlgo;
 import controller.osm_processing.OsmWay;
 import controller.utils.MapUtils;
+import model.interfaces.Located;
+import model.interfaces.MapObject;
 
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -18,9 +20,9 @@ import java.util.Set;
  * @version 1.0
  * @since   2021-06-20
  */
-public class Edge implements model.MapObject {
+public class Edge implements MapObject, Located {
 
-    private final Node startNode, endNode;
+    private final Node node1, node2;
     private final double weight;
     private double distance;
     static Set<String> tagNames = new HashSet<>();
@@ -35,19 +37,19 @@ public class Edge implements model.MapObject {
                 put("tertiary", 50);
     }};
 
-    public Edge(String id, Node startNode, Node endNode, Double weight, String highwayType){
+    public Edge(String id, Node node1, Node node2, Double weight, String highwayType){
 //        if(startNode.getTags().get("oneway").equals("yes"))
 //        directed = startNode.getTags().get("oneway") != null && startNode.getTags().get("oneway").equals("yes");
-        tagNames.add(highwayType);
-        this.startNode = startNode;
-        this.endNode = endNode;
+        tagNames.add(highwayType);//TODO make highway type enum
+        this.node1 = node1;
+        this.node2 = node2;
         this.id = id == null ? MapUtils.generateId(this) : id;
         this.highwayType = highwayType;
-        this.weight = weight == 0.0 ? GraphAlgo.distance(startNode, endNode)/ SPEED_LIMIT.getOrDefault(highwayType, 50) : weight;
+        this.weight = weight == 0.0 ? GraphAlgo.distance(node1, node2)/ SPEED_LIMIT.getOrDefault(highwayType, 50) : weight;
     }
 
-    public Edge(OsmWay way, Node startNode, Node endNode) {
-        this(null, startNode, endNode,0.0, way.getTags().get("highway"));//TODO fix weight calculation
+    public Edge(OsmWay way, Node node1, Node node2) {
+        this(null, node1, node2,0.0, way.getTags().get("highway"));
     }
 
     public Edge(String id, Long startNodeId, Long endNodeID, Double weight, String highwayType) {
@@ -64,12 +66,12 @@ public class Edge implements model.MapObject {
         return highwayType;
     }
 
-    public Node getStartNode() {
-        return startNode;
+    public Node getNode1() {
+        return node1;
     }
 
-    public Node getEndNode() {
-        return endNode;
+    public Node getNode2() {
+        return node2;
     }
 
     public Double getDistance() {
@@ -81,19 +83,24 @@ public class Edge implements model.MapObject {
     }
 
     public Node getOtherEnd(String nodeId){
-        if(nodeId.equals(endNode.getId())) {
-            return startNode;
-        } else if(nodeId.equals(startNode.getId())) {
-            return endNode;
+        if(nodeId.equals(node2.getId())) {
+            return node1;
+        } else if(nodeId.equals(node1.getId())) {
+            return node2;
         }
         return null;
     }
 
     @Override
     public GeoLocation getCoordinates(){
-        return startNode.getCoordinates();
+        return node1.getCoordinates();
     }
 
+    @Override
+    public boolean inBound() {
+
+        return node1.inBound() && node2.inBound();
+    }
 
     /**
      * calculate distance between two geo points
@@ -102,7 +109,7 @@ public class Edge implements model.MapObject {
      */
     public Double getLength() {
         if(distance == 0) {
-            distance = GraphAlgo.distance(startNode, endNode);
+            distance = GraphAlgo.distance(node1, node2);
         }
         return distance;
     }
@@ -116,7 +123,7 @@ public class Edge implements model.MapObject {
     }
 
     public boolean isOpposite(Edge other){
-        return getStartNode().getOsmID().equals(other.getEndNode().getOsmID()) && getEndNode().getOsmID().equals(other.getStartNode().getOsmID());
+        return getNode1().getOsmID().equals(other.getNode2().getOsmID()) && getNode2().getOsmID().equals(other.getNode1().getOsmID());
     }
 
 

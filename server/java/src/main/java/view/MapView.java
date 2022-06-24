@@ -1,5 +1,6 @@
 package view;
 
+import controller.utils.GraphAlgo;
 import model.Drive;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
@@ -12,7 +13,8 @@ import model.RoadMap;
 import model.Node;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static controller.utils.MapUtils.validate;
 
 public class MapView {
     private RoadMap map;
@@ -28,29 +30,46 @@ public class MapView {
         displayGraph = new MultiGraph("map simulation");
         map = RoadMap.getInstance();
         onGoingDrives = new ArrayList<>();
-        events = new RealTimeEvents(null, timeSpeed);
+//        events = new RealTimeEvents(initDrives(), timeSpeed);
     }
 
     public static MapView getInstance() {
         return instance;
     }
 
-//    public List<Drive> initDrives() {
-//        List<Drive> drives = new ArrayList<>();
-//        Calendar cl = Calendar.getInstance();
-//        Random rand = new Random();
-//        Date initializeDate = new Date();
-//        List<Node> nodes = RoadMap.getInstance().getNodes().values().stream().collect(Collectors.toList());
-//        for (int i = 0; i < 50; i++) {
-//            Node src = nodes.get(rand.nextInt(nodes.size() - 1));
-//            Node dst = nodes.get(rand.nextInt(nodes.size() - 1));
-//
-//            new Drive();
-//        }
-//        Calendar.SECOND
-//        new Drive()
-//        return onGoingDrives;
-//    }
+    public List<Drive> initDrives() {
+        List<Drive> drives = new ArrayList<>();
+        Calendar cl = Calendar.getInstance();
+        Date initializeDate = new Date();
+        cl.setTime(initializeDate);
+
+        Random rand = new Random(1);
+        Collection<Node> values = RoadMap.getInstance().getNodes().values();
+        List<Node> nodes = new ArrayList<>(RoadMap.getInstance().getNodes().values());
+        for (int i = 0; i < 50; i++) {
+            List<Node> shortestPath = null;
+            Drive d = null;
+            if(nodes.isEmpty()){
+                continue;
+            }
+            Node src = nodes.get(rand.nextInt(nodes.size() - 1));
+            Node dst = nodes.get(rand.nextInt(nodes.size() - 1));
+
+            if(src != null && dst != null ){
+                shortestPath = GraphAlgo.getShortestPath(src, dst);
+
+                validate(shortestPath != null,"drive was not created, src = "+src.getOsmID()+", dst  " + dst.getOsmID());
+
+                d = new Drive(shortestPath, ""  + i,""  +  i, new Date(initializeDate.getTime() + (10000*i)));
+                drives.add(d);
+
+
+            }else{
+                validate(src != null && dst != null,"drive was not created, one or two nodes not existed. src = " + src+ ", dst = " +dst+ ".");
+            }
+        }
+        return drives;
+    }
 
     public void show(){
         // draw map components
@@ -74,9 +93,9 @@ public class MapView {
 
             sleep(1000);
 
-            getUpdates();
-
-            moveCars();
+//            getUpdates();
+//
+//            moveCars();
 
 //            drawPedestrian();
         }
@@ -94,9 +113,9 @@ public class MapView {
             org.graphstream.graph.Node node;
 
             if(currentEdge != null){
-                node = displayGraph.getNode(currentEdge.getStartNode().getOsmID().toString());
+                node = displayGraph.getNode(currentEdge.getNode1().getOsmID().toString());
                 node.removeAttribute("ui.class");
-                node = displayGraph.getNode(currentEdge.getEndNode().getOsmID().toString());
+                node = displayGraph.getNode(currentEdge.getNode2().getOsmID().toString());
                 node.addAttribute("ui.class", "car");
             }else{
                 onGoingDrives.remove(drive);
@@ -112,8 +131,8 @@ public class MapView {
     private Boolean drawMapComponents(){
         map.getEdges().forEach(e -> {
             if(displayGraph.getEdge(e.getId()) == null) {
-                org.graphstream.graph.Node start = drawNode(e.getStartNode());
-                org.graphstream.graph.Node end = drawNode(e.getEndNode());
+                org.graphstream.graph.Node start = drawNode(e.getNode1());
+                org.graphstream.graph.Node end = drawNode(e.getNode2());
                 Edge edge = displayGraph.addEdge(e.getId(), start, end);//, e.isDirected());
 
                 //            if(e.isDirected())
@@ -152,7 +171,7 @@ public class MapView {
             "node {"+
                 " text-mode: hidden;"+
                 " z-index: 1;"+
-                " fill-color: grey;"+
+//                " fill-color: grey;"+
                 " size: 3px;"+
             "}"+
             "node.car {"+

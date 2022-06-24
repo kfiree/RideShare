@@ -1,3 +1,5 @@
+import controller.rds.jsonHandler;
+import controller.utils.GraphAlgo;
 import controller.utils.MapUtils;
 import view.MapView;
 import crosby.binary.osmosis.OsmosisReader;
@@ -12,8 +14,13 @@ import java.io.InputStream;
 
 //osmconvert64.exe ariel2.osm > arielpbf.pbf --out-pbf
 // add "server/java/data/israel.pbf"; as input in configuration
-public final class App{
 
+/**
+ * to run with intellij add '.pbf' path file to configuration:
+ *      edit configuration -> Name: APP -> Build and run -> Program arguments -> insert: server/java/data/israel.pbf
+ */
+public final class App{
+    private static final long NODE_IN_MAIN_COMPONENT = 2432701015L;
     private App() {}
 
     public static void main(String[] args) {
@@ -32,7 +39,7 @@ public final class App{
         System.exit(0);
     }
 
-    public static RoadMap CreateMap(String pathToPBF) {
+    public static void CreateMap(String pathToPBF) {
         InputStream inputStream;
 
         try {
@@ -48,10 +55,11 @@ public final class App{
             osmosisReader.run();
 
             // secondary parsing of ways/creation of edges:
-            Parser.parseMapWays(reader.getWays());//reader.getWays(), reader.getMapObjects());
+            Parser parser = new Parser();
+            parser.parseMapWays(reader.getWays());//reader.getWays(), reader.getMapObjects());
 
             // get riders & drivers
-//            GraphAlgo.removeNodesThatNotConnectedTo(map.getNode(2432701015l));
+            GraphAlgo.removeNodesThatNotConnectedTo(RoadMap.getInstance().getNode(NODE_IN_MAIN_COMPONENT));
 
         } catch (FileNotFoundException e) {
             JOptionPane.showMessageDialog(new JFrame(), "File not found!", "ERROR",
@@ -59,7 +67,6 @@ public final class App{
 
             System.exit(0);
         }
-        return RoadMap.getInstance();
     }
 
     private static String chooseFile() {
@@ -76,6 +83,7 @@ public final class App{
 
 
     // TODO set & get map user drive | sub map | match rider and drivers | lock drive
+    // TODO add loader
 }
 
 

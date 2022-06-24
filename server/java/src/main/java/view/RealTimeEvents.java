@@ -37,7 +37,8 @@ public class RealTimeEvents implements Runnable{
             startedEvents.add(newEvent);
 
             //sleep till next events starts
-            sleep(currTime.getTime() - newEvent.getLeaveTime().getTime());
+//            sleep(currTime.getTime() - newEvent.getLeaveTime().getTime());
+            sleep(currTime.compareTo(newEvent.getLeaveTime()));
 
             // jump in time to next event
             currTime = newEvent.getLeaveTime();

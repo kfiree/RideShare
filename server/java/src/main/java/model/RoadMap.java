@@ -1,5 +1,6 @@
 package model;
 
+import controller.osm_processing.OsmObject;
 import controller.osm_processing.OsmWay;
 
 import java.util.*;
@@ -41,7 +42,7 @@ public final class RoadMap {
     public Set<Edge> getEdges() { return edges; }
 
     public Node getNode(long key){
-        return this.nodes.get(key);
+        return nodes.get(key);
     }
 
     public Map<Long, Node> getJunctionNodes() {
@@ -50,7 +51,7 @@ public final class RoadMap {
 
     /** SETTERS */
 
-    public void setEdges(Set<Edge> edges) {
+    public void setEdges(Collection<Edge> edges) {
         this.edges.addAll(edges);
     }
 
@@ -58,18 +59,18 @@ public final class RoadMap {
         boolean srcToDst = src.isAdjacent(dst);
         boolean dstToSrc = dst.isAdjacent(src);
 
-        Edge edge = null;
+        Edge edge;
 
-        if(srcToDst && dstToSrc){
-            return src.getEdgeTo(dst);
-        }else if(dstToSrc){
-            edge = dst.getEdgeTo(src);
-        }else if(!srcToDst){
+        if(!srcToDst && !dstToSrc){ // edge not exist
             edge = new Edge(way, src, dst);
+            src.addEdge(edge);
+            edges.add(edge);
+        }else if(dstToSrc){ // opposite edge exist
+            edge = dst.getEdgeTo(src);
+            src.addEdge(edge);
+        }else { // edge exist
+            edge =  src.getEdgeTo(dst);
         }
-
-        src.addEdge(edge);
-        edges.add(edge);
 
         return edge;
     }
@@ -82,13 +83,12 @@ public final class RoadMap {
     }
 
     private void addEdge(Edge e){
-        if(!e.getStartNode().isAdjacent(e.getEndNode())) {
-            e.getStartNode().addEdge(e);
-            e.getEndNode().addEdge(e);
+        if(!e.getNode1().isAdjacent(e.getNode2())) {
+            e.getNode1().addEdge(e);
+            e.getNode2().addEdge(e);
 //            e.getLength();
             edges.add(e);
         }else{
-//            e.setDirected(true);
             //TODO set directed
         }
     }
@@ -97,6 +97,23 @@ public final class RoadMap {
         nodes.put(id, node);
         return node;
     }
+
+    public Node addNode(OsmObject osmObject){
+        Node node = getNode(osmObject.getID());
+
+        if( node == null){
+            node = new Node(osmObject);
+            nodes.put(osmObject.getID(), node);
+        }
+
+        return node;
+    }
+
+//    public Node addNode(OsmObject osmObject){
+//        Node node = new Node(osmObject);
+//        nodes.put(osmObject.getID(), node);
+//        return node;
+//    }
 
     public Node addNode(Node node){
         nodes.put(node.getOsmID(), node);
@@ -156,14 +173,14 @@ public final class RoadMap {
 //    }
 
     public boolean removeEdge(Edge e){//TODO check call method on remove
-        e.getEndNode().removeEdgeTo(e.getStartNode());
-        e.getStartNode().removeEdgeTo(e.getEndNode());
-        return this.edges.remove(e);
+        e.getNode2().removeEdge(e);
+        e.getNode1().removeEdge(e);
+        return edges.remove(e);
     }
 
     public void removeEdge(Edge e, Iterator<Edge> itr){
-        e.getEndNode().removeEdgeTo(e.getStartNode());
-        e.getStartNode().removeEdgeTo(e.getEndNode());
+        e.getNode2().removeEdgeTo(e.getNode1());
+        e.getNode1().removeEdgeTo(e.getNode2());
         itr.remove();
     }
 

@@ -1,6 +1,8 @@
 package model;
 
 import controller.utils.MapUtils;
+import model.interfaces.Located;
+import model.interfaces.MapObject;
 import org.jetbrains.annotations.NotNull;
 import controller.osm_processing.OsmObject;
 
@@ -17,7 +19,7 @@ import java.util.stream.Collectors;
  * @version 1.0
  * @since   2021-06-20
  */
-public class Node implements Comparable<Node>, model.MapObject {
+public class Node implements Comparable<Node>, MapObject , Located {
 
     private final String id;
     private final Long osmID;
@@ -68,13 +70,18 @@ public class Node implements Comparable<Node>, model.MapObject {
     @Override
     public GeoLocation getCoordinates() { return coordinates; }
 
+    @Override
+    public boolean inBound() {
+        return MapUtils.inBound(coordinates);
+    }
+
     //instead of getWeight
     public Integer getDegree() { return edges.size(); }
 
     public ArrayList<Node> getAdjacentNodesFromGraph() {//TODO check why redundant
         ArrayList<Node> adjacentNodes = new ArrayList<>();
         for(Edge edge : edges) {
-            adjacentNodes.add(edge.getEndNode());
+            adjacentNodes.add(edge.getNode2());
         }
         return adjacentNodes;
     }
@@ -98,7 +105,6 @@ public class Node implements Comparable<Node>, model.MapObject {
         return edges;
     }
 
-
     public void addEdge(@NotNull Edge edge) {
 
         edges.add(edge);
@@ -121,8 +127,8 @@ public class Node implements Comparable<Node>, model.MapObject {
 
     public boolean isAdjacent(Node targetNode) {
         for (Edge e : edges) {
-            if (e.getStartNode().getOsmID().equals(targetNode.getOsmID()) ||
-                    e.getEndNode().getOsmID().equals(targetNode.getOsmID())) {
+            if (e.getNode1().getOsmID().equals(targetNode.getOsmID()) ||
+                    e.getNode2().getOsmID().equals(targetNode.getOsmID())) {
                 return true;
             }
         }
@@ -131,8 +137,8 @@ public class Node implements Comparable<Node>, model.MapObject {
 
     public Edge getEdgeTo(Node targetNode) {
         for (Edge e : edges) {
-            if (e.getStartNode().getOsmID().equals(targetNode.getOsmID()) ||
-                    e.getEndNode().getOsmID().equals(targetNode.getOsmID())) {
+            if (e.getNode1().getOsmID().equals(targetNode.getOsmID()) ||
+                    e.getNode2().getOsmID().equals(targetNode.getOsmID())) {
                 return e;
             }
         }
@@ -157,6 +163,10 @@ public class Node implements Comparable<Node>, model.MapObject {
         if(edge!=null){
             edges.remove(edge);
         }
+    }
+
+    public void removeEdge(Edge edge){
+        edges.remove(edge);
     }
 //    public boolean stringContainsItemFromList(String inputStr) {
 //        return Arrays.stream(relevantTags).anyMatch(inputStr::contains);

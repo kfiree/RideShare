@@ -180,9 +180,9 @@ public enum jsonHandler {
         JSONObject obj = new JSONObject();
 
         obj.put("edge_Id", edge.getId());
-        obj.put("startNodeId", edge.getStartNode().getId());
-        obj.put("endNodeId", edge.getStartNode().getId());
-        obj.put("highwayType", edge.getStartNode().getId());
+        obj.put("startNodeId", edge.getNode1().getId());
+        obj.put("endNodeId", edge.getNode1().getId());
+        obj.put("highwayType", edge.getNode1().getId());
 
 
         return obj;
@@ -216,19 +216,16 @@ public enum jsonHandler {
         return jsonArray;
     }
 
-//    private static String mapToJson(Map<Object, Object> map) throws ParseException {
-//        JSONObject jsonObject = new JSONObject();
-//
-//        for(Map.Entry<String,String> entry : map.entrySet())
-//
-//        try {
-//            JSONParser parser = new JSONParser();
-//            Object obj = parser.parse(json);
-//            return (Map)obj;
-//        } catch (ParseException e) {
-//            throw e;
-//        }
-//    }
+    public static String mapToJson(Map map){
+        String mapStr = "";
+        try{
+            JSONObject jsonObj = (JSONObject) new JSONParser().parse(JSONObject.toJSONString(map));
+               mapStr = jsonObj.toJSONString();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return mapStr;
+    }
 
 
     public static void jsonDrivesToPath(String filePath) {

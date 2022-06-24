@@ -1,6 +1,9 @@
 package controller.osm_processing;
 
+import controller.utils.MapUtils;
 import model.GeoLocation;
+import model.interfaces.Located;
+import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 
 import java.util.Collection;
@@ -23,7 +26,7 @@ import java.util.Map;
  * @version 1.0
  * @since   2021-06-20
  */
-public class OsmObject {
+public class OsmObject  implements Located {
 
     private GeoLocation coordinates;
     private final long id;
@@ -31,10 +34,10 @@ public class OsmObject {
     private int linkCounter;
 
     /** CONSTRUCTORS */
-    public OsmObject(Double latitude, Double longitude, long id, Collection<Tag> tags) {
-        coordinates = new GeoLocation(latitude, longitude);
-        this.id = id;
-        addAllTags(tags);//todo prettify
+    public OsmObject(Node osmNode){
+        coordinates = new GeoLocation(osmNode.getLatitude(), osmNode.getLongitude());
+        id = osmNode.getId();
+        addAllTags(osmNode.getTags());
     }
 
     /** GETTERS */
@@ -47,8 +50,14 @@ public class OsmObject {
         return tags;
     }
 
+    @Override
     public GeoLocation getCoordinates() {
         return coordinates;
+    }
+
+    @Override
+    public boolean inBound() {
+        return MapUtils.inBound(coordinates);
     }
 
     public void setCoordinates(Double latitude, Double longitude) {
@@ -65,11 +74,11 @@ public class OsmObject {
         }
     }
 
-    public int getLinkCounter() {
-        return linkCounter;
+    public boolean isPartOfAnotherWay(){
+        return linkCounter > 1;
     }
 
-    public void setLinkCounter(int linkCounter) {
-        this.linkCounter = linkCounter;
+    public void incrementCounter() {
+        linkCounter ++;
     }
 }

@@ -1,16 +1,14 @@
 package controller.osm_processing;
 
-import controller.utils.MapUtils;
+import controller.rds.jsonHandler;
+import static controller.utils.MapUtils.inBound;
 
+import model.GeoLocation;
 import org.openstreetmap.osmosis.core.container.v0_6.*;
 import org.openstreetmap.osmosis.core.domain.v0_6.*;
 import org.openstreetmap.osmosis.core.task.v0_6.Sink;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *      |==================================|
@@ -18,10 +16,7 @@ import java.util.Map;
  *      |==================================|
  *
  *
- *  static class that read '.pbf' file *
- *  and return a collection of OsmObject and collection of OsmWay (for the Parser class to parse).
- *
- *
+ *  Read '.pbf' file and initialize a collection of OsmObject and collection of OsmWay (for the Parser class to parse).
  *
  * @author  Kfir Ettinger & Amit Hajaj & Motti Dahari
  * @version 1.0
@@ -30,7 +25,9 @@ import java.util.Map;
 public class Reader implements Sink {
     private final ArrayList<OsmWay> ways = new ArrayList<>();
     private final Map<Long, OsmObject> mapObjects = new HashMap<>();
-    private static final HashMap<Long, Long> JUNCTIONS = new HashMap<>();
+    private final HashMap<Long, Long> JUNCTIONS = new HashMap<>();
+    public final HashMap<Long, String> forDebug = new HashMap<>();
+    public final HashSet<Long> forDebugId = new HashSet<>();
 
     /** GETTERS */
     public ArrayList<OsmWay> getWays() {
@@ -56,43 +53,38 @@ public class Reader implements Sink {
     public void process(EntityContainer entityContainer) {
         if (entityContainer instanceof NodeContainer){
             processNode(((NodeContainer) entityContainer).getEntity());
-
         } else if (entityContainer instanceof WayContainer){
             processWay(((WayContainer) entityContainer).getEntity());
         }
     }
 
     private void processWay(Way way){
-//        Way way = ((WayContainer) entityContainer).getEntity();
-
         // you can filter ways/nodes //
-        if (isAppropriate(way)) {
-            OsmWay mWay = new OsmWay(way.getId(), way.getTags());
-            // process all nodes contained in the way //
-            for(Tag t: way.getTags()){
-                if(t.getKey().equals("junction")){
-                    WayNode first = way.getWayNodes().get(0);
+        if (isAppropriate(way)) {//TODO add check if empty to isAppropriate()
+            OsmWay osmWay = new OsmWay(way.getId(), way.getTags());
 
-                    for(WayNode wn: way.getWayNodes()){
-                        JUNCTIONS.put(wn.getNodeId(), first.getNodeId());
+            // process all nodes contained in the way
+            boolean isJunction = way.getTags().contains("junction");
+
+            if(isJunction){ // replace all osmObject with Junction-OsmObject
+
+                long junctionId = way.getWayNodes().get(0).getNodeId();
+                for(WayNode wn: way.getWayNodes()){
+                    JUNCTIONS.put(wn.getNodeId(), junctionId);
+                }
+            } else {
+                for (WayNode wn : way.getWayNodes()) {
+                    OsmObject osmObject = getOsmObj(wn.getNodeId());
+                    if(osmObject != null){ //TODO remove after non-existing node fixed
+                        osmObject.incrementCounter();// todo make a list of un-init nodes and empty when init and check if empty
+                        osmWay.addObject(osmObject);
                     }
-                    break;
                 }
             }
-            for(WayNode wn: way.getWayNodes()) {
-                OsmObject temp;
 
-                // if object was already created through nodes:
-                if (mapObjects.get(wn.getNodeId()) != null) {
-                    temp = mapObjects.get(wn.getNodeId());
-
-                    // outside of if
-                    mWay.addObject(temp);
-                    temp.setLinkCounter(temp.getLinkCounter() + 1);
-                }
-
+            if(!way.getWayNodes().isEmpty()) {
+                ways.add(osmWay);
             }
-            ways.add(mWay);
         }
     }
 
@@ -100,23 +92,39 @@ public class Reader implements Sink {
     private void processNode(Node node){
         OsmObject temp;
 
-        if(MapUtils.inBound(node.getLongitude(), node.getLatitude())){
-            temp = new OsmObject(node.getLatitude(), node.getLongitude(), node.getId(), node.getTags());
+        // create node or add details if object was already created through ways (usually not the case, if .pbf file formatted correctly)
+        if (mapObjects.get(node.getId()) != null) {
+            temp = mapObjects.get(node.getId());//todo make one method in node
+            temp.setCoordinates(node.getLatitude(), node.getLongitude());
+            temp.addAllTags(node.getTags());
+        } else if(inBound(node.getLongitude(), node.getLatitude())) {
+            temp = new OsmObject(node);
+            forDebugId.add(node.getId());
             mapObjects.put(temp.getID(), temp);
-
-            // create node or add details if object was already created through ways (usually not the case, if .pbf file formatted correctly)
-            if (mapObjects.get(node.getId()) != null) {
-                temp = mapObjects.get(node.getId());
-                temp.setCoordinates(node.getLatitude(), node.getLongitude());
-                temp.addAllTags(node.getTags());
-            }
-            else {
-                temp = new OsmObject(node.getLatitude(), node.getLongitude(), node.getId(), node.getTags());
-
-                mapObjects.put(temp.getID(), temp);
-            }
         }
+    }
 
+    /**
+     * if object is part of junction return junction-object else return object.
+     *
+     * @param id osm id
+     * @return OsmObject corresponding to given id
+     */
+    private OsmObject getOsmObj(long id) {
+
+
+        Long junctionID = JUNCTIONS.get(id);
+        if(junctionID != null){
+            id = junctionID;
+        }
+        // if object was not already created through nodes (should not happened in a well formatted OSM file).
+//        if(mapObjects.get(id) == null){
+//            forDebug.put(id, "non-existing OsmObject - ");
+//            return null;
+//            //TODO remove this when development ends, might be fixed with load osmNode later if node is after edge
+//        }
+
+        return mapObjects.get(id);
     }
 
     /**
@@ -154,10 +162,6 @@ public class Reader implements Sink {
 //            , "living_street"
     );
     // tags i pooled out "trunk",
-
-    public static HashMap<Long, Long> getJunctions() {
-        return JUNCTIONS;
-    }
 
     // following methods are a requirement of the Sink interface //
     /** Sink interface methods */
