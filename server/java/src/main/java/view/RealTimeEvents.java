@@ -5,6 +5,9 @@ import model.Drive;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+
+import static controller.utils.LogHandler.log;
 
 public class RealTimeEvents implements Runnable{
     private List<Drive> events, startedEvents, eventsToSend;
@@ -31,22 +34,34 @@ public class RealTimeEvents implements Runnable{
 
     @Override
     public void run() {
-        while(!events.isEmpty()){
-            // add first event in list to startedEvents
-            Drive newEvent = events.remove(0);
-            startedEvents.add(newEvent);
+        System.out.println("RealTimeEvents star running");
+        log(Level.FINER, "RealTimeEvents star running");
 
-            //sleep till next events starts
-//            sleep(currTime.getTime() - newEvent.getLeaveTime().getTime());
-            sleep(currTime.compareTo(newEvent.getLeaveTime()));
+        while(!events.isEmpty()){
+
+            // add first event in list to startedEvents
+            Drive newDrive = events.remove(0);
+            newDrive.setTimeSpeed(timeSpeed);
+            Thread driveThread = new Thread(newDrive);
+            driveThread.start();
+
+            startedEvents.add(newDrive);
+
+
+            int sleepTime = currTime.compareTo(newDrive.getLeaveTime());
+            System.out.println("RealTimeEvents sleep for "+  sleepTime/timeSpeed + " time speed = "+ timeSpeed);
+            sleep(sleepTime);
 
             // jump in time to next event
-            currTime = newEvent.getLeaveTime();
+            currTime = newDrive.getLeaveTime();
+            log(Level.FINER, "RealTimeEvents add event.");
         }
     }
 
     private void sleep(long ms ) {
-        try { Thread.sleep((long) (ms/timeSpeed)) ; }
+//        double sleepTime = ms / timeSpeed;
+        double sleepTime = 3000;
+        try { Thread.sleep((long) (3000)) ; }
         catch (InterruptedException e) { e.printStackTrace(); }
     }
 }

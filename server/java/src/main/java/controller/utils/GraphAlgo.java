@@ -1,11 +1,15 @@
 package controller.utils;
 
+import model.Path;
 import model.RoadMap;
 import model.Node;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
+
+import static controller.utils.LogHandler.logger;
 
 /**
  *      |==================================|
@@ -161,17 +165,17 @@ public class GraphAlgo {
      * calculate shortest path using A*
      *
      * @param src origin
-     * @param dest destination
+     * @param dst destination
      * @return shortest path from src to dest
      */
-    public static List<Node> getShortestPath(Node src, Node dest){
+    public static Path getShortestPath(Node src, Node dst){
 
         Hashtable<String, Node> CloseSet = new Hashtable<>();
         Hashtable<String, Node> OpenSet = new Hashtable<>();
         PriorityQueue<Node> PQ_OpenSet = new PriorityQueue<>();
         Hashtable<Node, Node> cameFrom = new Hashtable<>();
 
-        setH(src,dest);
+        setH(src,dst);
         setG(src, 0);
         src.setF(getG(src) + getH(src));
 
@@ -180,21 +184,21 @@ public class GraphAlgo {
 
         while(!OpenSet.isEmpty()){
             Node current = PQ_OpenSet.poll();
-            if(current.equals(dest)){
-                return reconstructPath(cameFrom, dest);
+            if(current.equals(dst)){
+                return reconstructPath(cameFrom, dst);
             }
 
             OpenSet.remove(current.getId());
             CloseSet.put(current.getId(), current);
-            for(Node neighbor : current.getAdjacentNodesFromGraph()){
+            for(Node neighbor : current.getAdjacentNodes()){
                 if(CloseSet.containsKey(neighbor.getId())){
                     continue;
                 }
-                double TentativeGScore = getG(current) + distance(current, neighbor);
+                double TentativeGScore = getG(current) + distance(current, neighbor);//TODO use weight instead of distance
                 if(!OpenSet.containsKey(neighbor.getId()) || TentativeGScore < getG(neighbor)){
                     cameFrom.put(neighbor, current);
                     setG(neighbor, TentativeGScore);
-                    setH(neighbor, dest);
+                    setH(neighbor, dst);
                     neighbor.setF(getG(neighbor) + getH(neighbor));
                     if(!OpenSet.containsKey(neighbor.getId())){
                         OpenSet.put(neighbor.getId(), neighbor);
@@ -203,16 +207,19 @@ public class GraphAlgo {
                 }
             }
         }
+        logger.log(Level.SEVERE, "couldnt find path between nodes, src "+ src+", dst "+ dst);
         return null;
+
     }
 
-    private static List<Node> reconstructPath(Hashtable<Node, Node> cameFrom, Node n){
-        List<Node> path = new ArrayList<>();
+    private static Path reconstructPath(Hashtable<Node, Node> cameFrom, Node n){
+        List<Node> pathNodes = new ArrayList<>();
         while(cameFrom.containsKey(n)){
             n = cameFrom.get(n);
-            path.add(n);
+            pathNodes.add(n);
         }
-        Collections.reverse(path);
+        Collections.reverse(pathNodes);
+        Path path =  new Path(pathNodes);
         return path;
     }
 

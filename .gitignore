@@ -10,4 +10,7 @@
 /server/java/src/main/java/test2.java
 /server/java/data/osmconvert64.exe
 
-/server/java/src/main/java/controller/utils/logger/
+
+/server/java/src/main/java/controller/utils/logs/LoggingExample.java
+/server/java/src/main/java/controller/utils/logs/MyFilter.java
+/server/java/src/main/java/controller/utils/logs/MyHandler.java

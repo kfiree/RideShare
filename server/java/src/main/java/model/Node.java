@@ -78,13 +78,13 @@ public class Node implements Comparable<Node>, MapObject , Located {
     //instead of getWeight
     public Integer getDegree() { return edges.size(); }
 
-    public ArrayList<Node> getAdjacentNodesFromGraph() {//TODO check why redundant
-        ArrayList<Node> adjacentNodes = new ArrayList<>();
-        for(Edge edge : edges) {
-            adjacentNodes.add(edge.getNode2());
-        }
-        return adjacentNodes;
-    }
+//    public ArrayList<Node> getAdjacentNodesFromGraph() {//TODO check why redundant
+//        ArrayList<Node> adjacentNodes = new ArrayList<>();
+//        for(Edge edge : edges) {
+//            adjacentNodes.add(edge.getNode2());
+//        }
+//        return adjacentNodes;
+//    }
     public ArrayList<Node> getAdjacentNodes() {
         ArrayList<Node> adjacentNodes = new ArrayList<>();
         for(Edge edge : edges) {

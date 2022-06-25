@@ -259,7 +259,7 @@ public enum jsonHandler {
 
                 Node src = GraphAlgo.findClosestNode(MapUtils.getLocations().get(srcId));
                 Node dst = GraphAlgo.findClosestNode(MapUtils.getLocations().get(dstId));
-                List<Node> path = GraphAlgo.getShortestPath(src, dst);
+                Path path = GraphAlgo.getShortestPath(src, dst);
                 drives.add(new Drive(path, driverType, driveOwnerId, leaveTime));
             });
         } catch (IOException | ParseException e) {

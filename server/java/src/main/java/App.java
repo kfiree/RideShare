@@ -1,6 +1,7 @@
-import controller.rds.jsonHandler;
 import controller.utils.GraphAlgo;
 import controller.utils.MapUtils;
+import controller.utils.LogHandler;
+import model.Node;
 import view.MapView;
 import crosby.binary.osmosis.OsmosisReader;
 import model.RoadMap;
@@ -11,6 +12,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.List;
+import java.util.logging.Level;
 
 //osmconvert64.exe ariel2.osm > arielpbf.pbf --out-pbf
 // add "server/java/data/israel.pbf"; as input in configuration
@@ -21,21 +24,27 @@ import java.io.InputStream;
  */
 public final class App{
     private static final long NODE_IN_MAIN_COMPONENT = 2432701015L;
+    public static LogHandler logger = new LogHandler();
     private App() {}
 
     public static void main(String[] args) {
         String pbfFilePath = args.length == 0 ? chooseFile() : args[0];
 
-        System.out.println("start parsing map : '" + pbfFilePath+"'");
+        boolean defaultBounds = true;
 
-        MapUtils.setBounds(true);
+        MapUtils.setBounds(defaultBounds);
+
+        logger.log(Level.INFO, "start parsing map : '" + pbfFilePath+"'");
 
         CreateMap(pbfFilePath);
 
-        System.out.println("map is ready.\n" + RoadMap.getInstance());
+        logger.log(Level.INFO,"map is ready. map = " + RoadMap.getInstance());
 
         MapView.getInstance().show();
 
+        logger.closeHandler();
+
+        System.out.println("final thoughts?!");
         System.exit(0);
     }
 

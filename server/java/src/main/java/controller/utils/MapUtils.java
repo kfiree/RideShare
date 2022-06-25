@@ -4,10 +4,12 @@ import model.Drive;
 import model.GeoLocation;
 import model.Node;
 import model.Path;
+
 import org.jetbrains.annotations.NotNull;
-
 import java.util.*;
+import java.util.logging.Level;
 
+import static controller.utils.LogHandler.logHandler;
 
 
 /**
@@ -153,6 +155,7 @@ public class MapUtils {
 
     public static void throwException(String errorMsg){
         try {
+            logHandler.log(Level.SEVERE, errorMsg);
             throw new Exception(errorMsg);
         } catch (Exception e) {
             e.printStackTrace();
