@@ -3,13 +3,14 @@ package controller.utils;
 import model.Drive;
 import model.GeoLocation;
 import model.Node;
-import model.Path;
 
 import org.jetbrains.annotations.NotNull;
-import java.util.*;
-import java.util.logging.Level;
 
-import static controller.utils.LogHandler.logHandler;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import static controller.utils.LogHandler.LOGGER;
 
 
 /**
@@ -23,12 +24,14 @@ import static controller.utils.LogHandler.logHandler;
  * @version 1.0
  * @since   2021-06-20
  */
-public class MapUtils {
-    private static List<Path> _paths =  new ArrayList<>();
-    private static Map<String, Node> _riders = new HashMap<>(), locations= new HashMap<>();
-    private static Map<String, Drive>   drives = new HashMap<>();
-    private static Double _topLongitude, _bottomLongitude, _topLatitude, _bottomLatitude;
+public final class MapUtils {
+    private static final Map<String, Node> _riders = new HashMap<>(), locations= new HashMap<>();//TODO check if locations needed
+    private static final Map<String, Drive>   drives = new HashMap<>();
     private static boolean bound;
+    private static Double _topLatitude = 32.13073917015928, _bottomLatitude = 32.0449580796914,
+                        _topLongitude = 34.852006, _bottomLongitude = 0.0;
+
+    private MapUtils() {}
 
     /**
      *   |=================================|
@@ -42,9 +45,6 @@ public class MapUtils {
      */
 
     public static void setBounds(boolean bound){
-        if(!MapUtils.bound){
-            updateBounds(32.13073917015928, 32.0449580796914, 34.852006, 0.0);
-        }
         MapUtils.bound = bound;
     }
 
@@ -77,7 +77,7 @@ public class MapUtils {
         if(!bound) {
             return true;
         }
-//        return node.getLatitude() <= 32.13073917015928 && node.getLatitude() >= 32.0449580796914 && node.getLongitude() <=34.852006;
+
         boolean longitudeInBound = longitude < _topLongitude && longitude > _bottomLongitude;
         boolean latitudeInBound = latitude < _topLatitude && latitude > _bottomLatitude;
 
@@ -93,56 +93,15 @@ public class MapUtils {
      */
 
 
-    /** GETTERS */
-
-//    public static boolean addPath(List<Object> pathNodes){
-//        return _paths.add(new Path(pathNodes));
-//    } TODO fix
-
-
-    public static void setPaths(List<Path> paths) {
-        _paths.addAll(paths);
-    }
-
-    public static boolean setRiders(Map<Long, Double[]> Riders){
-
-//        Riders.entrySet().forEach(entry -> {
-//            Node node = new Node(null, entry.getKey(), entry.getValue()[0], entry.getValue()[1], Node.userType.Rider);
-//            node.setType(Node.userType.Rider);
-//            _riders.put(entry.getKey(), node);
-//        });
-
-        return true;
-    }
-
     public static Map<String, Node> getLocations() {
         return locations;
     }
-
-    public static Map<String, Drive> getDrives() {
-        return drives;
-    }
-
-    /** SETTERS */
 
     public static void setLocations(Map<String, Node> locations) {
         MapUtils.locations.putAll(locations);
     }
 
-    public static void setDrives(Map<String, Drive> drives) {
-        MapUtils.drives.putAll(drives);
-    }
-
-    public static List<Path> getPaths() {
-        return _paths;
-    }
-
-    public static Map<String, Node> getRiders() {
-        return _riders;
-    }
-
-    /** create uuid */
-    public static String generateId(Object object) {
+    public static String generateId() {
         return UUID.randomUUID().toString();
     }
 
@@ -155,29 +114,11 @@ public class MapUtils {
 
     public static void throwException(String errorMsg){
         try {
-            logHandler.log(Level.SEVERE, errorMsg);
+            LOGGER.severe(errorMsg);
+
             throw new Exception(errorMsg);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 }
-
-//    public static Map<Long, Map<Long, OEdge>> getNodeEdges() {
-//        return nodeEdges;
-//    }
-
-//    public static void addEdgeToMap(ONode n1, ONode n2, OEdge e){
-//        addEdgeHelper(n2, n1, e);
-//        addEdgeHelper(n1, n2, e);
-//    }
-//
-//    private static void addEdgeHelper(ONode n1, ONode n2, OEdge e) {
-//        if(!nodeEdges.containsKey(n2.getOsmID())){
-//            Map<Long, OEdge> n2Map = new HashMap<>();
-//            n2Map.put(n1.getOsmID(),e);
-//            nodeEdges.put(n2.getOsmID(), n2Map);
-//        }else{
-//            nodeEdges.get(n2.getOsmID()).put(n1.getOsmID(), e);
-//        }
-//    }

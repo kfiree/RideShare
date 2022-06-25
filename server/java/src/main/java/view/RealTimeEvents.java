@@ -5,9 +5,8 @@ import model.Drive;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
+import static controller.utils.LogHandler.LOGGER;
 
-import static controller.utils.LogHandler.log;
 
 public class RealTimeEvents implements Runnable{
     private List<Drive> events, startedEvents, eventsToSend;
@@ -35,7 +34,7 @@ public class RealTimeEvents implements Runnable{
     @Override
     public void run() {
         System.out.println("RealTimeEvents star running");
-        log(Level.FINER, "RealTimeEvents star running");
+        LOGGER.fine("RealTimeEvents star running");
 
         while(!events.isEmpty()){
 
@@ -54,7 +53,7 @@ public class RealTimeEvents implements Runnable{
 
             // jump in time to next event
             currTime = newDrive.getLeaveTime();
-            log(Level.FINER, "RealTimeEvents add event.");
+            LOGGER.finer("RealTimeEvents add event.");
         }
     }
 

@@ -43,7 +43,7 @@ public class Edge implements MapObject, Located {
         tagNames.add(highwayType);//TODO make highway type enum
         this.node1 = node1;
         this.node2 = node2;
-        this.id = id == null ? MapUtils.generateId(this) : id;
+        this.id = id == null ? MapUtils.generateId() : id;
         this.highwayType = highwayType;
         this.weight = weight == 0.0 ? GraphAlgo.distance(node1, node2)/ SPEED_LIMIT.getOrDefault(highwayType, 50) : weight;
     }
@@ -52,13 +52,9 @@ public class Edge implements MapObject, Located {
         this(null, node1, node2,0.0, way.getTags().get("highway"));
     }
 
-    public Edge(String id, Long startNodeId, Long endNodeID, Double weight, String highwayType) {
-        this(id, RoadMap.getInstance().getNode(startNodeId), RoadMap.getInstance().getNode(endNodeID), weight, highwayType);
-    }
 
-    /**
-     * GETTERS
-     */
+
+    /**  GETTERS */
     @Override
     public String getId() { return id; }
 

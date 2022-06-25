@@ -39,13 +39,11 @@ public class CustomMouseManager extends DefaultMouseManager {
             if(node == null) {
                 System.out.println("removed node " + currentNode.getLabel());
             }else{
-                if (node.getType() == Node.userType.Passenger) {
-                    currentNode.setAttribute("ui.style", "size: 10px, 10px; text-mode: normal;");
-                } else {
-                    Random r = new Random();
-                    currentNode.setAttribute("ui.style", "fill-color: rgb(" + r.nextInt(256) + "," + r.nextInt(256) + "," + r.nextInt(256) + ");size: 10px, 10px; text-mode: normal;");
-                    System.out.println(node);
-                }
+
+                Random r = new Random();
+                currentNode.setAttribute("ui.style", "fill-color: rgb(" + r.nextInt(256) + "," + r.nextInt(256) + "," + r.nextInt(256) + ");size: 10px, 10px; text-mode: normal;");
+                System.out.println(node);
+
             }
 //            MapView.getInstance().setDest(currentNode.getLabel());
 

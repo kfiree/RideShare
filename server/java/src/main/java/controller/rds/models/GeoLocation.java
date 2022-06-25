@@ -14,13 +14,13 @@ public class GeoLocation {
         this.nameLocation = nameLocation;
     }
     public GeoLocation(double latitude, double longitude, String nameLocation) {
-        this.geoLocationId = MapUtils.generateId(this);
+        this.geoLocationId = MapUtils.generateId();
         this.latitude = latitude;
         this.longitude = longitude;
         this.nameLocation = nameLocation;
     }
     public GeoLocation() {
-        this.geoLocationId = MapUtils.generateId(this);
+        this.geoLocationId = MapUtils.generateId();
         this.latitude = 23.2222;
         this.longitude = 23.2222;
         this.nameLocation = "nameLocation";

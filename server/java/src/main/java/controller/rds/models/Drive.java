@@ -8,7 +8,7 @@ public class Drive {
     private double price, AVG_Price;
 
     public Drive(String geoLocationSrc_Id, String geoLocationDest_Id, String passengers,  String leaveTime, String date, int num_seat_available, double price) {
-        this.drive_Id = MapUtils.generateId(this);
+        this.drive_Id = MapUtils.generateId();
         this.geoLocationSrc_Id = geoLocationSrc_Id;
         this.geoLocationDest_Id = geoLocationDest_Id;
         this.passengers = passengers;
@@ -21,7 +21,7 @@ public class Drive {
         this.date = date;
     }
     public Drive(String geoLocationSrc_Id, String geoLocationDest_Id, String passengers, String type, String upcoming_Drives, int num_seat_available, double price, double AVG_Price) {
-        this.drive_Id = MapUtils.generateId(this);
+        this.drive_Id = MapUtils.generateId();
         this.geoLocationSrc_Id = geoLocationSrc_Id;
         this.geoLocationDest_Id = geoLocationDest_Id;
         this.passengers = passengers;
@@ -33,7 +33,7 @@ public class Drive {
     }
 
     public Drive(String geoLocationSrc_Id, String geoLocationDest_Id) {
-        this.drive_Id = MapUtils.generateId(this);
+        this.drive_Id = MapUtils.generateId();
         this.geoLocationSrc_Id = geoLocationSrc_Id;
         this.geoLocationDest_Id = geoLocationDest_Id;
         this.passengers = "passengers";

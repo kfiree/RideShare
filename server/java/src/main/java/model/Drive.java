@@ -1,34 +1,26 @@
 package model;
 
 import controller.utils.MapUtils;
-import static controller.utils.LogHandler.log;
 
 import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
-import java.util.logging.Level;
+import static controller.utils.LogHandler.LOGGER;
+
 
 public class Drive implements Runnable  {//TODO make not implements
-    private String driverType;
-    private String driveOwnerId;
+    private final String type, ownerId;
     private String[] passengers = new String[3];
-    private Date leaveTime;
-    private Path path;
+    private final Date leaveTime;
+    private final Path path;
     private Edge currentEdge;
     private double timeSpeed;
 
-//    public Drive(ArrayList<Edge> edges, Node start, Node end, String driverType, String driveOwnerId, Date leaveTime) { TODO fix
-//        super(edges, start, end);
-//        this.driverType = driverType;
-//        this.driveOwnerId = driveOwnerId;
-//        this.leaveTime = leaveTime;
-//    }
 
-    public Drive(@NotNull Path path, String driverType, String driveOwnerId, Date leaveTime) {
+    public Drive(@NotNull Path path, String type, String OwnerId, Date leaveTime) {
         this.path = path;
-        this.driverType = driverType;
-        this.driveOwnerId = driveOwnerId;
+        this.type = type;
+        this.ownerId = OwnerId;
         this.leaveTime = leaveTime;
         currentEdge = path.getNext();
 
@@ -36,23 +28,23 @@ public class Drive implements Runnable  {//TODO make not implements
 
     @Override
     public void run() {
-        log(Level.FINER, "Drive "+driveOwnerId+" started.");
-        MapUtils.validate(path != null, "can't start a drive if path is null. Drive owner id - " + driveOwnerId);
+        LOGGER.fine("Drive "+ ownerId +" started.");
+        MapUtils.validate(path != null, "can't start a drive if path is null. Drive owner id - " + ownerId);
 
         do{
-            System.out.println("drive " + this.getDriveOwnerId() + " sleeps for "+ currentEdge.getWeight());
+            System.out.println("drive " + this.getOwnerId() + " sleeps for "+ currentEdge.getWeight());
             sleep(currentEdge.getWeight());
             currentEdge = path.getNext();
         }while(currentEdge != null);
-        log(Level.FINER, "Drive "+driveOwnerId+" finished.");
+        LOGGER.finer("Drive "+ ownerId +" finished.");
     }
 
-    public String getDriverType() {
-        return driverType;
+    public String getType() {
+        return type;
     }
 
-    public String getDriveOwnerId() {
-        return driveOwnerId;
+    public String getOwnerId() {
+        return ownerId;
     }
 
     public String[] getPassengers() {
@@ -67,14 +59,6 @@ public class Drive implements Runnable  {//TODO make not implements
         this.passengers = passengers;
     }
 
-    public Path getPath() {
-        return path;
-    }
-
-    public void setPath(Path path) {
-        this.path = path;
-    }
-
     public Edge getCurrentEdge() {
         return currentEdge;
     }
@@ -84,7 +68,7 @@ public class Drive implements Runnable  {//TODO make not implements
 //TODO control speed with static var
 
     private void sleep(double hour ) {
-        long ms = 5000;
+        long ms = (long) (5000*timeSpeed);
 //        long ms = (long) (hour * 3600000);
         try { Thread.sleep( ms ) ; }
         catch (InterruptedException e) { e.printStackTrace(); }
@@ -96,8 +80,8 @@ public class Drive implements Runnable  {//TODO make not implements
     @Override
     public String toString() {
         return "Drive{" +
-                "driverType='" + driverType + '\'' +
-                ", driveOwnerId='" + driveOwnerId + '\'' +
+                "driverType='" + type + '\'' +
+                ", driveOwnerId='" + ownerId + '\'' +
                 ", passengers=" + Arrays.toString(passengers) +
                 ", leaveTime=" + leaveTime +
                 ", path=" + path +

@@ -1,7 +1,5 @@
 import controller.utils.GraphAlgo;
 import controller.utils.MapUtils;
-import controller.utils.LogHandler;
-import model.Node;
 import view.MapView;
 import crosby.binary.osmosis.OsmosisReader;
 import model.RoadMap;
@@ -12,39 +10,45 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.List;
-import java.util.logging.Level;
-
-//osmconvert64.exe ariel2.osm > arielpbf.pbf --out-pbf
-// add "server/java/data/israel.pbf"; as input in configuration
+import static controller.utils.LogHandler.closeLogHandlers;
+import static controller.utils.LogHandler.LOGGER;
 
 /**
- * to run with intellij add '.pbf' path file to configuration:
- *      edit configuration -> Name: APP -> Build and run -> Program arguments -> insert: server/java/data/israel.pbf
+ * TODO - make methods and datastructures thread safe.
+ *      - use only int id of classes
+ *      - add assertion @
+ *
+ *      to run with intellij add '.pbf' path file to configuration:
+ *          edit configuration -> Name: APP -> Build and run -> Program arguments -> insert: server/java/data/israel.pbf
+ *
+ *
+ *      to convert files:
+ *          osmconvert64.exe ariel2.osm > arielpbf.pbf --out-pbf
+ *
+ *
  */
 public final class App{
     private static final long NODE_IN_MAIN_COMPONENT = 2432701015L;
-    public static LogHandler logger = new LogHandler();
     private App() {}
 
     public static void main(String[] args) {
         String pbfFilePath = args.length == 0 ? chooseFile() : args[0];
+        LOGGER.finest("Let's GO!!");
 
         boolean defaultBounds = true;
 
         MapUtils.setBounds(defaultBounds);
 
-        logger.log(Level.INFO, "start parsing map : '" + pbfFilePath+"'");
+        LOGGER.info( "start parsing main map.");// : '" + pbfFilePath+"'");
 
         CreateMap(pbfFilePath);
 
-        logger.log(Level.INFO,"map is ready. map = " + RoadMap.getInstance());
+        LOGGER.info("map is ready. map = " + RoadMap.getInstance());
 
         MapView.getInstance().show();
 
-        logger.closeHandler();
+        closeLogHandlers();
 
-        System.out.println("final thoughts?!");
         System.exit(0);
     }
 

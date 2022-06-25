@@ -58,7 +58,7 @@ public enum jsonHandler {
         double longitude = (double) jsonObject.get("longitude");
         List<Edge> edges = jsonToEdges((JSONArray) jsonObject.get("edges"));
 
-        Node node = RoadMap.getInstance().addNode(nodeId, osmId, latitude, longitude, Node.userType.None);
+        Node node = RoadMap.getInstance().addNode(nodeId, osmId, latitude, longitude);
         edges.forEach(e->node.addEdge(e));
 
         return node;
@@ -163,18 +163,18 @@ public enum jsonHandler {
 
     private static String MapToJson(RoadMap map){return null;}
 
-    private static JSONObject nodeToJson(Node node) throws ParseException {
-        JSONObject obj = new JSONObject();
-
-        obj.put("node_Id", node.getId());
-        obj.put("osm_Id", node.getOsmID());
-        obj.put("latitude", node.getLatitude());
-        obj.put("longitude", node.getLongitude());
-        obj.put("edges", listToJson(node.getEdges()));
-//        obj.put("tags", mapToJson(node.getTags()));
-
-        return obj;
-    }
+//    private static JSONObject nodeToJson(Node node) throws ParseException {
+//        JSONObject obj = new JSONObject();
+//
+//        obj.put("node_Id", node.getId());
+//        obj.put("osm_Id", node.getOsmID());
+//        obj.put("latitude", node.getLatitude());
+//        obj.put("longitude", node.getLongitude());
+//        obj.put("edges", listToJson(node.getEdges())); //TODO commented because edges is set and need to fix
+////        obj.put("tags", mapToJson(node.getTags()));
+//
+//        return obj;
+//    }
 
     private static JSONObject edgeToJson(Edge edge){
         JSONObject obj = new JSONObject();
@@ -284,7 +284,7 @@ public enum jsonHandler {
                 Double latitude = Double.parseDouble(( (String) jsonObj.get("latitude")));
                 Double longtitude = Double.parseDouble(( (String) jsonObj.get("longtitude")));
 
-                locations.put(locationId, new Node(locationId, null, new GeoLocation(latitude, longtitude), Node.userType.None));
+                locations.put(locationId, new Node(locationId, null, new GeoLocation(latitude, longtitude)));
             });
         } catch (IOException | ParseException e) {
             e.printStackTrace();

@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * @version 1.0
  * @since   2021-06-20
  */
-public final class Parser {//TODO clean at the end of reading & parsing
+public final class Parser {
     private final Map<OsmObject, Map<OsmObject, OsmWay>> AdjacentMap = new HashMap<>();
 
     public void parseMapWays(ArrayList<OsmWay> ways){

@@ -19,14 +19,17 @@ import java.util.*;
  */
 public final class RoadMap {
 
-    private Set<Edge> edges;
+    private final Set<Edge> edges;
     private final Map<Long, Node> nodes;
-    private final Map<Long, Node> junctionNodes = new HashMap<>();
+    private final Map<String, Drive> drives;
+    private final Map<String, Pedestrian> pedestrians;
 
     /** CONSTRUCTORS */
     private RoadMap() {
         edges = new HashSet<>();
         nodes = new HashMap<>();
+        drives = new Hashtable<>();
+        pedestrians = new Hashtable<>();
     }
 
     /**  Singleton specific properties */
@@ -36,68 +39,77 @@ public final class RoadMap {
         return INSTANCE;
     }
 
+
+
     /** GETTERS */
-    public Map<Long, Node> getNodes() { return nodes; }
+
+    public Node getNode(long key){ return nodes.get(key); }
+
+    public Collection<Node> getNodes() { return nodes.values();}
 
     public Set<Edge> getEdges() { return edges; }
 
-    public Node getNode(long key){
-        return nodes.get(key);
-    }
+    public Collection<Drive> getDrives() { return drives.values(); }
 
-    public Map<Long, Node> getJunctionNodes() {
-        return junctionNodes;
-    } //TODO move to somewhere else
+    public Drive getDrive(String key) { return drives.get(key); }
 
-    /** SETTERS */
+    public Collection<Pedestrian> getPedestrians() { return pedestrians.values(); }
 
-    public void setEdges(Collection<Edge> edges) {
-        this.edges.addAll(edges);
-    }
+    public Pedestrian getPedestrian(String key) { return pedestrians.get(key); }
 
+
+
+    /**     SETTERS     */
+
+    public void setEdges(Collection<Edge> edges) { this.edges.addAll(edges); }
+
+    /** add edge from Parser */
     public Edge addEdge(Node src, Node dst, OsmWay way){
-        boolean srcToDst = src.isAdjacent(dst);
-        boolean dstToSrc = dst.isAdjacent(src);
+        Edge edge = setEdgeIfExists(src, dst);
 
-        Edge edge;
-
-        if(!srcToDst && !dstToSrc){ // edge not exist
+        if(edge == null){
             edge = new Edge(way, src, dst);
             src.addEdge(edge);
             edges.add(edge);
-        }else if(dstToSrc){ // opposite edge exist
-            edge = dst.getEdgeTo(src);
-            src.addEdge(edge);
-        }else { // edge exist
-            edge =  src.getEdgeTo(dst);
         }
 
         return edge;
     }
 
+    /** add edge from DB */
     public Edge addEdge(String id, Long startNodeId, Long endNodeID, Double weight, String highwayType) {
-        Edge edge = new Edge(id, startNodeId, endNodeID, weight, highwayType);
-        addEdge(edge);
+        Node src = getNode(startNodeId), dst = getNode(endNodeID);
+
+        Edge edge = setEdgeIfExists(src, dst);
+
+        if(edge == null){
+            edge = new Edge(id, src, dst, weight, highwayType);
+            src.addEdge(edge);
+            edges.add(edge);
+        }
 
         return edge;
     }
 
-    private void addEdge(Edge e){
-        if(!e.getNode1().isAdjacent(e.getNode2())) {
-            e.getNode1().addEdge(e);
-            e.getNode2().addEdge(e);
-//            e.getLength();
-            edges.add(e);
-        }else{
-            //TODO set directed
+    private Edge setEdgeIfExists(Node src, Node dst){
+        boolean srcToDst = src.isAdjacent(dst);
+        boolean dstToSrc = dst.isAdjacent(src);
+
+        Edge edge = null;
+
+        if (srcToDst || dstToSrc) {
+            if(!srcToDst){ // opposite edge exist
+                edge = dst.getEdgeTo(src);
+                src.addEdge(edge);
+            }else{
+                edge = src.getEdgeTo(dst);
+            }
         }
+
+        return edge;
     }
 
-    public Node addNode(Node node, long id){//TODO make private
-        nodes.put(id, node);
-        return node;
-    }
-
+    /** add edge from Parser */
     public Node addNode(OsmObject osmObject){
         Node node = getNode(osmObject.getID());
 
@@ -109,22 +121,31 @@ public final class RoadMap {
         return node;
     }
 
-//    public Node addNode(OsmObject osmObject){
-//        Node node = new Node(osmObject);
-//        nodes.put(osmObject.getID(), node);
-//        return node;
-//    }
+    /** add edge from DB */
+    public Node addNode(String id, Long osmID, Double latitude, Double longitude){
+        Node node = getNode(osmID);
 
-    public Node addNode(Node node){
-        nodes.put(node.getOsmID(), node);
+        if( node == null){
+            node = new Node(id, osmID, new GeoLocation(latitude, longitude));
+            nodes.put(node.getOsmID(), node);
+        }
+
         return node;
     }
 
-    public Node addNode(String id, Long osmID, Double latitude, Double longitude, Node.userType user){
-        return addNode(new Node(id, osmID, new GeoLocation(latitude, longitude), Node.userType.None));
-    }
+    public void setDrives(Map<String, Drive> drives) { this.drives.putAll(drives); }
 
-    public Node removeNode(long id){
+    public void setPedestrians(Map<String, Pedestrian> pedestrians) { this.pedestrians.putAll(pedestrians); }
+
+    public void addDrive(Drive drive) { drives.put(drive.getOwnerId(), drive); }
+
+    public void addPedestrian(Pedestrian pedestrian) { pedestrians.put(pedestrian.getId(), pedestrian); }
+
+
+
+    /** REMOVE FROM GRAPH */
+
+    public Node removeNode(long id){ //TODO test
         Node node = this.nodes.remove(id);
 
         node.getEdges().forEach(edge ->{
@@ -136,59 +157,39 @@ public final class RoadMap {
         return nodes.remove(id);
     }
 
-    public void removeNodes(List<Node> nodes){
-
+    public void removeNodes(List<Node> nodesToRemove){
         List<Edge> edgesToRemove = new ArrayList<>();
-        int a = 0;
-        for(Node node:nodes) {
-            this.nodes.remove(node.getOsmID());
-            if(node.getOsmID() == 560149987l || node.getOsmID() == 560149995l){
-                int stop = 0;
-            }
+
+        for(Node node:nodesToRemove) {
+            nodes.remove(node.getOsmID());
             for (Edge edge : node.getEdges()) {
-//                System.out.println(a++);
-//                ONode otherEnd = edge.getOtherEnd(node.getId());
-//                otherEnd.removeEdge(edge);//removeEd(node);
+                edge.getOtherEnd(node.getId()).removeEdgeTo(node);
                 edgesToRemove.add(edge);
             }
         }
 
-
-        edges.removeAll(edgesToRemove);
-//        this.nodes.removeAll(nodes);
+        edges.removeAll(edgesToRemove);//TODO check if removed for dest
     }
 
-
-//    public void removeNodes(List<Long> nodeKeys){
-//
-//        for(int i = 0; i < nodeKeys.size(); i++){
-//            Long id = nodeKeys.get(i);
-//
-//            ONode removed = this.nodes.remove(id);
-//            ArrayList<OEdge> oEdgesCopy = new ArrayList<>(removed.getEdges());
-//            for (OEdge e:oEdgesCopy) {
-//                removeEdge(e);
-//            }
-//        }
-//    }
-
-    public boolean removeEdge(Edge e){//TODO check call method on remove
-        e.getNode2().removeEdge(e);
-        e.getNode1().removeEdge(e);
-        return edges.remove(e);
+    public boolean removeEdge(Edge edge){ //TODO test
+        edge.getNode2().removeEdge(edge);
+        edge.getNode1().removeEdge(edge);
+        return edges.remove(edge);
     }
 
-    public void removeEdge(Edge e, Iterator<Edge> itr){
-        e.getNode2().removeEdgeTo(e.getNode1());
-        e.getNode1().removeEdgeTo(e.getNode2());
-        itr.remove();
-    }
+    public void removeDrive(String driveKey) { drives.remove(driveKey); }
+
+    public void removePedestrian(String pedestrianKey) { pedestrians.remove(pedestrianKey); }
+
+
 
     @Override
     public String toString() {
         return "OMap{" +
-                "edges=" + this.edges.size() +
-                ", nodes=" + this.nodes.size() +
+                "edges=" + edges.size() +
+                ", nodes=" + nodes.size() +
+                ", pedestrians=" + pedestrians.size() +
+                ", drives=" + drives.size() +
                 '}';
     }
 }

@@ -28,23 +28,23 @@ public class addMapToDB {
         uploadEdges(map);
     }
     public static void uploadNodes(RoadMap map){
-        map.getNodes().forEach((key,val) -> {
+        map.getNodes().forEach(node -> {
             //nodes
             JSONObject edges = new JSONObject();
-            val.getEdges().forEach(e -> {
+            node.getEdges().forEach(e -> {
                 int index = 0;
                 edges.put("" + (++index), "" + e.getId());
             });
-            JSONObject tags = new JSONObject();
-            val.getTags().forEach((keyTag,valTag) -> {
-                keyTag =  keyTag.replace("\"", "");
-                keyTag =  keyTag.replace("\'", "");
-                valTag =  valTag.replace("\"", "");
-                valTag =  valTag.replace("\'", "");
-                tags.put(keyTag , valTag);
-            });
+//            JSONObject tags = new JSONObject();
+//            node.getTags().forEach((keyTag,valTag) -> {
+//                keyTag =  keyTag.replace("\"", "");
+//                keyTag =  keyTag.replace("\'", "");
+//                valTag =  valTag.replace("\"", "");
+//                valTag =  valTag.replace("\'", "");
+//                tags.put(keyTag , valTag);
+//            });
 
-            System.out.println("addNode -> " + checkQuerys.addToDB.addToDB(connection, node_query.addNode(val)));
+            System.out.println("addNode -> " + checkQuerys.addToDB.addToDB(connection, node_query.addNode(node)));
         });
     }
 

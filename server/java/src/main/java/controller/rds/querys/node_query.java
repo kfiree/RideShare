@@ -15,17 +15,17 @@ public class node_query {
             int index = 0;
             edges.put("" + (++index), "" + e.getId());
         });
-        JSONObject tags = new JSONObject();
-        n.getTags().forEach((keyTag,valTag) -> {
-            keyTag =  keyTag.replace("\"", "");
-            keyTag =  keyTag.replace("\'", "");
-            valTag =  valTag.replace("\"", "");
-            valTag =  valTag.replace("\'", "");
-            tags.put(keyTag , valTag);
-        });
-        return "INSERT INTO \"public\".\"rs_nodes\" (\"osm_Id\", \"node_Id\", \"latitude\", \"longitude\", \"degree\", \"edges\", \"tags\") " +
+//        JSONObject tags = new JSONObject();
+//        n.getTags().forEach((keyTag,valTag) -> {
+//            keyTag =  keyTag.replace("\"", "");
+//            keyTag =  keyTag.replace("\'", "");
+//            valTag =  valTag.replace("\"", "");
+//            valTag =  valTag.replace("\'", "");
+//            tags.put(keyTag , valTag);
+//        });
+        return "INSERT INTO \"public\".\"rs_nodes\" (\"osm_Id\", \"node_Id\", \"latitude\", \"longitude\", \"edges\") " +
                 "VALUES " +
-                "('"+n.getOsmID()+"','"+ n.getId() +"', "+n.getLatitude()+", "+n.getLongitude()+", "+n.getDegree()+", '"+edges+"', '"+tags+"');";
+                "('"+n.getOsmID()+"','"+ n.getId() +"', "+n.getLatitude()+", "+n.getLongitude()+", '"+edges+"');";
     }
     static public String updateNode(Node n) {
         JSONObject edges = new JSONObject();
@@ -33,20 +33,19 @@ public class node_query {
             int index = 0;
             edges.put("" + (++index), "" + e.getId());
         });
-        JSONObject tags = new JSONObject();
-        n.getTags().forEach((keyTag,valTag) -> {
-            keyTag =  keyTag.replace("\"", "");
-            keyTag =  keyTag.replace("\'", "");
-            valTag =  valTag.replace("\"", "");
-            valTag =  valTag.replace("\'", "");
-            tags.put(keyTag , valTag);
-        });
+//        JSONObject tags = new JSONObject();
+//        n.getTags().forEach((keyTag,valTag) -> {
+//            keyTag =  keyTag.replace("\"", "");
+//            keyTag =  keyTag.replace("\'", "");
+//            valTag =  valTag.replace("\"", "");
+//            valTag =  valTag.replace("\'", "");
+//            tags.put(keyTag , valTag);
+//        });
         return "UPDATE \"public\".\"rs_nodes\" SET " +
                 "\"latitude\" = "+n.getLatitude()+", " +
                 "\"longitude\" = "+n.getLongitude()+"," +
-                "\"degree\" = "+n.getDegree()+", " +
                 "\"edges\" = '"+edges+"', " +
-                "\"tags\" = '"+tags+"' " +
+//                "\"tags\" = '"+tags+"' " +
                 "WHERE \"node_Id\" = '"+n.getId()+"';";
     }
     static public String deleteNodeById(Node n) {

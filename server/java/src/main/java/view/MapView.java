@@ -14,18 +14,34 @@ import model.RoadMap;
 import model.Node;
 
 import java.util.*;
-import java.util.logging.Level;
 
-import static controller.utils.MapUtils.validate;
-import static controller.utils.LogHandler.log;
+import static controller.utils.LogHandler.LOGGER;
 
+
+/**
+ *      |==================================|
+ *      |===========| MAP VIEW |===========|
+ *      |==================================|
+ *
+ *   simulator for road map.
+ *
+ *
+ *
+ *  version 1: graph in one thread.
+ *
+ * @author  Kfir Ettinger & Amit Hajaj & Motti Dahari
+ * @version 2.0
+ * @since   2021-06-20
+ */
 public class MapView {
     private RoadMap map;
     private Graph displayGraph;
     private List<Drive> onGoingDrives;
     private HashSet<org.graphstream.graph.Node> pedestrian;
     private RealTimeEvents events;
-    private double timeSpeed = 1;
+
+    private static final long SLEEP_BETWEEN_FRAMES = 2000;
+    private static final double SYSTEM_SPEED = 2;
 
     private static MapView instance = new MapView();
 
@@ -33,7 +49,7 @@ public class MapView {
         displayGraph = new MultiGraph("map simulation");
         map = RoadMap.getInstance();
         onGoingDrives = new ArrayList<>();
-        events = new RealTimeEvents(initDrives(), timeSpeed);
+        events = new RealTimeEvents(initDrives(5), SYSTEM_SPEED);
     }
 
     public static MapView getInstance() {
@@ -65,52 +81,57 @@ public class MapView {
         while(true){
             pipeIn.pump();
 
-            sleep(1000);
+            sleep(SLEEP_BETWEEN_FRAMES);
 
-
-            System.out.println("frame i = "+ i++);
             getUpdates();
-//
+
             moveCars();
 
 //            drawPedestrian();
         }
     }
 
-    public List<Drive> initDrives() {
+    public List<Drive> initDrives(int drivesNum) {
+        // drives variables
         List<Drive> drives = new ArrayList<>();
-        Calendar cl = Calendar.getInstance();
-        Date initializeDate = new Date();
-        cl.setTime(initializeDate);
-        long startTime = initializeDate.getTime();
+        List<Node> nodes = new ArrayList<>(RoadMap.getInstance().getNodes());
+        Node src, dst;
+        long sessionStartInMs = (new Date()).getTime();
+
+        // init random indexes for nodes
         Random rand = new Random(1);
-        List<Node> nodes = new ArrayList<>(RoadMap.getInstance().getNodes().values());
-        for (int i = 0; i < 50; i++) {
-            Path shortestPath = null;
-            Drive d = null;
-            if(nodes.isEmpty()){
-                continue;
-            }
-            Node src = nodes.get(rand.nextInt(nodes.size() - 1));
-            Node dst = nodes.get(rand.nextInt(nodes.size() - 1));
+        int[] randomIndexes = rand.ints(drivesNum*2, 0, nodes.size()).toArray();
 
-            if(src != null && dst != null ){
-                shortestPath = GraphAlgo.getShortestPath(src, dst);
+        //create drives
+        for (int i = 0; i < drivesNum; i++) {
+            src = nodes.get(randomIndexes[i*2]);
+            dst = nodes.get(randomIndexes[i*2 +1 ]);
 
-//                validate(shortestPath != null,"drive was not created, src = "+src.getOsmID()+", dst  " + dst.getOsmID());
-                if(shortestPath != null) {
-                    d = new Drive(shortestPath, "" + i, "" + i, new Date(startTime+ (15000 * i)));
-                    drives.add(d);
-                }else{
-                    validate(false,"path not found. src = " + src+ ", dst = " +dst+ ".");
-                    System.out.println("stop");
-                }
-            }else{
-                validate(src != null && dst != null,"drive was not created, one or two nodes not existed. src = " + src+ ", dst = " +dst+ ".");
+            drives.add(createDrive(src, dst, i, sessionStartInMs));
+        }
+
+        LOGGER.finer("init "+drives.size() + " drives.");
+
+        return drives;
+    }
+
+    private Drive createDrive(Node src, Node dst, int i, long sessionStartInMs){
+        Path shortestPath;
+        Drive drive = null;
+
+        if(src != null && dst != null ){
+            shortestPath = GraphAlgo.getShortestPath(src, dst);
+
+            if(shortestPath != null) {
+                Date startTime = new Date(sessionStartInMs + (15000 * i));
+                drive = new Drive(shortestPath, "unknown" , String.valueOf(i), startTime );
+
+//                validate(drive != null,"drive from " + src + " to "+ dst + " was not created, Drive(Id: "+ i +", Date: "+startTime.+" = , Path).");
             }
         }
-        log(Level.FINE, "init "+drives.size() + " drives.");
-        return drives;
+
+
+        return drive;
     }
 
     private void getUpdates(){

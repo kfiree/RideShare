@@ -9,7 +9,7 @@ public class User {
     private String user_Id, email , first_name , last_name , phone_Number , Image_Id , degree , gender , password;
 
     public User(String email, String first_name, String last_name, String phone_Number, String image_Id, String degree, String gender, String password) {
-        this.user_Id = MapUtils.generateId(this);
+        this.user_Id = MapUtils.generateId();
         this.email = email;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -21,7 +21,7 @@ public class User {
     }
     public User(String email) {
         Random r = new Random(10000000);
-        this.user_Id = MapUtils.generateId(this);
+        this.user_Id = MapUtils.generateId();
         this.email = email;
         this.first_name = "first_name";
         this.last_name = "last_name";
@@ -33,7 +33,7 @@ public class User {
     }
     public User() {
         Random r = new Random(10000000);
-        this.user_Id = MapUtils.generateId(this);
+        this.user_Id = MapUtils.generateId();
         this.email = "email" + r.nextDouble(1000000000) + "@gmail.com";
         this.first_name = "first_name";
         this.last_name = "last_name";

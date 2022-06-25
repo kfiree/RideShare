@@ -6,10 +6,9 @@ import model.Node;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-import static controller.utils.LogHandler.logger;
+import static controller.utils.LogHandler.LOGGER;
 
 /**
  *      |==================================|
@@ -28,7 +27,8 @@ import static controller.utils.LogHandler.logger;
  * @version 1.0
  * @since   2021-06-20
  */
-public class GraphAlgo {
+public final class GraphAlgo {
+    private GraphAlgo() {}
 
 
 //    public static double distance(double lat1, double lon1, double lat2, double lon2, String... unit) {
@@ -56,10 +56,10 @@ public class GraphAlgo {
     AtomicReference<Double> minDistance = new AtomicReference<>(Double.MAX_VALUE);
     AtomicReference<Node> closestNode = new AtomicReference<>(node);
 
-    //Loop through all the nodes that are not from Rider type, and find the closest one
-    RoadMap.getInstance().getNodes().values().stream().filter(n -> n.getType() != Node.userType.Passenger)
-            .forEach(other -> {
-                double dist = GraphAlgo.distance(node, other);
+    //Loop through all the nodes, and find the closest one
+    RoadMap.getInstance()
+            .getNodes().forEach(other -> {
+                double dist = distance(node, other);
                 if(dist < minDistance.get()){
                     minDistance.set(dist);
                     closestNode.set(other);
@@ -207,7 +207,7 @@ public class GraphAlgo {
                 }
             }
         }
-        logger.log(Level.SEVERE, "couldnt find path between nodes, src "+ src+", dst "+ dst);
+        LOGGER.severe("couldn't find path between nodes, src "+ src+", dst "+ dst);
         return null;
 
     }
@@ -228,9 +228,8 @@ public class GraphAlgo {
         //delete node that aren't connected to src
         List<Node> connectedComponent = getConnectedComponent(src);
 
-        List<Node> notPartOfComponent = map.getNodes().entrySet().stream()
-                .filter(e -> !connectedComponent.contains(e.getValue()))
-                .map(e -> e.getValue())
+        List<Node> notPartOfComponent = map.getNodes().stream()
+                .filter(node -> !connectedComponent.contains(node))
                 .collect(Collectors.toList());
 
         map.removeNodes(notPartOfComponent);

@@ -6,12 +6,12 @@ public class University {
 
 
     public University(String geoLocation_Id, String university_name) {
-        this.universityId = MapUtils.generateId(this);
+        this.universityId = MapUtils.generateId();
         this.geoLocation_Id = geoLocation_Id;
         this.university_name = university_name;
     }
     public University(String geoLocation_Id) {
-        this.universityId = MapUtils.generateId(this);
+        this.universityId = MapUtils.generateId();
         this.geoLocation_Id = geoLocation_Id;
         this.university_name = "university_name";
     }
