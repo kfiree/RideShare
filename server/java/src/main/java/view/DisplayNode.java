@@ -1,20 +1,17 @@
 package view;
 
+import model.GeoLocation;
 import org.graphstream.graph.implementations.AbstractGraph;
 import org.graphstream.graph.implementations.MultiNode;
 import model.Node;
 
 public class DisplayNode extends MultiNode {
+    GeoLocation location;
+    public DisplayNode(AbstractGraph displayGraph, GeoLocation location, String id) {
+        super(displayGraph, id);
 
-    private Node nodeData;
-
-    public DisplayNode(AbstractGraph displayGraph, Node node) {
-        super(displayGraph, node.getOsmID().toString());
-
-        this.nodeData = node;
+        this.location = location;
     }
 
-    public Node getData() {
-        return nodeData;
-    }
+    public GeoLocation getLocation() { return location; }
 }

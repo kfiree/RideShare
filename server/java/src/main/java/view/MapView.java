@@ -1,17 +1,14 @@
 package view;
 
 import controller.utils.GraphAlgo;
-import model.Drive;
-import model.Path;
+import model.*;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.implementations.AbstractGraph;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.ui.j2dviewer.J2DGraphRenderer;
 import org.graphstream.ui.view.Viewer;
 import org.graphstream.ui.view.ViewerPipe;
-
-import model.RoadMap;
-import model.Node;
 
 import java.util.*;
 
@@ -36,7 +33,9 @@ import static controller.utils.LogHandler.LOGGER;
 public class MapView {
     private RoadMap map;
     private Graph displayGraph;
-    private List<Drive> onGoingDrives;
+    private HashMap<Drive, org.graphstream.graph.Node> cars;
+    private HashMap<Pedestrian, org.graphstream.graph.Node> pedestrians;
+//    private List<Drive> onGoingDrives;
     private HashSet<org.graphstream.graph.Node> pedestrian;
     private RealTimeEvents events;
 
@@ -48,7 +47,8 @@ public class MapView {
     private MapView() {
         displayGraph = new MultiGraph("map simulation");
         map = RoadMap.getInstance();
-        onGoingDrives = new ArrayList<>();
+        cars = new HashMap<>();
+        pedestrians = new HashMap<>();
         events = new RealTimeEvents(initDrives(5), SYSTEM_SPEED);
     }
 
@@ -126,6 +126,10 @@ public class MapView {
                 Date startTime = new Date(sessionStartInMs + (15000 * i));
                 drive = new Drive(shortestPath, "unknown" , String.valueOf(i), startTime );
 
+                if(drive == null){
+                    LOGGER.severe("drive from " + src + " to "+ dst + " was not created, Drive(Id: "+ i +", Date: " + startTime +" = , Path).");
+                    //TODO add formatter for date
+                }
 //                validate(drive != null,"drive from " + src + " to "+ dst + " was not created, Drive(Id: "+ i +", Date: "+startTime.+" = , Path).");
             }
         }
@@ -136,22 +140,32 @@ public class MapView {
 
     private void getUpdates(){
         List<Drive> startedEvents = events.getStartedEvents();
-        onGoingDrives.addAll(startedEvents);
+        startedEvents.forEach(drive -> {
+            org.graphstream.graph.Node node = displayGraph.addNode(drive.getOwnerId());
 
+            GeoLocation location = drive.getCurrentEdge().getNode1().getCoordinates();
+            node.setAttribute("xy", location.getLongitude(), location.getLatitude());
+            node.setAttribute("ui.class", "car");//todo add getNextNode to drive
+
+            cars.put(drive, node);
+        });;//.addAll(startedEvents);
     }
 
     private void moveCars(){
-        onGoingDrives.forEach( drive ->{
-            model.Edge currentEdge = drive.getCurrentEdge();
-            org.graphstream.graph.Node node;
+        cars.forEach( (drive, displayNode) ->{
 
-            if(currentEdge != null){
-                node = displayGraph.getNode(currentEdge.getNode1().getOsmID().toString());
-                node.setAttribute("ui.class", "normal");
-                node = displayGraph.getNode(currentEdge.getNode2().getOsmID().toString());
-                node.addAttribute("ui.class", "car");
+            model.Edge currEdge = drive.getCurrentEdge();
+
+            if(currEdge != null){
+                GeoLocation location = currEdge.getNode2().getCoordinates();
+                displayNode.setAttribute("xy", location.getLongitude(), location.getLatitude());
+
+//                displayNode = displayGraph.getNode(currEdge.getNode1().getOsmID().toString());
+//                displayNode.setAttribute("ui.class", "normal");
+//                displayNode = displayGraph.getNode(currEdge.getNode2().getOsmID().toString());
+//                displayNode.addAttribute("ui.class", "car");
             }else{
-                onGoingDrives.remove(drive);
+                cars.remove(drive);
             }
         });
     }

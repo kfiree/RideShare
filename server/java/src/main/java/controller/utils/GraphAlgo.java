@@ -47,6 +47,11 @@ public final class GraphAlgo {
 //        return (dist);
 //    }
 
+    /**
+     * Function to find the closest node to a given point
+     * @param node- the node to which the closest node is to be found
+     * @return the closest node to the given node
+     */
     public static Node findClosestNode(Node node){
     //Get the coordinates of the node
     Double latitude = node.getLatitude();
@@ -80,11 +85,7 @@ public final class GraphAlgo {
      * @return calculated distance between two nodes
      */
 
-    /**
-     * Function to find the closest node to a given point
-     * @param node- the node to which the closest node is to be found
-     * @return the closest node to the given node
-     */
+
     /**
      This function will be adressed by all distance calculations
      * between two nodes in space
@@ -147,7 +148,7 @@ public final class GraphAlgo {
                 }
             }
         }
-
+        LOGGER.fine("BFS from node "+ node.getOsmID());
         return visited.stream().toList();
     }
 
@@ -185,6 +186,7 @@ public final class GraphAlgo {
         while(!OpenSet.isEmpty()){
             Node current = PQ_OpenSet.poll();
             if(current.equals(dst)){
+                LOGGER.fine("Path between "+src.getOsmID()+" and "+ dst.getId()+" found using A*.");
                 return reconstructPath(cameFrom, dst);
             }
 
@@ -232,6 +234,8 @@ public final class GraphAlgo {
                 .filter(node -> !connectedComponent.contains(node))
                 .collect(Collectors.toList());
 
+        LOGGER.info(notPartOfComponent.size() + " nodes that are not part of main component are found and being removed.");
+
         map.removeNodes(notPartOfComponent);
     }
 
@@ -253,34 +257,4 @@ public final class GraphAlgo {
         return (rad * 180.0 / Math.PI);
     }
 }
-//        ArrayList<Long> problems = new ArrayList<>();
-//        problems.add(340375216l);
-//        problems.add(289499143l);
-//        problems.add(3988271550l);
-//
-//        for(ONode node: notPartOfComponent){
-//            Long nodeId = node.getOsmID();
-//            problems.remove(node.getOsmID());
-//
-//        }
-//        if(!problems.isEmpty()){
-//            System.out.println("יוסטון וי האב אה פראבלס");
-//            System.out.println(problems + " not found");
-//            problems.remove(340375216l);
-//            System.out.println("fuuucckkk");
-//        }
-//        problems = new ArrayList<>();
-//        problems.add(340375216l);
-//        problems.add(289499143l);
-//        problems.add(3988271550l);
-//        for(ONode node: connectedComponent){
-//            Long nodeId = node.getOsmID();
-//            problems.remove(node.getOsmID());
-//
-//        }
-//        if(!problems.isEmpty()){
-//            System.out.println("יוסטון וי האב אה פראבלס");
-//            System.out.println(problems + " not found");
-//            problems.remove(340375216l);
-//            System.out.println("fuuucckkk");
-//        }
+

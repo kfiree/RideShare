@@ -32,11 +32,13 @@ public class Drive implements Runnable  {//TODO make not implements
         MapUtils.validate(path != null, "can't start a drive if path is null. Drive owner id - " + ownerId);
 
         do{
-            System.out.println("drive " + this.getOwnerId() + " sleeps for "+ currentEdge.getWeight());
+            LOGGER.info("drive " + getOwnerId() + " sleeps for "+ currentEdge.getWeight());
+
             sleep(currentEdge.getWeight());
             currentEdge = path.getNext();
         }while(currentEdge != null);
-        LOGGER.finer("Drive "+ ownerId +" finished.");
+
+        LOGGER.finer("Drive "+ ownerId +" has reached destination.");
     }
 
     public String getType() {
@@ -68,15 +70,20 @@ public class Drive implements Runnable  {//TODO make not implements
 //TODO control speed with static var
 
     private void sleep(double hour ) {
-        long ms = (long) (5000*timeSpeed);
 //        long ms = (long) (hour * 3600000);
-        try { Thread.sleep( ms ) ; }
+        long sleepTime = (long) (5000*timeSpeed);
+        if(sleepTime <1 ){
+            LOGGER.warning("sleep time "+ sleepTime +" is too small");
+        }
+
+        try { Thread.sleep( sleepTime ) ; }
         catch (InterruptedException e) { e.printStackTrace(); }
     }
 
     public void setTimeSpeed(double timeSpeed){
         this.timeSpeed = timeSpeed;
     }
+
     @Override
     public String toString() {
         return "Drive{" +

@@ -56,7 +56,6 @@ public class LogHandler{
     }
 
     public static void closeLogHandlers(){
-//        fileHandler.close();
         for(Handler h: LOGGER.getHandlers()){
             System.out.println(h.toString());
             h.close();

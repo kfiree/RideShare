@@ -33,7 +33,6 @@ public class RealTimeEvents implements Runnable{
 
     @Override
     public void run() {
-        System.out.println("RealTimeEvents star running");
         LOGGER.fine("RealTimeEvents star running");
 
         while(!events.isEmpty()){
@@ -48,12 +47,12 @@ public class RealTimeEvents implements Runnable{
 
 
             int sleepTime = currTime.compareTo(newDrive.getLeaveTime());
-            System.out.println("RealTimeEvents sleep for "+  sleepTime/timeSpeed + " time speed = "+ timeSpeed);
+
             sleep(sleepTime);
 
             // jump in time to next event
             currTime = newDrive.getLeaveTime();
-            LOGGER.finer("RealTimeEvents add event.");
+            LOGGER.info("RealTimeEvents add event. sleep time = " +sleepTime);
         }
     }
 

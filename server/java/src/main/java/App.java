@@ -39,11 +39,11 @@ public final class App{
 
         MapUtils.setBounds(defaultBounds);
 
-        LOGGER.info( "start parsing main map.");// : '" + pbfFilePath+"'");
+        LOGGER.info( "Start parsing main map.");// : '" + pbfFilePath+"'");
 
         CreateMap(pbfFilePath);
 
-        LOGGER.info("map is ready. map = " + RoadMap.getInstance());
+        LOGGER.info("Map is ready. Map = " + RoadMap.getInstance());
 
         MapView.getInstance().show();
 
@@ -59,7 +59,6 @@ public final class App{
             inputStream = new FileInputStream(pathToPBF);
 
             // read from osm pbf file:
-//            Reader reader = new Reader(new GeoLocation(32.18276629498098, 35.05028293864246), new GeoLocation(31.943290520866952, 34.70846861419407));
             Reader reader = new Reader();
             OsmosisReader osmosisReader = new OsmosisReader(inputStream);
             osmosisReader.setSink(reader);
@@ -69,12 +68,13 @@ public final class App{
 
             // secondary parsing of ways/creation of edges:
             Parser parser = new Parser();
-            parser.parseMapWays(reader.getWays());//reader.getWays(), reader.getMapObjects());
+            parser.parseMapWays(reader.getWays());
 
             // get riders & drivers
             GraphAlgo.removeNodesThatNotConnectedTo(RoadMap.getInstance().getNode(NODE_IN_MAIN_COMPONENT));
 
         } catch (FileNotFoundException e) {
+            LOGGER.severe("File not found!, "+e.getMessage());
             JOptionPane.showMessageDialog(new JFrame(), "File not found!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
 
