@@ -1,5 +1,6 @@
 package controller.utils;
 
+import model.GeoLocation;
 import model.Path;
 import model.RoadMap;
 import model.Node;
@@ -64,7 +65,7 @@ public final class GraphAlgo {
     //Loop through all the nodes, and find the closest one
     RoadMap.getInstance()
             .getNodes().forEach(other -> {
-                double dist = distance(node, other);
+                double dist = node.distanceTo(other);
                 if(dist < minDistance.get()){
                     minDistance.set(dist);
                     closestNode.set(other);
@@ -74,46 +75,57 @@ public final class GraphAlgo {
     return closestNode.get();
 }
 
-    /**
-     * This function will be adressed by all distance calculations
-     * between two nodes in space
-     * Current calculation method: Haversine Method
-     * @param lat1 start node latitude
-     * @param lon1 start node longitude
-     * @param lat2 end node latitude
-     * @param lon2 end node longitude
-     * @return calculated distance between two nodes
-     */
+//    /**
+//     * This function will be adressed by all distance calculations
+//     * between two nodes in space
+//     * Current calculation method: Haversine Method
+//     * @param lat1 start node latitude
+//     * @param lon1 start node longitude
+//     * @param lat2 end node latitude
+//     * @param lon2 end node longitude
+//     * @return calculated distance between two nodes
+//     */
+//
+//
+//    /**
+//     This function will be adressed by all distance calculations
+//     * between two nodes in space
+//     * Current calculation method: Haversine Method
+//     *
+//     * @param node1
+//     * @param node2
+//     * @param unit
+//     * @return calculated distance between two nodes by coordinates
+//     */
+//    public static double distance(Node node1, Node node2, String... unit) {
+//        double lat1 = node1.getLatitude(), lon1 = node1.getLongitude(), lat2 = node2.getLatitude(), lon2 = node2.getLongitude();
+//
+//        String unit1 = unit.length > 0 ? unit[0] : "K";
+//
+//        double theta = lon1 - lon2;
+//        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+//        dist = Math.acos(dist);
+//        dist = rad2deg(dist);
+//        dist = dist * 60 * 1.1515;
+//        if (unit1.equals("K")) {
+//            dist = dist * 1.609344;
+//        } else if (unit1.equals("N")) {
+//            dist = dist * 0.8684;
+//        }
+//        return (dist);
+//    }
 
-
-    /**
-     This function will be adressed by all distance calculations
-     * between two nodes in space
-     * Current calculation method: Haversine Method
-     *
-     * @param node1
-     * @param node2
-     * @param unit
-     * @return calculated distance between two nodes by coordinates
-     */
-    public static double distance(Node node1, Node node2, String... unit) {
-        double lat1 = node1.getLatitude(), lon1 = node1.getLongitude(), lat2 = node2.getLatitude(), lon2 = node2.getLongitude();
-
-        String unit1 = unit.length > 0 ? unit[0] : "K";
+    public static double distance(GeoLocation location1, GeoLocation location2){
+        double lat1 = location1.getLatitude(), lon1 = location1.getLongitude(), lat2 = location2.getLatitude(), lon2 = location2.getLongitude();
 
         double theta = lon1 - lon2;
         double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
         dist = Math.acos(dist);
         dist = rad2deg(dist);
         dist = dist * 60 * 1.1515;
-        if (unit1.equals("K")) {
-            dist = dist * 1.609344;
-        } else if (unit1.equals("N")) {
-            dist = dist * 0.8684;
-        }
-        return (dist);
+        dist = dist * 1.609344;
+        return dist;
     }
-
 
     /**
      * get all nodes connected to 'node'
@@ -122,8 +134,6 @@ public final class GraphAlgo {
      * @return
      */
     public static List<Node> getConnectedComponent(Node node){
-        ArrayList<Long> problems = new ArrayList<>(Arrays.asList(340375216l, 289499143l, 3988271550l)); //TODO debug
-
         // Mark all the vertices as not visited(By default
         // set as false)
         HashSet<Node> visited = new HashSet<>();
@@ -139,9 +149,6 @@ public final class GraphAlgo {
             // Dequeue a vertex from queue and print it
             node = queue.poll();
             for(Node n : node.getAdjacentNodes()){
-                if(problems.contains(n.getOsmID())){
-                    boolean a = true;
-                }
                 if(!visited.contains(n)){
                     queue.add(n);
                     visited.add(n);
@@ -154,7 +161,7 @@ public final class GraphAlgo {
 
     private static HashMap<Node, Double> NodesH = new HashMap<>(), NodesG = new HashMap<>();
 
-    private static void setH(Node node, Node other){ NodesH.put(node, distance(node, other)); }
+    private static void setH(Node node, Node other){ NodesH.put(node, node.distanceTo(other)); }
 
     private static void setG(Node node, double g){ NodesG.put(node, g); }
 
@@ -186,7 +193,7 @@ public final class GraphAlgo {
         while(!OpenSet.isEmpty()){
             Node current = PQ_OpenSet.poll();
             if(current.equals(dst)){
-                LOGGER.fine("Path between "+src.getOsmID()+" and "+ dst.getId()+" found using A*.");
+                LOGGER.fine("Path between "+src.getOsmID()+" and "+ dst.getOsmID() +" found using A*.");
                 return reconstructPath(cameFrom, dst);
             }
 
@@ -196,7 +203,7 @@ public final class GraphAlgo {
                 if(CloseSet.containsKey(neighbor.getId())){
                     continue;
                 }
-                double TentativeGScore = getG(current) + distance(current, neighbor);//TODO use weight instead of distance
+                double TentativeGScore = getG(current) + current.distanceTo(neighbor);//TODO use weight instead of distance
                 if(!OpenSet.containsKey(neighbor.getId()) || TentativeGScore < getG(neighbor)){
                     cameFrom.put(neighbor, current);
                     setG(neighbor, TentativeGScore);
@@ -245,7 +252,7 @@ public final class GraphAlgo {
      :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
      */
     private static double deg2rad(double deg) {
-        return (deg * Math.PI / 180.0);
+        return deg * Math.PI / 180.0;
     }
 
     /**
@@ -254,7 +261,23 @@ public final class GraphAlgo {
      :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
      */
     private static double rad2deg(double rad) {
-        return (rad * 180.0 / Math.PI);
+        return rad * 180.0 / Math.PI;
+    }
+
+    public static double hourToSeconds(double hour){
+        return hour * 3600;
+    }
+
+    public static void main(String[] args) {
+        GeoLocation g1 = new GeoLocation(32.07797575620036, 34.79729189827567);
+        GeoLocation g2 = new GeoLocation(32.05726675523634, 34.75974355641115);
+
+        System.out.println(distance(g1, g2));
+
+        // //check if duplicate
+        //    public boolean isOpposite(Edge other){
+        //        return getNode1().getOsmID().equals(other.getNode2().getOsmID()) && getNode2().getOsmID().equals(other.getNode1().getOsmID());
+        //    }
     }
 }
 

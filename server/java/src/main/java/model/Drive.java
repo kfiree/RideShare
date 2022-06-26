@@ -8,21 +8,24 @@ import java.util.Date;
 import static controller.utils.LogHandler.LOGGER;
 
 
-public class Drive implements Runnable  {//TODO make not implements
+public class Drive implements Runnable { //TODO make not implements
     private final String type, ownerId;
     private String[] passengers = new String[3];
     private final Date leaveTime;
     private final Path path;
-    private Edge currentEdge;
+    private Edge currEdge;
+    private Node currNode;
     private double timeSpeed;
 
 
     public Drive(@NotNull Path path, String type, String OwnerId, Date leaveTime) {
         this.path = path;
         this.type = type;
-        this.ownerId = OwnerId;
+        ownerId = OwnerId;
         this.leaveTime = leaveTime;
-        currentEdge = path.getNext();
+        timeSpeed = 2;
+        currEdge = path.getNext();
+        currNode = path.get_src();;
 
     }
 
@@ -32,13 +35,19 @@ public class Drive implements Runnable  {//TODO make not implements
         MapUtils.validate(path != null, "can't start a drive if path is null. Drive owner id - " + ownerId);
 
         do{
-            LOGGER.info("drive " + getOwnerId() + " sleeps for "+ currentEdge.getWeight());
+            sleep(currEdge.getWeight());
 
-            sleep(currentEdge.getWeight());
-            currentEdge = path.getNext();
-        }while(currentEdge != null);
+            currNode = currEdge.getOtherEnd(currNode.getId());
+
+            currEdge = path.getNext();
+
+        }while(currEdge != null);
 
         LOGGER.finer("Drive "+ ownerId +" has reached destination.");
+    }
+
+    public GeoLocation getLocation(){
+        return currEdge == null? null : currNode.getCoordinates();
     }
 
     public String getType() {
@@ -61,22 +70,20 @@ public class Drive implements Runnable  {//TODO make not implements
         this.passengers = passengers;
     }
 
-    public Edge getCurrentEdge() {
-        return currentEdge;
-    }
+    public Edge getCurrEdge() { return currEdge; }
 
 
 //TODO check if correct time unit.
 //TODO control speed with static var
 
-    private void sleep(double hour ) {
-//        long ms = (long) (hour * 3600000);
-        long sleepTime = (long) (5000*timeSpeed);
+    private void sleep(double sleepTime ) {
         if(sleepTime <1 ){
-            LOGGER.warning("sleep time "+ sleepTime +" is too small");
+            LOGGER.warning("drive " + getOwnerId()+" sleep time "+ String.format("%.2f", sleepTime) +" seconds is too small.");
+        }else{
+            LOGGER.info("drive " + getOwnerId() + " sleeps for "+ String.format("%.2f", sleepTime) + " seconds.");
         }
 
-        try { Thread.sleep( sleepTime ) ; }
+        try { Thread.sleep( (long)sleepTime * 1000) ; }
         catch (InterruptedException e) { e.printStackTrace(); }
     }
 
@@ -92,7 +99,7 @@ public class Drive implements Runnable  {//TODO make not implements
                 ", passengers=" + Arrays.toString(passengers) +
                 ", leaveTime=" + leaveTime +
                 ", path=" + path +
-                ", currentEdge=" + currentEdge +
+                ", currentEdge=" + currEdge +
                 '}';
     }
 }

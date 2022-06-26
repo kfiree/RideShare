@@ -1,5 +1,6 @@
 package view;
 
+import model.Drive;
 import org.graphstream.ui.graphicGraph.GraphicElement;
 import org.graphstream.ui.graphicGraph.GraphicGraph;
 import org.graphstream.ui.view.util.DefaultMouseManager;
@@ -16,6 +17,7 @@ public class CustomMouseManager extends DefaultMouseManager {
     protected View view;
     protected GraphicGraph displayGraph;
     private GraphicElement focusedNode;
+    private MapView mapView = MapView.getInstance();
 
 
 
@@ -36,10 +38,8 @@ public class CustomMouseManager extends DefaultMouseManager {
         if(currentNode != null && currentNode != focusedNode){
             RoadMap map = RoadMap.getInstance();
             Node node = map.getNode(Long.parseLong(currentNode.getLabel()));
-            if(node == null) {
-                System.out.println("removed node " + currentNode.getLabel());
-            }else{
-
+            Drive drive = mapView.cars.get(node);
+            if(drive != null) { //todo paint path
                 Random r = new Random();
                 currentNode.setAttribute("ui.style", "fill-color: rgb(" + r.nextInt(256) + "," + r.nextInt(256) + "," + r.nextInt(256) + ");size: 10px, 10px; text-mode: normal;");
                 System.out.println(node);

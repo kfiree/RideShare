@@ -20,7 +20,6 @@ import java.util.List;
  */
 public class Path implements Comparable<Path> , Iterable<Edge>{
     private final List<Edge>  edges = new ArrayList<>();
-    private final RoadMap map = RoadMap.getInstance();
     private Node _src, _dest;
     private Iterator<Edge> iterator;
 
@@ -91,17 +90,18 @@ public class Path implements Comparable<Path> , Iterable<Edge>{
         this._dest = _dest;
     }
 
-    public double length(){
+    //in ms
+    public double timeToCross(){
         double pathLen = 0;
         for (Edge e: edges) {
-            pathLen += e.getDistance();
+            pathLen += e.getWeight();
         }
         return pathLen;
     }
 
     @Override
     public int compareTo(Path other) {
-        return (int)(length() - other.length());
+        return (int)(timeToCross() - other.timeToCross());
     }
 
     @NotNull

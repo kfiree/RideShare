@@ -1,5 +1,6 @@
 package model;
 
+import controller.utils.GraphAlgo;
 import controller.utils.MapUtils;
 import model.interfaces.Located;
 import model.interfaces.MapObject;
@@ -38,10 +39,6 @@ public class Node implements Comparable<Node>, MapObject , Located {
 
     public Node(@NotNull OsmObject object) {
         this(MapUtils.generateId(), object.getID(), object.getCoordinates());
-//        id = MapUtils.generateId();
-//        osmID = object.getID();
-//        coordinates = object.getCoordinates();
-//        edges = new HashSet<>();
     }
 
 
@@ -86,24 +83,13 @@ public class Node implements Comparable<Node>, MapObject , Located {
         return adjacentNodes;
     }
 
-//    public Map<String, String> getTags() {
-//        return tags;
-//    }
-
     public Set<Edge> getEdges() {
         return edges;
     }
 
     public void addEdge(@NotNull Edge edge) { edges.add(edge); }
 
-//    public void addTags(Map<String, String> tags) {
-//        if(tags.containsKey("maxspeed")) {
-//            this.tags.put("maxspeed", tags.get("maxspeed"));
-//        }
-//        this.tags.put("oneway", tags.getOrDefault("oneway", "no"));
-//    }
-
-    public void moveTo(double longitude, double latitude){
+    public void move(double longitude, double latitude){
         coordinates.setCoordinates(longitude, latitude);
     }
 
@@ -125,6 +111,10 @@ public class Node implements Comparable<Node>, MapObject , Located {
             }
         }
         return null;
+    }
+
+    public double distanceTo(Node other){
+        return GraphAlgo.distance(getCoordinates(), other.getCoordinates());
     }
 
     public void removeEdgeTo(Node other){

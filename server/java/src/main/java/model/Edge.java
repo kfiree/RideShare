@@ -21,40 +21,47 @@ import java.util.Set;
  * @since   2021-06-20
  */
 public class Edge implements MapObject, Located {
-
     private final Node node1, node2;
     private final double weight;
-    private double distance;
     static Set<String> tagNames = new HashSet<>();
     private final String id, highwayType;
 
-    private static final Hashtable<String, Integer> SPEED_LIMIT =  new Hashtable<>()
-    {{
+    private static final Hashtable<String, Integer> SPEED_LIMIT =  new Hashtable<>(){{
                 put("motorway", 110);
                 put("trunk", 100);
                 put("primary", 90);
                 put("secondary", 70);
                 put("tertiary", 50);
     }};
+    // TODO set lower speed
 
     public Edge(String id, Node node1, Node node2, Double weight, String highwayType){
-//        if(startNode.getTags().get("oneway").equals("yes"))
-//        directed = startNode.getTags().get("oneway") != null && startNode.getTags().get("oneway").equals("yes");
-        tagNames.add(highwayType);//TODO make highway type enum
+        tagNames.add(highwayType); //TODO make highway type enum
         this.node1 = node1;
         this.node2 = node2;
         this.id = id == null ? MapUtils.generateId() : id;
         this.highwayType = highwayType;
-        this.weight = weight == 0.0 ? GraphAlgo.distance(node1, node2)/ SPEED_LIMIT.getOrDefault(highwayType, 50) : weight;
+        this.weight = weight == 0.0 ? calculateWeight() : weight;
     }
 
     public Edge(OsmWay way, Node node1, Node node2) {
         this(null, node1, node2,0.0, way.getTags().get("highway"));
     }
 
+    /**
+     * time to cross edge in ms.
+     *
+     * I've added 1 second to each weight because of road conditions
+     */
+    private double calculateWeight(){
+        double weight = node1.distanceTo(node2) / SPEED_LIMIT.getOrDefault(highwayType, 50);
+        return GraphAlgo.hourToSeconds(weight)+1;
+    }
+
 
 
     /**  GETTERS */
+
     @Override
     public String getId() { return id; }
 
@@ -70,10 +77,6 @@ public class Edge implements MapObject, Located {
         return node2;
     }
 
-    public Double getDistance() {
-        return distance;
-    }
-
     public Double getWeight() {
         return weight;
     }
@@ -87,6 +90,8 @@ public class Edge implements MapObject, Located {
         return null;
     }
 
+    public double getSpeedLimit() { return SPEED_LIMIT.get(highwayType); }
+
     @Override
     public GeoLocation getCoordinates(){
         return node1.getCoordinates();
@@ -97,30 +102,4 @@ public class Edge implements MapObject, Located {
 
         return node1.inBound() && node2.inBound();
     }
-
-    /**
-     * calculate distance between two geo points
-     * using Haversine Method and store it in distance
-     * attribute of the object
-     */
-    public Double getLength() {
-        if(distance == 0) {
-            distance = GraphAlgo.distance(node1, node2);
-        }
-        return distance;
-    }
-
-    public double getSpeedLimit() {
-        return SPEED_LIMIT.get(highwayType);
-    }
-
-    public double getTime() {
-        return distance / getSpeedLimit();
-    }
-
-    public boolean isOpposite(Edge other){
-        return getNode1().getOsmID().equals(other.getNode2().getOsmID()) && getNode2().getOsmID().equals(other.getNode1().getOsmID());
-    }
-
-
 }

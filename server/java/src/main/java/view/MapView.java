@@ -1,18 +1,13 @@
 package view;
 
-import controller.utils.GraphAlgo;
 import model.*;
-import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
-import org.graphstream.graph.implementations.AbstractGraph;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.ui.j2dviewer.J2DGraphRenderer;
 import org.graphstream.ui.view.Viewer;
 import org.graphstream.ui.view.ViewerPipe;
 
 import java.util.*;
-
-import static controller.utils.LogHandler.LOGGER;
 
 
 /**
@@ -31,33 +26,35 @@ import static controller.utils.LogHandler.LOGGER;
  * @since   2021-06-20
  */
 public class MapView {
-    private RoadMap map;
-    private Graph displayGraph;
-    private HashMap<Drive, org.graphstream.graph.Node> cars;
-    private HashMap<Pedestrian, org.graphstream.graph.Node> pedestrians;
-//    private List<Drive> onGoingDrives;
+    private final RoadMap map;
+    private final Graph displayGraph;
+    protected final Hashtable<org.graphstream.graph.Node, Drive> cars; //TODO check Exception in thread "main" java.util.ConcurrentModificationException
+    protected final Hashtable<Pedestrian, org.graphstream.graph.Node> pedestrians;
     private HashSet<org.graphstream.graph.Node> pedestrian;
     private RealTimeEvents events;
+    private final Random rand = new Random(1);
 
     private static final long SLEEP_BETWEEN_FRAMES = 2000;
-    private static final double SYSTEM_SPEED = 2;
 
-    private static MapView instance = new MapView();
+    private static final MapView instance = new MapView();
 
     private MapView() {
         displayGraph = new MultiGraph("map simulation");
         map = RoadMap.getInstance();
-        cars = new HashMap<>();
-        pedestrians = new HashMap<>();
-        events = new RealTimeEvents(initDrives(5), SYSTEM_SPEED);
+        cars = new Hashtable<>();
+        pedestrians = new Hashtable<>();
+
     }
 
     public static MapView getInstance() {
         return instance;
     }
 
-    public void show(){
-        // draw map components
+    public void show(double simulatorSpeed){
+        //load events
+        events = new RealTimeEvents(simulatorSpeed);
+
+        // set graph
         Viewer viewer = new Viewer(displayGraph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         ViewerPipe pipeIn = viewer.newViewerPipe();
         viewer.addView("view1", new J2DGraphRenderer());
@@ -67,17 +64,17 @@ public class MapView {
         pipeIn.addAttributeSink( displayGraph );
         pipeIn.pump();
 
-        drawMapComponents();
-
         displayGraph.setAttribute("ui.stylesheet", styleSheet);
         displayGraph.setAttribute("ui.quality");
         displayGraph.setAttribute("ui.antialias");
 
+        // draw map components
+        drawMapComponents();
 
+        // start simulator
         Thread eventsThread = new Thread(events);
         eventsThread.start();
 
-        int i = 0;
         while(true){
             pipeIn.pump();
 
@@ -91,81 +88,35 @@ public class MapView {
         }
     }
 
-    public List<Drive> initDrives(int drivesNum) {
-        // drives variables
-        List<Drive> drives = new ArrayList<>();
-        List<Node> nodes = new ArrayList<>(RoadMap.getInstance().getNodes());
-        Node src, dst;
-        long sessionStartInMs = (new Date()).getTime();
 
-        // init random indexes for nodes
-        Random rand = new Random(1);
-        int[] randomIndexes = rand.ints(drivesNum*2, 0, nodes.size()).toArray();
-
-        //create drives
-        for (int i = 0; i < drivesNum; i++) {
-            src = nodes.get(randomIndexes[i*2]);
-            dst = nodes.get(randomIndexes[i*2 +1 ]);
-
-            drives.add(createDrive(src, dst, i, sessionStartInMs));
-        }
-
-        LOGGER.finer("init "+drives.size() + " drives.");
-
-        return drives;
-    }
-
-    private Drive createDrive(Node src, Node dst, int i, long sessionStartInMs){
-        Path shortestPath;
-        Drive drive = null;
-
-        if(src != null && dst != null ){
-            shortestPath = GraphAlgo.getShortestPath(src, dst);
-
-            if(shortestPath != null) {
-                Date startTime = new Date(sessionStartInMs + (15000 * i));
-                drive = new Drive(shortestPath, "unknown" , String.valueOf(i), startTime );
-
-                if(drive == null){
-                    LOGGER.severe("drive from " + src + " to "+ dst + " was not created, Drive(Id: "+ i +", Date: " + startTime +" = , Path).");
-                    //TODO add formatter for date
-                }
-//                validate(drive != null,"drive from " + src + " to "+ dst + " was not created, Drive(Id: "+ i +", Date: "+startTime.+" = , Path).");
-            }
-        }
-
-
-        return drive;
-    }
-
+    /**
+     * TODO add Pedestrian events
+     */
     private void getUpdates(){
         List<Drive> startedEvents = events.getStartedEvents();
         startedEvents.forEach(drive -> {
-            org.graphstream.graph.Node node = displayGraph.addNode(drive.getOwnerId());
+            org.graphstream.graph.Node displayDrive = displayGraph.addNode(drive.getOwnerId());
 
-            GeoLocation location = drive.getCurrentEdge().getNode1().getCoordinates();
-            node.setAttribute("xy", location.getLongitude(), location.getLatitude());
-            node.setAttribute("ui.class", "car");//todo add getNextNode to drive
+            GeoLocation location = drive.getLocation();
+            displayDrive.setAttribute("xy", location.getLongitude(), location.getLatitude());
+            displayDrive.setAttribute("ui.class", "car");
 
-            cars.put(drive, node);
-        });;//.addAll(startedEvents);
+            int r = rand.nextInt(256), g = rand.nextInt(256), b = rand.nextInt(256);
+            displayDrive.setAttribute("ui.style", "fill-color: rgb(" + r + "," + g + "," + b + ");");
+            cars.put(displayDrive, drive);
+        });
     }
 
     private void moveCars(){
-        cars.forEach( (drive, displayNode) ->{
+        cars.forEach( (displayNode, drive) ->{
 
-            model.Edge currEdge = drive.getCurrentEdge();
+            GeoLocation location = drive.getLocation();
 
-            if(currEdge != null){
-                GeoLocation location = currEdge.getNode2().getCoordinates();
+            if(location != null){
                 displayNode.setAttribute("xy", location.getLongitude(), location.getLatitude());
-
-//                displayNode = displayGraph.getNode(currEdge.getNode1().getOsmID().toString());
-//                displayNode.setAttribute("ui.class", "normal");
-//                displayNode = displayGraph.getNode(currEdge.getNode2().getOsmID().toString());
-//                displayNode.addAttribute("ui.class", "car");
             }else{
-                cars.remove(drive);
+                cars.remove(displayNode);
+                displayGraph.removeNode(displayNode);
             }
         });
     }
@@ -180,10 +131,7 @@ public class MapView {
             if(displayGraph.getEdge(e.getId()) == null) {
                 org.graphstream.graph.Node start = drawNode(e.getNode1());
                 org.graphstream.graph.Node end = drawNode(e.getNode2());
-                Edge edge = displayGraph.addEdge(e.getId(), start, end);//, e.isDirected());
-
-                //            if(e.isDirected())
-                //                edge.setAttribute("ui.style", "arrow-size: 1px;");
+                displayGraph.addEdge(e.getId(), start, end);//, e.isDirected());
             }
 
         });
@@ -200,15 +148,7 @@ public class MapView {
             displayNode = displayGraph.addNode(keyStr);
             displayNode.setAttribute("xy", node.getLongitude(), node.getLatitude());
             displayNode.setAttribute("ui.label", node.getOsmID().toString());
-//            if(node.getOsmID() == 2432701015l || node.getOsmID() == 1671579963l){
-//                displayNode.setAttribute("ui.style", "z-index: 2; size: 10px; fill-color: green;");
-//            }else
-//            if(node.getType() == Node.userType.Passenger){
-//                displayNode.setAttribute("ui.class", "passenger");
-//            } else if(node.getType() == Node.userType.Driver) {
-//                displayNode.setAttribute("ui.class", "car");
-//            }
-        }
+                    }
 
         return displayNode;
     }
@@ -218,18 +158,13 @@ public class MapView {
             "node {"+
                 " text-mode: hidden;"+
                 " z-index: 1;"+
-//                " fill-color: grey;"+
+                " fill-color: grey;"+
                 " size: 3px;"+
             "}"+
             "node.car {"+
                 " z-index: 2;"+
-                " fill-color: blue;"+
+//                " fill-color: blue;"+
                 " size: 10px;"+
-            "}"+
-            "node.normal {"+
-                " z-index: 1;"+
-                " fill-color: black;"+
-                " size: 3px;"+
             "}"+
             "node.passenger {"+
                 " fill-color: red;"+

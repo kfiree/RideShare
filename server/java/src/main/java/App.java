@@ -29,6 +29,7 @@ import static controller.utils.LogHandler.LOGGER;
  */
 public final class App{
     private static final long NODE_IN_MAIN_COMPONENT = 2432701015L;
+    private static final double SIMULATOR_SPEED = 10;
     private App() {}
 
     public static void main(String[] args) {
@@ -45,7 +46,7 @@ public final class App{
 
         LOGGER.info("Map is ready. Map = " + RoadMap.getInstance());
 
-        MapView.getInstance().show();
+        MapView.getInstance().show(SIMULATOR_SPEED);
 
         closeLogHandlers();
 

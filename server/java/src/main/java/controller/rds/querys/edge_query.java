@@ -4,16 +4,16 @@ import model.Edge;
 
 public class edge_query {
     static public String addEdge(Edge e) {
-        return "INSERT INTO \"public\".\"rs_edges\" (\"edge_Id\", \"startNodeId\", \"endNodeId\", \"weight\", \"distance\", \"highwayType\") " +
+        return "INSERT INTO \"public\".\"rs_edges\" (\"edge_Id\", \"startNodeId\", \"endNodeId\", \"weight\", \"highwayType\") " +
                 "VALUES " +
-                "('"+e.getId()+"', '"+e.getNode1().getId()+"', '"+e.getNode2().getId()+"', "+e.getWeight()+", "+e.getDistance()+", '"+e.getHighwayType()+"');";
+                "('"+e.getId()+"', '"+e.getNode1().getId()+"', '"+e.getNode2().getId()+"', "+e.getWeight()+", '"+e.getHighwayType()+"');";
     }
     static public String updateEdge(Edge e) {
         return "UPDATE \"public\".\"rs_edges\" SET " +
                 "\"startNodeId\" = "+e.getNode1().getOsmID()+", " +
                 "\"endNodeId\" = "+e.getNode2().getOsmID()+"," +
                 " \"weight\" = "+e.getWeight()+", " +
-                "\"distance\" = '"+e.getDistance()+"', " +
+//                "\"distance\" = '"+e.getDistance()+"', " +
 //                "\"name\" = '"+e.getName()+"', " +
                 "\"highwayType\" = '"+e.getHighwayType()+"' " +
                 "WHERE \"edge_Id\" = '"+e.getId()+"';";
