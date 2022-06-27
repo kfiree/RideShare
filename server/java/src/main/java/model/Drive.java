@@ -5,6 +5,8 @@ import controller.utils.MapUtils;
 import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+
 import static controller.utils.LogHandler.LOGGER;
 
 
@@ -72,7 +74,9 @@ public class Drive implements Runnable { //TODO make not implements
 
     public Edge getCurrEdge() { return currEdge; }
 
-
+    public List<Edge> getEdges(){
+        return path.getEdges();
+    }
 //TODO check if correct time unit.
 //TODO control speed with static var
 

@@ -18,13 +18,19 @@ import static controller.utils.LogHandler.LOGGER;
  *      - use only int id of classes
  *      - add assertion @
  *
- *      to run with intellij add '.pbf' path file to configuration:
- *          edit configuration -> Name: APP -> Build and run -> Program arguments -> insert: server/java/data/israel.pbf
+ * USE CASE:
+ * --------
  *
+ *      * to run with intellij and add osm file
+ *           add '.pbf' path file to configuration:
+ *           edit configuration -> Name: APP -> Build and run -> Program arguments -> insert: server/java/data/israel.pbf
  *
- *      to convert files:
- *          osmconvert64.exe ariel2.osm > arielpbf.pbf --out-pbf
+ *      * to convert files:
+ *           osmconvert64.exe ariel2.osm > arielpbf.pbf --out-pbf
  *
+ *      * to hide Logs from console:
+ *           go to server/java/src/main/java/controller/utils/logs/logging.properties
+ *           and set "java.util.logging.ConsoleHandler.level" OFF (SEVER is better)
  *
  */
 public final class App{

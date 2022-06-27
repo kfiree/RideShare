@@ -13,10 +13,12 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 /**
- * TODO sources:
- *  use LoggerExample.java    ->     https://examples.javacodegeeks.com/core-java/util/logging/java-util-logging-example/
- *  current reference         ->     https://www.journaldev.com/977/logger-in-java-logging-example
- *  close handler             ->     https://stackoverflow.com/questions/1154025/problem-with-java-util-logging-and-lock-file
+ * TODO : show only one severity
+ *
+ * sources:
+ *      use LoggerExample.java    ->     https://examples.javacodegeeks.com/core-java/util/logging/java-util-logging-example/
+ *      current reference         ->     https://www.journaldev.com/977/logger-in-java-logging-example
+ *      close handler             ->     https://stackoverflow.com/questions/1154025/problem-with-java-util-logging-and-lock-file
  */
 public class LogHandler{
     public static Logger LOGGER;
@@ -39,7 +41,7 @@ public class LogHandler{
             //console handler
             ConsoleHandler consoleHandler = new ConsoleHandler();
             consoleHandler.setFormatter(new colorFormat());
-            consoleHandler.setLevel(Level.ALL);
+            consoleHandler.setLevel(Level.SEVERE);
 
             //add custom handlers
             LOGGER.addHandler(fileHandler);

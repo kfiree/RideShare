@@ -1,109 +1,167 @@
-1::[2022-06-26 18:46:30] [App] [FINEST] - Let's GO!!
-1::[2022-06-26 18:46:30] [App] [INFO] - Start parsing main map.
-1::[2022-06-26 18:47:03] [controller.utils.GraphAlgo] [FINE] - BFS from node 2216127671
-1::[2022-06-26 18:47:11] [controller.utils.GraphAlgo] [INFO] - 118 nodes that are not part of main component are found and being removed.
-1::[2022-06-26 18:47:11] [App] [INFO] - Map is ready. Map = OMap{edges=13634, nodes=9640, pedestrians=0, drives=0}
-1::[2022-06-26 18:47:11] [controller.utils.GraphAlgo] [FINE] - Path between 416614999 and 270425812 found using A*.
-1::[2022-06-26 18:47:11] [controller.utils.GraphAlgo] [FINE] - Path between 8660335855 and 338523939 found using A*.
-1::[2022-06-26 18:47:11] [controller.utils.GraphAlgo] [FINE] - Path between 1571656328 and 7006119084 found using A*.
-1::[2022-06-26 18:47:11] [controller.utils.GraphAlgo] [FINE] - Path between 1697483531 and 563938249 found using A*.
-1::[2022-06-26 18:47:11] [controller.utils.GraphAlgo] [FINE] - Path between 409721648 and 417635284 found using A*.
-1::[2022-06-26 18:47:11] [view.RealTimeEvents] [FINER] - init 5 drives.
-24::[2022-06-26 18:47:16] [view.RealTimeEvents] [FINE] - RealTimeEvents star running
-25::[2022-06-26 18:47:16] [model.Drive] [FINE] - Drive 0 started.
-25::[2022-06-26 18:47:16] [model.Drive] [INFO] - drive 0 sleeps for 6.54 seconds.
-24::[2022-06-26 18:47:19] [view.RealTimeEvents] [INFO] - RealTimeEvents add event. sleep time = 0
-26::[2022-06-26 18:47:19] [model.Drive] [FINE] - Drive 1 started.
-26::[2022-06-26 18:47:19] [model.Drive] [INFO] - drive 1 sleeps for 2.63 seconds.
-26::[2022-06-26 18:47:21] [model.Drive] [INFO] - drive 1 sleeps for 4.88 seconds.
-24::[2022-06-26 18:47:22] [view.RealTimeEvents] [INFO] - RealTimeEvents add event. sleep time = -1
-27::[2022-06-26 18:47:22] [model.Drive] [FINE] - Drive 2 started.
-27::[2022-06-26 18:47:22] [model.Drive] [INFO] - drive 2 sleeps for 7.04 seconds.
-25::[2022-06-26 18:47:22] [model.Drive] [INFO] - drive 0 sleeps for 6.68 seconds.
-24::[2022-06-26 18:47:25] [view.RealTimeEvents] [INFO] - RealTimeEvents add event. sleep time = -1
-26::[2022-06-26 18:47:25] [model.Drive] [INFO] - drive 1 sleeps for 8.96 seconds.
-28::[2022-06-26 18:47:25] [model.Drive] [FINE] - Drive 3 started.
-28::[2022-06-26 18:47:25] [model.Drive] [INFO] - drive 3 sleeps for 5.46 seconds.
-24::[2022-06-26 18:47:28] [view.RealTimeEvents] [INFO] - RealTimeEvents add event. sleep time = -1
-29::[2022-06-26 18:47:28] [model.Drive] [FINE] - Drive 4 started.
-29::[2022-06-26 18:47:28] [model.Drive] [INFO] - drive 4 sleeps for 1.98 seconds.
-25::[2022-06-26 18:47:28] [model.Drive] [INFO] - drive 0 sleeps for 4.64 seconds.
-29::[2022-06-26 18:47:29] [model.Drive] [INFO] - drive 4 sleeps for 1.33 seconds.
-27::[2022-06-26 18:47:29] [model.Drive] [INFO] - drive 2 sleeps for 4.82 seconds.
-28::[2022-06-26 18:47:30] [model.Drive] [INFO] - drive 3 sleeps for 3.34 seconds.
-29::[2022-06-26 18:47:30] [model.Drive] [INFO] - drive 4 sleeps for 1.70 seconds.
-24::[2022-06-26 18:47:31] [view.RealTimeEvents] [INFO] - RealTimeEvents add event. sleep time = -1
-29::[2022-06-26 18:47:31] [model.Drive] [INFO] - drive 4 sleeps for 1.99 seconds.
-29::[2022-06-26 18:47:32] [model.Drive] [INFO] - drive 4 sleeps for 2.28 seconds.
-25::[2022-06-26 18:47:32] [model.Drive] [INFO] - drive 0 sleeps for 6.42 seconds.
-26::[2022-06-26 18:47:33] [model.Drive] [INFO] - drive 1 sleeps for 3.64 seconds.
-28::[2022-06-26 18:47:33] [model.Drive] [INFO] - drive 3 sleeps for 5.88 seconds.
-27::[2022-06-26 18:47:33] [model.Drive] [INFO] - drive 2 sleeps for 8.27 seconds.
-29::[2022-06-26 18:47:34] [model.Drive] [INFO] - drive 4 sleeps for 8.93 seconds.
-26::[2022-06-26 18:47:36] [model.Drive] [INFO] - drive 1 sleeps for 3.49 seconds.
-28::[2022-06-26 18:47:38] [model.Drive] [INFO] - drive 3 sleeps for 9.17 seconds.
-25::[2022-06-26 18:47:38] [model.Drive] [INFO] - drive 0 sleeps for 5.91 seconds.
-26::[2022-06-26 18:47:39] [model.Drive] [INFO] - drive 1 sleeps for 2.83 seconds.
-26::[2022-06-26 18:47:41] [model.Drive] [INFO] - drive 1 sleeps for 3.88 seconds.
-27::[2022-06-26 18:47:41] [model.Drive] [INFO] - drive 2 sleeps for 1.89 seconds.
-27::[2022-06-26 18:47:42] [model.Drive] [INFO] - drive 2 sleeps for 9.42 seconds.
-29::[2022-06-26 18:47:42] [model.Drive] [INFO] - drive 4 sleeps for 2.38 seconds.
-25::[2022-06-26 18:47:43] [model.Drive] [INFO] - drive 0 sleeps for 6.09 seconds.
-26::[2022-06-26 18:47:44] [model.Drive] [INFO] - drive 1 sleeps for 1.92 seconds.
-29::[2022-06-26 18:47:44] [model.Drive] [INFO] - drive 4 sleeps for 2.51 seconds.
-26::[2022-06-26 18:47:45] [model.Drive] [INFO] - drive 1 sleeps for 7.74 seconds.
-29::[2022-06-26 18:47:46] [model.Drive] [INFO] - drive 4 sleeps for 4.33 seconds.
-28::[2022-06-26 18:47:47] [model.Drive] [INFO] - drive 3 sleeps for 3.17 seconds.
-25::[2022-06-26 18:47:49] [model.Drive] [INFO] - drive 0 sleeps for 5.70 seconds.
-28::[2022-06-26 18:47:50] [model.Drive] [INFO] - drive 3 sleeps for 17.13 seconds.
-29::[2022-06-26 18:47:50] [model.Drive] [INFO] - drive 4 sleeps for 2.88 seconds.
-27::[2022-06-26 18:47:51] [model.Drive] [INFO] - drive 2 sleeps for 6.67 seconds.
-26::[2022-06-26 18:47:52] [model.Drive] [INFO] - drive 1 sleeps for 1.80 seconds.
-29::[2022-06-26 18:47:52] [model.Drive] [INFO] - drive 4 sleeps for 1.75 seconds.
-26::[2022-06-26 18:47:53] [model.Drive] [INFO] - drive 1 sleeps for 3.04 seconds.
-29::[2022-06-26 18:47:53] [model.Drive] [INFO] - drive 4 sleeps for 2.73 seconds.
-25::[2022-06-26 18:47:54] [model.Drive] [INFO] - drive 0 sleeps for 8.53 seconds.
-29::[2022-06-26 18:47:55] [model.Drive] [INFO] - drive 4 sleeps for 45.31 seconds.
-26::[2022-06-26 18:47:56] [model.Drive] [INFO] - drive 1 sleeps for 12.59 seconds.
-27::[2022-06-26 18:47:57] [model.Drive] [INFO] - drive 2 sleeps for 1.95 seconds.
-27::[2022-06-26 18:47:58] [model.Drive] [INFO] - drive 2 sleeps for 14.95 seconds.
-25::[2022-06-26 18:48:02] [model.Drive] [INFO] - drive 0 sleeps for 2.81 seconds.
-25::[2022-06-26 18:48:04] [model.Drive] [INFO] - drive 0 sleeps for 2.03 seconds.
-25::[2022-06-26 18:48:06] [model.Drive] [INFO] - drive 0 sleeps for 2.49 seconds.
-28::[2022-06-26 18:48:07] [model.Drive] [INFO] - drive 3 sleeps for 16.16 seconds.
-26::[2022-06-26 18:48:08] [model.Drive] [INFO] - drive 1 sleeps for 3.63 seconds.
-25::[2022-06-26 18:48:08] [model.Drive] [INFO] - drive 0 sleeps for 4.68 seconds.
-26::[2022-06-26 18:48:11] [model.Drive] [INFO] - drive 1 sleeps for 1.51 seconds.
-27::[2022-06-26 18:48:12] [model.Drive] [INFO] - drive 2 sleeps for 6.19 seconds.
-26::[2022-06-26 18:48:12] [model.Drive] [INFO] - drive 1 sleeps for 2.80 seconds.
-25::[2022-06-26 18:48:12] [model.Drive] [INFO] - drive 0 sleeps for 4.42 seconds.
-26::[2022-06-26 18:48:14] [model.Drive] [INFO] - drive 1 sleeps for 9.04 seconds.
-25::[2022-06-26 18:48:16] [model.Drive] [INFO] - drive 0 sleeps for 2.05 seconds.
-27::[2022-06-26 18:48:18] [model.Drive] [INFO] - drive 2 sleeps for 9.87 seconds.
-25::[2022-06-26 18:48:18] [model.Drive] [INFO] - drive 0 sleeps for 1.85 seconds.
-25::[2022-06-26 18:48:19] [model.Drive] [INFO] - drive 0 sleeps for 14.31 seconds.
-28::[2022-06-26 18:48:23] [model.Drive] [INFO] - drive 3 sleeps for 3.21 seconds.
-26::[2022-06-26 18:48:23] [model.Drive] [INFO] - drive 1 sleeps for 3.42 seconds.
-28::[2022-06-26 18:48:26] [model.Drive] [INFO] - drive 3 sleeps for 3.10 seconds.
-26::[2022-06-26 18:48:26] [model.Drive] [INFO] - drive 1 sleeps for 2.15 seconds.
-27::[2022-06-26 18:48:27] [model.Drive] [INFO] - drive 2 sleeps for 1.97 seconds.
-27::[2022-06-26 18:48:28] [model.Drive] [INFO] - drive 2 sleeps for 1.88 seconds.
-26::[2022-06-26 18:48:28] [model.Drive] [INFO] - drive 1 sleeps for 6.78 seconds.
-28::[2022-06-26 18:48:29] [model.Drive] [INFO] - drive 3 sleeps for 1.48 seconds.
-27::[2022-06-26 18:48:29] [model.Drive] [INFO] - drive 2 sleeps for 2.04 seconds.
-28::[2022-06-26 18:48:30] [model.Drive] [INFO] - drive 3 sleeps for 3.75 seconds.
-27::[2022-06-26 18:48:31] [model.Drive] [INFO] - drive 2 sleeps for 2.56 seconds.
-28::[2022-06-26 18:48:33] [model.Drive] [INFO] - drive 3 sleeps for 12.04 seconds.
-27::[2022-06-26 18:48:33] [model.Drive] [INFO] - drive 2 sleeps for 1.96 seconds.
-25::[2022-06-26 18:48:33] [model.Drive] [INFO] - drive 0 sleeps for 1.38 seconds.
-26::[2022-06-26 18:48:34] [model.Drive] [INFO] - drive 1 sleeps for 3.91 seconds.
-27::[2022-06-26 18:48:34] [model.Drive] [INFO] - drive 2 sleeps for 3.25 seconds.
-25::[2022-06-26 18:48:34] [model.Drive] [INFO] - drive 0 sleeps for 3.39 seconds.
-26::[2022-06-26 18:48:37] [model.Drive] [INFO] - drive 1 sleeps for 10.80 seconds.
-27::[2022-06-26 18:48:37] [model.Drive] [INFO] - drive 2 sleeps for 3.30 seconds.
-25::[2022-06-26 18:48:37] [model.Drive] [INFO] - drive 0 sleeps for 4.19 seconds.
-29::[2022-06-26 18:48:40] [model.Drive] [INFO] - drive 4 sleeps for 2.36 seconds.
-27::[2022-06-26 18:48:40] [model.Drive] [INFO] - drive 2 sleeps for 7.42 seconds.
-25::[2022-06-26 18:48:41] [model.Drive] [INFO] - drive 0 sleeps for 1.46 seconds.
-29::[2022-06-26 18:48:42] [model.Drive] [INFO] - drive 4 sleeps for 3.30 seconds.
-25::[2022-06-26 18:48:42] [model.Drive] [INFO] - drive 0 sleeps for 6.59 seconds.
+1::[2022-06-27 15:08:29] [App] [FINEST] - Let's GO!!
+1::[2022-06-27 15:08:29] [App] [INFO] - Start parsing main map.
+1::[2022-06-27 15:08:34] [controller.utils.GraphAlgo] [FINE] - BFS from node 2216127671
+1::[2022-06-27 15:08:35] [controller.utils.GraphAlgo] [INFO] - 118 nodes that are not part of main component are found and being removed.
+1::[2022-06-27 15:08:35] [App] [INFO] - Map is ready. Map = OMap{edges=13633, nodes=9640, pedestrians=0, drives=0}
+1::[2022-06-27 15:08:35] [controller.utils.GraphAlgo] [FINE] - Path between 3097684512 and 270425812 found using A*.
+1::[2022-06-27 15:08:35] [controller.utils.GraphAlgo] [FINE] - Path between 8660335855 and 338523939 found using A*.
+1::[2022-06-27 15:08:35] [controller.utils.GraphAlgo] [FINE] - Path between 1571656328 and 7006119084 found using A*.
+1::[2022-06-27 15:08:35] [controller.utils.GraphAlgo] [FINE] - Path between 1697483531 and 563938249 found using A*.
+1::[2022-06-27 15:08:35] [controller.utils.GraphAlgo] [FINE] - Path between 409721648 and 417635284 found using A*.
+1::[2022-06-27 15:08:35] [view.RealTimeEvents] [FINER] - init 5 drives.
+24::[2022-06-27 15:08:36] [view.RealTimeEvents] [FINE] - RealTimeEvents star running
+25::[2022-06-27 15:08:36] [model.Drive] [FINE] - Drive 0 started.
+25::[2022-06-27 15:08:36] [model.Drive] [INFO] - drive 0 sleeps for 2.99 seconds.
+25::[2022-06-27 15:08:38] [model.Drive] [INFO] - drive 0 sleeps for 2.45 seconds.
+24::[2022-06-27 15:08:39] [view.RealTimeEvents] [INFO] - RealTimeEvents add event. sleep time = 0
+26::[2022-06-27 15:08:39] [model.Drive] [FINE] - Drive 1 started.
+26::[2022-06-27 15:08:39] [model.Drive] [INFO] - drive 1 sleeps for 2.63 seconds.
+25::[2022-06-27 15:08:40] [model.Drive] [INFO] - drive 0 sleeps for 7.51 seconds.
+26::[2022-06-27 15:08:41] [model.Drive] [INFO] - drive 1 sleeps for 4.88 seconds.
+24::[2022-06-27 15:08:42] [view.RealTimeEvents] [INFO] - RealTimeEvents add event. sleep time = -1
+27::[2022-06-27 15:08:42] [model.Drive] [FINE] - Drive 2 started.
+27::[2022-06-27 15:08:42] [model.Drive] [INFO] - drive 2 sleeps for 7.04 seconds.
+24::[2022-06-27 15:08:45] [view.RealTimeEvents] [INFO] - RealTimeEvents add event. sleep time = -1
+26::[2022-06-27 15:08:45] [model.Drive] [INFO] - drive 1 sleeps for 8.96 seconds.
+28::[2022-06-27 15:08:45] [model.Drive] [FINE] - Drive 3 started.
+28::[2022-06-27 15:08:45] [model.Drive] [INFO] - drive 3 sleeps for 5.46 seconds.
+25::[2022-06-27 15:08:47] [model.Drive] [INFO] - drive 0 sleeps for 3.19 seconds.
+24::[2022-06-27 15:08:48] [view.RealTimeEvents] [INFO] - RealTimeEvents add event. sleep time = -1
+29::[2022-06-27 15:08:48] [model.Drive] [FINE] - Drive 4 started.
+29::[2022-06-27 15:08:48] [model.Drive] [INFO] - drive 4 sleeps for 1.98 seconds.
+27::[2022-06-27 15:08:49] [model.Drive] [INFO] - drive 2 sleeps for 4.82 seconds.
+29::[2022-06-27 15:08:49] [model.Drive] [INFO] - drive 4 sleeps for 1.33 seconds.
+28::[2022-06-27 15:08:50] [model.Drive] [INFO] - drive 3 sleeps for 3.34 seconds.
+29::[2022-06-27 15:08:50] [model.Drive] [INFO] - drive 4 sleeps for 1.70 seconds.
+25::[2022-06-27 15:08:50] [model.Drive] [INFO] - drive 0 sleeps for 2.44 seconds.
+24::[2022-06-27 15:08:51] [view.RealTimeEvents] [INFO] - RealTimeEvents add event. sleep time = -1
+29::[2022-06-27 15:08:51] [model.Drive] [INFO] - drive 4 sleeps for 1.99 seconds.
+25::[2022-06-27 15:08:52] [model.Drive] [INFO] - drive 0 sleeps for 4.61 seconds.
+29::[2022-06-27 15:08:52] [model.Drive] [INFO] - drive 4 sleeps for 2.28 seconds.
+27::[2022-06-27 15:08:53] [model.Drive] [INFO] - drive 2 sleeps for 8.27 seconds.
+28::[2022-06-27 15:08:53] [model.Drive] [INFO] - drive 3 sleeps for 5.88 seconds.
+26::[2022-06-27 15:08:53] [model.Drive] [INFO] - drive 1 sleeps for 3.64 seconds.
+29::[2022-06-27 15:08:54] [model.Drive] [INFO] - drive 4 sleeps for 8.93 seconds.
+26::[2022-06-27 15:08:56] [model.Drive] [INFO] - drive 1 sleeps for 3.49 seconds.
+25::[2022-06-27 15:08:56] [model.Drive] [INFO] - drive 0 sleeps for 2.84 seconds.
+28::[2022-06-27 15:08:58] [model.Drive] [INFO] - drive 3 sleeps for 9.17 seconds.
+25::[2022-06-27 15:08:58] [model.Drive] [INFO] - drive 0 sleeps for 2.07 seconds.
+26::[2022-06-27 15:08:59] [model.Drive] [INFO] - drive 1 sleeps for 2.83 seconds.
+25::[2022-06-27 15:09:00] [model.Drive] [INFO] - drive 0 sleeps for 1.94 seconds.
+27::[2022-06-27 15:09:01] [model.Drive] [INFO] - drive 2 sleeps for 1.89 seconds.
+26::[2022-06-27 15:09:01] [model.Drive] [INFO] - drive 1 sleeps for 3.88 seconds.
+25::[2022-06-27 15:09:01] [model.Drive] [INFO] - drive 0 sleeps for 8.35 seconds.
+27::[2022-06-27 15:09:02] [model.Drive] [INFO] - drive 2 sleeps for 9.42 seconds.
+29::[2022-06-27 15:09:02] [model.Drive] [INFO] - drive 4 sleeps for 2.38 seconds.
+26::[2022-06-27 15:09:04] [model.Drive] [INFO] - drive 1 sleeps for 1.92 seconds.
+29::[2022-06-27 15:09:04] [model.Drive] [INFO] - drive 4 sleeps for 2.51 seconds.
+26::[2022-06-27 15:09:05] [model.Drive] [INFO] - drive 1 sleeps for 7.74 seconds.
+29::[2022-06-27 15:09:06] [model.Drive] [INFO] - drive 4 sleeps for 4.33 seconds.
+28::[2022-06-27 15:09:07] [model.Drive] [INFO] - drive 3 sleeps for 3.17 seconds.
+25::[2022-06-27 15:09:09] [model.Drive] [INFO] - drive 0 sleeps for 3.39 seconds.
+28::[2022-06-27 15:09:10] [model.Drive] [INFO] - drive 3 sleeps for 17.13 seconds.
+29::[2022-06-27 15:09:10] [model.Drive] [INFO] - drive 4 sleeps for 2.88 seconds.
+27::[2022-06-27 15:09:11] [model.Drive] [INFO] - drive 2 sleeps for 6.67 seconds.
+26::[2022-06-27 15:09:12] [model.Drive] [INFO] - drive 1 sleeps for 1.80 seconds.
+25::[2022-06-27 15:09:12] [model.Drive] [INFO] - drive 0 sleeps for 5.06 seconds.
+29::[2022-06-27 15:09:12] [model.Drive] [INFO] - drive 4 sleeps for 1.75 seconds.
+26::[2022-06-27 15:09:13] [model.Drive] [INFO] - drive 1 sleeps for 3.04 seconds.
+29::[2022-06-27 15:09:13] [model.Drive] [INFO] - drive 4 sleeps for 2.73 seconds.
+29::[2022-06-27 15:09:15] [model.Drive] [INFO] - drive 4 sleeps for 45.31 seconds.
+26::[2022-06-27 15:09:16] [model.Drive] [INFO] - drive 1 sleeps for 12.59 seconds.
+27::[2022-06-27 15:09:17] [model.Drive] [INFO] - drive 2 sleeps for 1.95 seconds.
+25::[2022-06-27 15:09:17] [model.Drive] [INFO] - drive 0 sleeps for 1.49 seconds.
+27::[2022-06-27 15:09:18] [model.Drive] [INFO] - drive 2 sleeps for 14.95 seconds.
+25::[2022-06-27 15:09:18] [model.Drive] [INFO] - drive 0 sleeps for 2.76 seconds.
+25::[2022-06-27 15:09:20] [model.Drive] [INFO] - drive 0 sleeps for 2.72 seconds.
+25::[2022-06-27 15:09:22] [model.Drive] [INFO] - drive 0 sleeps for 7.73 seconds.
+28::[2022-06-27 15:09:27] [model.Drive] [INFO] - drive 3 sleeps for 16.16 seconds.
+26::[2022-06-27 15:09:28] [model.Drive] [INFO] - drive 1 sleeps for 3.63 seconds.
+25::[2022-06-27 15:09:29] [model.Drive] [INFO] - drive 0 sleeps for 2.16 seconds.
+26::[2022-06-27 15:09:31] [model.Drive] [INFO] - drive 1 sleeps for 1.51 seconds.
+25::[2022-06-27 15:09:31] [model.Drive] [INFO] - drive 0 sleeps for 4.25 seconds.
+27::[2022-06-27 15:09:32] [model.Drive] [INFO] - drive 2 sleeps for 6.19 seconds.
+26::[2022-06-27 15:09:32] [model.Drive] [INFO] - drive 1 sleeps for 2.80 seconds.
+26::[2022-06-27 15:09:34] [model.Drive] [INFO] - drive 1 sleeps for 9.04 seconds.
+25::[2022-06-27 15:09:35] [model.Drive] [INFO] - drive 0 sleeps for 1.85 seconds.
+25::[2022-06-27 15:09:37] [model.Drive] [INFO] - drive 0 sleeps for 8.56 seconds.
+27::[2022-06-27 15:09:38] [model.Drive] [INFO] - drive 2 sleeps for 9.87 seconds.
+28::[2022-06-27 15:09:43] [model.Drive] [INFO] - drive 3 sleeps for 3.21 seconds.
+26::[2022-06-27 15:09:43] [model.Drive] [INFO] - drive 1 sleeps for 3.42 seconds.
+25::[2022-06-27 15:09:45] [model.Drive] [INFO] - drive 0 sleeps for 9.40 seconds.
+28::[2022-06-27 15:09:46] [model.Drive] [INFO] - drive 3 sleeps for 3.10 seconds.
+26::[2022-06-27 15:09:46] [model.Drive] [INFO] - drive 1 sleeps for 2.15 seconds.
+27::[2022-06-27 15:09:47] [model.Drive] [INFO] - drive 2 sleeps for 1.97 seconds.
+27::[2022-06-27 15:09:48] [model.Drive] [INFO] - drive 2 sleeps for 1.88 seconds.
+26::[2022-06-27 15:09:48] [model.Drive] [INFO] - drive 1 sleeps for 6.78 seconds.
+28::[2022-06-27 15:09:49] [model.Drive] [INFO] - drive 3 sleeps for 1.48 seconds.
+27::[2022-06-27 15:09:49] [model.Drive] [INFO] - drive 2 sleeps for 2.04 seconds.
+28::[2022-06-27 15:09:50] [model.Drive] [INFO] - drive 3 sleeps for 3.75 seconds.
+27::[2022-06-27 15:09:51] [model.Drive] [INFO] - drive 2 sleeps for 2.56 seconds.
+28::[2022-06-27 15:09:53] [model.Drive] [INFO] - drive 3 sleeps for 12.04 seconds.
+27::[2022-06-27 15:09:53] [model.Drive] [INFO] - drive 2 sleeps for 1.96 seconds.
+25::[2022-06-27 15:09:54] [model.Drive] [INFO] - drive 0 sleeps for 1.89 seconds.
+27::[2022-06-27 15:09:54] [model.Drive] [INFO] - drive 2 sleeps for 3.25 seconds.
+26::[2022-06-27 15:09:54] [model.Drive] [INFO] - drive 1 sleeps for 3.91 seconds.
+25::[2022-06-27 15:09:55] [model.Drive] [INFO] - drive 0 sleeps for 4.86 seconds.
+27::[2022-06-27 15:09:57] [model.Drive] [INFO] - drive 2 sleeps for 3.30 seconds.
+26::[2022-06-27 15:09:57] [model.Drive] [INFO] - drive 1 sleeps for 10.80 seconds.
+25::[2022-06-27 15:09:59] [model.Drive] [INFO] - drive 0 sleeps for 5.36 seconds.
+29::[2022-06-27 15:10:00] [model.Drive] [INFO] - drive 4 sleeps for 2.36 seconds.
+27::[2022-06-27 15:10:00] [model.Drive] [INFO] - drive 2 sleeps for 7.42 seconds.
+29::[2022-06-27 15:10:02] [model.Drive] [INFO] - drive 4 sleeps for 3.30 seconds.
+25::[2022-06-27 15:10:04] [model.Drive] [INFO] - drive 0 sleeps for 5.27 seconds.
+28::[2022-06-27 15:10:05] [model.Drive] [INFO] - drive 3 sleeps for 5.17 seconds.
+29::[2022-06-27 15:10:05] [model.Drive] [INFO] - drive 4 sleeps for 16.13 seconds.
+27::[2022-06-27 15:10:07] [model.Drive] [INFO] - drive 2 sleeps for 4.11 seconds.
+26::[2022-06-27 15:10:07] [model.Drive] [INFO] - drive 1 sleeps for 8.84 seconds.
+25::[2022-06-27 15:10:09] [model.Drive] [INFO] - drive 0 sleeps for 1.87 seconds.
+25::[2022-06-27 15:10:10] [model.Drive] [INFO] - drive 0 sleeps for 7.59 seconds.
+28::[2022-06-27 15:10:10] [model.Drive] [INFO] - drive 3 sleeps for 7.16 seconds.
+27::[2022-06-27 15:10:11] [model.Drive] [INFO] - drive 2 sleeps for 4.51 seconds.
+27::[2022-06-27 15:10:16] [model.Drive] [INFO] - drive 2 sleeps for 1.49 seconds.
+26::[2022-06-27 15:10:16] [model.Drive] [INFO] - drive 1 sleeps for 12.01 seconds.
+27::[2022-06-27 15:10:17] [model.Drive] [INFO] - drive 2 sleeps for 1.61 seconds.
+25::[2022-06-27 15:10:17] [model.Drive] [INFO] - drive 0 sleeps for 3.75 seconds.
+28::[2022-06-27 15:10:17] [model.Drive] [INFO] - drive 3 sleeps for 12.35 seconds.
+27::[2022-06-27 15:10:18] [model.Drive] [INFO] - drive 2 sleeps for 8.28 seconds.
+25::[2022-06-27 15:10:20] [model.Drive] [INFO] - drive 0 sleeps for 1.52 seconds.
+25::[2022-06-27 15:10:21] [model.Drive] [INFO] - drive 0 sleeps for 4.84 seconds.
+29::[2022-06-27 15:10:21] [model.Drive] [INFO] - drive 4 sleeps for 3.96 seconds.
+29::[2022-06-27 15:10:24] [model.Drive] [INFO] - drive 4 sleeps for 15.45 seconds.
+25::[2022-06-27 15:10:25] [model.Drive] [INFO] - drive 0 sleeps for 2.56 seconds.
+27::[2022-06-27 15:10:26] [model.Drive] [INFO] - drive 2 sleeps for 1.63 seconds.
+27::[2022-06-27 15:10:27] [model.Drive] [INFO] - drive 2 sleeps for 1.30 seconds.
+25::[2022-06-27 15:10:27] [model.Drive] [INFO] - drive 0 sleeps for 4.72 seconds.
+26::[2022-06-27 15:10:28] [model.Drive] [INFO] - drive 1 sleeps for 7.72 seconds.
+27::[2022-06-27 15:10:28] [model.Drive] [INFO] - drive 2 sleeps for 2.40 seconds.
+28::[2022-06-27 15:10:29] [model.Drive] [INFO] - drive 3 sleeps for 1.59 seconds.
+27::[2022-06-27 15:10:30] [model.Drive] [INFO] - drive 2 sleeps for 3.81 seconds.
+28::[2022-06-27 15:10:30] [model.Drive] [INFO] - drive 3 sleeps for 15.55 seconds.
+25::[2022-06-27 15:10:31] [model.Drive] [INFO] - drive 0 sleeps for 1.53 seconds.
+25::[2022-06-27 15:10:32] [model.Drive] [INFO] - drive 0 sleeps for 3.70 seconds.
+27::[2022-06-27 15:10:33] [model.Drive] [INFO] - drive 2 sleeps for 12.60 seconds.
+26::[2022-06-27 15:10:35] [model.Drive] [INFO] - drive 1 sleeps for 2.00 seconds.
+25::[2022-06-27 15:10:35] [model.Drive] [INFO] - drive 0 sleeps for 4.61 seconds.
+26::[2022-06-27 15:10:36] [model.Drive] [INFO] - drive 1 sleeps for 2.22 seconds.
+26::[2022-06-27 15:10:38] [model.Drive] [INFO] - drive 1 sleeps for 1.68 seconds.
+26::[2022-06-27 15:10:39] [model.Drive] [INFO] - drive 1 sleeps for 7.57 seconds.
+25::[2022-06-27 15:10:39] [model.Drive] [INFO] - drive 0 sleeps for 11.60 seconds.
+29::[2022-06-27 15:10:39] [model.Drive] [INFO] - drive 4 sleeps for 2.98 seconds.
+29::[2022-06-27 15:10:41] [model.Drive] [INFO] - drive 4 sleeps for 1.95 seconds.
+29::[2022-06-27 15:10:42] [model.Drive] [INFO] - drive 4 sleeps for 3.35 seconds.
+27::[2022-06-27 15:10:45] [model.Drive] [INFO] - drive 2 sleeps for 1.82 seconds.
+28::[2022-06-27 15:10:45] [model.Drive] [INFO] - drive 3 sleeps for 2.90 seconds.
+29::[2022-06-27 15:10:46] [model.Drive] [INFO] - drive 4 sleeps for 13.31 seconds.
+26::[2022-06-27 15:10:46] [model.Drive] [INFO] - drive 1 sleeps for 29.36 seconds.
+27::[2022-06-27 15:10:46] [model.Drive] [INFO] - drive 2 sleeps for 5.87 seconds.
+28::[2022-06-27 15:10:47] [model.Drive] [INFO] - drive 3 sleeps for 21.88 seconds.
+25::[2022-06-27 15:10:50] [model.Drive] [INFO] - drive 0 sleeps for 2.11 seconds.
+27::[2022-06-27 15:10:51] [model.Drive] [INFO] - drive 2 sleeps for 3.82 seconds.
+25::[2022-06-27 15:10:52] [model.Drive] [INFO] - drive 0 sleeps for 4.45 seconds.
+27::[2022-06-27 15:10:54] [model.Drive] [INFO] - drive 2 sleeps for 17.39 seconds.
+25::[2022-06-27 15:10:56] [model.Drive] [INFO] - drive 0 sleeps for 1.60 seconds.
+25::[2022-06-27 15:10:57] [model.Drive] [INFO] - drive 0 sleeps for 1.58 seconds.
+25::[2022-06-27 15:10:58] [model.Drive] [INFO] - drive 0 sleeps for 5.26 seconds.
+29::[2022-06-27 15:10:59] [model.Drive] [INFO] - drive 4 sleeps for 23.18 seconds.
+25::[2022-06-27 15:11:03] [model.Drive] [FINER] - Drive 0 has reached destination.

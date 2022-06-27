@@ -50,6 +50,9 @@ public class MapView {
         return instance;
     }
 
+
+
+
     public void show(double simulatorSpeed){
         //load events
         events = new RealTimeEvents(simulatorSpeed);
@@ -100,7 +103,7 @@ public class MapView {
             GeoLocation location = drive.getLocation();
             displayDrive.setAttribute("xy", location.getLongitude(), location.getLatitude());
             displayDrive.setAttribute("ui.class", "car");
-
+            displayDrive.setAttribute("ui.label", drive.getOwnerId());
             int r = rand.nextInt(256), g = rand.nextInt(256), b = rand.nextInt(256);
             displayDrive.setAttribute("ui.style", "fill-color: rgb(" + r + "," + g + "," + b + ");");
             cars.put(displayDrive, drive);
@@ -163,7 +166,6 @@ public class MapView {
             "}"+
             "node.car {"+
                 " z-index: 2;"+
-//                " fill-color: blue;"+
                 " size: 10px;"+
             "}"+
             "node.passenger {"+

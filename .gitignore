@@ -1,14 +1,17 @@
-# Project exclude paths
+# Project build
 /server/java/target/
-/server/java/data/israel.pbf
 /client/node_modules
 /server/node/node_modules
 
-
-
-/server/java/src/main/java/test.java
-/server/java/src/main/java/test2.java
+# large osm files
+/server/java/data/israel.pbf
 /server/java/data/osmconvert64.exe
 
+# temp classes
+/server/java/src/main/java/test.java
+/server/java/src/main/java/checkSh1t.java
+/server/java/src/main/java/testMouseManager.java
 
+# created when log file doesn't close properly
 /server/java/src/main/java/controller/utils/logs/*.lck
+
