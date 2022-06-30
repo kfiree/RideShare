@@ -50,22 +50,23 @@ public final class GraphAlgo {
 
     /**
      * Function to find the closest node to a given point
-     * @param node- the node to which the closest node is to be found
-     * @return the closest node to the given node
+     * @param location- coordinates
+     * @param nodes - collection of nodes
+     * @return the closest node to the given coordinates
      */
-    public static Node findClosestNode(Node node){
+    public static Node findClosestNode(GeoLocation location, Collection<Node> nodes){
     //Get the coordinates of the node
-    Double latitude = node.getLatitude();
-    Double longitude = node.getLongitude();
+    Double latitude = location.getLatitude();
+    Double longitude = location.getLongitude();
 
     //Assign default variables
     AtomicReference<Double> minDistance = new AtomicReference<>(Double.MAX_VALUE);
-    AtomicReference<Node> closestNode = new AtomicReference<>(node);
+    AtomicReference<Node> closestNode = new AtomicReference<>();
+
 
     //Loop through all the nodes, and find the closest one
-    RoadMap.getInstance()
-            .getNodes().forEach(other -> {
-                double dist = node.distanceTo(other);
+    nodes.forEach(other -> {
+                double dist = distance(other.getCoordinates(), location);
                 if(dist < minDistance.get()){
                     minDistance.set(dist);
                     closestNode.set(other);
@@ -116,7 +117,10 @@ public final class GraphAlgo {
 //    }
 
     public static double distance(GeoLocation location1, GeoLocation location2){
-        double lat1 = location1.getLatitude(), lon1 = location1.getLongitude(), lat2 = location2.getLatitude(), lon2 = location2.getLongitude();
+        return distance(location1.getLatitude(), location1.getLongitude(), location2.getLatitude(), location2.getLongitude());
+    }
+    public static double distance(double lat1, double lon1,double lat2,double lon2){
+
 
         double theta = lon1 - lon2;
         double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
@@ -271,8 +275,6 @@ public final class GraphAlgo {
     public static void main(String[] args) {
         GeoLocation g1 = new GeoLocation(32.07797575620036, 34.79729189827567);
         GeoLocation g2 = new GeoLocation(32.05726675523634, 34.75974355641115);
-
-        System.out.println(distance(g1, g2));
 
         // //check if duplicate
         //    public boolean isOpposite(Edge other){

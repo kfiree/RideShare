@@ -26,8 +26,6 @@ public class Reader implements Sink {
     private final ArrayList<OsmWay> ways = new ArrayList<>();
     private final Map<Long, OsmObject> mapObjects = new HashMap<>();
     private final HashMap<Long, Long> JUNCTIONS = new HashMap<>();
-    public final HashMap<Long, String> forDebug = new HashMap<>();
-    public final HashSet<Long> forDebugId = new HashSet<>();
 
     /** GETTERS */
     public ArrayList<OsmWay> getWays() {
@@ -99,7 +97,6 @@ public class Reader implements Sink {
             temp.addAllTags(node.getTags());
         } else if(inBound(node.getLongitude(), node.getLatitude())) {
             temp = new OsmObject(node);
-            forDebugId.add(node.getId());
             mapObjects.put(temp.getID(), temp);
         }
     }
@@ -112,17 +109,10 @@ public class Reader implements Sink {
      */
     private OsmObject getOsmObj(long id) {
 
-
         Long junctionID = JUNCTIONS.get(id);
         if(junctionID != null){
             id = junctionID;
         }
-        // if object was not already created through nodes (should not happened in a well formatted OSM file).
-//        if(mapObjects.get(id) == null){
-//            forDebug.put(id, "non-existing OsmObject - ");
-//            return null;
-//            //TODO remove this when development ends, might be fixed with load osmNode later if node is after edge
-//        }
 
         return mapObjects.get(id);
     }

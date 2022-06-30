@@ -17,7 +17,7 @@ public class Drive implements Runnable { //TODO make not implements
     private final Path path;
     private Edge currEdge;
     private Node currNode;
-    private double timeSpeed;
+    private double simulatorSpeed;
 
 
     public Drive(@NotNull Path path, String type, String OwnerId, Date leaveTime) {
@@ -25,7 +25,7 @@ public class Drive implements Runnable { //TODO make not implements
         this.type = type;
         ownerId = OwnerId;
         this.leaveTime = leaveTime;
-        timeSpeed = 2;
+        simulatorSpeed = 2;
         currEdge = path.getNext();
         currNode = path.get_src();;
 
@@ -47,6 +47,7 @@ public class Drive implements Runnable { //TODO make not implements
 
         LOGGER.finer("Drive "+ ownerId +" has reached destination.");
     }
+
 
     public GeoLocation getLocation(){
         return currEdge == null? null : currNode.getCoordinates();
@@ -87,12 +88,12 @@ public class Drive implements Runnable { //TODO make not implements
             LOGGER.info("drive " + getOwnerId() + " sleeps for "+ String.format("%.2f", sleepTime) + " seconds.");
         }
 
-        try { Thread.sleep( (long)sleepTime * 1000) ; }
+        try { Thread.sleep( (long) (sleepTime * 1000 / simulatorSpeed)) ; }
         catch (InterruptedException e) { e.printStackTrace(); }
     }
 
-    public void setTimeSpeed(double timeSpeed){
-        this.timeSpeed = timeSpeed;
+    public void setSimulatorSpeed(double simulatorSpeed){
+        this.simulatorSpeed = simulatorSpeed;
     }
 
     @Override

@@ -26,9 +26,8 @@ public class Node implements Comparable<Node>, MapObject , Located {
     private final Long osmID;
     private final GeoLocation coordinates;
     private final Set<Edge> edges;
-//    private Map<String, String> tags;
     private double f;
-    public static Map<String, HashSet<String>> tagsForDebug = new HashMap<>();
+
 
     public Node(String id, Long osmID, GeoLocation coordinates) {
         this.id = id;

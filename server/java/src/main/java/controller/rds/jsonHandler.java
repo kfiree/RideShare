@@ -257,8 +257,8 @@ public enum jsonHandler {
                 String srcId = (String) jsonDrive.get("src");
                 String dstId = (String) jsonDrive.get("dest");
 
-                Node src = GraphAlgo.findClosestNode(MapUtils.getLocations().get(srcId));
-                Node dst = GraphAlgo.findClosestNode(MapUtils.getLocations().get(dstId));
+                Node src = GraphAlgo.findClosestNode(MapUtils.getLocations().get(srcId).getCoordinates(), RoadMap.getInstance().getNodes());
+                Node dst = GraphAlgo.findClosestNode(MapUtils.getLocations().get(dstId).getCoordinates(), RoadMap.getInstance().getNodes());
                 Path path = GraphAlgo.getShortestPath(src, dst);
                 drives.add(new Drive(path, driverType, driveOwnerId, leaveTime));
             });

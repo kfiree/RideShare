@@ -69,7 +69,23 @@ public final class MapUtils {
         updateBounds(topRightBound.getLatitude(), bottomLeftBound.getLatitude(), topRightBound.getLongitude(), bottomLeftBound.getLongitude());
     }
 
-    public static boolean inBound( GeoLocation location){
+    public static Double getMaxLatitude() {
+        return _topLatitude;
+    }
+
+    public static Double getMinLatitude() {
+        return _bottomLatitude;
+    }
+
+    public static Double getMaxLongitude() {
+        return _topLongitude;
+    }
+
+    public static Double getMinLongitude() {
+        return _bottomLongitude;
+    }
+
+    public static boolean inBound(GeoLocation location){
         return inBound(location.getLongitude(), location.getLatitude());
     }
 

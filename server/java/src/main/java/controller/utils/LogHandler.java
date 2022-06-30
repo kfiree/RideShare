@@ -13,7 +13,6 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 /**
- * TODO : show only one severity
  *
  * sources:
  *      use LoggerExample.java    ->     https://examples.javacodegeeks.com/core-java/util/logging/java-util-logging-example/
@@ -22,6 +21,8 @@ import java.util.logging.Logger;
  */
 public class LogHandler{
     public static Logger LOGGER;
+    public static ConsoleHandler CONSOLE_HANDLER;
+    public static Handler FILE_HANDLER;
 
     static{
         LOGGER = Logger.getLogger(LogHandler.class.getName());
@@ -34,18 +35,18 @@ public class LogHandler{
 //            ));
 
             //file handler
-            Handler fileHandler = new FileHandler("server/java/data/logs/log_", 20000, 10);
-            fileHandler.setFormatter(new LineFormat());
-            fileHandler.setLevel(Level.ALL);
+            FILE_HANDLER = new FileHandler("server/java/data/logs/log_", 20000, 10);
+            FILE_HANDLER.setFormatter(new LineFormat());
+            FILE_HANDLER.setLevel(Level.ALL);
 
             //console handler
-            ConsoleHandler consoleHandler = new ConsoleHandler();
-            consoleHandler.setFormatter(new colorFormat());
-            consoleHandler.setLevel(Level.SEVERE);
+            CONSOLE_HANDLER = new ConsoleHandler();
+            CONSOLE_HANDLER.setFormatter(new colorFormat());
+            CONSOLE_HANDLER.setLevel(Level.ALL);
 
             //add custom handlers
-            LOGGER.addHandler(fileHandler);
-            LOGGER.addHandler(consoleHandler);
+            LOGGER.addHandler(FILE_HANDLER);
+            LOGGER.addHandler(CONSOLE_HANDLER);
 
 //            for(Handler handler : LOGGER.getHandlers()){
 //                handler.setLevel(Level.ALL);
@@ -57,15 +58,24 @@ public class LogHandler{
 //        logHandler = this;
     }
 
-    public static void closeLogHandlers(){
-        for(Handler h: LOGGER.getHandlers()){
-            System.out.println(h.toString());
-            h.close();
-        }
+    public static void ConsoleLevel(String lvl) {
+        CONSOLE_HANDLER.setLevel(Level.parse(lvl));
     }
 
-    public static void log(Level severity, String msg) {
-        LOGGER.log(severity, msg);
+    public static void HandlerLevel(String lvl) {
+        FILE_HANDLER.setLevel(Level.parse(lvl));
+    }
+
+    public static void Level(String lvl) {
+        ConsoleLevel(lvl);
+        HandlerLevel(lvl);
+    }
+
+    public static void closeLogHandlers(){
+        for(Handler h: LOGGER.getHandlers()){
+            LOGGER.info("Closing" + h.toString());
+            h.close();
+        }
     }
 
 

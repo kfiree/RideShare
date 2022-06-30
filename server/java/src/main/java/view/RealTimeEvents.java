@@ -18,11 +18,11 @@ import static controller.utils.LogHandler.LOGGER;
  */
 public class RealTimeEvents implements Runnable{
     private List<Drive> events, startedEvents, eventsToSend;
-    private final double timeSpeed;
+    private final double simulatorSpeed;
     private Date currTime;
 
-    public RealTimeEvents(double timeSpeed) {
-        this.timeSpeed = timeSpeed;
+    public RealTimeEvents(double simulatorSpeed) {
+        this.simulatorSpeed = simulatorSpeed;
 
         events = initDrives(5);
         currTime = events.get(0).getLeaveTime();
@@ -39,7 +39,7 @@ public class RealTimeEvents implements Runnable{
 
             // add first event in list to startedEvents
             Drive newDrive = events.remove(0);
-            newDrive.setTimeSpeed(timeSpeed);
+            newDrive.setSimulatorSpeed(simulatorSpeed);
             Thread driveThread = new Thread(newDrive);
             driveThread.start();
 
@@ -54,6 +54,8 @@ public class RealTimeEvents implements Runnable{
             currTime = newDrive.getLeaveTime();
             LOGGER.info("RealTimeEvents add event. sleep time = " +sleepTime);
         }
+        LOGGER.info("RealTimeEvents finished.");
+
     }
 
     private void sleep(long ms ) {

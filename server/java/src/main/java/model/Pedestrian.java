@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
 
-public class Pedestrian extends Node{
+public class Pedestrian extends Node {
     private final GeoLocation destination;
     private final Date askTime;
 
@@ -21,4 +21,5 @@ public class Pedestrian extends Node{
     public Date getAskTime() {
         return askTime;
     }
+
 }

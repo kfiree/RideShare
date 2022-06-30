@@ -1,16 +1,28 @@
 package view;
 
 import model.*;
+
+import static controller.utils.LogHandler.LOGGER;
+import static view.StyleUtils.*;
+
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.ui.j2dviewer.J2DGraphRenderer;
 import org.graphstream.ui.view.Viewer;
 import org.graphstream.ui.view.ViewerPipe;
 
+import java.awt.geom.Point2D;
 import java.util.*;
 
 
 /**
+ *TODO: 6/29/2022 print path data on click
+ *      * text-visibility-mode: The text visibility mode describe when the optional label of elements should be printed:
+ *      * https://graphstream-project.org/doc/Advanced-Concepts/GraphStream-CSS-Reference/1.3/
+ *      * show only first digit in long car/user id
+ *
+ *
+ *
  *      |==================================|
  *      |===========| MAP VIEW |===========|
  *      |==================================|
@@ -32,8 +44,6 @@ public class MapView {
     protected final Hashtable<Pedestrian, org.graphstream.graph.Node> pedestrians;
     private HashSet<org.graphstream.graph.Node> pedestrian;
     private RealTimeEvents events;
-    private final Random rand = new Random(1);
-
     private static final long SLEEP_BETWEEN_FRAMES = 2000;
 
     private static final MapView instance = new MapView();
@@ -62,12 +72,12 @@ public class MapView {
         ViewerPipe pipeIn = viewer.newViewerPipe();
         viewer.addView("view1", new J2DGraphRenderer());
         viewer.disableAutoLayout();
-        viewer.getView("view1").setMouseManager(new CustomMouseManager());
+        viewer.getView("view1").setMouseManager(new MapMouseManager());
         viewer.setCloseFramePolicy(Viewer.CloseFramePolicy.CLOSE_VIEWER);
         pipeIn.addAttributeSink( displayGraph );
         pipeIn.pump();
 
-        displayGraph.setAttribute("ui.stylesheet", styleSheet);
+        displayGraph.setAttribute("ui.stylesheet", styleSheet);// getAttributes("graph"));
         displayGraph.setAttribute("ui.quality");
         displayGraph.setAttribute("ui.antialias");
 
@@ -78,10 +88,10 @@ public class MapView {
         Thread eventsThread = new Thread(events);
         eventsThread.start();
 
-        while(true){
+        while(!cars.isEmpty() || eventsThread.isAlive()){
             pipeIn.pump();
 
-            sleep(SLEEP_BETWEEN_FRAMES);
+            sleep();
 
             getUpdates();
 
@@ -90,7 +100,6 @@ public class MapView {
 //            drawPedestrian();
         }
     }
-
 
     /**
      * TODO add Pedestrian events
@@ -103,29 +112,31 @@ public class MapView {
             GeoLocation location = drive.getLocation();
             displayDrive.setAttribute("xy", location.getLongitude(), location.getLatitude());
             displayDrive.setAttribute("ui.class", "car");
+            displayDrive.setAttribute("ui.style", randomGradientColor());
             displayDrive.setAttribute("ui.label", drive.getOwnerId());
-            int r = rand.nextInt(256), g = rand.nextInt(256), b = rand.nextInt(256);
-            displayDrive.setAttribute("ui.style", "fill-color: rgb(" + r + "," + g + "," + b + ");");
+
             cars.put(displayDrive, drive);
         });
     }
 
     private void moveCars(){
-        cars.forEach( (displayNode, drive) ->{
-
-            GeoLocation location = drive.getLocation();
+        Iterator<Map.Entry<org.graphstream.graph.Node, Drive>> iter = cars.entrySet().iterator();
+        while(iter.hasNext()){
+            Map.Entry<org.graphstream.graph.Node, Drive> nodeDriveEntry = iter.next();
+            GeoLocation location = nodeDriveEntry.getValue().getLocation();
 
             if(location != null){
-                displayNode.setAttribute("xy", location.getLongitude(), location.getLatitude());
+                nodeDriveEntry.getKey().setAttribute("xy", location.getLongitude(), location.getLatitude());
             }else{
-                cars.remove(displayNode);
-                displayGraph.removeNode(displayNode);
+                iter.remove();
+                LOGGER.info(cars.size() + " cars still running");
+                displayGraph.removeNode(nodeDriveEntry.getKey());
             }
-        });
+        }
     }
 
-    private void sleep(long ms ) {
-        try { Thread.sleep( ms ) ; }
+    private void sleep() {
+        try { Thread.sleep(SLEEP_BETWEEN_FRAMES) ; }
         catch (InterruptedException e) { e.printStackTrace(); }
     }
 
@@ -134,7 +145,8 @@ public class MapView {
             if(displayGraph.getEdge(e.getId()) == null) {
                 org.graphstream.graph.Node start = drawNode(e.getNode1());
                 org.graphstream.graph.Node end = drawNode(e.getNode2());
-                displayGraph.addEdge(e.getId(), start, end);//, e.isDirected());
+                org.graphstream.graph.Edge displayEdge = displayGraph.addEdge(e.getId(), start, end);//, e.isDirected());
+                displayEdge.setAttribute("ui.class", "edge."+e.getHighwayType());
             }
 
         });
@@ -155,62 +167,4 @@ public class MapView {
 
         return displayNode;
     }
-
-
-    private String styleSheet=
-            "node {"+
-                " text-mode: hidden;"+
-                " z-index: 1;"+
-                " fill-color: grey;"+
-                " size: 3px;"+
-            "}"+
-            "node.car {"+
-                " z-index: 2;"+
-                " size: 10px;"+
-            "}"+
-            "node.passenger {"+
-                " fill-color: red;"+
-                " size: 10px;"+
-            "}";
 }
-
-/**
- * "fill-mode" ...
- *     "fill-color" ...
- *     "fill-image" ...
- *     "stroke-mode" ...
- *     "stroke-color" ...
- *     "stroke-width" ...
- *     "shadow-mode" ...
- *     "shadow-color" ...
- *     "shadow-width" ...
- *     "shadow-offset" ...
- *     "text-mode" ...
- *     "text-color" ...
- *     "text-style" ...
- *     "text-font" ...
- *     "text-size" ...
- *     "text-visibility-mode" ...
- *     "text-visibility" ...
- *     "text-background-mode" ...
- *     "text-background-color" ...
- *     "text-offset" ...
- *     "text-padding" ...
- *     "icon-mode" ...
- *     "icon" ...
- *     "padding" ...
- *     "z-index" ...
- *     "visibility-mode" ...
- *     "visibility" ...
- *     "shape" ...
- *     "size" ...
- *     "size-mode" ...
- *     "shape-points" ...
- *     "text-alignment" ...
- *     "jcomponent" ...
- *     "arrow-image" ...
- *     "arrow-size" ...
- *     "arrow-shape" ...
- *     "sprite-orientation" ...
- *     "canvas-color" ...
- */

@@ -8,6 +8,8 @@ import model.Node;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static controller.utils.LogHandler.LOGGER;
+
 /**
  *      |==================================|
  *      |==========| OSM PARSER  |=========|
