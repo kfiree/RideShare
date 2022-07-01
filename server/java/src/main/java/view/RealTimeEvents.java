@@ -1,10 +1,7 @@
 package view;
 
 import controller.utils.GraphAlgo;
-import model.Drive;
-import model.Node;
-import model.Path;
-import model.RoadMap;
+import model.*;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,6 +31,8 @@ public class RealTimeEvents implements Runnable{
 
         startedEvents = new ArrayList<>();
         eventsToSend = new ArrayList<>();
+
+        date = new Date();
     }
 
     @Override
@@ -68,12 +67,35 @@ public class RealTimeEvents implements Runnable{
         catch (InterruptedException e) { e.printStackTrace(); }
     }
 
+    public List<Pedestrian> initPedestrians(int pedestrianNum){
+        List<Pedestrian> pedestrians = new ArrayList<>();
+        List<Node> nodes = new ArrayList<>(RoadMap.getInstance().getNodes());
+        Node src, dst;
+
+        int[] randomIndexes = rand.ints(pedestrianNum*2, 0, nodes.size()).toArray();
+
+        //create drives
+        for (int i = 0; i < pedestrianNum; i++) {
+            src = nodes.get(randomIndexes[i*2]);
+            dst = nodes.get(randomIndexes[i*2 +1 ]);
+            int timeAdded = rand.nextInt(75000);
+            Date startTime = new Date(date.getTime() + ((750000+timeAdded) * i));
+            pedestrians.add(new Pedestrian("p"+i, src.getCoordinates(), dst.getCoordinates(), startTime));
+
+        }
+
+        LOGGER.finer("init "+pedestrians.size() + " pedestrians.");
+
+        return pedestrians;
+
+    }
+
     public List<Drive> initDrives(int drivesNum) {
         // drives variables
         List<Drive> drives = new ArrayList<>();
         List<Node> nodes = new ArrayList<>(RoadMap.getInstance().getNodes());
         Node src, dst;
-        date = new Date();
+
 
 
         // init random indexes for nodes
@@ -84,7 +106,7 @@ public class RealTimeEvents implements Runnable{
             src = nodes.get(randomIndexes[i*2]);
             dst = nodes.get(randomIndexes[i*2 +1 ]);
 
-            drives.add(createDrive(src, dst, i, date));
+            drives.add(createDrive(src, dst, i));
         }
 
         LOGGER.finer("init "+drives.size() + " drives.");
@@ -92,7 +114,7 @@ public class RealTimeEvents implements Runnable{
         return drives;
     }
 
-    private Drive createDrive(Node src, Node dst, int i, Date initialDate){
+    private Drive createDrive(Node src, Node dst, int i){
         Path shortestPath;
         Drive drive = null;
 
@@ -100,7 +122,7 @@ public class RealTimeEvents implements Runnable{
             shortestPath = GraphAlgo.getShortestPath(src, dst);
             int timeAdded = rand.nextInt(75000);
             if(shortestPath != null) {
-                Date startTime = new Date(initialDate.getTime() + ((750000+timeAdded) * i));
+                Date startTime = new Date(date.getTime() + ((750000+timeAdded) * i));
                 drive = new Drive(shortestPath, "unknown" , String.valueOf(i), startTime );
 
                 if(drive == null){

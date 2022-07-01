@@ -6,20 +6,20 @@ import java.util.Date;
 
 public class Pedestrian extends Node {
     private final GeoLocation destination;
-    private final Date askTime;
+    private final Date startTime;
 
-    public Pedestrian(String id, @NotNull GeoLocation location, @NotNull GeoLocation destination) {
+    public Pedestrian(String id, @NotNull GeoLocation location, @NotNull GeoLocation destination, Date startTime) {
         super(id, 0L, location);
         this.destination = destination;
-        askTime = new Date();
+        this.startTime = startTime;
     }
 
     public GeoLocation getDestination() {
         return destination;
     }
 
-    public Date getAskTime() {
-        return askTime;
+    public Date getStartTime() {
+        return startTime;
     }
 
 }
