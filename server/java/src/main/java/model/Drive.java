@@ -37,6 +37,10 @@ public class Drive implements Runnable { //TODO make not implements
         MapUtils.validate(path != null, "can't start a drive if path is null. Drive owner id - " + ownerId);
 
         do{
+
+            LOGGER.info("drive " + getOwnerId() + " will get to "+ currEdge.getOtherEnd(currNode.getId()).getOsmID()
+                    +" sleeps for "+ String.format("%.2f", currEdge.getWeight()) + " seconds.");
+
             sleep(currEdge.getWeight());
 
             currNode = currEdge.getOtherEnd(currNode.getId());
@@ -84,8 +88,6 @@ public class Drive implements Runnable { //TODO make not implements
     private void sleep(double sleepTime ) {
         if(sleepTime <1 ){
             LOGGER.warning("drive " + getOwnerId()+" sleep time "+ String.format("%.2f", sleepTime) +" seconds is too small.");
-        }else{
-            LOGGER.info("drive " + getOwnerId() + " sleeps for "+ String.format("%.2f", sleepTime) + " seconds.");
         }
 
         try { Thread.sleep( (long) (sleepTime * 1000 / simulatorSpeed)) ; }

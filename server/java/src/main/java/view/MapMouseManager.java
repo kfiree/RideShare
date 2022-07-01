@@ -54,6 +54,9 @@ public class MapMouseManager extends DefaultMouseManager {
         super.mouseReleased(e);
         firstClicked  = !firstClicked; //prevent double click
 
+        System.out.println( "MouseEvent xy ("+e.getX() +","+e.getY()+").");
+        System.out.println(view.getCamera().transformPxToGu(e.getX() ,e.getY()));
+
         if(firstClicked) {
 
             Map.Entry<Node, Drive> closestCar = getClosestCar(e);

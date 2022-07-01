@@ -29,7 +29,7 @@ public final class MapUtils {
     private static final Map<String, Drive>   drives = new HashMap<>();
     private static boolean bound;
     private static Double _topLatitude = 32.13073917015928, _bottomLatitude = 32.0449580796914,
-                        _topLongitude = 34.852006, _bottomLongitude = 0.0;
+                        _topLongitude = 34.852006, _bottomLongitude = 34.72856;
 
     private MapUtils() {}
 

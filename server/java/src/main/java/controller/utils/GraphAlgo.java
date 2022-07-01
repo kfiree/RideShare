@@ -276,6 +276,13 @@ public final class GraphAlgo {
         GeoLocation g1 = new GeoLocation(32.07797575620036, 34.79729189827567);
         GeoLocation g2 = new GeoLocation(32.05726675523634, 34.75974355641115);
 
+        Random random = new Random(1);
+
+        for (int i = 0; i < 10; i++) {
+            System.out.println(random.nextInt(20));
+        }
+
+
         // //check if duplicate
         //    public boolean isOpposite(Edge other){
         //        return getNode1().getOsmID().equals(other.getNode2().getOsmID()) && getNode2().getOsmID().equals(other.getNode1().getOsmID());

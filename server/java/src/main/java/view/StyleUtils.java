@@ -7,6 +7,7 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 import org.graphstream.ui.graphicGraph.GraphicGraph;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -66,6 +67,7 @@ public class StyleUtils {
     protected static Map.Entry<Node, Drive> focusedDrive;
     protected static final List<Edge> focusedEdges = new ArrayList<>();
     protected static GraphicGraph displayGraph;
+    protected static SimpleDateFormat dateFormatter = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
     protected static final String
             nodeStyleSheet, passengerStyleSheet, carStyleSheet,
             edgeStyleSheet, secondaryEdgeStyleSheet, primaryEdgeStyleSheet,

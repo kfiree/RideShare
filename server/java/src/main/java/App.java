@@ -54,7 +54,7 @@ public final class App{
 
     public static void main(String[] args) {
         System.out.println("java -jar RideShare.jar -h\n\n" + Instructions
-                + "\n\n\njava -jar RideShare.jar   -s 10  -l ALL  -b y");
+                + "\n\n\njava -jar RideShare.jar   -s 10  -l ALL  -b y\n");
 
         init(args);
         LOGGER.finest("Let's GO!!");
