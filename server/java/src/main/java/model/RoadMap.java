@@ -25,7 +25,7 @@ public final class RoadMap {
     private final Map<String, Pedestrian> pedestrians;
 
     /** CONSTRUCTORS */
-    private RoadMap() {
+    public RoadMap() {
         edges = new HashSet<>();
         nodes = new HashMap<>();
         drives = new Hashtable<>();
@@ -137,7 +137,7 @@ public final class RoadMap {
 
     public void setPedestrians(Map<String, Pedestrian> pedestrians) { this.pedestrians.putAll(pedestrians); }
 
-    public void addDrive(Drive drive) { drives.put(drive.getOwnerId(), drive); }
+    public void addDrive(Drive drive) { drives.put(drive.getId(), drive); }
 
     public void addPedestrian(Pedestrian pedestrian) { pedestrians.put(pedestrian.getId(), pedestrian); }
 

@@ -1,34 +1,26 @@
 package view;
 
-import controller.utils.MapUtils;
 import model.*;
 
 import static controller.utils.LogHandler.LOGGER;
 import static view.StyleUtils.*;
 
 import model.Pedestrian;
+import model.interfaces.ElementsOnMap;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
-import org.graphstream.ui.geom.Point3;
 import org.graphstream.ui.j2dviewer.J2DGraphRenderer;
 import org.graphstream.ui.spriteManager.Sprite;
 import org.graphstream.ui.spriteManager.SpriteManager;
 import org.graphstream.ui.view.Viewer;
 import org.graphstream.ui.view.ViewerPipe;
 
-import java.awt.geom.Point2D;
 import java.util.*;
 
 
 /**
- *TODO: 6/29/2022 print path data on click
- *      * text-visibility-mode: The text visibility mode describe when the optional label of elements should be printed:
- *      * https://graphstream-project.org/doc/Advanced-Concepts/GraphStream-CSS-Reference/1.3/
- *      * show only first digit in long car/user id
- *
- *
  *
  *      |==================================|
  *      |===========| MAP VIEW |===========|
@@ -48,7 +40,7 @@ public class MapView {
     private final RoadMap map;
     private final Graph displayGraph;
     protected final Hashtable<Node, Drive> cars; //TODO check Exception in thread "main" java.util.ConcurrentModificationException
-    protected final Hashtable<Pedestrian, Node> pedestrians;
+    protected final Hashtable<Node, Pedestrian> pedestrians;
     private HashSet<Node> pedestrian;
     private RealTimeEvents events;
     private Viewer viewer;
@@ -100,82 +92,65 @@ public class MapView {
         Thread eventsThread = new Thread(events);
         eventsThread.start();
 
-        while(!cars.isEmpty() || eventsThread.isAlive()){
+        do{
             pipeIn.pump();
 
             sleep();
-
             getUpdates();
 
-            moveCars();
-
-//            drawPedestrian();
-        }
+        }while(eventsThread.isAlive() || !cars.isEmpty());
     }
 
-    private void drawAddons(){
-        clockNode = displayGraph.addNode("clockNode");
-//        Double maxLatitude = MapUtils.getMaxLatitude();
-//        Double minLongitude = MapUtils.getMinLongitude();
 
-//        Point3 clockCoordinates = viewer.getView("view1").getCamera().transformPxToGu(10, 10);
-//        System.out.println(clockCoordinates);
-//        System.out.println("lon "+minLongitude + " - " + 0.005 + " = " + (minLongitude-0.05));
-//        System.out.println("lat "+maxLatitude + " - " + 0.005 + " = " + (maxLatitude-0.05));
-
-        clockNode.setAttribute("xy", 34.7615, 32.1179);
-
-
-
-        SpriteManager sman = new SpriteManager(displayGraph);
-        clock = sman.addSprite("clock");
-        clock.addAttribute("ui.label", "YYYY-MM-DD HH:mm:ss");
-
-        clock.setAttribute("ui.style",
-                "   fill-mode: plain;"+
-                        "   fill-color: #CCC;"+
-                        "   stroke-mode: plain;"+
-                        "   stroke-color: black;"+
-                        "   stroke-width: 1px;"+
-                        "   text-size: 16;"+
-                        "   text-style: bold;"+
-                        "   text-color: #FFF;"+
-                        "   text-alignment: center;"+
-                        "   text-padding: 3px, 2px;"+
-                        "   text-background-mode: rounded-box;"+
-                        "   text-background-color: #A7CC;"+
-                        "   text-color: white;"+
-                        "   text-offset: 5px, 0px;"
-        );
-        clock.attachToNode("clockNode");
-//        32.095888895536966, max 34.7756799147988 min
-        //  private static Double _topLatitude = 32.13073917015928, _bottomLatitude = 32.0449580796914,
-        //                        _topLongitude = 34.852006, _bottomLongitude = 34.72856;
-
-//        clock.setPosition( minLongitude- 0.005, maxLatitude - 0.002, 0);
-//        System.out.println( "MouseEvent xy ("+e.getX() +","+e.getY()+").");
-//        System.out.println(view.getCamera().transformPxToGu(e.getX() ,e.getY()));
-    }
-
-    /**
-     * TODO add Pedestrian events
-     */
     private void getUpdates(){
-//        Point3 clockCoordinates = viewer.getView("view1").getCamera().transformPxToGu(100, 100);
-//        clockNode.setAttribute("xy", clockCoordinates.x, clockCoordinates.y);
+        List<ElementsOnMap> newEvents = events.getStartedEvents();
+        Iterator<ElementsOnMap> eventIter = newEvents.iterator();
+        while(eventIter.hasNext()) {
+            System.out.println(newEvents.size() + " new events.");
+            ElementsOnMap nextEvent = eventIter.next();
 
-        List<Drive> startedEvents = events.getStartedEvents();
-        startedEvents.forEach(drive -> {
-            Node displayDrive = displayGraph.addNode(drive.getOwnerId());
+            Node displayObj = displayGraph.addNode(nextEvent.getId());
 
-            GeoLocation location = drive.getLocation();
-            displayDrive.setAttribute("xy", location.getLongitude(), location.getLatitude());
-            displayDrive.setAttribute("ui.class", "car");
-            displayDrive.setAttribute("ui.style", randomGradientColor());
-            displayDrive.setAttribute("ui.label", drive.getOwnerId());
+            GeoLocation location = nextEvent.getLocation();
+            displayObj.setAttribute("xy", location.getLongitude(), location.getLatitude());
+            displayObj.setAttribute("ui.label", nextEvent.getId());
 
-            cars.put(displayDrive, drive);
-        });
+            if (nextEvent instanceof Drive) {
+                displayObj.setAttribute("ui.class", "car");
+                displayObj.setAttribute("ui.style", randomGradientColor());
+
+                cars.put(displayObj, (Drive) nextEvent);
+            } else {
+//                displayObj.setAttribute("ui.class", "pedestrian");
+                displayObj.setAttribute("ui.style", pedestrianStyleSheet);
+                displayObj.setAttribute("ui.style", randomGradientColor());
+                pedestrians.put(displayObj, (Pedestrian) nextEvent);
+            }
+//            System.out.println(String.valueOf(displayObj.getAttribute("ui.style")));
+        }
+
+        moveCars();
+
+//        List<ElementsOnMap> startedEvents = events.getStartedEvents();
+//        startedEvents.forEach(event -> {
+//            Node objectOnMap = displayGraph.addNode(event.getId());
+//            GeoLocation location = event.getLocation();
+//            objectOnMap.setAttribute("xy", location.getLongitude(), location.getLatitude());
+//            objectOnMap.setAttribute("ui.label", event.getId());
+//
+//            if(objectOnMap instanceof Drive){
+//                objectOnMap.setAttribute("ui.class", "car");
+//                objectOnMap.setAttribute("ui.style", randomGradientColor());
+//
+//                cars.put(objectOnMap, (Drive) event);
+//            }else{
+//                objectOnMap.setAttribute("ui.class", "pedestrian");
+//
+//                pedestrians.put(objectOnMap, (Pedestrian) event);
+//            }
+//
+//
+//        });
 //        clock.setAttribute("xy", minLongitude- 0.005, maxLatitude - 0.002 );
     }
 
@@ -229,4 +204,49 @@ public class MapView {
 
         return displayNode;
     }
+
+    private void drawAddons(){
+        clockNode = displayGraph.addNode("clockNode");
+//        Double maxLatitude = MapUtils.getMaxLatitude();
+//        Double minLongitude = MapUtils.getMinLongitude();
+
+//        Point3 clockCoordinates = viewer.getView("view1").getCamera().transformPxToGu(10, 10);
+//        System.out.println(clockCoordinates);
+//        System.out.println("lon "+minLongitude + " - " + 0.005 + " = " + (minLongitude-0.05));
+//        System.out.println("lat "+maxLatitude + " - " + 0.005 + " = " + (maxLatitude-0.05));
+
+        clockNode.setAttribute("xy", 34.7615, 32.1179);
+
+
+
+        SpriteManager sman = new SpriteManager(displayGraph);
+        clock = sman.addSprite("clock");
+        clock.addAttribute("ui.label", "YYYY-MM-DD HH:mm:ss");
+
+        clock.setAttribute("ui.style",
+                "   fill-mode: plain;"+
+                        "   fill-color: #CCC;"+
+                        "   stroke-mode: plain;"+
+                        "   stroke-color: black;"+
+                        "   stroke-width: 1px;"+
+                        "   text-size: 16;"+
+                        "   text-style: bold;"+
+                        "   text-color: #FFF;"+
+                        "   text-alignment: center;"+
+                        "   text-padding: 3px, 2px;"+
+                        "   text-background-mode: rounded-box;"+
+                        "   text-background-color: #A7CC;"+
+                        "   text-color: white;"+
+                        "   text-offset: 5px, 0px;"
+        );
+        clock.attachToNode("clockNode");
+//        32.095888895536966, max 34.7756799147988 min
+        //  private static Double _topLatitude = 32.13073917015928, _bottomLatitude = 32.0449580796914,
+        //                        _topLongitude = 34.852006, _bottomLongitude = 34.72856;
+
+//        clock.setPosition( minLongitude- 0.005, maxLatitude - 0.002, 0);
+//        System.out.println( "MouseEvent xy ("+e.getX() +","+e.getY()+").");
+//        System.out.println(view.getCamera().transformPxToGu(e.getX() ,e.getY()));
+    }
+
 }

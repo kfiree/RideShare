@@ -1,25 +1,47 @@
 package model;
 
+import model.interfaces.ElementsOnMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
 
-public class Pedestrian extends Node {
-    private final GeoLocation destination;
+import static view.StyleUtils.dateFormatter;
+
+public class Pedestrian implements ElementsOnMap {
     private final Date startTime;
+    private final Node currNode, destination;
+    private final String id;
+    private boolean taken;
 
-    public Pedestrian(String id, @NotNull GeoLocation location, @NotNull GeoLocation destination, Date startTime) {
-        super(id, 0L, location);
-        this.destination = destination;
+    public Pedestrian(String id, @NotNull Node currNode, @NotNull Node destination, Date startTime) {
+        this.id = id;
         this.startTime = startTime;
+        this.destination = destination;
+        this.currNode = currNode;
     }
 
-    public GeoLocation getDestination() {
-        return destination;
-    }
+    @Override
+    public Node getDestination() { return destination; }
 
-    public Date getStartTime() {
-        return startTime;
-    }
+    @Override
+    public Node getCurrNode() { return currNode; }
 
+    @Override
+    public Date getStartTime() { return startTime; }
+
+    @Override
+    public String getId() { return id; }
+
+    @Override
+    public GeoLocation getLocation() { return currNode.getCoordinates(); }
+
+    @Override
+    public String toString() {
+        return "Pedestrian{" +
+                "id='" + id + '\'' +
+                ", startTime=" + dateFormatter.format(startTime) +
+                ", currNode=" + currNode +
+                ", destination=" + destination +
+                '}';
+    }
 }

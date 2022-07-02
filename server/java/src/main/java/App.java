@@ -36,15 +36,102 @@ import static controller.utils.LogHandler.*;
  *      * to convert files:
  *           osmconvert64.exe ariel2.osm > arielpbf.pbf --out-pbf
  *
- * TODO :
- *      - make methods and datastructures thread safe.
- *      - use only int id of classes
- *      - add assertion @
- *      - add cli                http://jcommander.org/      ||      https://commons.apache.org/proper/commons-cli/
- *      - make vars final after initialize
- *      -  set & get map user drive | sub map | match rider and drivers | lock drive
- *      -  add loader
- *      - make accept .osm?
+ *
+ * TODO list:
+ *                  /------------------------------------------------\
+ *                  |/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\|
+ *                  |/\/\/\/\/\/\/\/\|  SH!T TO DO  |/\/\/\/\/\/\/\/\|
+ *                  |/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\|
+ *                  \------------------------------------------------/
+ *
+ *
+ * |==========================================================================================|
+ * |=====================================   ALGORITHMS   =====================================|
+ * |==========================================================================================|
+ *
+ *  todo:
+ *          1st Priority:
+ *              - 1) Make drive-pedestrian match (may be base algo on Shortest Hamiltonian Path Problem (SHPP)).
+ *    .
+ *          Last priority:
+ *              -
+ *    .
+ *                                      SOURCES (unchecked sources := '??')
+ *                          ---------------------------------
+ *    .
+ *    .
+ *      1 Make drive-pedestrian match algorithms:
+ *          1.1 match with split routes that address user profiles
+ *              src: https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229674
+ *              .
+ *          1.2 Wolfram-Alpha - FindShortestTour function. (explanation : https://mathematica.stackexchange.com/questions/23733/how-does-findshortesttour-work)
+ *              src: https://www.wolframalpha.com/input?t=crmtb01&i=FindShortestTour%5B%7B%7B0%2C+0%7D%2C+%7B1%2C+0%7D%2C+%7B0%2C+1%7D%2C+%7B1%2C+1%7D%2C+%7B0%2C+536870913%7D%7D%5D
+ *              src: https://reference.wolfram.com/language/ref/FindShortestTour.html
+ *              .
+ *          1.3 naive solution for 1 drive, can work on a fully connected graph where nodes are pedestrians and edges weights are shortest path to each one
+ *              src: https://www.geeksforgeeks.org/building-an-undirected-graph-and-finding-shortest-path-using-dictionaries-in-python/
+ *              .
+ *          1.4 shared taxi algo with pricing methods:
+ *              src: https://www.sciencedirect.com/science/article/pii/S277258632200003X#bib0036
+ *              .
+ *          1.5 ?? (shared taxi algo):
+ *              src: https://hal.archives-ouvertes.fr/hal-01488042v2/document
+ *              .
+ *          1.6 ?? (shared taxi algo)
+ *              src: https://www.hindawi.com/journals/mpe/2021/5572200/
+ *              .
+ *          1.7 ?? (shared taxi algo):
+ *              src: https://www.researchgate.net/publication/261216476_Design_and_Modeling_of_Real-Time_Shared-Taxi_Dispatch_Algorithms
+ *              .
+ *
+ * |==========================================================================================|
+ * |======================================   PROJECT   =======================================|
+ * |==========================================================================================|
+ *
+ *      TODO project:
+ *          Priority 1:
+ *              - add Pedestrian and Drives to RoadMap
+ *              -
+ *              - ReadMe (use javadocs).
+ *              - Address warnings - optimize project.
+ *              - Add 'alias-like' in Reader.java and MapView.java (org.openstreetmap.osmosis.core.domain.v0_6.Node and org.graphstream.Node)
+ *                  src: https://stackoverflow.com/questions/2447880/change-name-of-import-in-java-or-import-two-classes-with-the-same-name
+ *                  src: https://itecnote.com/tecnote/java-change-name-of-import-in-java-or-import-two-classes-with-the-same-name/
+ *              .
+ *          Last priority:
+ *              -
+ *
+ * |==========================================================================================|
+ * |==============================   SIMULATOR INFRASTRUCTURE   ==============================|
+ * |==========================================================================================|
+ *
+ *      TODO Simulator infrastructure:
+ *          Priority 1:
+ *              - Enforce thread-safe for all shared methods, datastructures and variables.
+ *              - Check if car not moving for x time.
+ *          Priority 2:
+ *              - Save graph instead of recreating it.
+ *              - Use only int id of classes.
+ *              - Add @assertions.
+ *              - Finish CLI --- sources: http://jcommander.org/  || https://commons.apache.org/proper/commons-cli/.
+ *              .
+ *          \\ Last priority \\:
+ *              - Make accept .osm?.
+ *              - STYLE
+ *                  * color highwayType
+ *                  * style by class type
+ *                  * add ui.class
+ *                  * Add loader.
+ *                  * show node data (on debug mode?)
+ *                  * Set on hovering style
+ *                      - src: https://stackoverflow.com/questions/70745672/get-graphicedge-at-mouse-hovering-in-graphstream/70775617#70775617
+ *                  * text-visibility-mode: The text visibility mode describe when the optional label of elements should be printed:
+ *                      - src https://graphstream-project.org/doc/Advanced-Concepts/GraphStream-CSS-Reference/1.3/
+ *                  * show only first digit in long car/user id
+ *
+ *
+ *==========================================================================================
+ *
  */
 public final class App{
     private static Long  NODE_IN_MAIN_COMPONENT;

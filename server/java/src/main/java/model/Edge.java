@@ -36,7 +36,7 @@ public class Edge implements MapObject, Located {
     // TODO set lower speed
 
     public Edge(String id, Node node1, Node node2, Double weight, String highwayType){
-        tagNames.add(highwayType); //TODO make highway type enum
+        tagNames.add(highwayType); //TODO make highway type enum ?
         this.node1 = node1;
         this.node2 = node2;
         this.id = id == null ? MapUtils.generateId() : id;

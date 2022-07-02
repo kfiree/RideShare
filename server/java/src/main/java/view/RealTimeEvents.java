@@ -2,73 +2,81 @@ package view;
 
 import controller.utils.GraphAlgo;
 import model.*;
+import model.interfaces.ElementsOnMap;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static controller.utils.LogHandler.LOGGER;
 import static view.MapView.date;
-import static view.MapView.clockNode;
 import static view.StyleUtils.dateFormatter;
 
 /**
  * TODO init pedestrians list
  */
 public class RealTimeEvents implements Runnable{
-    private List<Drive> events, startedEvents, eventsToSend;
+    private PriorityQueue<ElementsOnMap> eventsQueue, events;
+    private final List<ElementsOnMap> startedEvents, eventsToSend;
     private final double simulatorSpeed;
     private Date currTime;
-    private Random rand = new Random(1);
+
+    private final Random rand = new Random(1);
 
     public RealTimeEvents(double simulatorSpeed) {
         this.simulatorSpeed = simulatorSpeed;
 
-        events = initDrives(10);
-        currTime = events.get(0).getLeaveTime();
+        events = initEvents(10, 3);
+        currTime = events.peek().getStartTime();
 
         startedEvents = new ArrayList<>();
         eventsToSend = new ArrayList<>();
-
-        date = new Date();
     }
 
     @Override
     public void run() {
         LOGGER.fine("RealTimeEvents star running");
-
+        String eventType = "Drive";
         while(!events.isEmpty()){
-            // add first event in list to startedEvents
-            Drive newDrive = events.remove(0);
-            newDrive.setSimulatorSpeed(simulatorSpeed);
-            Thread driveThread = new Thread(newDrive);
-            driveThread.start();
+            /*  poll new event and wait till it is his start time*/
+            ElementsOnMap newEvent = events.poll();
 
-            startedEvents.add(newDrive);
-
-            int sleepTime = currTime.compareTo(newDrive.getLeaveTime());
+            int sleepTime = currTime.compareTo(newEvent.getStartTime());
 
             sleep(sleepTime);
 
             // jump in time to next event
-            currTime = newDrive.getLeaveTime();
-            LOGGER.info("RealTimeEvents add event. sleep time = " +sleepTime);
+            currTime = newEvent.getStartTime();
+
+            /*  add new event */
+            if(newEvent instanceof Drive){
+                Drive newDrive = (Drive) newEvent;
+                newDrive.setSimulatorSpeed(simulatorSpeed);
+                Thread driveThread = new Thread(newDrive);
+                driveThread.start();
+
+                startedEvents.add(newDrive);
+            }else{
+                Pedestrian newPedestrian = (Pedestrian) newEvent;
+
+                startedEvents.add(newPedestrian);
+            }
+
+            LOGGER.info("RealTimeEvents add "+newEvent +" event. at " +dateFormatter.format(newEvent.getStartTime())+".");
         }
         LOGGER.info("RealTimeEvents finished.");
 
     }
 
-    private void sleep(long ms ) {
-//        double sleepTime = ms / timeSpeed;
-        double sleepTime = 3000;
-        try { Thread.sleep(3000) ; }
-        catch (InterruptedException e) { e.printStackTrace(); }
+    public PriorityQueue<ElementsOnMap> initEvents(int driveNum, int pedestriansNum){
+        eventsQueue = new PriorityQueue<>();
+
+        eventsQueue.addAll(initDrives(driveNum));
+        eventsQueue.addAll(initPedestrians(pedestriansNum));
+
+        return eventsQueue;
     }
 
-    public List<Pedestrian> initPedestrians(int pedestrianNum){
-        List<Pedestrian> pedestrians = new ArrayList<>();
+    public List<ElementsOnMap> initPedestrians(int pedestrianNum){
+        List<ElementsOnMap> pedestrians = new ArrayList<>();
         List<Node> nodes = new ArrayList<>(RoadMap.getInstance().getNodes());
         Node src, dst;
 
@@ -80,8 +88,7 @@ public class RealTimeEvents implements Runnable{
             dst = nodes.get(randomIndexes[i*2 +1 ]);
             int timeAdded = rand.nextInt(75000);
             Date startTime = new Date(date.getTime() + ((750000+timeAdded) * i));
-            pedestrians.add(new Pedestrian("p"+i, src.getCoordinates(), dst.getCoordinates(), startTime));
-
+            pedestrians.add(new Pedestrian("0"+i, src, dst, startTime));
         }
 
         LOGGER.finer("init "+pedestrians.size() + " pedestrians.");
@@ -90,13 +97,14 @@ public class RealTimeEvents implements Runnable{
 
     }
 
-    public List<Drive> initDrives(int drivesNum) {
+    public List<ElementsOnMap> initDrives(int drivesNum) {
         // drives variables
-        List<Drive> drives = new ArrayList<>();
+        List<ElementsOnMap> drives = new ArrayList<>();
         List<Node> nodes = new ArrayList<>(RoadMap.getInstance().getNodes());
         Node src, dst;
 
-
+        //TODO when read events from file will work - make date the first event start time
+        date = new Date();
 
         // init random indexes for nodes
         int[] randomIndexes = rand.ints(drivesNum*2, 0, nodes.size()).toArray();
@@ -126,8 +134,8 @@ public class RealTimeEvents implements Runnable{
                 drive = new Drive(shortestPath, "unknown" , String.valueOf(i), startTime );
 
                 if(drive == null){
-                    LOGGER.severe("drive from " + src + " to "+ dst + " was not created, Drive(Id: "+ i +", Date: " + startTime +" = , Path).");
-                    //TODO add formatter for date
+                    LOGGER.severe("drive from " + src + " to "+ dst + " was not created, Drive(Id: "
+                            + i +", Date: " + dateFormatter.format(startTime) +" = , Path).");
                 }
 //                validate(drive != null,"drive from " + src + " to "+ dst + " was not created, Drive(Id: "+ i +", Date: "+startTime.+" = , Path).");
             }
@@ -137,11 +145,21 @@ public class RealTimeEvents implements Runnable{
         return drive;
     }
 
-    public List<Drive> getStartedEvents() {
+    /**
+     *  TODO maybe make synchronized
+     */
+    public List<ElementsOnMap> getStartedEvents() {
         eventsToSend.clear();
         eventsToSend.addAll(startedEvents);
 
         startedEvents.clear();
-        return eventsToSend; //TODO maybe make synchronized
+        return eventsToSend;
+    }
+
+    private void sleep(long ms ) {
+//        double sleepTime = ms / timeSpeed;
+        double sleepTime = 3000;
+        try { Thread.sleep(3000) ; }
+        catch (InterruptedException e) { e.printStackTrace(); }
     }
 }

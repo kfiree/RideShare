@@ -18,7 +18,7 @@ import java.util.*;
 
 
 /**
- * TODO set hovering https://stackoverflow.com/questions/70745672/get-graphicedge-at-mouse-hovering-in-graphstream/70775617#70775617
+ *
  */
 public class MapMouseManager extends DefaultMouseManager {
     protected View view;
@@ -42,13 +42,6 @@ public class MapMouseManager extends DefaultMouseManager {
         StyleUtils.displayGraph = displayGraph;
     }
 
-    /**
-     * TODO
-     *      * check if 2 nodes clicked at once
-     *      * paint node data
-     *      * clear path patin
-     *
-     */
     @Override
     public void mouseReleased(MouseEvent e) {
         super.mouseReleased(e);

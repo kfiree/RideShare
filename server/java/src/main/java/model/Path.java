@@ -64,34 +64,17 @@ public class Path implements Comparable<Path> , Iterable<Edge>{
         this.edges.addAll(edges);
     }
 
-    public Edge getNext(){
-        if(iterator == null) {
-            iterator = edges.iterator();
-        }
-
-        if(iterator.hasNext()){
-            return iterator.next();
-        }
-        return null;
-    }
-
-    public Node get_src() {
-        return _src;
-    }
+    public Node get_src() { return _src; }
 
     public void set_src(Node _src) { this._src = _src; }
-    //TODO run A* After every change of dest or src
+    //TODO run A* After every change of dest or src (might delete this method)
 
-    public Node get_dest() {
-        return _dest;
-    }
+    public Node get_dest() { return _dest; }
 
-    public void set_dest(Node _dest) {
-        this._dest = _dest;
-    }
+    public void set_dest(Node _dest) { this._dest = _dest; }
 
-    //in ms
-    public double timeToCross(){
+    /* in ms*/
+    public double pathTime(){
         double pathLen = 0;
         for (Edge e: edges) {
             pathLen += e.getWeight();
@@ -99,9 +82,11 @@ public class Path implements Comparable<Path> , Iterable<Edge>{
         return pathLen;
     }
 
+    public int getSize(){ return edges.size(); }
+
     @Override
     public int compareTo(Path other) {
-        return (int)(timeToCross() - other.timeToCross());
+        return (int)(pathTime() - other.pathTime());
     }
 
     @NotNull

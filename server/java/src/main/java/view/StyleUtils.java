@@ -52,10 +52,6 @@ import java.util.*;
  *     "sprite-orientation" ...
  *     "canvas-color" ...
  *
- *     TODO:
- *          * 6/29/2022 color highwayType
- *          * style by class type
- *          * add ui.class
  */
 public class StyleUtils {
 
@@ -67,13 +63,16 @@ public class StyleUtils {
     protected static Map.Entry<Node, Drive> focusedDrive;
     protected static final List<Edge> focusedEdges = new ArrayList<>();
     protected static GraphicGraph displayGraph;
-    protected static SimpleDateFormat dateFormatter = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
+    public static SimpleDateFormat dateFormatter = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
     protected static final String
-            nodeStyleSheet, passengerStyleSheet, carStyleSheet,
+            nodeStyleSheet, pedestrianStyleSheet, carStyleSheet,
             edgeStyleSheet, secondaryEdgeStyleSheet, primaryEdgeStyleSheet,
             motorwayEdgeStyleSheet, tertiaryEdgeStyleSheet, pathStyleSheet,
             spriteStyleSheet, styleSheet, focusedCarStyleSheet;
 
+    protected static void stylePedestrians(Map.Entry<Node, Drive> drive){
+
+    }
 
     protected static void styleDrive(Map.Entry<Node, Drive> drive) {
         resetPathStyle();
@@ -86,7 +85,7 @@ public class StyleUtils {
 
     private static void setNewDrive(Map.Entry<Node, Drive> newDrive){
         focusedDrive = newDrive;
-        newDrive.getValue().getEdges().forEach(edge -> focusedEdges.add(displayGraph.getEdge(edge.getId())));
+        newDrive.getValue().getCurrPath().forEach(edge -> focusedEdges.add(displayGraph.getEdge(edge.getId())));
     }
 
     private static void resetPathStyle() {
@@ -155,8 +154,18 @@ public class StyleUtils {
                 "fill-color: grey;" +
                 "size: 3px;";
 
-        passengerStyleSheet = "fill-color: red;" +
-                "size: 10px;";
+        pedestrianStyleSheet =
+                "z-index: 2;" +
+                "size: 20px;" +
+                "text-mode: normal;" +
+                "text-style: bold;" +
+                "stroke-mode: plain;" +
+                "stroke-color: black;" +
+                "stroke-width: 1px;" +
+                        " shape: diamond;";
+
+//                " fill-mode: image-scaled; " +
+//                " fill-image: url('server/java/data/assets/pedestrianIcon.png');";
 
         focusedCarStyleSheet = "size: 25px;";
 
@@ -207,7 +216,8 @@ public class StyleUtils {
                 "node {" + nodeStyleSheet + "}" +
                 "edge{" + edgeStyleSheet + "}" +
                 "node.car {" + carStyleSheet + "}" +
-                "node.passenger {" + passengerStyleSheet + "}";
+                "node.pedestrian {" + pedestrianStyleSheet + "}";
+
     }
 
 //    static {

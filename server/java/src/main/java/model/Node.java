@@ -23,17 +23,21 @@ import java.util.stream.Collectors;
 public class Node implements Comparable<Node>, MapObject , Located {
 
     private final String id;
-    private final Long osmID;
+    private Long osmID;
     private final GeoLocation coordinates;
     private final Set<Edge> edges;
     private double f;
 
 
-    public Node(String id, Long osmID, GeoLocation coordinates) {
+    public Node(String id, GeoLocation coordinates) {
         this.id = id;
-        this.osmID = osmID;
         this.coordinates = coordinates;
         edges = new HashSet<>();
+    }
+
+    public Node(String id, Long osmID, GeoLocation coordinates) {
+        this(id, coordinates);
+        this.osmID = osmID;
     }
 
     public Node(@NotNull OsmObject object) {

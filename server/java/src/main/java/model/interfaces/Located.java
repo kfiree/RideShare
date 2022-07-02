@@ -12,5 +12,5 @@ public interface Located {
     boolean equals(Object o);
 
     @Override
-    String toString();//TODO add more methods
+    String toString();
 }
