@@ -19,20 +19,20 @@ public enum jsonHandler {
     NodeType, EdgeType, MapType, PathType, DriverType, ListType, HashMapType, PedestrianType; //, IntegerType, DoubleType, StringType;
 
     /** json to object */
-    public <T> T jsonToObj(String json) throws ParseException {
+    public <T> T jsonToObj(String json, RoadMap roadMap) throws ParseException {
         switch(this){
             case NodeType:
-                return (T) jsonToNode(json);
+                return (T) jsonToNode(json, roadMap);
             case EdgeType:
-                return (T) jsonToEdge(json);
+                return (T) jsonToEdge(json, roadMap);
             case MapType:
                 return (T) jsonToMap(json);
             case PathType:
                 return (T) jsonToPath(json);
             case DriverType:
-                return (T) jsonToDriver(json);
+                return (T) jsonToDriver(json, roadMap);
             case PedestrianType:
-                return (T) jsonToPedestrian(json);
+                return (T) jsonToPedestrian(json, roadMap);
             case ListType:
                 return (T) jsonToList(json);
             case HashMapType:
@@ -48,7 +48,7 @@ public enum jsonHandler {
         }
     }
 
-    private static Node jsonToNode(String jsonString) throws ParseException {
+    private static Node jsonToNode(String jsonString, RoadMap roadMap) throws ParseException {
 
         JSONParser parser = new JSONParser();
         JSONObject jsonObject = (JSONObject) parser.parse(jsonString);
@@ -56,41 +56,41 @@ public enum jsonHandler {
         String nodeId = (String) jsonObject.get("node_Id");
         double latitude = (double) jsonObject.get("latitude");
         double longitude = (double) jsonObject.get("longitude");
-        List<Edge> edges = jsonToEdges((JSONArray) jsonObject.get("edges"));
+        List<Edge> edges = jsonToEdges((JSONArray) jsonObject.get("edges"), roadMap);
 
-        Node node = RoadMap.getInstance().addNode(nodeId, osmId, latitude, longitude);
+        Node node = roadMap.addNode(nodeId, osmId, latitude, longitude);
         edges.forEach(e->node.addEdge(e));
 
         return node;
 
     }
 
-    private static List<Edge> jsonToEdges(JSONArray jsonEdges){
+    private static List<Edge> jsonToEdges(JSONArray jsonEdges, RoadMap roadMap){
         List<Edge> edges = new ArrayList<>();
-        jsonEdges.forEach(jsonEdge -> edges.add(jsonToEdge( (JSONObject) jsonEdge)));
+        jsonEdges.forEach(jsonEdge -> edges.add(jsonToEdge( (JSONObject) jsonEdge, roadMap)));
         return edges;
     }
 
-    private static Edge jsonToEdge(String jsonString) throws ParseException {
+    private static Edge jsonToEdge(String jsonString, RoadMap roadMap) throws ParseException {
         JSONParser parser = new JSONParser();
-        return jsonToEdge((JSONObject) parser.parse(jsonString));
+        return jsonToEdge((JSONObject) parser.parse(jsonString), roadMap);
     }
 
-    private static Edge jsonToEdge(JSONObject jsonObj){
+    private static Edge jsonToEdge(JSONObject jsonObj, RoadMap roadMap){
         String edgeId = (String) jsonObj.get("edge_Id");
         Long startNodeId = (Long) jsonObj.get("startNodeId");
         Long endNodeId = (Long) jsonObj.get("endNodeId");
         Double weight = (Double) jsonObj.get("weight");
         String highwayType = (String) jsonObj.get("highwayType");
 
-        return RoadMap.getInstance().addEdge(edgeId, startNodeId, endNodeId, weight, highwayType);
+        return roadMap.addEdge(edgeId, startNodeId, endNodeId, weight, highwayType);
     }
 
     private static Edge jsonToPath(String jsonNode){return null;}
 
-    private static Edge jsonToDriver(String jsonNode){return null;}
+    private static Edge jsonToDriver(String jsonNode, RoadMap roadMap){return null;}
 
-    private static Edge jsonToPedestrian(String jsonNode){return null;}
+    private static Edge jsonToPedestrian(String jsonNode, RoadMap roadMap){return null;}
 
     private static Edge jsonToMap(String jsonNode){return null;}
 

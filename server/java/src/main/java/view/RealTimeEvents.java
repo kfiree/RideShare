@@ -18,12 +18,13 @@ public class RealTimeEvents implements Runnable{
     private final List<ElementsOnMap> startedEvents, eventsToSend;
     private final double simulatorSpeed;
     private Date currTime;
+    private RoadMap roadMap;
 
     private final Random rand = new Random(1);
 
-    public RealTimeEvents(double simulatorSpeed) {
+    public RealTimeEvents(double simulatorSpeed, RoadMap roadMap) {
         this.simulatorSpeed = simulatorSpeed;
-
+        this.roadMap = roadMap;
         events = initEvents(10, 3);
         currTime = events.peek().getStartTime();
 
@@ -77,7 +78,7 @@ public class RealTimeEvents implements Runnable{
 
     public List<ElementsOnMap> initPedestrians(int pedestrianNum){
         List<ElementsOnMap> pedestrians = new ArrayList<>();
-        List<Node> nodes = new ArrayList<>(RoadMap.getInstance().getNodes());
+        List<Node> nodes = new ArrayList<>(roadMap.getNodes());
         Node src, dst;
 
         int[] randomIndexes = rand.ints(pedestrianNum*2, 0, nodes.size()).toArray();
@@ -100,7 +101,7 @@ public class RealTimeEvents implements Runnable{
     public List<ElementsOnMap> initDrives(int drivesNum) {
         // drives variables
         List<ElementsOnMap> drives = new ArrayList<>();
-        List<Node> nodes = new ArrayList<>(RoadMap.getInstance().getNodes());
+        List<Node> nodes = new ArrayList<>(roadMap.getNodes());
         Node src, dst;
 
         //TODO when read events from file will work - make date the first event start time

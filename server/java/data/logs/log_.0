@@ -1,10 +1,56 @@
-30::[2022-07-02 20:59:10] [model.Drive] [INFO] - driver 5 will get to 591891684 in 10.76 seconds (0% of the path)
-28::[2022-07-02 20:59:11] [model.Drive] [INFO] - driver 3 will get to 302199510 in 12.04 seconds (0% of the path)
-27::[2022-07-02 20:59:11] [model.Drive] [INFO] - driver 2 will get to 3693554209 in 1.82 seconds (0% of the path)
-27::[2022-07-02 20:59:11] [model.Drive] [INFO] - driver 2 will get to 4523918888 in 5.87 seconds (0% of the path)
-30::[2022-07-02 20:59:11] [model.Drive] [INFO] - driver 5 will get to 591891635 in 2.13 seconds (0% of the path)
-30::[2022-07-02 20:59:12] [model.Drive] [INFO] - driver 5 will get to 591891681 in 2.07 seconds (0% of the path)
-26::[2022-07-02 20:59:12] [model.Drive] [INFO] - driver 1 will get to 1200005654 in 6.20 seconds (0% of the path)
-28::[2022-07-02 20:59:12] [model.Drive] [INFO] - driver 3 will get to 302199460 in 5.17 seconds (0% of the path)
-30::[2022-07-02 20:59:12] [model.Drive] [INFO] - driver 5 will get to 6036586952 in 9.98 seconds (0% of the path)
-27::[2022-07-02 20:59:12] [model.Drive] [INFO] - driver 2 will get to 4204587168 in 3.82 seconds (0% of the path)
+1::[2022-07-02 21:32:32] [App] [FINEST] - Let's GO!!
+1::[2022-07-02 21:32:32] [App] [INFO] - Start parsing main map.
+1::[2022-07-02 21:32:50] [controller.utils.GraphAlgo] [FINE] - BFS from node 2216127671
+1::[2022-07-02 21:32:52] [controller.utils.GraphAlgo] [INFO] - 118 nodes that are not part of main component are found and being removed.
+1::[2022-07-02 21:32:52] [App] [INFO] - Map is ready. Map = OMap{edges=13634, nodes=9640, pedestrians=0, drives=0}
+1::[2022-07-02 21:32:52] [controller.utils.GraphAlgo] [FINE] - Path between 416614999 and 270425812 found using A*.
+1::[2022-07-02 21:32:52] [controller.utils.GraphAlgo] [FINE] - Path between 8660335855 and 338523939 found using A*.
+1::[2022-07-02 21:32:52] [controller.utils.GraphAlgo] [FINE] - Path between 1571656328 and 414719373 found using A*.
+1::[2022-07-02 21:32:52] [controller.utils.GraphAlgo] [FINE] - Path between 1697483531 and 563938249 found using A*.
+1::[2022-07-02 21:32:52] [controller.utils.GraphAlgo] [FINE] - Path between 409721648 and 417635284 found using A*.
+1::[2022-07-02 21:32:52] [controller.utils.GraphAlgo] [FINE] - Path between 3716084607 and 9330607030 found using A*.
+1::[2022-07-02 21:32:52] [controller.utils.GraphAlgo] [FINE] - Path between 950853330 and 416620655 found using A*.
+1::[2022-07-02 21:32:52] [controller.utils.GraphAlgo] [FINE] - Path between 6035020759 and 2995640305 found using A*.
+1::[2022-07-02 21:32:52] [controller.utils.GraphAlgo] [FINE] - Path between 1589473395 and 3172865373 found using A*.
+1::[2022-07-02 21:32:52] [controller.utils.GraphAlgo] [FINE] - Path between 1687642020 and 4855791517 found using A*.
+1::[2022-07-02 21:32:52] [view.RealTimeEvents] [FINER] - init 10 drives.
+1::[2022-07-02 21:32:52] [view.RealTimeEvents] [FINER] - init 3 pedestrians.
+24::[2022-07-02 21:32:53] [view.RealTimeEvents] [FINE] - RealTimeEvents star running
+25::[2022-07-02 21:32:56] [model.Drive] [FINE] - Drive 0 started.
+24::[2022-07-02 21:32:56] [view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{, ownerId='0', passengers=[null, null, null], leaveTime=Sat, 02 Jul 2022 21:32:52 EEST, paths=1, currNode=Node{id = 416614999, coordinates = (32.113074000000005,34.8261345), adjacent = (416622031, 416615001, 416614082)}
+} event. at Sat, 02 Jul 2022 21:32:52 EEST.
+25::[2022-07-02 21:32:56] [model.Drive] [INFO] - driver 0 will get to 416615001 in 6.54 seconds (0% of the path)
+25::[2022-07-02 21:32:57] [model.Drive] [INFO] - driver 0 will get to 416615004 in 6.68 seconds (0% of the path)
+25::[2022-07-02 21:32:58] [model.Drive] [INFO] - driver 0 will get to 416615005 in 4.64 seconds (0% of the path)
+25::[2022-07-02 21:32:58] [model.Drive] [INFO] - driver 0 will get to 416615006 in 6.42 seconds (0% of the path)
+25::[2022-07-02 21:32:59] [model.Drive] [INFO] - driver 0 will get to 416620560 in 5.91 seconds (0% of the path)
+24::[2022-07-02 21:32:59] [view.RealTimeEvents] [INFO] - RealTimeEvents add Pedestrian{id='00', startTime=Sat, 02 Jul 2022 21:32:52 EEST, currNode=Node{id = 1936278313, coordinates = (32.0616624,34.7927873), adjacent = (1936278292, 1366372683)}
+, destination=Node{id = 393982902, coordinates = (32.0819191,34.834993000000004), adjacent = (809602817, 1292078491, 1292078477)}
+} event. at Sat, 02 Jul 2022 21:32:52 EEST.
+25::[2022-07-02 21:33:00] [model.Drive] [INFO] - driver 0 will get to 416615007 in 6.09 seconds (0% of the path)
+25::[2022-07-02 21:33:00] [model.Drive] [INFO] - driver 0 will get to 416619374 in 5.70 seconds (0% of the path)
+25::[2022-07-02 21:33:01] [model.Drive] [INFO] - driver 0 will get to 1103798065 in 8.53 seconds (0% of the path)
+25::[2022-07-02 21:33:02] [model.Drive] [INFO] - driver 0 will get to 314957927 in 2.81 seconds (0% of the path)
+25::[2022-07-02 21:33:02] [model.Drive] [INFO] - driver 0 will get to 314749766 in 2.03 seconds (0% of the path)
+25::[2022-07-02 21:33:02] [model.Drive] [INFO] - driver 0 will get to 2349733294 in 2.49 seconds (0% of the path)
+25::[2022-07-02 21:33:02] [model.Drive] [INFO] - driver 0 will get to 3948253160 in 4.68 seconds (0% of the path)
+24::[2022-07-02 21:33:02] [view.RealTimeEvents] [INFO] - RealTimeEvents add Pedestrian{id='01', startTime=Sat, 02 Jul 2022 21:45:42 EEST, currNode=Node{id = 417621530, coordinates = (32.1245649,34.8148391), adjacent = (531793878, 3641691748, 5249447572)}
+, destination=Node{id = 563941290, coordinates = (32.055930100000005,34.790697300000005), adjacent = (563942894, 563943168)}
+} event. at Sat, 02 Jul 2022 21:45:42 EEST.
+25::[2022-07-02 21:33:03] [model.Drive] [INFO] - driver 0 will get to 2982221010 in 4.42 seconds (0% of the path)
+25::[2022-07-02 21:33:03] [model.Drive] [INFO] - driver 0 will get to 2982220982 in 2.05 seconds (0% of the path)
+25::[2022-07-02 21:33:03] [model.Drive] [INFO] - driver 0 will get to 2982221008 in 1.85 seconds (0% of the path)
+25::[2022-07-02 21:33:04] [model.Drive] [INFO] - driver 0 will get to 2365374917 in 14.31 seconds (0% of the path)
+25::[2022-07-02 21:33:05] [model.Drive] [INFO] - driver 0 will get to 2365374920 in 1.38 seconds (0% of the path)
+25::[2022-07-02 21:33:05] [model.Drive] [INFO] - driver 0 will get to 3948253141 in 3.39 seconds (0% of the path)
+24::[2022-07-02 21:33:05] [view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{, ownerId='1', passengers=[null, null, null], leaveTime=Sat, 02 Jul 2022 21:46:07 EEST, paths=1, currNode=Node{id = 8660335855, coordinates = (32.0454699,34.748434), adjacent = (2105338180, 8660335856)}
+} event. at Sat, 02 Jul 2022 21:46:07 EEST.
+26::[2022-07-02 21:33:05] [model.Drive] [FINE] - Drive 1 started.
+26::[2022-07-02 21:33:05] [model.Drive] [INFO] - driver 1 will get to 2105338180 in 2.63 seconds (0% of the path)
+25::[2022-07-02 21:33:06] [model.Drive] [INFO] - driver 0 will get to 313687292 in 4.19 seconds (0% of the path)
+26::[2022-07-02 21:33:06] [model.Drive] [INFO] - driver 1 will get to 1143763231 in 4.88 seconds (0% of the path)
+25::[2022-07-02 21:33:06] [model.Drive] [INFO] - driver 0 will get to 1794762662 in 1.46 seconds (0% of the path)
+25::[2022-07-02 21:33:06] [model.Drive] [INFO] - driver 0 will get to 2304862158 in 6.59 seconds (0% of the path)
+26::[2022-07-02 21:33:06] [model.Drive] [INFO] - driver 1 will get to 1931855354 in 8.96 seconds (0% of the path)
+25::[2022-07-02 21:33:07] [model.Drive] [INFO] - driver 0 will get to 580767846 in 1.92 seconds (0% of the path)
+25::[2022-07-02 21:33:07] [model.Drive] [INFO] - driver 0 will get to 8474805808 in 1.23 seconds (0% of the path)

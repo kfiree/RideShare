@@ -1,14 +1,10 @@
 package controller.osm_processing;
 
-import controller.utils.GraphAlgo;
 import controller.utils.MapUtils;
 import model.RoadMap;
 import model.Node;
 
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static controller.utils.LogHandler.LOGGER;
 
 /**
  *      |==================================|
@@ -24,21 +20,22 @@ import static controller.utils.LogHandler.LOGGER;
 public final class Parser {
     private final Map<OsmObject, Map<OsmObject, OsmWay>> AdjacentMap = new HashMap<>();
 
-    public void parseMapWays(ArrayList<OsmWay> ways){
+    public RoadMap parseMapWays(ArrayList<OsmWay> ways){
         initAdjacentMap(ways);
 
-        buildRoadMap();
+        return buildRoadMap();
     }
 
-    private void buildRoadMap(){
-        RoadMap map = RoadMap.getInstance();
+    private RoadMap buildRoadMap(){
+        RoadMap roadMap = new RoadMap();
 
         AdjacentMap.forEach((srcObj, adjacentMap)-> adjacentMap.forEach((dstObj, way)->{
-            Node src = map.addNode(srcObj);
-            Node dst = map.addNode(dstObj);
-            map.addEdge(src, dst, way);
+            Node src = roadMap.addNode(srcObj);
+            Node dst = roadMap.addNode(dstObj);
+            roadMap.addEdge(src, dst, way);
         }));
 
+        return roadMap;
     }
 
     private void initAdjacentMap(ArrayList<OsmWay> ways){
@@ -57,11 +54,11 @@ public final class Parser {
                     dstObj = objectsOnWay.get(i);
 
                     if(dstObj.isPartOfAnotherWay()){
-                        saveWay(srcObj, dstObj, way, directed);
+                        addWay(srcObj, dstObj, way, directed);
                         srcObj = dstObj;
                     }
                 }
-                saveWay(srcObj,  objectsOnWay.get(objectsOnWay.size() -1), way, directed); //todo check its last
+                addWay(srcObj,  objectsOnWay.get(objectsOnWay.size() -1), way, directed); //todo check its last
             }
         }
     }
@@ -71,15 +68,15 @@ public final class Parser {
         return oneWay != null && oneWay.equals("yes");
     }
 
-    private void saveWay(OsmObject first, OsmObject last, OsmWay way, boolean directed){
+    private void addWay(OsmObject first, OsmObject last, OsmWay way, boolean directed){
         MapUtils.validate(first != null && last != null, "can't create edge because edge's node is null. node1 - "+ first + ", node2 - "+ last+".");
-        saveDirectedWay(first, last, way);
+        addDirectedWay(first, last, way);
         if(!directed){
-            saveDirectedWay(last, first, way);
+            addDirectedWay(last, first, way);
         }
     }
 
-    private void saveDirectedWay(OsmObject src, OsmObject dst, OsmWay way){
+    private void addDirectedWay(OsmObject src, OsmObject dst, OsmWay way){
         Map<OsmObject, OsmWay> srcMap = AdjacentMap.get(src);
 
         if(srcMap == null){

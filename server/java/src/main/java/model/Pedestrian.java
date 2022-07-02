@@ -20,6 +20,14 @@ public class Pedestrian implements ElementsOnMap {
         this.currNode = currNode;
     }
 
+    public boolean isTaken() {
+        return taken;
+    }
+
+    public void take() {
+        taken = true;
+    }
+
     @Override
     public Node getDestination() { return destination; }
 

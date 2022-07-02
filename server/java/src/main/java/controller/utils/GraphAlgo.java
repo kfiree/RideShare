@@ -236,18 +236,18 @@ public final class GraphAlgo {
         return path;
     }
 
-    public static void removeNodesThatNotConnectedTo(Node src){
-        RoadMap map = RoadMap.getInstance();
+    public static void removeNodesThatNotConnectedTo(Node src, RoadMap roadMap){
+
         //delete node that aren't connected to src
         List<Node> connectedComponent = getConnectedComponent(src);
 
-        List<Node> notPartOfComponent = map.getNodes().stream()
+        List<Node> notPartOfComponent = roadMap.getNodes().stream()
                 .filter(node -> !connectedComponent.contains(node))
                 .collect(Collectors.toList());
 
         LOGGER.info(notPartOfComponent.size() + " nodes that are not part of main component are found and being removed.");
 
-        map.removeNodes(notPartOfComponent);
+        roadMap.removeNodes(notPartOfComponent);
     }
 
     /**

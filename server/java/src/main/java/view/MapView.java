@@ -37,7 +37,7 @@ import java.util.*;
  * @since   2021-06-20
  */
 public class MapView {
-    private final RoadMap map;
+    private RoadMap roadMap;
     private final Graph displayGraph;
     protected final Hashtable<Node, Drive> cars; //TODO check Exception in thread "main" java.util.ConcurrentModificationException
     protected final Hashtable<Node, Pedestrian> pedestrians;
@@ -53,7 +53,6 @@ public class MapView {
 
     private MapView() {
         displayGraph = new MultiGraph("map simulation");
-        map = RoadMap.getInstance();
         cars = new Hashtable<>();
         pedestrians = new Hashtable<>();
 
@@ -65,10 +64,11 @@ public class MapView {
 
 
 
+    public void show(double simulatorSpeed, RoadMap roadMap){
+        this.roadMap = roadMap;
 
-    public void show(double simulatorSpeed){
         //load events
-        events = new RealTimeEvents(simulatorSpeed);
+        events = new RealTimeEvents(simulatorSpeed, this.roadMap);
 
         // set graph
         viewer = new Viewer(displayGraph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
@@ -178,7 +178,7 @@ public class MapView {
     }
 
     private Boolean drawMapComponents(){
-        map.getEdges().forEach(e -> {
+        roadMap.getEdges().forEach(e -> {
             if(displayGraph.getEdge(e.getId()) == null) {
                 Node start = drawNode(e.getNode1());
                 Node end = drawNode(e.getNode2());

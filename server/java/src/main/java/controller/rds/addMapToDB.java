@@ -61,7 +61,7 @@ public class addMapToDB {
     @Override
     public String toString() {
         return "addMapToDB{" +
-                "map=" + RoadMap.getInstance() +
+                "map=" +
                 '}';
     }
 }

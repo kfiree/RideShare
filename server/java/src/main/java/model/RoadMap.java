@@ -32,12 +32,12 @@ public final class RoadMap {
         pedestrians = new Hashtable<>();
     }
 
-    /**  Singleton specific properties */
-    private static final RoadMap INSTANCE = new RoadMap();
-
-    public static RoadMap getInstance() {
-        return INSTANCE;
-    }
+//    /**  Singleton specific properties */
+//    private static final RoadMap INSTANCE = new RoadMap();
+//
+//    public static RoadMap getInstance() {
+//        return INSTANCE;
+//    }
 
 
 

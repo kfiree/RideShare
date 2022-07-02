@@ -148,10 +148,10 @@ public final class App{
 
         LOGGER.info( "Start parsing main map.");// : '" + pbfFilePath+"'");
         MapUtils.setBounds(BOUNDS);
-        CreateMap(MAP_PATH);
+        RoadMap roadMap = CreateMap(MAP_PATH);
 
-        LOGGER.info("Map is ready. Map = " + RoadMap.getInstance());
-        MapView.getInstance().show(SIMULATOR_SPEED);
+        LOGGER.info("Map is ready. Map = " + roadMap);
+        MapView.getInstance().show(SIMULATOR_SPEED, roadMap);
 
         closeLogHandlers();
         LOGGER.info("Finished!");
@@ -159,7 +159,7 @@ public final class App{
         System.exit(0);
     }
 
-    public static void CreateMap(String pathToPBF) {
+    public static RoadMap CreateMap(String pathToPBF) {
         InputStream inputStream;
 
         try {
@@ -175,10 +175,12 @@ public final class App{
 
             // secondary parsing of ways/creation of edges:
             Parser parser = new Parser();
-            parser.parseMapWays(reader.getWays());
+            RoadMap roadMap = parser.parseMapWays(reader.getWays());
 
             // get riders & drivers
-            GraphAlgo.removeNodesThatNotConnectedTo(RoadMap.getInstance().getNode(NODE_IN_MAIN_COMPONENT));
+            GraphAlgo.removeNodesThatNotConnectedTo(roadMap.getNode(NODE_IN_MAIN_COMPONENT), roadMap);
+
+            return roadMap;
 
         } catch (FileNotFoundException e) {
             LOGGER.severe("File not found!, "+e.getMessage());
@@ -187,6 +189,8 @@ public final class App{
 
             System.exit(0);
         }
+
+        return null;
     }
 
     /**
