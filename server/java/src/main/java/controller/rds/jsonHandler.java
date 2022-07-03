@@ -1,79 +1,83 @@
 package controller.rds;
 
 import controller.utils.GraphAlgo;
-import controller.utils.MapUtils;
 import model.*;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 
 public enum jsonHandler {
-    NodeType, EdgeType, MapType, PathType, DriverType, ListType, HashMapType, PedestrianType; //, IntegerType, DoubleType, StringType;
+    RoadMapType, UserMapType, NodeType, EdgeType,  PathType, DriverType,  PedestrianType,
+    ListType, MapType;
 
     /** json to object */
-    public <T> T jsonToObj(String json, RoadMap roadMap) throws ParseException {
-        switch(this){
-            case NodeType:
-                return (T) jsonToNode(json, roadMap);
-            case EdgeType:
-                return (T) jsonToEdge(json, roadMap);
-            case MapType:
-                return (T) jsonToMap(json);
-            case PathType:
-                return (T) jsonToPath(json);
-            case DriverType:
-                return (T) jsonToDriver(json, roadMap);
-            case PedestrianType:
-                return (T) jsonToPedestrian(json, roadMap);
-            case ListType:
-                return (T) jsonToList(json);
-            case HashMapType:
-                return (T) jsonToHashMap(json);
-//            case DoubleType:
-//                break;
-//            case StringType:
-//                break;
-//            case IntegerType:
-//                break;
-            default:
-                throw new IllegalStateException("value need to be one of the follow: " + Arrays.toString(values()));
+//    public <T> T jsonToObj(String json, RoadMap roadMap) throws ParseException {
+//        return switch (this) {
+//            case RoadMapType -> null;
+//            case DriverType -> (T) jsonToDriver(json, roadMap);
+//            case PedestrianType -> (T) jsonToPedestrian(json, roadMap);
+//            case PathType -> (T) jsonToPath(json);
+//            case NodeType -> (T) jsonToNode(json, roadMap);
+//            case EdgeType -> (T) jsonToEdge(json, roadMap);
+//
+//            /* java types */
+//            case ListType -> (T) jsonToList(json);
+//            case MapType -> (T) jsonToMap(json);
+////            case DoubleType:
+////                break;
+////            case StringType:
+////                break;
+////            case IntegerType:
+////                break;
+//            default -> throw new IllegalStateException("value need to be one of the follow: " + Arrays.toString(values()));
+//        };
+//    }
+    private static JSONObject readFile(String filePath){
+        JSONParser parser = new JSONParser();
+        try (Reader reader = new FileReader(filePath)) {
+            return (JSONObject) parser.parse(reader);
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
         }
+        return null;
+    }
+    
+    
+    private static void loadRoadMap(String filePath){
+        JSONObject jsonObject = readFile(filePath);
+        RoadMap roadMap = RoadMap.INSTANCE;
+
+        JSONArray nodesArray = (JSONArray) jsonObject.get("nodes");
+        System.out.println(nodesArray);
+        JSONArray edgesArray = (JSONArray) jsonObject.get("edges");
+        System.out.println(edgesArray);
+
+        nodesArray.forEach(node -> jsonToNode((JSONObject) node, roadMap));
+
+        edgesArray.forEach(node -> jsonToEdge((JSONObject) node, roadMap));
     }
 
-    private static Node jsonToNode(String jsonString, RoadMap roadMap) throws ParseException {
+    private static Node jsonToNode(JSONObject jsonObj, RoadMap roadMap){
 
-        JSONParser parser = new JSONParser();
-        JSONObject jsonObject = (JSONObject) parser.parse(jsonString);
-        Long osmId = (Long) jsonObject.get("osm_Id");
-        String nodeId = (String) jsonObject.get("node_Id");
-        double latitude = (double) jsonObject.get("latitude");
-        double longitude = (double) jsonObject.get("longitude");
-        List<Edge> edges = jsonToEdges((JSONArray) jsonObject.get("edges"), roadMap);
+        JSONObject nodeObj = (JSONObject) jsonObj.get("node");
 
-        Node node = roadMap.addNode(nodeId, osmId, latitude, longitude);
-        edges.forEach(e->node.addEdge(e));
 
-        return node;
+        String id = (String) nodeObj.get("id");
+        Long osm_id = (Long) nodeObj.get("osm_Id");
+        double lat = (double) nodeObj.get("latitude");
+        double lon = (double) nodeObj.get("longitude");
 
-    }
+        return roadMap.addNode(id,osm_id, lat, lon);
 
-    private static List<Edge> jsonToEdges(JSONArray jsonEdges, RoadMap roadMap){
-        List<Edge> edges = new ArrayList<>();
-        jsonEdges.forEach(jsonEdge -> edges.add(jsonToEdge( (JSONObject) jsonEdge, roadMap)));
-        return edges;
-    }
-
-    private static Edge jsonToEdge(String jsonString, RoadMap roadMap) throws ParseException {
-        JSONParser parser = new JSONParser();
-        return jsonToEdge((JSONObject) parser.parse(jsonString), roadMap);
     }
 
     private static Edge jsonToEdge(JSONObject jsonObj, RoadMap roadMap){
@@ -86,13 +90,45 @@ public enum jsonHandler {
         return roadMap.addEdge(edgeId, startNodeId, endNodeId, weight, highwayType);
     }
 
-    private static Edge jsonToPath(String jsonNode){return null;}
+    private static void loadUsersMap(String filePath){
+        JSONObject jsonObject = readFile(filePath);
+        UsersMap usersMap = UsersMap.INSTANCE;
 
-    private static Edge jsonToDriver(String jsonNode, RoadMap roadMap){return null;}
+        JSONArray pedestriansArray = (JSONArray) jsonObject.get("nodes");
+        System.out.println(pedestriansArray);
+        JSONArray drivesArray = (JSONArray) jsonObject.get("edges");
+        System.out.println(drivesArray);
 
-    private static Edge jsonToPedestrian(String jsonNode, RoadMap roadMap){return null;}
+        pedestriansArray.forEach(pedestrian -> jsonToPedestrian((JSONObject) pedestrian, usersMap));
 
-    private static Edge jsonToMap(String jsonNode){return null;}
+        drivesArray.forEach(drive -> jsonToDriver((JSONObject) drive, usersMap));
+    }
+
+    private static Pedestrian jsonToPedestrian(JSONObject jsonObj, UsersMap usersMap){
+        JSONObject pedestrianObj = (JSONObject) jsonObj.get("pedestrian");
+
+
+        String id = (String) pedestrianObj.get("id");
+        Node src = RoadMap.INSTANCE.getNode((long)pedestrianObj.get("src_id"));
+        Node dst = RoadMap.INSTANCE.getNode((long)pedestrianObj.get("dst_id"));
+        Date date = new Date((long)pedestrianObj.get("date"));
+
+        return usersMap.addPedestrian(id, src, dst, date);
+    }
+
+    private static Drive jsonToDriver(JSONObject jsonObj, UsersMap usersMap){
+        JSONObject driverObj = (JSONObject) jsonObj.get("pedestrian");
+
+//        Path path = jsonToPath((JSONObject) driverObj.get("path")); todo accept path
+
+        String id = (String) driverObj.get("id");
+        String type = (String) driverObj.get("type");
+        Node src = RoadMap.INSTANCE.getNode((long)driverObj.get("src_id"));
+        Node dst = RoadMap.INSTANCE.getNode((long)driverObj.get("dst_id"));
+        Date date = new Date((long)driverObj.get("date"));
+
+        return usersMap.addDrive(src, dst, type, id, date);
+    }
 
     private static List<Object> jsonToList(String json) throws ParseException {
         JSONParser jsonParser = new JSONParser();
@@ -108,7 +144,7 @@ public enum jsonHandler {
         }
     }
 
-    private static Map<Object, Object> jsonToHashMap(String json) throws ParseException {
+    private static Map<Object, Object> jsonToMap(String json) throws ParseException {
         try {
             JSONParser parser = new JSONParser();
             Object obj = parser.parse(json);
@@ -118,6 +154,11 @@ public enum jsonHandler {
         }
     }
 
+
+
+
+
+    //===================================================== NOT GOOD =====================================================
 
     /** object to json */
     public <T> String objToJson(Object obj){
@@ -134,7 +175,6 @@ public enum jsonHandler {
 //                return (T) jsonToDriver(obj);
             case ListType:
 //                return (T) jsonToList(obj);
-            case HashMapType:
 //                return (T) jsonToHashMap(obj);
 //            case DoubleType:
 //                break;
@@ -222,8 +262,8 @@ public enum jsonHandler {
 //                String srcId = (String) jsonDrive.get("src");
 //                String dstId = (String) jsonDrive.get("dest");
 //
-//                Node src = GraphAlgo.findClosestNode(MapUtils.getLocations().get(srcId).getCoordinates(), RoadMap.getInstance().getNodes());
-//                Node dst = GraphAlgo.findClosestNode(MapUtils.getLocations().get(dstId).getCoordinates(), RoadMap.getInstance().getNodes());
+//                Node src = GraphAlgo.findClosestNode(MapUtils.getLocations().get(srcId).getCoordinates(), RoadMap.INSTANCE.getNodes());
+//                Node dst = GraphAlgo.findClosestNode(MapUtils.getLocations().get(dstId).getCoordinates(), RoadMap.INSTANCE.getNodes());
 //                Path path = GraphAlgo.getShortestPath(src, dst);
 //                drives.add(new Drive(path, driverType, driveOwnerId, leaveTime));
 //            });
@@ -257,12 +297,13 @@ public enum jsonHandler {
 //        MapUtils.setLocations(locations);
 //    }
 
-    // method to parse ISO String to Date object
-    public static Date JsonTODate(String date) throws java.text.ParseException {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        format.setTimeZone(TimeZone.getTimeZone("UTC"));
-        return format.parse(date);
-    }
+//    // method to parse ISO String to Date object
+//    public static Date JsonTODate(JSONObject dateObj) throws java.text.ParseException {
+//        dateObj
+//        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+//        format.setTimeZone(TimeZone.getTimeZone("UTC"));
+//        return format.parse(dateObj);
+//    }
 
 
 

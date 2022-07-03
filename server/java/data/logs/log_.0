@@ -1,56 +1,85 @@
-1::[2022-07-02 21:32:32] [App] [FINEST] - Let's GO!!
-1::[2022-07-02 21:32:32] [App] [INFO] - Start parsing main map.
-1::[2022-07-02 21:32:50] [controller.utils.GraphAlgo] [FINE] - BFS from node 2216127671
-1::[2022-07-02 21:32:52] [controller.utils.GraphAlgo] [INFO] - 118 nodes that are not part of main component are found and being removed.
-1::[2022-07-02 21:32:52] [App] [INFO] - Map is ready. Map = OMap{edges=13634, nodes=9640, pedestrians=0, drives=0}
-1::[2022-07-02 21:32:52] [controller.utils.GraphAlgo] [FINE] - Path between 416614999 and 270425812 found using A*.
-1::[2022-07-02 21:32:52] [controller.utils.GraphAlgo] [FINE] - Path between 8660335855 and 338523939 found using A*.
-1::[2022-07-02 21:32:52] [controller.utils.GraphAlgo] [FINE] - Path between 1571656328 and 414719373 found using A*.
-1::[2022-07-02 21:32:52] [controller.utils.GraphAlgo] [FINE] - Path between 1697483531 and 563938249 found using A*.
-1::[2022-07-02 21:32:52] [controller.utils.GraphAlgo] [FINE] - Path between 409721648 and 417635284 found using A*.
-1::[2022-07-02 21:32:52] [controller.utils.GraphAlgo] [FINE] - Path between 3716084607 and 9330607030 found using A*.
-1::[2022-07-02 21:32:52] [controller.utils.GraphAlgo] [FINE] - Path between 950853330 and 416620655 found using A*.
-1::[2022-07-02 21:32:52] [controller.utils.GraphAlgo] [FINE] - Path between 6035020759 and 2995640305 found using A*.
-1::[2022-07-02 21:32:52] [controller.utils.GraphAlgo] [FINE] - Path between 1589473395 and 3172865373 found using A*.
-1::[2022-07-02 21:32:52] [controller.utils.GraphAlgo] [FINE] - Path between 1687642020 and 4855791517 found using A*.
-1::[2022-07-02 21:32:52] [view.RealTimeEvents] [FINER] - init 10 drives.
-1::[2022-07-02 21:32:52] [view.RealTimeEvents] [FINER] - init 3 pedestrians.
-24::[2022-07-02 21:32:53] [view.RealTimeEvents] [FINE] - RealTimeEvents star running
-25::[2022-07-02 21:32:56] [model.Drive] [FINE] - Drive 0 started.
-24::[2022-07-02 21:32:56] [view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{, ownerId='0', passengers=[null, null, null], leaveTime=Sat, 02 Jul 2022 21:32:52 EEST, paths=1, currNode=Node{id = 416614999, coordinates = (32.113074000000005,34.8261345), adjacent = (416622031, 416615001, 416614082)}
-} event. at Sat, 02 Jul 2022 21:32:52 EEST.
-25::[2022-07-02 21:32:56] [model.Drive] [INFO] - driver 0 will get to 416615001 in 6.54 seconds (0% of the path)
-25::[2022-07-02 21:32:57] [model.Drive] [INFO] - driver 0 will get to 416615004 in 6.68 seconds (0% of the path)
-25::[2022-07-02 21:32:58] [model.Drive] [INFO] - driver 0 will get to 416615005 in 4.64 seconds (0% of the path)
-25::[2022-07-02 21:32:58] [model.Drive] [INFO] - driver 0 will get to 416615006 in 6.42 seconds (0% of the path)
-25::[2022-07-02 21:32:59] [model.Drive] [INFO] - driver 0 will get to 416620560 in 5.91 seconds (0% of the path)
-24::[2022-07-02 21:32:59] [view.RealTimeEvents] [INFO] - RealTimeEvents add Pedestrian{id='00', startTime=Sat, 02 Jul 2022 21:32:52 EEST, currNode=Node{id = 1936278313, coordinates = (32.0616624,34.7927873), adjacent = (1936278292, 1366372683)}
-, destination=Node{id = 393982902, coordinates = (32.0819191,34.834993000000004), adjacent = (809602817, 1292078491, 1292078477)}
-} event. at Sat, 02 Jul 2022 21:32:52 EEST.
-25::[2022-07-02 21:33:00] [model.Drive] [INFO] - driver 0 will get to 416615007 in 6.09 seconds (0% of the path)
-25::[2022-07-02 21:33:00] [model.Drive] [INFO] - driver 0 will get to 416619374 in 5.70 seconds (0% of the path)
-25::[2022-07-02 21:33:01] [model.Drive] [INFO] - driver 0 will get to 1103798065 in 8.53 seconds (0% of the path)
-25::[2022-07-02 21:33:02] [model.Drive] [INFO] - driver 0 will get to 314957927 in 2.81 seconds (0% of the path)
-25::[2022-07-02 21:33:02] [model.Drive] [INFO] - driver 0 will get to 314749766 in 2.03 seconds (0% of the path)
-25::[2022-07-02 21:33:02] [model.Drive] [INFO] - driver 0 will get to 2349733294 in 2.49 seconds (0% of the path)
-25::[2022-07-02 21:33:02] [model.Drive] [INFO] - driver 0 will get to 3948253160 in 4.68 seconds (0% of the path)
-24::[2022-07-02 21:33:02] [view.RealTimeEvents] [INFO] - RealTimeEvents add Pedestrian{id='01', startTime=Sat, 02 Jul 2022 21:45:42 EEST, currNode=Node{id = 417621530, coordinates = (32.1245649,34.8148391), adjacent = (531793878, 3641691748, 5249447572)}
-, destination=Node{id = 563941290, coordinates = (32.055930100000005,34.790697300000005), adjacent = (563942894, 563943168)}
-} event. at Sat, 02 Jul 2022 21:45:42 EEST.
-25::[2022-07-02 21:33:03] [model.Drive] [INFO] - driver 0 will get to 2982221010 in 4.42 seconds (0% of the path)
-25::[2022-07-02 21:33:03] [model.Drive] [INFO] - driver 0 will get to 2982220982 in 2.05 seconds (0% of the path)
-25::[2022-07-02 21:33:03] [model.Drive] [INFO] - driver 0 will get to 2982221008 in 1.85 seconds (0% of the path)
-25::[2022-07-02 21:33:04] [model.Drive] [INFO] - driver 0 will get to 2365374917 in 14.31 seconds (0% of the path)
-25::[2022-07-02 21:33:05] [model.Drive] [INFO] - driver 0 will get to 2365374920 in 1.38 seconds (0% of the path)
-25::[2022-07-02 21:33:05] [model.Drive] [INFO] - driver 0 will get to 3948253141 in 3.39 seconds (0% of the path)
-24::[2022-07-02 21:33:05] [view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{, ownerId='1', passengers=[null, null, null], leaveTime=Sat, 02 Jul 2022 21:46:07 EEST, paths=1, currNode=Node{id = 8660335855, coordinates = (32.0454699,34.748434), adjacent = (2105338180, 8660335856)}
-} event. at Sat, 02 Jul 2022 21:46:07 EEST.
-26::[2022-07-02 21:33:05] [model.Drive] [FINE] - Drive 1 started.
-26::[2022-07-02 21:33:05] [model.Drive] [INFO] - driver 1 will get to 2105338180 in 2.63 seconds (0% of the path)
-25::[2022-07-02 21:33:06] [model.Drive] [INFO] - driver 0 will get to 313687292 in 4.19 seconds (0% of the path)
-26::[2022-07-02 21:33:06] [model.Drive] [INFO] - driver 1 will get to 1143763231 in 4.88 seconds (0% of the path)
-25::[2022-07-02 21:33:06] [model.Drive] [INFO] - driver 0 will get to 1794762662 in 1.46 seconds (0% of the path)
-25::[2022-07-02 21:33:06] [model.Drive] [INFO] - driver 0 will get to 2304862158 in 6.59 seconds (0% of the path)
-26::[2022-07-02 21:33:06] [model.Drive] [INFO] - driver 1 will get to 1931855354 in 8.96 seconds (0% of the path)
-25::[2022-07-02 21:33:07] [model.Drive] [INFO] - driver 0 will get to 580767846 in 1.92 seconds (0% of the path)
-25::[2022-07-02 21:33:07] [model.Drive] [INFO] - driver 0 will get to 8474805808 in 1.23 seconds (0% of the path)
+34::[2022-07-03 21:38:24] [model.Drive] [INFO] - driver (9) 12.10% complete.
+31::[2022-07-03 21:38:24] [model.Drive] [INFO] - driver (6) 48.53% complete.
+30::[2022-07-03 21:38:24] [model.Drive] [INFO] - driver (5) 75.00% complete.
+33::[2022-07-03 21:38:25] [model.Drive] [INFO] - driver (8) 19.05% complete.
+32::[2022-07-03 21:38:25] [model.Drive] [INFO] - driver (7) 71.43% complete.
+25::[2022-07-03 21:38:25] [model.Drive] [INFO] - driver (0) 52.67% complete.
+26::[2022-07-03 21:38:25] [model.Drive] [INFO] - driver (1) 38.46% complete.
+29::[2022-07-03 21:38:25] [model.Drive] [FINEST] - Drive 4 finished!.
+30::[2022-07-03 21:38:25] [model.Drive] [INFO] - driver (5) 80.36% complete.
+33::[2022-07-03 21:38:26] [model.Drive] [INFO] - driver (8) 21.43% complete.
+34::[2022-07-03 21:38:26] [model.Drive] [INFO] - driver (9) 14.52% complete.
+31::[2022-07-03 21:38:26] [model.Drive] [INFO] - driver (6) 52.94% complete.
+26::[2022-07-03 21:38:26] [model.Drive] [INFO] - driver (1) 40.00% complete.
+30::[2022-07-03 21:38:26] [model.Drive] [INFO] - driver (5) 85.71% complete.
+27::[2022-07-03 21:38:27] [model.Drive] [INFO] - driver (2) 27.27% complete.
+25::[2022-07-03 21:38:27] [model.Drive] [INFO] - driver (0) 54.96% complete.
+34::[2022-07-03 21:38:27] [model.Drive] [INFO] - driver (9) 16.94% complete.
+33::[2022-07-03 21:38:27] [model.Drive] [INFO] - driver (8) 23.81% complete.
+26::[2022-07-03 21:38:27] [model.Drive] [INFO] - driver (1) 41.54% complete.
+31::[2022-07-03 21:38:28] [model.Drive] [INFO] - driver (6) 57.35% complete.
+32::[2022-07-03 21:38:28] [model.Drive] [INFO] - driver (7) 78.57% complete.
+30::[2022-07-03 21:38:28] [model.Drive] [INFO] - driver (5) 91.07% complete.
+25::[2022-07-03 21:38:28] [model.Drive] [INFO] - driver (0) 57.25% complete.
+34::[2022-07-03 21:38:28] [model.Drive] [INFO] - driver (9) 19.35% complete.
+32::[2022-07-03 21:38:29] [model.Drive] [INFO] - driver (7) 85.71% complete.
+31::[2022-07-03 21:38:29] [model.Drive] [INFO] - driver (6) 61.76% complete.
+34::[2022-07-03 21:38:29] [model.Drive] [INFO] - driver (9) 21.77% complete.
+33::[2022-07-03 21:38:29] [model.Drive] [INFO] - driver (8) 26.19% complete.
+30::[2022-07-03 21:38:29] [model.Drive] [INFO] - driver (5) 96.43% complete.
+26::[2022-07-03 21:38:29] [model.Drive] [INFO] - driver (1) 43.08% complete.
+34::[2022-07-03 21:38:30] [model.Drive] [INFO] - driver (9) 24.19% complete.
+25::[2022-07-03 21:38:30] [model.Drive] [INFO] - driver (0) 59.54% complete.
+27::[2022-07-03 21:38:30] [model.Drive] [INFO] - driver (2) 29.37% complete.
+33::[2022-07-03 21:38:30] [model.Drive] [INFO] - driver (8) 28.57% complete.
+32::[2022-07-03 21:38:30] [model.Drive] [INFO] - driver (7) 92.86% complete.
+26::[2022-07-03 21:38:30] [model.Drive] [INFO] - driver (1) 44.62% complete.
+31::[2022-07-03 21:38:31] [model.Drive] [INFO] - driver (6) 66.18% complete.
+27::[2022-07-03 21:38:31] [model.Drive] [INFO] - driver (2) 31.47% complete.
+25::[2022-07-03 21:38:31] [model.Drive] [INFO] - driver (0) 61.83% complete.
+33::[2022-07-03 21:38:32] [model.Drive] [INFO] - driver (8) 30.95% complete.
+30::[2022-07-03 21:38:32] [model.Drive] [FINEST] - Drive 5 finished!.
+32::[2022-07-03 21:38:32] [model.Drive] [INFO] - driver (7) 100.00% complete.
+34::[2022-07-03 21:38:32] [model.Drive] [INFO] - driver (9) 26.61% complete.
+32::[2022-07-03 21:38:32] [model.Drive] [FINEST] - Drive 7 finished!.
+25::[2022-07-03 21:38:33] [model.Drive] [INFO] - driver (0) 64.12% complete.
+26::[2022-07-03 21:38:33] [model.Drive] [INFO] - driver (1) 46.15% complete.
+27::[2022-07-03 21:38:34] [model.Drive] [INFO] - driver (2) 33.57% complete.
+34::[2022-07-03 21:38:34] [model.Drive] [INFO] - driver (9) 29.03% complete.
+26::[2022-07-03 21:38:34] [model.Drive] [INFO] - driver (1) 47.69% complete.
+33::[2022-07-03 21:38:34] [model.Drive] [INFO] - driver (8) 33.33% complete.
+33::[2022-07-03 21:38:35] [model.Drive] [INFO] - driver (8) 35.71% complete.
+34::[2022-07-03 21:38:36] [model.Drive] [INFO] - driver (9) 31.45% complete.
+25::[2022-07-03 21:38:36] [model.Drive] [INFO] - driver (0) 66.41% complete.
+26::[2022-07-03 21:38:36] [model.Drive] [INFO] - driver (1) 49.23% complete.
+31::[2022-07-03 21:38:36] [model.Drive] [INFO] - driver (6) 70.59% complete.
+33::[2022-07-03 21:38:36] [model.Drive] [INFO] - driver (8) 38.10% complete.
+27::[2022-07-03 21:38:37] [model.Drive] [INFO] - driver (2) 35.66% complete.
+31::[2022-07-03 21:38:37] [model.Drive] [INFO] - driver (6) 75.00% complete.
+34::[2022-07-03 21:38:38] [model.Drive] [INFO] - driver (9) 33.87% complete.
+33::[2022-07-03 21:38:38] [model.Drive] [INFO] - driver (8) 40.48% complete.
+25::[2022-07-03 21:38:38] [model.Drive] [INFO] - driver (0) 68.70% complete.
+26::[2022-07-03 21:38:38] [model.Drive] [INFO] - driver (1) 50.77% complete.
+27::[2022-07-03 21:38:39] [model.Drive] [INFO] - driver (2) 37.76% complete.
+26::[2022-07-03 21:38:39] [model.Drive] [INFO] - driver (1) 52.31% complete.
+34::[2022-07-03 21:38:39] [model.Drive] [INFO] - driver (9) 36.29% complete.
+27::[2022-07-03 21:38:40] [model.Drive] [INFO] - driver (2) 39.86% complete.
+33::[2022-07-03 21:38:40] [model.Drive] [INFO] - driver (8) 42.86% complete.
+25::[2022-07-03 21:38:40] [model.Drive] [INFO] - driver (0) 70.99% complete.
+31::[2022-07-03 21:38:40] [model.Drive] [INFO] - driver (6) 79.41% complete.
+34::[2022-07-03 21:38:40] [model.Drive] [INFO] - driver (9) 38.71% complete.
+26::[2022-07-03 21:38:41] [model.Drive] [INFO] - driver (1) 53.85% complete.
+33::[2022-07-03 21:38:41] [model.Drive] [INFO] - driver (8) 45.24% complete.
+27::[2022-07-03 21:38:42] [model.Drive] [INFO] - driver (2) 41.96% complete.
+26::[2022-07-03 21:38:42] [model.Drive] [INFO] - driver (1) 55.38% complete.
+34::[2022-07-03 21:38:43] [model.Drive] [INFO] - driver (9) 41.13% complete.
+25::[2022-07-03 21:38:43] [model.Drive] [INFO] - driver (0) 73.28% complete.
+27::[2022-07-03 21:38:43] [model.Drive] [INFO] - driver (2) 44.06% complete.
+26::[2022-07-03 21:38:43] [model.Drive] [INFO] - driver (1) 56.92% complete.
+31::[2022-07-03 21:38:43] [model.Drive] [INFO] - driver (6) 83.82% complete.
+27::[2022-07-03 21:38:44] [model.Drive] [INFO] - driver (2) 46.15% complete.
+34::[2022-07-03 21:38:44] [model.Drive] [INFO] - driver (9) 43.55% complete.
+25::[2022-07-03 21:38:45] [model.Drive] [INFO] - driver (0) 75.57% complete.
+26::[2022-07-03 21:38:45] [model.Drive] [INFO] - driver (1) 58.46% complete.
+27::[2022-07-03 21:38:45] [model.Drive] [INFO] - driver (2) 48.25% complete.
+33::[2022-07-03 21:38:45] [model.Drive] [INFO] - driver (8) 47.62% complete.

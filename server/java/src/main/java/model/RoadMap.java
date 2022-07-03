@@ -17,27 +17,19 @@ import java.util.*;
  * @version 1.0
  * @since   2021-06-20
  */
-public final class RoadMap {
+public class RoadMap {
 
     private final Set<Edge> edges;
     private final Map<Long, Node> nodes;
-    private final Map<String, Drive> drives;
-    private final Map<String, Pedestrian> pedestrians;
 
     /** CONSTRUCTORS */
-    public RoadMap() {
+    private RoadMap() {
         edges = new HashSet<>();
         nodes = new HashMap<>();
-        drives = new Hashtable<>();
-        pedestrians = new Hashtable<>();
     }
 
-//    /**  Singleton specific properties */
-//    private static final RoadMap INSTANCE = new RoadMap();
-//
-//    public static RoadMap getInstance() {
-//        return INSTANCE;
-//    }
+    /**  Singleton specific properties */
+    public static final RoadMap INSTANCE = new RoadMap();
 
 
 
@@ -49,13 +41,6 @@ public final class RoadMap {
 
     public Set<Edge> getEdges() { return edges; }
 
-    public Collection<Drive> getDrives() { return drives.values(); }
-
-    public Drive getDrive(String key) { return drives.get(key); }
-
-    public Collection<Pedestrian> getPedestrians() { return pedestrians.values(); }
-
-    public Pedestrian getPedestrian(String key) { return pedestrians.get(key); }
 
 
 
@@ -133,14 +118,6 @@ public final class RoadMap {
         return node;
     }
 
-    public void setDrives(Map<String, Drive> drives) { this.drives.putAll(drives); }
-
-    public void setPedestrians(Map<String, Pedestrian> pedestrians) { this.pedestrians.putAll(pedestrians); }
-
-    public void addDrive(Drive drive) { drives.put(drive.getId(), drive); }
-
-    public void addPedestrian(Pedestrian pedestrian) { pedestrians.put(pedestrian.getId(), pedestrian); }
-
 
 
     /** REMOVE FROM GRAPH */
@@ -177,19 +154,13 @@ public final class RoadMap {
         return edges.remove(edge);
     }
 
-    public void removeDrive(String driveKey) { drives.remove(driveKey); }
-
-    public void removePedestrian(String pedestrianKey) { pedestrians.remove(pedestrianKey); }
-
 
 
     @Override
     public String toString() {
-        return "OMap{" +
+        return "RoadMap{" +
                 "edges=" + edges.size() +
                 ", nodes=" + nodes.size() +
-                ", pedestrians=" + pedestrians.size() +
-                ", drives=" + drives.size() +
                 '}';
     }
 }

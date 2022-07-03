@@ -20,14 +20,14 @@ import java.util.*;
 public final class Parser {
     private final Map<OsmObject, Map<OsmObject, OsmWay>> AdjacentMap = new HashMap<>();
 
-    public RoadMap parseMapWays(ArrayList<OsmWay> ways){
+    public void parseMapWays(ArrayList<OsmWay> ways){
         initAdjacentMap(ways);
 
-        return buildRoadMap();
+        buildRoadMap();
     }
 
-    private RoadMap buildRoadMap(){
-        RoadMap roadMap = new RoadMap();
+    private void buildRoadMap(){
+        RoadMap roadMap = RoadMap.INSTANCE;
 
         AdjacentMap.forEach((srcObj, adjacentMap)-> adjacentMap.forEach((dstObj, way)->{
             Node src = roadMap.addNode(srcObj);
@@ -35,7 +35,6 @@ public final class Parser {
             roadMap.addEdge(src, dst, way);
         }));
 
-        return roadMap;
     }
 
     private void initAdjacentMap(ArrayList<OsmWay> ways){

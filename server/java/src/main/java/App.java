@@ -56,7 +56,7 @@ import static controller.utils.LogHandler.*;
  *          Last priority:
  *              -
  *    .
- *                                      SOURCES (unchecked sources := '??')
+ *                          SOURCES (unchecked sources := '??')
  *                          ---------------------------------
  *    .
  *    .
@@ -91,7 +91,7 @@ import static controller.utils.LogHandler.*;
  *      TODO project:
  *          Priority 1:
  *              - add Pedestrian and Drives to RoadMap
- *              -
+ *              - add summary of run
  *              - ReadMe (use javadocs).
  *              - Address warnings - optimize project.
  *              - Add 'alias-like' in Reader.java and MapView.java (org.openstreetmap.osmosis.core.domain.v0_6.Node and org.graphstream.Node)
@@ -108,6 +108,7 @@ import static controller.utils.LogHandler.*;
  *      TODO Simulator infrastructure:
  *          Priority 1:
  *              - Enforce thread-safe for all shared methods, datastructures and variables.
+ *                  * src: https://www.geeksforgeeks.org/synchronization-in-java/
  *              - Check if car not moving for x time.
  *          Priority 2:
  *              - Save graph instead of recreating it.
@@ -137,7 +138,15 @@ public final class App{
     private static Long  NODE_IN_MAIN_COMPONENT;
     private static Double SIMULATOR_SPEED;
     private static String CONSOLE_LOG_LEVEL, MAP_PATH;
-    private static Boolean BOUNDS;
+    private static Boolean BOUNDS, SHOW_ALL_PATHS;
+
+    static{
+        NODE_IN_MAIN_COMPONENT =2432701015L;
+        SIMULATOR_SPEED = 10.0;
+        BOUNDS = true;
+        CONSOLE_LOG_LEVEL = "ALL";
+        SHOW_ALL_PATHS = true;
+    }
 
     public static void main(String[] args) {
         System.out.println("java -jar RideShare.jar -h\n\n" + Instructions
@@ -148,10 +157,10 @@ public final class App{
 
         LOGGER.info( "Start parsing main map.");// : '" + pbfFilePath+"'");
         MapUtils.setBounds(BOUNDS);
-        RoadMap roadMap = CreateMap(MAP_PATH);
+        CreateMap(MAP_PATH);
 
-        LOGGER.info("Map is ready. Map = " + roadMap);
-        MapView.getInstance().show(SIMULATOR_SPEED, roadMap);
+        LOGGER.info("Map is ready. Map = " + RoadMap.INSTANCE);
+        MapView.instance.show(SIMULATOR_SPEED, SHOW_ALL_PATHS);
 
         closeLogHandlers();
         LOGGER.info("Finished!");
@@ -159,7 +168,7 @@ public final class App{
         System.exit(0);
     }
 
-    public static RoadMap CreateMap(String pathToPBF) {
+    public static void CreateMap(String pathToPBF) {
         InputStream inputStream;
 
         try {
@@ -175,12 +184,10 @@ public final class App{
 
             // secondary parsing of ways/creation of edges:
             Parser parser = new Parser();
-            RoadMap roadMap = parser.parseMapWays(reader.getWays());
+            parser.parseMapWays(reader.getWays());
 
             // get riders & drivers
-            GraphAlgo.removeNodesThatNotConnectedTo(roadMap.getNode(NODE_IN_MAIN_COMPONENT), roadMap);
-
-            return roadMap;
+            GraphAlgo.removeNodesThatNotConnectedTo(RoadMap.INSTANCE.getNode(NODE_IN_MAIN_COMPONENT));
 
         } catch (FileNotFoundException e) {
             LOGGER.severe("File not found!, "+e.getMessage());
@@ -189,8 +196,6 @@ public final class App{
 
             System.exit(0);
         }
-
-        return null;
     }
 
     /**
@@ -201,7 +206,7 @@ public final class App{
      *
  *          fix to read arguments between flags
      */
-    private static void parseArgs(String[] args){
+    private static void init(String[] args){
         if(args.length == 0){ MAP_PATH = chooseFile(); }
         else if(args[0].equals("-h")){ System.out.println(Instructions); }
         else { MAP_PATH = args[0]; }
@@ -224,17 +229,6 @@ public final class App{
                 }
             }
         }
-
-    }
-
-    private static void init(String[] args){
-        parseArgs(args);
-
-        if( NODE_IN_MAIN_COMPONENT == null){ NODE_IN_MAIN_COMPONENT =2432701015L;}
-        if( SIMULATOR_SPEED == null){ SIMULATOR_SPEED = 10.0; }
-        if( BOUNDS == null){ BOUNDS = true; }
-        if( CONSOLE_LOG_LEVEL == null){ CONSOLE_LOG_LEVEL = "ALL"; }
-
         ConsoleLevel(CONSOLE_LOG_LEVEL);
     }
 

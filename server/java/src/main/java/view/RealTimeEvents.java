@@ -7,7 +7,7 @@ import model.interfaces.ElementsOnMap;
 import java.util.*;
 
 import static controller.utils.LogHandler.LOGGER;
-import static view.MapView.date;
+import static view.MapView.simulatorStartDate;
 import static view.StyleUtils.dateFormatter;
 
 /**
@@ -15,20 +15,19 @@ import static view.StyleUtils.dateFormatter;
  */
 public class RealTimeEvents implements Runnable{
     private PriorityQueue<ElementsOnMap> eventsQueue, events;
-    private final List<ElementsOnMap> startedEvents, eventsToSend;
+    private final List<ElementsOnMap> newEvents, eventsToSend;
     private final double simulatorSpeed;
     private Date currTime;
-    private RoadMap roadMap;
 
-    private final Random rand = new Random(1);
+    private final Random rand = new Random(5);
 
-    public RealTimeEvents(double simulatorSpeed, RoadMap roadMap) {
+    public RealTimeEvents(double simulatorSpeed) {
         this.simulatorSpeed = simulatorSpeed;
-        this.roadMap = roadMap;
-        events = initEvents(10, 3);
-        currTime = events.peek().getStartTime();
 
-        startedEvents = new ArrayList<>();
+        events = initEvents(10, 5);
+        currTime = events.peek().getAskTime();
+
+        newEvents = new ArrayList<>();
         eventsToSend = new ArrayList<>();
     }
 
@@ -40,28 +39,29 @@ public class RealTimeEvents implements Runnable{
             /*  poll new event and wait till it is his start time*/
             ElementsOnMap newEvent = events.poll();
 
-            int sleepTime = currTime.compareTo(newEvent.getStartTime());
+            int sleepTime = currTime.compareTo(newEvent.getAskTime());
 
             sleep(sleepTime);
 
             // jump in time to next event
-            currTime = newEvent.getStartTime();
+            currTime = newEvent.getAskTime();
 
             /*  add new event */
             if(newEvent instanceof Drive){
                 Drive newDrive = (Drive) newEvent;
-                newDrive.setSimulatorSpeed(simulatorSpeed);
-                Thread driveThread = new Thread(newDrive);
-                driveThread.start();
 
-                startedEvents.add(newDrive);
+                newDrive.setSimulatorSpeed(simulatorSpeed);
+
+                UsersMap.INSTANCE.addDrive(newDrive);
+
+                newEvents.add(newDrive);
             }else{
                 Pedestrian newPedestrian = (Pedestrian) newEvent;
-
-                startedEvents.add(newPedestrian);
+                UsersMap.INSTANCE.addPedestrian(newPedestrian);
+                newEvents.add(newPedestrian);
             }
 
-            LOGGER.info("RealTimeEvents add "+newEvent +" event. at " +dateFormatter.format(newEvent.getStartTime())+".");
+            LOGGER.info("RealTimeEvents add "+newEvent +" event. at " +dateFormatter.format(newEvent.getAskTime())+".");
         }
         LOGGER.info("RealTimeEvents finished.");
 
@@ -78,7 +78,8 @@ public class RealTimeEvents implements Runnable{
 
     public List<ElementsOnMap> initPedestrians(int pedestrianNum){
         List<ElementsOnMap> pedestrians = new ArrayList<>();
-        List<Node> nodes = new ArrayList<>(roadMap.getNodes());
+        List<Node> nodes = new ArrayList<>(RoadMap.INSTANCE.getNodes());
+        long pedestriansStartTime = simulatorStartDate.getTime() + 10000;
         Node src, dst;
 
         int[] randomIndexes = rand.ints(pedestrianNum*2, 0, nodes.size()).toArray();
@@ -88,7 +89,7 @@ public class RealTimeEvents implements Runnable{
             src = nodes.get(randomIndexes[i*2]);
             dst = nodes.get(randomIndexes[i*2 +1 ]);
             int timeAdded = rand.nextInt(75000);
-            Date startTime = new Date(date.getTime() + ((750000+timeAdded) * i));
+            Date startTime = new Date(pedestriansStartTime + ((750000+timeAdded) * i));
             pedestrians.add(new Pedestrian("0"+i, src, dst, startTime));
         }
 
@@ -101,11 +102,11 @@ public class RealTimeEvents implements Runnable{
     public List<ElementsOnMap> initDrives(int drivesNum) {
         // drives variables
         List<ElementsOnMap> drives = new ArrayList<>();
-        List<Node> nodes = new ArrayList<>(roadMap.getNodes());
+        List<Node> nodes = new ArrayList<>(RoadMap.INSTANCE.getNodes());
         Node src, dst;
 
         //TODO when read events from file will work - make date the first event start time
-        date = new Date();
+        simulatorStartDate = new Date();
 
         // init random indexes for nodes
         int[] randomIndexes = rand.ints(drivesNum*2, 0, nodes.size()).toArray();
@@ -131,7 +132,7 @@ public class RealTimeEvents implements Runnable{
             shortestPath = GraphAlgo.getShortestPath(src, dst);
             int timeAdded = rand.nextInt(75000);
             if(shortestPath != null) {
-                Date startTime = new Date(date.getTime() + ((750000+timeAdded) * i));
+                Date startTime = new Date(simulatorStartDate.getTime() + ((750000+timeAdded) * i));
                 drive = new Drive(shortestPath, "unknown" , String.valueOf(i), startTime );
 
                 if(drive == null){
@@ -149,11 +150,11 @@ public class RealTimeEvents implements Runnable{
     /**
      *  TODO maybe make synchronized
      */
-    public List<ElementsOnMap> getStartedEvents() {
+    public List<ElementsOnMap> getNewEvents() {
         eventsToSend.clear();
-        eventsToSend.addAll(startedEvents);
+        eventsToSend.addAll(newEvents);
 
-        startedEvents.clear();
+        newEvents.clear();
         return eventsToSend;
     }
 

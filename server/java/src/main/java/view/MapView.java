@@ -5,7 +5,6 @@ import model.*;
 import static controller.utils.LogHandler.LOGGER;
 import static view.StyleUtils.*;
 
-import model.Pedestrian;
 import model.interfaces.ElementsOnMap;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
@@ -37,52 +36,55 @@ import java.util.*;
  * @since   2021-06-20
  */
 public class MapView {
-    private RoadMap roadMap;
+    /* MAP */
+    private final RoadMap roadMap;
+    private final UsersMap userMap;
     private final Graph displayGraph;
-    protected final Hashtable<Node, Drive> cars; //TODO check Exception in thread "main" java.util.ConcurrentModificationException
-    protected final Hashtable<Node, Pedestrian> pedestrians;
-    private HashSet<Node> pedestrian;
     private RealTimeEvents events;
-    private Viewer viewer;
-    protected static Date date;
-    protected static Sprite clock;
-    protected static Node clockNode;
+
+    /* DISPLAY */
+    private final Viewer viewer;
+    private final ViewerPipe pipeIn;
+
+    protected static Date simulatorStartDate;
+    private static Sprite clock;
     private static final long SLEEP_BETWEEN_FRAMES = 2000;
+    private static boolean showAllPaths;
 
-    private static final MapView instance = new MapView();
+//    protected final Hashtable<Node, Drive> cars; //TODO check Exception in thread "main" java.util.ConcurrentModificationException
+//    protected final Hashtable<Node, Pedestrian> pedestrians;
 
+    /** CONSTRUCTORS */
     private MapView() {
         displayGraph = new MultiGraph("map simulation");
-        cars = new Hashtable<>();
-        pedestrians = new Hashtable<>();
+        roadMap = RoadMap.INSTANCE;
+        userMap = UsersMap.INSTANCE;
 
-    }
-
-    public static MapView getInstance() {
-        return instance;
-    }
-
-
-
-    public void show(double simulatorSpeed, RoadMap roadMap){
-        this.roadMap = roadMap;
-
-        //load events
-        events = new RealTimeEvents(simulatorSpeed, this.roadMap);
-
-        // set graph
+        /* set graph */
         viewer = new Viewer(displayGraph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
-        ViewerPipe pipeIn = viewer.newViewerPipe();
+        pipeIn = viewer.newViewerPipe();
         viewer.addView("view1", new J2DGraphRenderer());
         viewer.disableAutoLayout();
         viewer.getView("view1").setMouseManager(new MapMouseManager());
         viewer.setCloseFramePolicy(Viewer.CloseFramePolicy.CLOSE_VIEWER);
         pipeIn.addAttributeSink( displayGraph );
-        pipeIn.pump();
 
-        displayGraph.setAttribute("ui.stylesheet", styleSheet);// getAttributes("graph"));
+        displayGraph.setAttribute("ui.stylesheet", styleSheet);
         displayGraph.setAttribute("ui.quality");
         displayGraph.setAttribute("ui.antialias");
+
+    }
+
+    /** Singleton specific properties */
+    public static final MapView instance = new MapView();
+
+
+
+    public void show(double simulatorSpeed, boolean showAllPaths){
+        //load events
+        events = new RealTimeEvents(simulatorSpeed);
+        this.showAllPaths = showAllPaths;
+        pipeIn.pump();
 
         // draw map components
         drawMapComponents();
@@ -96,83 +98,89 @@ public class MapView {
             pipeIn.pump();
 
             sleep();
+
             getUpdates();
 
-        }while(eventsThread.isAlive() || !cars.isEmpty());
+        }while(eventsThread.isAlive() || !userMap.getDrives().isEmpty());
     }
 
 
     private void getUpdates(){
-        List<ElementsOnMap> newEvents = events.getStartedEvents();
-        Iterator<ElementsOnMap> eventIter = newEvents.iterator();
+        removeFinishedEvents();
+        moveCars();
+        drawNewEvents();
+    }
+
+    private void drawNewEvents(){
+        Iterator<ElementsOnMap> eventIter = events.getNewEvents().iterator();
+
         while(eventIter.hasNext()) {
-            System.out.println(newEvents.size() + " new events.");
             ElementsOnMap nextEvent = eventIter.next();
 
             Node displayObj = displayGraph.addNode(nextEvent.getId());
 
+            //todo move to StyleUtils.java
             GeoLocation location = nextEvent.getLocation();
             displayObj.setAttribute("xy", location.getLongitude(), location.getLatitude());
             displayObj.setAttribute("ui.label", nextEvent.getId());
+            displayObj.setAttribute("ui.style", randomGradientColor());
 
-            if (nextEvent instanceof Drive) {
+            if(nextEvent instanceof Drive) {
                 displayObj.setAttribute("ui.class", "car");
-                displayObj.setAttribute("ui.style", randomGradientColor());
-
-                cars.put(displayObj, (Drive) nextEvent);
+//                styleDrives((Drive) nextEvent);
             } else {
 //                displayObj.setAttribute("ui.class", "pedestrian");
                 displayObj.setAttribute("ui.style", pedestrianStyleSheet);
-                displayObj.setAttribute("ui.style", randomGradientColor());
-                pedestrians.put(displayObj, (Pedestrian) nextEvent);
             }
-//            System.out.println(String.valueOf(displayObj.getAttribute("ui.style")));
         }
-
-        moveCars();
-
-//        List<ElementsOnMap> startedEvents = events.getStartedEvents();
-//        startedEvents.forEach(event -> {
-//            Node objectOnMap = displayGraph.addNode(event.getId());
-//            GeoLocation location = event.getLocation();
-//            objectOnMap.setAttribute("xy", location.getLongitude(), location.getLatitude());
-//            objectOnMap.setAttribute("ui.label", event.getId());
-//
-//            if(objectOnMap instanceof Drive){
-//                objectOnMap.setAttribute("ui.class", "car");
-//                objectOnMap.setAttribute("ui.style", randomGradientColor());
-//
-//                cars.put(objectOnMap, (Drive) event);
-//            }else{
-//                objectOnMap.setAttribute("ui.class", "pedestrian");
-//
-//                pedestrians.put(objectOnMap, (Pedestrian) event);
-//            }
-//
-//
-//        });
-//        clock.setAttribute("xy", minLongitude- 0.005, maxLatitude - 0.002 );
     }
 
+    private void removeFinishedEvents(){
+        Iterator<ElementsOnMap> eventIter = userMap.getFinished().iterator();
+
+        while(eventIter.hasNext()){
+            ElementsOnMap nextEvent = eventIter.next();
+
+
+            Node removedNode = displayGraph.removeNode(nextEvent.getId());
+
+            eventIter.remove();
+        }
+    }
+
+    int index = 0;
     private void moveCars(){
-        Iterator<Map.Entry<Node, Drive>> iter = cars.entrySet().iterator();
-        while(iter.hasNext()){
-            Map.Entry<Node, Drive> nodeDriveEntry = iter.next();
-            GeoLocation location = nodeDriveEntry.getValue().getLocation();
+        Iterator<Drive> carIter = userMap.getDrives().iterator();
+
+        while(carIter.hasNext()){
+            Drive nextCar = carIter.next();
+
+            GeoLocation location = nextCar.getLocation();
 
             if(location != null){
-                nodeDriveEntry.getKey().setAttribute("xy", location.getLongitude(), location.getLatitude());
+                Node car = displayGraph.getNode(nextCar.getId());
+                if(car != null)
+                car.setAttribute("xy", location.getLongitude(), location.getLatitude());
             }else{
-                iter.remove();
-                LOGGER.info(cars.size() + " cars still running");
-                displayGraph.removeNode(nodeDriveEntry.getKey());
+                LOGGER.info(userMap.getDrives().size() + " On-Going drives.");
+                displayGraph.removeNode(nextCar.getId());
+            }
+
+            index = (index+1) %10;
+            if(index == 3) {
+                if (showAllPaths) {
+//                    System.out.println("======================style paths======================");
+                    styleDrives(nextCar);
+                } else {
+                    styleFocusedDrive(nextCar);
+                }
             }
         }
     }
 
     private void sleep() {
-        date = new Date(date.getTime()+SLEEP_BETWEEN_FRAMES);
-        clock.setAttribute("ui.label", dateFormatter.format(date));
+        simulatorStartDate = new Date(simulatorStartDate.getTime()+SLEEP_BETWEEN_FRAMES);
+        clock.setAttribute("ui.label", dateFormatter.format(simulatorStartDate));
         try { Thread.sleep(SLEEP_BETWEEN_FRAMES) ; }
         catch (InterruptedException e) { e.printStackTrace(); }
     }
@@ -206,7 +214,7 @@ public class MapView {
     }
 
     private void drawAddons(){
-        clockNode = displayGraph.addNode("clockNode");
+        Node clockNode = displayGraph.addNode("clockNode");
 //        Double maxLatitude = MapUtils.getMaxLatitude();
 //        Double minLongitude = MapUtils.getMinLongitude();
 

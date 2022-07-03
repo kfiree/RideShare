@@ -7,7 +7,7 @@ public class node_query {
 //    static public String addNode(Node n){
 //       return "INSERT INTO \"public\".\"rs_nodes\" (\"osm_Id\", \"node_Id\", \"latitude\", \"longitude\", \"degree\", \"edges\", \"tags\") " +
 //                "VALUES " +
-//                "('"+n.getOsmID()+"','"+ n.getId() +"', "+n.getLatitude()+", "+n.getLongitude()+", "+n.getDegree()+", '"+n.getCurrPath()+"', '"+n.getTags()+"');";
+//                "('"+n.getOsmID()+"','"+ n.getId() +"', "+n.getLatitude()+", "+n.getLongitude()+", "+n.getDegree()+", '"+n.getPath()+"', '"+n.getTags()+"');";
 //    }
     static public String addNode(Node n){
         JSONObject edges = new JSONObject();

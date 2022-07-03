@@ -1,5 +1,6 @@
 package model;
 
+import controller.utils.GraphAlgo;
 import controller.utils.MapUtils;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
@@ -21,7 +22,6 @@ import java.util.List;
 public class Path implements Comparable<Path> , Iterable<Edge>{
     private final List<Edge>  edges = new ArrayList<>();
     private Node _src, _dest;
-    private Iterator<Edge> iterator;
 
     public Path(List objects) {
 
@@ -58,7 +58,7 @@ public class Path implements Comparable<Path> , Iterable<Edge>{
 
     public List<Edge> getEdges() {
         return edges;
-    }
+    }//TODO ADD sync method getEdgeIterator()
 
     public void setEdges(ArrayList<Edge> edges) {
         this.edges.addAll(edges);
@@ -66,14 +66,50 @@ public class Path implements Comparable<Path> , Iterable<Edge>{
 
     public Node get_src() { return _src; }
 
-    public void set_src(Node _src) { this._src = _src; }
-    //TODO run A* After every change of dest or src (might delete this method)
+
+    //todo improve naive solution
+    public void addMiddlePath(Path passengerPath, Edge currEdge, Node currNode){
+
+//        for (int i = edgeIndex; i < edges.size(); i++) {
+//            currEdge = edges.get(i);
+//            Node node = currEdge.getOtherEnd(currNode.getId());
+//
+//            double distance = GraphAlgo.distance(node.getCoordinates(), path.get_src().getCoordinates());
+//
+//            if( distance< minDistance){
+//                edgeIndex = i;
+//                minDistance = distance;
+//            }
+//        }
+
+        // currnode 8674210510
+        Path pathToPassenger = GraphAlgo.getShortestPath(currNode, passengerPath.get_src()),
+                pathFromPassenger = GraphAlgo.getShortestPath(passengerPath.get_dest(), _dest);
+
+        edges.clear();
+
+        edges.addAll(pathToPassenger.getEdges());
+
+        edges.addAll(passengerPath.getEdges());
+
+        edges.addAll(pathFromPassenger.getEdges());
+
+
+    }
+
+//    public void set_src(Node _src) { this._src = _src; }
+//    TODO run A* After every change of dest or src (might delete this method)
 
     public Node get_dest() { return _dest; }
 
-    public void set_dest(Node _dest) { this._dest = _dest; }
+//    public void set_dest(Node _dest) { this._dest = _dest; }
 
-    /* in ms*/
+    /**
+     *  todo get in constructor
+     *
+     *  in ms
+     *
+     */
     public double pathTime(){
         double pathLen = 0;
         for (Edge e: edges) {

@@ -6,11 +6,11 @@ import model.Edge;
 import static view.StyleUtils.*;
 import static controller.utils.GraphAlgo.distance;
 
+import model.GeoLocation;
+import model.UsersMap;
 import org.graphstream.graph.Node;
 import org.graphstream.ui.geom.Point3;
-import org.graphstream.ui.graphicGraph.GraphicElement;
 import org.graphstream.ui.graphicGraph.GraphicGraph;
-import org.graphstream.ui.view.Camera;
 import org.graphstream.ui.view.util.DefaultMouseManager;
 import org.graphstream.ui.view.View;
 import java.awt.event.MouseEvent;
@@ -23,7 +23,7 @@ import java.util.*;
 public class MapMouseManager extends DefaultMouseManager {
     protected View view;
     protected GraphicGraph displayGraph;
-    private MapView mapView = MapView.getInstance();
+    private MapView mapView = MapView.instance;
     private Node focusedNode;
     private Map.Entry<Node, Drive> focusedCar;
     private Edge[] edges;
@@ -47,31 +47,33 @@ public class MapMouseManager extends DefaultMouseManager {
         super.mouseReleased(e);
         firstClicked  = !firstClicked; //prevent double click
 
-        System.out.println( "MouseEvent xy ("+e.getX() +","+e.getY()+").");
-        System.out.println(view.getCamera().transformPxToGu(e.getX() ,e.getY()));
+        if(firstClicked) { //todo add min distance for paint
+            System.out.println( "MouseEvent xy ("+e.getX() +","+e.getY()+"), coordinates ("
+                    +view.getCamera().transformPxToGu(e.getX() ,e.getY())+").");
 
-        if(firstClicked) {
+            Drive closestDrive = getClosestDrive(e);
+            if (closestDrive != null) {
 
-            Map.Entry<Node, Drive> closestCar = getClosestCar(e);
-            if (closestCar != null) {
-                styleDrive(closestCar);
+                focusOn(closestDrive);
             }
+
         }
     }
 
-    private Map.Entry<Node, Drive> getClosestCar(MouseEvent e){
+    private Drive getClosestDrive(MouseEvent e){
         Point3 clickCoordinates = view.getCamera().transformPxToGu(e.getX(), e.getY());
         double minDistance = Integer.MAX_VALUE;
-        Map.Entry<Node, Drive> car = null;
-        for (Map.Entry<Node, Drive> carEntry: mapView.cars.entrySet()) {
-            Double carX = carEntry.getValue().getLocation().getLongitude();
-            Double carY = carEntry.getValue().getLocation().getLatitude();
+        Drive car = null;
+        for (Drive drive: UsersMap.INSTANCE.getDrives()) {
+            GeoLocation carLocation = drive.getLocation();
+//            Double carX = driveEntry.getValue().getLocation();
+//            Double carY = driveEntry.getValue().getLocation().getLatitude();
 
-            Double currDis = Math.sqrt(( carY - clickCoordinates.y) * (carY - clickCoordinates.y)
-                                        + (carX - clickCoordinates.x) * (carX - clickCoordinates.x));
+            Double currDis = Math.sqrt(( carLocation.getLatitude() - clickCoordinates.y) * (carLocation.getLatitude() - clickCoordinates.y)
+                                        + (carLocation.getLongitude() - clickCoordinates.x) * (carLocation.getLongitude() - clickCoordinates.x));
 
             if(currDis< minDistance){
-                car = carEntry;
+                car = drive;
                 minDistance = currDis;
             }
         }

@@ -227,6 +227,7 @@ public final class GraphAlgo {
 
     private static Path reconstructPath(Hashtable<Node, Node> cameFrom, Node n){
         List<Node> pathNodes = new ArrayList<>();
+        pathNodes.add(n);
         while(cameFrom.containsKey(n)){
             n = cameFrom.get(n);
             pathNodes.add(n);
@@ -236,8 +237,8 @@ public final class GraphAlgo {
         return path;
     }
 
-    public static void removeNodesThatNotConnectedTo(Node src, RoadMap roadMap){
-
+    public static void removeNodesThatNotConnectedTo(Node src){
+        RoadMap roadMap = RoadMap.INSTANCE;
         //delete node that aren't connected to src
         List<Node> connectedComponent = getConnectedComponent(src);
 

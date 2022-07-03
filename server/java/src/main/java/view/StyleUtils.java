@@ -6,6 +6,7 @@ import model.Drive;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 import org.graphstream.ui.graphicGraph.GraphicGraph;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -52,6 +53,7 @@ import java.util.*;
  *     "sprite-orientation" ...
  *     "canvas-color" ...
  *
+ * todo remove redundant null-checks
  */
 public class StyleUtils {
 
@@ -59,9 +61,10 @@ public class StyleUtils {
 
 
     /**     |==== NODE STYLE ====|      */
-//    protected static Node focusedNode;
-    protected static Map.Entry<Node, Drive> focusedDrive;
-    protected static final List<Edge> focusedEdges = new ArrayList<>();
+    protected static Node focusedCar;
+    protected static Drive focusedDrive;
+    protected static final HashMap<String, Edge[]> carPaths = new HashMap<>();
+    protected static Edge[] focusedEdges;
     protected static GraphicGraph displayGraph;
     public static SimpleDateFormat dateFormatter = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
     protected static final String
@@ -70,54 +73,133 @@ public class StyleUtils {
             motorwayEdgeStyleSheet, tertiaryEdgeStyleSheet, pathStyleSheet,
             spriteStyleSheet, styleSheet, focusedCarStyleSheet;
 
-    protected static void stylePedestrians(Map.Entry<Node, Drive> drive){
 
-    }
 
-    protected static void styleDrive(Map.Entry<Node, Drive> drive) {
-        resetPathStyle();
+    /** STYLE USERS DATA */
 
-        setNewDrive(drive);
+    protected static synchronized void styleDrives(Drive... drives) {
+        for(Drive drive: drives){
+//            System.out.println(1);
+            Edge[] currPath = carPaths.get(drive.getId());
 
-        styleEdges(pathStyleSheet + extractAttribute("fill-color", drive.getKey()));
-        styleNodes(focusedCarStyleSheet, drive.getKey());
-    }
+//            System.out.println(2);
+            /* if path changed */
+            if (currPath != null && currPath.length != drive.getPath().size()) {
+//                System.out.println(3);
+                /* clean old path style */
+                styleEdges(edgeStyleSheet, currPath);
+//                System.out.println(4);
+                /* update path and paint */
+                StylePath(drive);
+//                System.out.println(5);
+            } else if (currPath == null) {
 
-    private static void setNewDrive(Map.Entry<Node, Drive> newDrive){
-        focusedDrive = newDrive;
-        newDrive.getValue().getCurrPath().forEach(edge -> focusedEdges.add(displayGraph.getEdge(edge.getId())));
-    }
-
-    private static void resetPathStyle() {
-        if(focusedDrive != null){
-            styleEdges(edgeStyleSheet);
-            styleNodes(focusedCarStyleSheet, focusedDrive.getKey());
-            focusedEdges.clear();
+                /* add path and paint */
+//                System.out.println(6);
+                StylePath(drive);
+            }
         }
     }
 
-    protected static void styleEdges(String styleSheet, Edge... edgesArr) {
-        List<Edge> edges = edgesArr.length != 0? Arrays.asList(edgesArr): focusedEdges;
-                for (Edge edge : edges) {
+    private static synchronized void StylePath(Drive drive){
+        if(drive !=null) {
+            Node car = focusedCar;
+            Edge[] edges = focusedEdges;
+
+            if(drive != focusedDrive){
+                car = displayGraph.getNode(drive.getId());
+                if(car == null){
+                    System.out.println("something bad happened");
+                    return;
+                }
+                int pathSize = drive.getPath().size();
+                edges = new Edge[pathSize];
+                for (int i = 0; i < pathSize; i++) {
+                    edges[i] = displayGraph.getEdge(drive.getPath().get(i).getId());
+                }
+                carPaths.put(drive.getId(), edges);
+            }
+
+            String color = extractAttribute("fill-color", car);
+
+            if (edges != null) {
+                styleEdges(pathStyleSheet + color,edges);
+            }
+
+            drive.getPassengers().forEach(pedestrian ->
+                    styleNodes(color, displayGraph.getNode(pedestrian.getId())));
+
+            //todo
+            //  1. make lighter color.
+            //  2. style taken.
+        }
+    }
+
+    /* style */
+    protected static void styleFocusedDrive( Drive drive) {
+        if(focusedCar!=null && drive == focusedDrive){
+            StylePath(focusedDrive); //todo add focusedEdges to carPaths with sending it to styleDrives
+            styleNodes(focusedCarStyleSheet, focusedCar);
+        }
+    }
+
+    /* call from MouseManager */
+    public static void focusOn(@NotNull Drive drive){
+        if(focusedDrive != drive){
+            if(focusedDrive != null){
+                /* reset prev drive style */
+                styleEdges(edgeStyleSheet);
+                styleNodes(carStyleSheet, focusedCar);
+            }
+
+            /* set new drive */
+            int pathSize = drive.getPath().size();
+            focusedEdges = new Edge[pathSize];
+            for (int i = 0; i < pathSize; i++) {
+                focusedEdges[i] = displayGraph.getEdge(drive.getPath().get(i).getId());
+            }
+
+            focusedDrive = drive;
+            focusedCar = displayGraph.getNode(drive.getId());
+
+            /* style new drive */
+            styleFocusedDrive(drive);
+        }
+    }
+
+
+
+    /** STYLE MAP PARTS */
+
+    protected static void styleEdges(String styleSheet, Edge... edges) {
+        if(edges.length ==0){
+            edges = focusedEdges;
+        }
+
+        for (Edge edge : edges) {
             if (edge != null) {
                 displayGraph.getEdge(edge.getId()).setAttribute("ui.style", styleSheet);
             }
         }
     }
 
-    protected static void styleNodes(String styleSheet, Node... nodesArr){
-        List<Node> nodes = nodesArr.length != 0 ?  Arrays.asList(nodesArr) :
-                new ArrayList<>(){{add(focusedDrive.getKey());}};
-        for (Node node : nodes) {
+    protected static void styleNodes(String styleSheet, Node... nodes){
+//        List<Node> nodes = nodesArr.length != 0 ?  Arrays.asList(nodesArr) :
+//                new ArrayList<>(){{add(focusedDrive.getKey());}};
+        if(nodes.length == 0){
+            focusedCar.setAttribute("ui.style", styleSheet);
+        }else for (Node node : nodes) {
             if (node != null) {
                 node.setAttribute("ui.style", styleSheet);
             }
         }
-
     }
 
+
+
+    /** STYLE UTILS */
     protected static String extractAttribute(String style, Node displayNode){
-        String styleSheet = (String) displayNode.getAttribute("ui.style");
+        String styleSheet = displayNode.getAttribute("ui.style");
         String[] styleAttributes = styleSheet.split(";"); //split to attributes
 
         for (String att:styleAttributes) {
@@ -146,6 +228,8 @@ public class StyleUtils {
                 " fill-mode: gradient-horizontal;";
     }
 
+
+    /** STYLE-SHEETS */
     static {
         /*     |==== NODE ====|   */
 

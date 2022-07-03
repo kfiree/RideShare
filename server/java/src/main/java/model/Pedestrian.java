@@ -1,5 +1,6 @@
 package model;
 
+import controller.utils.GraphAlgo;
 import model.interfaces.ElementsOnMap;
 import org.jetbrains.annotations.NotNull;
 
@@ -8,24 +9,32 @@ import java.util.Date;
 import static view.StyleUtils.dateFormatter;
 
 public class Pedestrian implements ElementsOnMap {
-    private final Date startTime;
+    private final Date askTime;
     private final Node currNode, destination;
     private final String id;
+    private final Path path;
     private boolean taken;
 
-    public Pedestrian(String id, @NotNull Node currNode, @NotNull Node destination, Date startTime) {
+    public Pedestrian(String id, @NotNull Node currNode, @NotNull Node destination, Date askTime) {
         this.id = id;
-        this.startTime = startTime;
+        this.askTime = askTime;
         this.destination = destination;
         this.currNode = currNode;
+        path = GraphAlgo.getShortestPath(currNode, destination);
+    }
+
+    public void take() {//todo remove from waiting list
+        /* remove this from waiting list */
+        taken = true;
+        UsersMap.INSTANCE.pickPedestrian(this);
     }
 
     public boolean isTaken() {
         return taken;
     }
 
-    public void take() {
-        taken = true;
+    public Path getPath() {
+        return path;
     }
 
     @Override
@@ -35,7 +44,7 @@ public class Pedestrian implements ElementsOnMap {
     public Node getCurrNode() { return currNode; }
 
     @Override
-    public Date getStartTime() { return startTime; }
+    public Date getAskTime() { return askTime; }
 
     @Override
     public String getId() { return id; }
@@ -47,9 +56,9 @@ public class Pedestrian implements ElementsOnMap {
     public String toString() {
         return "Pedestrian{" +
                 "id='" + id + '\'' +
-                ", startTime=" + dateFormatter.format(startTime) +
+                ", askTime=" + dateFormatter.format(askTime) +
                 ", currNode=" + currNode +
-                ", destination=" + destination +
+                ", destination=" + destination.getOsmID() +
                 '}';
     }
 }
