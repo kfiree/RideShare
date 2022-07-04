@@ -4,15 +4,11 @@
 /server/node/node_modules
 
 # large osm files
-/server/java/data/israel.pbf
 /server/java/data/osmconvert64.exe
-
-# temp classes
-/server/java/src/main/java/test.java
-/server/java/src/main/java/checkSh1t.java
-/server/java/src/main/java/testMouseManager.java
+/server/java/data/osm/
 
 # created when log file doesn't close properly
-/server/java/src/main/java/controller/utils/logs/*.lck
+/server/java/src/main/java/rideshare.controller/utils/logs/*.lck
+/server/java/src/main/java/Sh1tToIgnore/
 
-/server/java/src/main/java/Test2.java
+

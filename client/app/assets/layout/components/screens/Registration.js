@@ -28,7 +28,7 @@ import axios from "axios";
 import Users from './../../../../../requests/Users'
 import { useFonts } from 'expo-font';
 
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-rideshare.view'
 import { useNavigation, NavigationContainer } from '@react-navigation/native';
 import { Entypo } from '@expo/vector-icons';
 

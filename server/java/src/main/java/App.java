@@ -1,9 +1,10 @@
-import controller.utils.GraphAlgo;
-import controller.utils.MapUtils;
-import view.MapView;
+import rds.JsonHandler;
+import rideshare.controller.GraphAlgo;
+import rideshare.controller.MapUtils;
+import rideshare.view.MapView;
 import crosby.binary.osmosis.OsmosisReader;
-import model.RoadMap;
-import controller.osm_processing.*;
+import rideshare.model.RoadMap;
+import rideshare.controller.osm_processing.*;
 
 import javax.swing.*;
 import java.io.File;
@@ -11,7 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-import static controller.utils.LogHandler.*;
+import static utils.LogHandler.*;
 
 /**
  *
@@ -30,7 +31,7 @@ import static controller.utils.LogHandler.*;
  *
  *    Use case:
  *      * to run with intellij with args[]
- *           edit configuration -> Name: APP -> Build and run -> Program arguments -> insert: server/java/data/israel.pbf and relevant flags
+ *           edit configuration -> Name: APP -> Build and run -> Program arguments -> insert relevant flags
  *
  *
  *      * to convert files:
@@ -137,15 +138,17 @@ import static controller.utils.LogHandler.*;
 public final class App{
     private static Long  NODE_IN_MAIN_COMPONENT;
     private static Double SIMULATOR_SPEED;
-    private static String CONSOLE_LOG_LEVEL, MAP_PATH;
-    private static Boolean BOUNDS, SHOW_ALL_PATHS;
+    private static String CONSOLE_LOG_LEVEL, PBF_PATH;
+    private static Boolean BOUNDS, SHOW_ALL_PATHS, LOAD_FROM_JSON;
 
     static{
+        LOAD_FROM_JSON = true;
+        PBF_PATH = "server/java/data/osm/israel.pbf";
         NODE_IN_MAIN_COMPONENT =2432701015L;
         SIMULATOR_SPEED = 10.0;
         BOUNDS = true;
         CONSOLE_LOG_LEVEL = "ALL";
-        SHOW_ALL_PATHS = true;
+        SHOW_ALL_PATHS = false;
     }
 
     public static void main(String[] args) {
@@ -157,7 +160,14 @@ public final class App{
 
         LOGGER.info( "Start parsing main map.");// : '" + pbfFilePath+"'");
         MapUtils.setBounds(BOUNDS);
-        CreateMap(MAP_PATH);
+
+        if(LOAD_FROM_JSON){
+            JsonHandler.RoadMapType.load();
+        }else{
+            CreateMap();
+            JsonHandler.RoadMapType.save();
+        }
+
 
         LOGGER.info("Map is ready. Map = " + RoadMap.INSTANCE);
         MapView.instance.show(SIMULATOR_SPEED, SHOW_ALL_PATHS);
@@ -168,11 +178,14 @@ public final class App{
         System.exit(0);
     }
 
-    public static void CreateMap(String pathToPBF) {
-        InputStream inputStream;
+    public static void CreateMap() {
+        if(PBF_PATH == null){
+            PBF_PATH = chooseFile();
+        }
+
 
         try {
-            inputStream = new FileInputStream(pathToPBF);
+            InputStream inputStream = new FileInputStream(PBF_PATH);
 
             // read from osm pbf file:
             Reader reader = new Reader();
@@ -207,17 +220,11 @@ public final class App{
  *          fix to read arguments between flags
      */
     private static void init(String[] args){
-        if(args.length == 0){ MAP_PATH = chooseFile(); }
-        else if(args[0].equals("-h")){ System.out.println(Instructions); }
-        else { MAP_PATH = args[0]; }
-
-        MAP_PATH = args.length == 0 ? chooseFile() : args[0];
-        int i = 1;
-
-        while(i<args.length){
-            if(args[i].charAt(0) == '-'){
-                switch (args[i]){
-                    case "-n" -> NODE_IN_MAIN_COMPONENT =  Long.parseLong(args[++i]);
+         for (int i = 0; i < args.length; i++) {
+            if (args[i].charAt(0) == '-') {
+                switch (args[i]) {
+                    case "-m" -> LOAD_FROM_JSON = false;
+                    case "-n" -> NODE_IN_MAIN_COMPONENT = Long.parseLong(args[++i]);
                     case "-s" -> SIMULATOR_SPEED = Double.parseDouble(args[++i]);
                     case "-l" -> CONSOLE_LOG_LEVEL = args[++i];
                     case "-b" -> BOUNDS = args[++i].equals("y") ||
@@ -226,6 +233,10 @@ public final class App{
                             Double.parseDouble(args[++i]), Double.parseDouble(args[++i]),
                             Double.parseDouble(args[++i]), Double.parseDouble(args[++i])
                     );
+                    case "-h" -> {
+                        System.out.println(Instructions);
+                        return;
+                    }
                 }
             }
         }
@@ -251,6 +262,7 @@ public final class App{
             Usage: rideShare.exe  [.pbf map path] [-n] [-s] [-l] [-b] [-c]\s
 
             Options:
+                -m                      Load PBF file (use saved map otherwise).
                 -n osm-node-id          Node id that will be in map, while the rest of the nodes will be cleaned from map (in order to keep graph connected).
                                         Default: value will show center of israel.
                 -s speed                Speed of simulator.
