@@ -6,7 +6,7 @@
 /dataSources.local.xml
 # Editor-based HTTP Client requests
 /httpRequests/
-# Project build
+# Project bu
 /target/
 
 # large osm files

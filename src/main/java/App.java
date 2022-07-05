@@ -133,7 +133,7 @@ import static utils.LogHandler.*;
  *
  *
  *==========================================================================================
- *
+ * cha c
  */
 public final class App{
     private static Long  NODE_IN_MAIN_COMPONENT;
