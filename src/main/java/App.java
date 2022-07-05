@@ -132,8 +132,8 @@ import static utils.LogHandler.*;
  *                  * show only first digit in long car/user id
  *
  *
- *==========================================================================================
- * cha c
+ * ==========================================================================================
+ *
  */
 public final class App{
     private static Long  NODE_IN_MAIN_COMPONENT;
