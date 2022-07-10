@@ -2,6 +2,7 @@ package app.controller;
 
 import app.model.Drive;
 import app.model.Pedestrian;
+import app.model.RoadMap;
 import app.model.UserMap;
 
 import java.util.Collection;
@@ -11,12 +12,15 @@ import static utils.LogHandler.LOGGER;
 /** todo replace pickIfWorthIt(Drive drive) with pickIfWorthIt( ) (without drivers calling this method). */
 public class MatchMaker implements Runnable{
     private static final int MAX_KM_ADDITION_TO_PATH;
+    private MatchMaker() {}
+
+    public static final MatchMaker INSTANCE = new MatchMaker();
 
     static{
          MAX_KM_ADDITION_TO_PATH = 10;
     }
 
-    public static synchronized void pickIfWorthIt(){
+    public synchronized void pickIfWorthIt(){
 
         Collection<Pedestrian> requests = UserMap.INSTANCE.getRequests();
         Collection<Drive> drives = UserMap.INSTANCE.getDrives();
@@ -39,7 +43,7 @@ public class MatchMaker implements Runnable{
      * @param drive
      * @return true if picked someone up
      */
-    public static synchronized boolean pickIfWorthIt(Drive drive){
+    public synchronized boolean pickIfWorthIt(Drive drive){
 
         /*  find close passenger to pick up */
         for (Pedestrian pedestrian : UserMap.INSTANCE.getRequests()) {
@@ -57,10 +61,10 @@ public class MatchMaker implements Runnable{
     }
 
     /** heuristic for pickup*/
-    private static boolean isWorthIt(Drive d, Pedestrian p){
+    private boolean isWorthIt(Drive d, Pedestrian p){
         double distanceTo = GraphAlgo.distance(d.getLocation(), p.getLocation()),
-                addedPathDistance = GraphAlgo.distance(p.getLocation(), p.getDestination().getCoordinates()),
-                distanceFrom = GraphAlgo.distance(p.getDestination().getCoordinates(), d.getDestination().getCoordinates());
+                addedPathDistance = GraphAlgo.distance(p.getLocation(), p.getDestination().getLocation()),
+                distanceFrom = GraphAlgo.distance(p.getDestination().getLocation(), d.getDestination().getLocation());
 
         double newPathLength_heuristic = distanceTo + addedPathDistance + distanceFrom;
 

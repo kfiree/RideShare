@@ -4,9 +4,11 @@ import app.model.GeoLocation;
 
 public interface Located {
 
-    GeoLocation getCoordinates();
+    GeoLocation getLocation();
 
-    boolean inBound();
+    default boolean inBound() {
+        return true;
+    }
 
     @Override
     boolean equals(Object o);

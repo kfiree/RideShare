@@ -3,6 +3,7 @@ package app.model;
 /* third party */
 import java.util.*;
 import app.model.interfaces.ElementsOnMap;
+import app.model.interfaces.Located;
 import org.jetbrains.annotations.NotNull;
 
 /* local */
@@ -10,22 +11,20 @@ import app.controller.GraphAlgo;
 import app.controller.MapUtils;
 
 /* static imports */
-import static app.Utils.FORMAT;
+import static utils.Utils.FORMAT;
 import static utils.LogHandler.LOGGER;
-import static app.controller.MatchMaker.pickIfWorthIt;
 
 
 /**
  * todo make long way with stop-point instead of paths
  *      make drives thread-pool
  */
-public class Drive implements Runnable, ElementsOnMap {
+public class Drive implements Runnable, ElementsOnMap, Located {
     private static final int MAX_PASSENGERS_NUM = 1; //todo set to 3
     private final String type, id;  //todo is type needed?
     private List<Pedestrian> passengers = new ArrayList<>();
     private final Date leaveTime;
     private Path path;
-    private Edge currEdge;
     private Node currNode, destination;
     private double simulatorSpeed, estimatedDistance;
     private boolean pathChange;
@@ -48,10 +47,9 @@ public class Drive implements Runnable, ElementsOnMap {
 
     public void initPathVariables(@NotNull Path path) {
         this.path = path;
-        currEdge = path.getEdges().get(0);
         currNode = path.get_src();
-        destination = path.get_dest();
-        estimatedDistance = GraphAlgo.distance(currNode.getCoordinates(), getDestination().getCoordinates());
+        destination = path.getDest();
+        estimatedDistance = GraphAlgo.distance(currNode.getLocation(), getDestination().getLocation());
     }
 
 
@@ -73,18 +71,20 @@ public class Drive implements Runnable, ElementsOnMap {
 
     private void runOnPath(){
         pathChange = false;
+        int nodeIndex = 0;
 
-        int edgesIndex = 0;
-        Iterator<Edge> edgesIterator = path.iterator();
+        Iterator<Node> NodeIter = path.iterator();
+        Node nextNode = NodeIter.next();
 
-        while(edgesIterator.hasNext()){
-            Edge nextEdge = edgesIterator.next();
-            edgesIndex++;
-            if(edgesIndex % 3 ==0) {
-                LOGGER.info("driver (" + getId() + ") " + FORMAT( edgesIndex / (double) path.getSize() * 100) + "% complete.");
+        while(NodeIter.hasNext()){
+            currNode = nextNode;
+            nextNode = NodeIter.next();
+
+            if(nodeIndex % 5 ==0) {
+                LOGGER.info("driver (" + getId() + ") " + FORMAT( ++nodeIndex / (double) path.getSize() * 100) + "% complete.");
             }
 
-            sleep(nextEdge.getWeight());
+            sleep(currNode.getEdgeTo(nextNode).getWeight());
 
             /* pick passenger on the way */
             for(Pedestrian passenger: passengers){
@@ -94,16 +94,13 @@ public class Drive implements Runnable, ElementsOnMap {
                 }
             }
 
-            /* search new passengers to pick */
-            if(!isFull()) {
-                pathChange = pickIfWorthIt(this);
-            }
+//            /* search new passengers to pick */
+//            if(!isFull()) {
+//                pathChange = pickIfWorthIt(this);
+//            }
 
             if(pathChange){
                 return;
-            }else{
-                currEdge = nextEdge;
-                currNode = currEdge.getOtherEnd(currNode.getId());
             }
         }
     }
@@ -115,7 +112,7 @@ public class Drive implements Runnable, ElementsOnMap {
             passengers.add(pedestrian);
 //            paths.remove(currPath);
 //            paths.add(GraphAlgo.getShortestPath(currNode, pedestrian.getCurrNode()));
-//            paths.add(pedestrian.getEdges());
+//            paths.add(pedestrian.getNodes());
 //            paths.add(GraphAlgo.getShortestPath(pedestrian.getDestination(), getDestination()));
     }
 
@@ -129,13 +126,13 @@ public class Drive implements Runnable, ElementsOnMap {
 
     @Override
     public GeoLocation getLocation(){
-        return currEdge == null? null : currNode.getCoordinates();
+        return currNode.getLocation();
     }
 
     @Override
     public Node getDestination() {
-        return path.get_dest();
-//        return paths.get(paths.size() -1).get_dest(); // TODO check if last
+        return path.getDest();
+//        return paths.get(paths.size() -1).getDest(); // TODO check if last
     }
 
     @Override
@@ -161,15 +158,14 @@ public class Drive implements Runnable, ElementsOnMap {
         return leaveTime;
     }
 
-    public Edge getCurrEdge() { return currEdge; }
 
     @Override
     public Path getPath(){
         return path;
     }
 
-    public List<Edge> getEdges(){
-        return path.getEdges();
+    public List<Node> getNodes(){
+        return path.getNodes();
     }
 
 //    public void addMiddlePath(Path currPath) {

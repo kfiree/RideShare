@@ -93,8 +93,8 @@ public class Edge implements MapObject, Located {
     public double getSpeedLimit() { return SPEED_LIMIT.get(highwayType); }
 
     @Override
-    public GeoLocation getCoordinates(){
-        return node1.getCoordinates();
+    public GeoLocation getLocation(){
+        return node1.getLocation();
     }
 
     @Override

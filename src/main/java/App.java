@@ -1,4 +1,4 @@
-import rds.JsonHandler;
+import utils.JsonHandler;
 import app.controller.GraphAlgo;
 import app.controller.MapUtils;
 import app.view.MapView;
@@ -148,7 +148,7 @@ public final class App{
         SIMULATOR_SPEED = 10.0;
         BOUNDS = true;
         CONSOLE_LOG_LEVEL = "ALL";
-        SHOW_ALL_PATHS = false;
+        SHOW_ALL_PATHS = true;
     }
 
     public static void main(String[] args) {

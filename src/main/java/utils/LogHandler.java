@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 
 
 /**
- *
  * sources:
  *      use LoggerExample.java    ->     https://examples.javacodegeeks.com/core-java/util/logging/java-util-logging-example/
  *      current reference         ->     https://www.journaldev.com/977/logger-in-java-logging-example

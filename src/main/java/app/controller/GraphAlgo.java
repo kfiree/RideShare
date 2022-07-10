@@ -66,7 +66,7 @@ public final class GraphAlgo {
 
     //Loop through all the nodes, and find the closest one
     nodes.forEach(other -> {
-                double dist = distance(other.getCoordinates(), location);
+                double dist = distance(other.getLocation(), location);
                 if(dist < minDistance.get()){
                     minDistance.set(dist);
                     closestNode.set(other);

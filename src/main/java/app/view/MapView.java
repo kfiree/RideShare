@@ -2,7 +2,7 @@ package app.view;
 
 import app.model.*;
 
-import static app.Utils.FORMAT;
+import static utils.Utils.FORMAT;
 import static utils.LogHandler.LOGGER;
 import static app.view.StyleUtils.*;
 
@@ -112,7 +112,7 @@ public class MapView {
     }
 
     private void drawNewEvents(){
-        Iterator<ElementsOnMap> eventIter = events.getNewEvents().iterator();
+        Iterator<ElementsOnMap> eventIter = events.getStartedEvents().iterator();
 
         while(eventIter.hasNext()) {
             ElementsOnMap nextEvent = eventIter.next();
