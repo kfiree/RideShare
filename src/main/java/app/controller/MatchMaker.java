@@ -35,7 +35,9 @@ public class MatchMaker implements Runnable{
             Collection<Drive> drives = UserMap.INSTANCE.getOnGoingDrives();
 
             for (Drive drive : drives) {
-                match(drive, requests);
+                if(!drive.isFull()) {
+                    match(drive, requests);
+                }
             }
         } finally {
             unLock();

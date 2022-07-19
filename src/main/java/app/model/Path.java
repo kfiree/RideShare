@@ -32,7 +32,7 @@ public class Path implements Comparable<Path> , Iterable<Node>{
 
     public List<Node> getNodes() {
         return nodes;
-    }//TODO ADD sync method getEdgeIterator()
+    } //TODO ADD sync method getEdgeIterator()
 
 
     public Node get_src() { return nodes.get(0); }
@@ -42,6 +42,9 @@ public class Path implements Comparable<Path> , Iterable<Node>{
     public void addMiddlePath(Path path, Node currNode){
         Path toPathSrc = GraphAlgo.getShortestPath(currNode, path.get_src()),
                 fromPathDest = GraphAlgo.getShortestPath(path.getDest(), getDest());
+
+        path.getNodes().remove(0);
+        fromPathDest.getNodes().remove(0);
 
         nodes.clear();
 

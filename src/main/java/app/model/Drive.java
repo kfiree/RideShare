@@ -72,12 +72,12 @@ public class Drive implements Runnable, ElementsOnMap, Located {
         pathChange = false;
         int nodeIndex = 0;
 
-        Iterator<Node> NodeIter = path.iterator();
-        Node nextNode = NodeIter.next();
+        Iterator<Node> nodeIter = path.iterator();
+        Node nextNode = nodeIter.next();
 
-        while(NodeIter.hasNext()){
+        while(nodeIter.hasNext()){
             currNode = nextNode;
-            nextNode = NodeIter.next();
+            nextNode = nodeIter.next();
 
             if(nodeIndex % 5 ==0) {
                 LOGGER.info("driver (" + getId() + ") " + FORMAT( ++nodeIndex / (double) path.getSize() * 100) + "% complete.");
@@ -91,7 +91,11 @@ public class Drive implements Runnable, ElementsOnMap, Located {
 
             /* pick passenger on the way */
             for(Rider passenger: passengers){
-                if(passenger.getCurrNode() == currNode &&  !UserMap.INSTANCE.getFinished().contains(passenger)){
+
+                if(passenger.getCurrNode() == currNode){
+                    //todo check add second condition  ->   !UserMap.INSTANCE.getFinished().contains(passenger)
+
+                    System.out.println(this.id +" picked " +passenger.getId()+".");
                     UserMap.INSTANCE.finished(passenger);
                 }
             }
@@ -107,10 +111,11 @@ public class Drive implements Runnable, ElementsOnMap, Located {
     }
 
     public void pickPassenger(Rider rider){
-            /* extend path to pick up pedestrian */
-            path.addMiddlePath(rider.getPath(), currNode); // todo change estimatedDistance and save on path
-            this.pathChange = true;
-            passengers.add(rider);
+        /* extend path to pick up pedestrian */
+        System.out.println(this.id +" on his way to " +rider.getId()+".");
+        path.addMiddlePath(rider.getPath(), currNode);
+        this.pathChange = true;
+        passengers.add(rider);
     }
 
     public boolean isFull(){

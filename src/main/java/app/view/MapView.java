@@ -13,7 +13,6 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.ui.j2dviewer.J2DGraphRenderer;
 import org.graphstream.ui.spriteManager.Sprite;
-import org.graphstream.ui.spriteManager.SpriteManager;
 import org.graphstream.ui.view.Viewer;
 import org.graphstream.ui.view.ViewerPipe;
 
@@ -80,7 +79,6 @@ public class MapView {
     public static final MapView instance = new MapView();
 
 
-
     public void show(double simulatorSpeed, boolean showMode){
         //load events
         events = new RealTimeEvents(simulatorSpeed);
@@ -90,7 +88,7 @@ public class MapView {
 
         // draw map components
         drawMapComponents();
-        drawAddons();
+        clock = drawClock();
 
         // start simulator
         Thread eventsThread = new Thread(events);
@@ -158,7 +156,6 @@ public class MapView {
         }
     }
 
-
     private void sleep() {
         simulatorCurrTime = new Date(simulatorCurrTime.getTime()+SLEEP_BETWEEN_FRAMES);
         clock.setAttribute("ui.label", FORMAT(simulatorCurrTime));
@@ -193,32 +190,6 @@ public class MapView {
         return displayNode;
     }
 
-    private void drawAddons(){
-        Node clockNode = displayGraph.addNode("clockNode");
 
-        clockNode.setAttribute("xy", 34.7615, 32.1179); //todo locate relative to map
-
-        SpriteManager spriteManager = new SpriteManager(displayGraph);
-        clock = spriteManager.addSprite("clock");
-        clock.addAttribute("ui.label", "YYYY-MM-DD HH:mm:ss");
-
-        clock.setAttribute("ui.style",
-                "   fill-mode: plain;"+
-                        "   fill-color: #CCC;"+
-                        "   stroke-mode: plain;"+
-                        "   stroke-color: black;"+
-                        "   stroke-width: 1px;"+
-                        "   text-size: 16;"+
-                        "   text-style: bold;"+
-                        "   text-color: #FFF;"+
-                        "   text-alignment: center;"+
-                        "   text-padding: 3px, 2px;"+
-                        "   text-background-mode: rounded-box;"+
-                        "   text-background-color: #A7CC;"+
-                        "   text-color: white;"+
-                        "   text-offset: 5px, 0px;"
-        );
-        clock.attachToNode("clockNode");
-    }
 
 }

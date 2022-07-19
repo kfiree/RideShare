@@ -152,19 +152,18 @@ public final class App{
         LOAD_FROM_JSON = true;
         PBF_PATH = "data/maps/israel.pbf";
         NODE_IN_MAIN_COMPONENT =2432701015L;
-        SIMULATOR_SPEED = 10.0;
+        SIMULATOR_SPEED = 20.0;
         BOUNDS = true;
         CONSOLE_LOG_LEVEL =
                 "SEVERE";
 //                "ALL";
         SHOW_ALL_PATHS = true;
-        DRIVE_NUM = 50;
-        REQUEST_NUM = 20;
+        DRIVE_NUM = 20;
+        REQUEST_NUM = 7;
     }
 
     public static void main(String[] args) {
-        System.out.println("java -jar RideShare.jar -h\n\n" + Instructions
-                + "\n\n\njava -jar RideShare.jar   -s 10  -l ALL  -b y\n");
+        showCliFlow();
 
         init(args);
         LOGGER.finest("Let's GO!!");
@@ -192,6 +191,11 @@ public final class App{
         LOGGER.info("Finished!");
 
         System.exit(0);
+    }
+
+    private static void showCliFlow(){
+        System.out.println("java -jar RideShare.jar -h\n\n" + Instructions
+                + "\n\n\njava -jar RideShare.jar   -s 10  -l ALL  -b y\n");
     }
 
     public static void CreateMap() {

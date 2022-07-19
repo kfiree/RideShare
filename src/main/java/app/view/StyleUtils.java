@@ -7,6 +7,8 @@ import app.model.UserMap;
 import app.model.interfaces.ElementsOnMap;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
+import org.graphstream.ui.spriteManager.Sprite;
+import org.graphstream.ui.spriteManager.SpriteManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -182,7 +184,6 @@ public class StyleUtils {
     }
 
 
-
     protected static void moveCar(Drive drive, Node car){
         GeoLocation location = drive.getLocation();
 
@@ -258,6 +259,34 @@ public class StyleUtils {
                 " fill-mode: gradient-horizontal;";
     }
 
+    public static Sprite drawClock(){
+        Node clockNode = displayGraph.addNode("clockNode");
+
+        clockNode.setAttribute("xy", 34.7615, 32.1179); //todo locate relative to map
+
+        SpriteManager spriteManager = new SpriteManager(displayGraph);
+        Sprite clock = spriteManager.addSprite("clock");
+        clock.addAttribute("ui.label", "YYYY-MM-DD HH:mm:ss");
+
+        clock.setAttribute("ui.style",
+                "   fill-mode: plain;"+
+                        "   fill-color: #CCC;"+
+                        "   stroke-mode: plain;"+
+                        "   stroke-color: black;"+
+                        "   stroke-width: 1px;"+
+                        "   text-size: 16;"+
+                        "   text-style: bold;"+
+                        "   text-color: #FFF;"+
+                        "   text-alignment: center;"+
+                        "   text-padding: 3px, 2px;"+
+                        "   text-background-mode: rounded-box;"+
+                        "   text-background-color: #A7CC;"+
+                        "   text-color: white;"+
+                        "   text-offset: 5px, 0px;"
+        );
+        clock.attachToNode("clockNode");
+        return clock;
+    }
 
     /* STYLE-SHEETS */
     static {

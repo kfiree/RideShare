@@ -80,9 +80,6 @@ public class RealTimeEvents implements Runnable{
                 UserMap.INSTANCE.startDrive(drive);
                 pool.execute(drive);
             }else{
-                if(newEvent.getId().equals("5")){
-                    System.out.println("stop");
-                }
                 UserMap.INSTANCE.startRequest((Rider) newEvent);
             }
         } finally {
