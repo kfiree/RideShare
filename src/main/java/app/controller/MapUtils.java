@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static utils.LogHandler.LOGGER;
+import static utils.Utils.throwException;
 
 
 /**
@@ -101,7 +102,7 @@ public final class MapUtils {
 
 
 
-    /**
+    /*
      *   |================================|
      *   |=======| MAP PROPERTIES |=======|
      *   |================================|
@@ -121,23 +122,6 @@ public final class MapUtils {
         return UUID.randomUUID().toString();
     }
 
-    public static void validate(boolean condition, String errorMsg){
-        if(!condition) {
-            throwException(errorMsg);
-        }
-
-    }
-
-    public static void throwException(String errorMsg){
-        try {
-            LOGGER.severe(errorMsg);
-
-            throw new Exception(errorMsg);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /** private constructor for static class */
+    /* private constructor for static class */
     private MapUtils() {}
 }

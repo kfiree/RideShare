@@ -1,37 +1,76 @@
-1::[2022-07-10 03:14:06] [App] [FINEST] - Let's GO!!
-1::[2022-07-10 03:14:06] [App] [INFO] - Start parsing main map.
-1::[2022-07-10 03:14:08] [App] [INFO] - Map is ready. Map = RoadMap{edges=13631, nodes=9640}
-1::[2022-07-10 03:14:13] [app.controller.GraphAlgo] [FINE] - Path between 530842268 and 2446033616 found using A*.
-1::[2022-07-10 03:14:13] [app.controller.GraphAlgo] [FINE] - Path between 6164276607 and 1936282471 found using A*.
-1::[2022-07-10 03:14:13] [app.controller.GraphAlgo] [FINE] - Path between 4064420010 and 2219330666 found using A*.
-1::[2022-07-10 03:14:13] [app.controller.GraphAlgo] [FINE] - Path between 446167471 and 286542239 found using A*.
-1::[2022-07-10 03:14:13] [app.controller.GraphAlgo] [FINE] - Path between 1696821954 and 950853540 found using A*.
-1::[2022-07-10 03:14:13] [app.controller.GraphAlgo] [FINE] - Path between 1589453305 and 1672108170 found using A*.
-1::[2022-07-10 03:14:13] [app.controller.GraphAlgo] [FINE] - Path between 1671579973 and 552958616 found using A*.
-1::[2022-07-10 03:14:13] [app.controller.GraphAlgo] [FINE] - Path between 1568022559 and 1199373034 found using A*.
-1::[2022-07-10 03:14:13] [app.controller.GraphAlgo] [FINE] - Path between 1365179183 and 418891528 found using A*.
-1::[2022-07-10 03:14:13] [app.controller.GraphAlgo] [FINE] - Path between 6454784777 and 2349733321 found using A*.
-1::[2022-07-10 03:14:13] [app.view.RealTimeEvents] [FINER] - init 10 drives.
-1::[2022-07-10 03:14:13] [app.controller.GraphAlgo] [FINE] - Path between 354044077 and 340008586 found using A*.
-1::[2022-07-10 03:14:13] [app.controller.GraphAlgo] [FINE] - Path between 1696868611 and 2716680539 found using A*.
-1::[2022-07-10 03:14:14] [app.controller.GraphAlgo] [FINE] - Path between 411859452 and 2987888124 found using A*.
-1::[2022-07-10 03:14:14] [app.controller.GraphAlgo] [FINE] - Path between 1133488002 and 2266143431 found using A*.
-1::[2022-07-10 03:14:14] [app.controller.GraphAlgo] [FINE] - Path between 3991299385 and 271326030 found using A*.
-1::[2022-07-10 03:14:14] [app.view.RealTimeEvents] [FINER] - init 5 pedestrians.
-24::[2022-07-10 03:14:15] [app.view.RealTimeEvents] [FINE] - RealTimeEvents star running
-25::[2022-07-10 03:14:18] [app.model.Drive] [FINE] - Drive 0 started.
-25::[2022-07-10 03:14:18] [app.model.Drive] [INFO] - driver (0) 0.98% complete.
-24::[2022-07-10 03:14:18] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{, ownerId='0', passengers=0, leaveTime=Sun, 10 Jul 2022 03:14:12 EEST, paths=102, currNode=Node{id = 530842268, coordinates = (32.122290500000005,34.797605000000004), adjacent = (530842257, 3147530474, 3147530493, 3147530475)}
-} event. at Sun, 10 Jul 2022 03:14:12 EEST.
-24::[2022-07-10 03:14:21] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Pedestrian{id='00', askTime=Sun, 10 Jul 2022 03:14:22 EEST, currNode=Node{id = 354044077, coordinates = (32.120600800000005,34.7917882), adjacent = (354045093, 354045257, 1157434452, 409693240)}
-, destination=340008586} event. at Sun, 10 Jul 2022 03:14:22 EEST.
-26::[2022-07-10 03:14:24] [app.model.Drive] [FINE] - Drive 1 started.
-24::[2022-07-10 03:14:24] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{, ownerId='1', passengers=0, leaveTime=Sun, 10 Jul 2022 03:27:09 EEST, paths=63, currNode=Node{id = 6164276607, coordinates = (32.0526914,34.7635823), adjacent = (1931841490)}
-} event. at Sun, 10 Jul 2022 03:27:09 EEST.
-26::[2022-07-10 03:14:24] [app.model.Drive] [INFO] - driver (1) 1.59% complete.
-24::[2022-07-10 03:14:27] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Pedestrian{id='01', askTime=Sun, 10 Jul 2022 03:27:45 EEST, currNode=Node{id = 1696868611, coordinates = (32.0814122,34.8237499), adjacent = (1696868625)}
-, destination=2716680539} event. at Sun, 10 Jul 2022 03:27:45 EEST.
-24::[2022-07-10 03:14:30] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{, ownerId='2', passengers=0, leaveTime=Sun, 10 Jul 2022 03:40:42 EEST, paths=63, currNode=Node{id = 4064420010, coordinates = (32.0470532,34.7861007), adjacent = (1382676544, 1225576605)}
-} event. at Sun, 10 Jul 2022 03:40:42 EEST.
-27::[2022-07-10 03:14:30] [app.model.Drive] [FINE] - Drive 2 started.
-27::[2022-07-10 03:14:30] [app.model.Drive] [INFO] - driver (2) 1.59% complete.
+31::[2022-07-19 15:54:57] [app.model.Drive] [INFO] - driver (D37) 1.61% complete.
+42::[2022-07-19 15:54:58] [app.model.Drive] [FINEST] - Drive D29 finished!.
+38::[2022-07-19 15:54:58] [app.model.Drive] [FINEST] - Drive D32 finished!.
+45::[2022-07-19 15:55:00] [app.model.Drive] [FINEST] - Drive D24 finished!.
+45::[2022-07-19 15:55:00] [app.model.Drive] [FINE] - Drive D36 started.
+24::[2022-07-19 15:55:00] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='36', long id='D36', passengers=0, leaveTime=Wed, 20 Jul 2022 00:06:54 EEST, pathSize=37, currNode=12504744-b2e3-433a-9ac8-6da6270b848f} event. at Wed, 20 Jul 2022 00:06:54 EEST.
+45::[2022-07-19 15:55:00] [app.model.Drive] [INFO] - driver (D36) 2.70% complete.
+37::[2022-07-19 15:55:02] [app.model.Drive] [FINEST] - Drive D26 finished!.
+37::[2022-07-19 15:55:03] [app.model.Drive] [FINE] - Drive D38 started.
+24::[2022-07-19 15:55:03] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='38', long id='D38', passengers=0, leaveTime=Wed, 20 Jul 2022 00:33:52 EEST, pathSize=28, currNode=1c06263c-771e-4c9b-936e-685b28a2b6ac} event. at Wed, 20 Jul 2022 00:33:52 EEST.
+37::[2022-07-19 15:55:03] [app.model.Drive] [INFO] - driver (D38) 3.57% complete.
+46::[2022-07-19 15:55:06] [app.model.Drive] [FINEST] - Drive D33 finished!.
+24::[2022-07-19 15:55:06] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='39', long id='D39', passengers=0, leaveTime=Wed, 20 Jul 2022 00:38:46 EEST, pathSize=56, currNode=60d4377b-0777-4ba0-8d30-c3d5976d602c} event. at Wed, 20 Jul 2022 00:38:46 EEST.
+46::[2022-07-19 15:55:06] [app.model.Drive] [FINE] - Drive D39 started.
+46::[2022-07-19 15:55:06] [app.model.Drive] [INFO] - driver (D39) 1.79% complete.
+28::[2022-07-19 15:55:07] [app.model.Drive] [FINEST] - Drive D2 finished!.
+26::[2022-07-19 15:55:08] [app.model.Drive] [FINEST] - Drive D20 finished!.
+29::[2022-07-19 15:55:09] [app.model.Drive] [FINEST] - Drive D30 finished!.
+24::[2022-07-19 15:55:09] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='40', long id='D40', passengers=0, leaveTime=Wed, 20 Jul 2022 00:48:51 EEST, pathSize=87, currNode=f5a9152f-44ed-4d99-be63-d5a9a0783f34} event. at Wed, 20 Jul 2022 00:48:51 EEST.
+29::[2022-07-19 15:55:09] [app.model.Drive] [FINE] - Drive D40 started.
+29::[2022-07-19 15:55:09] [app.model.Drive] [INFO] - driver (D40) 1.15% complete.
+24::[2022-07-19 15:55:12] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='41', long id='D41', passengers=0, leaveTime=Wed, 20 Jul 2022 00:49:47 EEST, pathSize=66, currNode=f26cb28d-6256-404d-9c7c-dc0adc4d8bf8} event. at Wed, 20 Jul 2022 00:49:47 EEST.
+26::[2022-07-19 15:55:12] [app.model.Drive] [FINE] - Drive D41 started.
+26::[2022-07-19 15:55:12] [app.model.Drive] [INFO] - driver (D41) 1.52% complete.
+32::[2022-07-19 15:55:13] [app.model.Drive] [FINEST] - Drive D6 finished!.
+33::[2022-07-19 15:55:13] [app.model.Drive] [FINEST] - Drive D10 finished!.
+24::[2022-07-19 15:55:15] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='42', long id='D42', passengers=0, leaveTime=Wed, 20 Jul 2022 00:55:33 EEST, pathSize=120, currNode=216d326c-a913-4af9-82e8-b0457dbd86f7} event. at Wed, 20 Jul 2022 00:55:33 EEST.
+33::[2022-07-19 15:55:15] [app.model.Drive] [FINE] - Drive D42 started.
+33::[2022-07-19 15:55:15] [app.model.Drive] [INFO] - driver (D42) 0.83% complete.
+41::[2022-07-19 15:55:16] [app.model.Drive] [FINEST] - Drive D18 finished!.
+41::[2022-07-19 15:55:18] [app.model.Drive] [FINE] - Drive D43 started.
+24::[2022-07-19 15:55:18] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='43', long id='D43', passengers=0, leaveTime=Wed, 20 Jul 2022 00:59:47 EEST, pathSize=76, currNode=70ad8a9d-15bf-4216-8f23-560de237cdc0} event. at Wed, 20 Jul 2022 00:59:47 EEST.
+41::[2022-07-19 15:55:18] [app.model.Drive] [INFO] - driver (D43) 1.32% complete.
+24::[2022-07-19 15:55:21] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='46', long id='D46', passengers=0, leaveTime=Wed, 20 Jul 2022 01:36:43 EEST, pathSize=94, currNode=13dd7df3-14f1-4e32-8554-108290cb6e8d} event. at Wed, 20 Jul 2022 01:36:43 EEST.
+32::[2022-07-19 15:55:21] [app.model.Drive] [FINE] - Drive D46 started.
+32::[2022-07-19 15:55:21] [app.model.Drive] [INFO] - driver (D46) 1.06% complete.
+30::[2022-07-19 15:55:22] [app.model.Drive] [FINEST] - Drive D4 finished!.
+45::[2022-07-19 15:55:22] [app.model.Drive] [FINEST] - Drive D36 finished!.
+37::[2022-07-19 15:55:23] [app.model.Drive] [FINEST] - Drive D38 finished!.
+24::[2022-07-19 15:55:24] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='45', long id='D45', passengers=0, leaveTime=Wed, 20 Jul 2022 01:45:41 EEST, pathSize=92, currNode=5e8e5f55-a556-4396-97e9-16e7aa926746} event. at Wed, 20 Jul 2022 01:45:41 EEST.
+37::[2022-07-19 15:55:24] [app.model.Drive] [FINE] - Drive D45 started.
+37::[2022-07-19 15:55:24] [app.model.Drive] [INFO] - driver (D45) 1.09% complete.
+27::[2022-07-19 15:55:25] [app.model.Drive] [FINEST] - Drive D34 finished!.
+24::[2022-07-19 15:55:27] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='44', long id='D44', passengers=0, leaveTime=Wed, 20 Jul 2022 01:48:49 EEST, pathSize=25, currNode=a4fea412-2db5-4a8f-ad73-d2faf1e541d4} event. at Wed, 20 Jul 2022 01:48:49 EEST.
+27::[2022-07-19 15:55:27] [app.model.Drive] [FINE] - Drive D44 started.
+27::[2022-07-19 15:55:27] [app.model.Drive] [INFO] - driver (D44) 4.00% complete.
+24::[2022-07-19 15:55:30] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='48', long id='D48', passengers=0, leaveTime=Wed, 20 Jul 2022 01:57:30 EEST, pathSize=37, currNode=40e3656d-21e1-4537-a887-14d696c57140} event. at Wed, 20 Jul 2022 01:57:30 EEST.
+45::[2022-07-19 15:55:30] [app.model.Drive] [FINE] - Drive D48 started.
+45::[2022-07-19 15:55:30] [app.model.Drive] [INFO] - driver (D48) 2.70% complete.
+34::[2022-07-19 15:55:32] [app.model.Drive] [FINEST] - Drive D15 finished!.
+31::[2022-07-19 15:55:32] [app.model.Drive] [FINEST] - Drive D37 finished!.
+24::[2022-07-19 15:55:33] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='47', long id='D47', passengers=0, leaveTime=Wed, 20 Jul 2022 02:25:47 EEST, pathSize=47, currNode=0e194bc5-e1b6-44bd-bd82-383869d246ad} event. at Wed, 20 Jul 2022 02:25:47 EEST.
+31::[2022-07-19 15:55:33] [app.model.Drive] [FINE] - Drive D47 started.
+31::[2022-07-19 15:55:33] [app.model.Drive] [INFO] - driver (D47) 2.13% complete.
+44::[2022-07-19 15:55:34] [app.model.Drive] [FINEST] - Drive D35 finished!.
+24::[2022-07-19 15:55:36] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='49', long id='D49', passengers=0, leaveTime=Wed, 20 Jul 2022 02:34:16 EEST, pathSize=58, currNode=b71551c6-8710-4f58-9909-108dbe009ad1} event. at Wed, 20 Jul 2022 02:34:16 EEST.
+44::[2022-07-19 15:55:36] [app.model.Drive] [FINE] - Drive D49 started.
+44::[2022-07-19 15:55:36] [app.model.Drive] [INFO] - driver (D49) 1.72% complete.
+24::[2022-07-19 15:55:36] [app.view.RealTimeEvents] [INFO] - RealTimeEvents finished.
+47::[2022-07-19 15:55:36] [app.model.Drive] [FINEST] - Drive D31 finished!.
+46::[2022-07-19 15:55:37] [app.model.Drive] [FINEST] - Drive D39 finished!.
+27::[2022-07-19 15:55:41] [app.model.Drive] [FINEST] - Drive D44 finished!.
+36::[2022-07-19 15:55:45] [app.model.Drive] [FINEST] - Drive D11 finished!.
+26::[2022-07-19 15:55:46] [app.model.Drive] [FINEST] - Drive D41 finished!.
+45::[2022-07-19 15:55:48] [app.model.Drive] [FINEST] - Drive D48 finished!.
+39::[2022-07-19 15:55:57] [app.model.Drive] [FINEST] - Drive D14 finished!.
+31::[2022-07-19 15:56:00] [app.model.Drive] [FINEST] - Drive D47 finished!.
+41::[2022-07-19 15:56:00] [app.model.Drive] [FINEST] - Drive D43 finished!.
+29::[2022-07-19 15:56:02] [app.model.Drive] [FINEST] - Drive D40 finished!.
+40::[2022-07-19 15:56:06] [app.model.Drive] [FINEST] - Drive D17 finished!.
+44::[2022-07-19 15:56:11] [app.model.Drive] [FINEST] - Drive D49 finished!.
+33::[2022-07-19 15:56:13] [app.model.Drive] [FINEST] - Drive D42 finished!.
+32::[2022-07-19 15:56:13] [app.model.Drive] [FINEST] - Drive D46 finished!.
+37::[2022-07-19 15:56:18] [app.model.Drive] [FINEST] - Drive D45 finished!.
+35::[2022-07-19 15:56:29] [app.model.Drive] [FINEST] - Drive D16 finished!.
+1::[2022-07-19 15:56:30] [utils.LogHandler] [INFO] - Closingjava.util.logging.FileHandler@7f5b0926

@@ -1,10 +1,12 @@
-import utils.JsonHandler;
 import app.controller.GraphAlgo;
 import app.controller.MapUtils;
+import app.controller.osm_processing.Parser;
+import app.controller.osm_processing.Reader;
+import app.model.RoadMap;
+import app.model.UserMap;
 import app.view.MapView;
 import crosby.binary.osmosis.OsmosisReader;
-import app.model.RoadMap;
-import app.controller.osm_processing.*;
+import utils.JsonHandler;
 
 import javax.swing.*;
 import java.io.File;
@@ -38,12 +40,16 @@ import static utils.LogHandler.*;
  *           osmconvert64.exe ariel2.osm > arielpbf.pbf --out-pbf
  *
  *
+ *
  * TODO list:
  *                  /------------------------------------------------\
  *                  |/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\|
  *                  |/\/\/\/\/\/\/\/\|  SH!T TO DO  |/\/\/\/\/\/\/\/\|
  *                  |/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\|
  *                  \------------------------------------------------/
+ *       .
+ *       . sources document:  https://docs.google.com/document/d/1r4gWm002QzLkzu5Wc1mgb3C5IQuyaunEAUmF9_46nEg/edit#
+ *
  *
  *
  * |==========================================================================================|
@@ -140,15 +146,20 @@ public final class App{
     private static Double SIMULATOR_SPEED;
     private static String CONSOLE_LOG_LEVEL, PBF_PATH;
     private static Boolean BOUNDS, SHOW_ALL_PATHS, LOAD_FROM_JSON;
+    private static int DRIVE_NUM, REQUEST_NUM;
 
     static{
         LOAD_FROM_JSON = true;
-        PBF_PATH = "data/osm/israel.pbf";
+        PBF_PATH = "data/maps/israel.pbf";
         NODE_IN_MAIN_COMPONENT =2432701015L;
         SIMULATOR_SPEED = 10.0;
         BOUNDS = true;
-        CONSOLE_LOG_LEVEL = "ALL";
+        CONSOLE_LOG_LEVEL =
+                "SEVERE";
+//                "ALL";
         SHOW_ALL_PATHS = true;
+        DRIVE_NUM = 50;
+        REQUEST_NUM = 20;
     }
 
     public static void main(String[] args) {
@@ -170,6 +181,11 @@ public final class App{
 
 
         LOGGER.info("Map is ready. Map = " + RoadMap.INSTANCE);
+
+
+        UserMap.INSTANCE.initRandomEvents(DRIVE_NUM, REQUEST_NUM);
+//        RealTimeEvents.init();
+
         MapView.instance.show(SIMULATOR_SPEED, SHOW_ALL_PATHS);
 
         closeLogHandlers();
@@ -211,7 +227,7 @@ public final class App{
         }
     }
 
-    /**
+    /*
      * TODO add:
      *          - set bounds coordinates
      *          -

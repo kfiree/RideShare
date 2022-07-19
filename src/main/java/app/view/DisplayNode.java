@@ -4,6 +4,7 @@ import app.model.GeoLocation;
 import org.graphstream.graph.implementations.AbstractGraph;
 import org.graphstream.graph.implementations.MultiNode;
 
+//todo check if can combine my node with this
 public class DisplayNode extends MultiNode {
     GeoLocation location;
     public DisplayNode(AbstractGraph displayGraph, GeoLocation location, String id) {

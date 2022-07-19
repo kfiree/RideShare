@@ -1,23 +1,42 @@
 package app.model;
 
+import app.controller.GraphAlgo;
 import app.model.interfaces.ElementsOnMap;
+import utils.JsonHandler;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+
+import static utils.LogHandler.LOGGER;
 
 /**
  * todo make iterate on edges thread safe
  *      add only from here
+ *      -
+ *      - check if need hashtable for data structures that doesnt use get();
  */
 public class UserMap {
-    private final Hashtable<String, Drive> drives;
-    private final Hashtable<String, Pedestrian> requests;
+    private final Hashtable<String, Drive> drives, onGoingDrives;
+    private final Hashtable<String, Rider> requests, pendingRequests;
     private final HashSet<ElementsOnMap> finished;
+    private final HashSet<UserEdge> userEdges;
+    private Date firstEventTime;
 
-    /** CONSTRUCTORS */
+    /** CONSTRUCTORS  */
     public UserMap() {
+        this.onGoingDrives = new Hashtable<>();
+        this.pendingRequests = new Hashtable<>();
         drives = new Hashtable<>();
         requests = new Hashtable<>();
         finished = new HashSet<>();
+        userEdges = new HashSet<>();
     }
 
     /**  Singleton specific properties */
@@ -25,44 +44,133 @@ public class UserMap {
 
 
 
-    /** GETTERS */
+    /* GETTERS */
 
     public Collection<Drive> getDrives() { return drives.values(); }
 
-    public Drive getDrive(String key) { return drives.get(key); }
+    public Collection<Drive> getOnGoingDrives() { return onGoingDrives.values(); }
 
-    public Collection<Pedestrian> getRequests() { return requests.values(); }
+    public Collection<Rider> getRequests() { return requests.values(); }
 
-    public Pedestrian getPedestrian(String key) { return requests.get(key); }
+    public Collection<Rider> getPendingRequests() { return pendingRequests.values(); }
 
     public HashSet<ElementsOnMap> getFinished() {
         return finished;
     }
 
-    /**     SETTERS     */
+    public Date getFirstEventTime() {
+        return firstEventTime;
+    }
 
-    public void setDrives(Map<String, Drive> drives) { this.drives.putAll(drives); }
-
-    public void setRequests(Map<String, Pedestrian> requests) { this.requests.putAll(requests); }
+    /*     SETTERS     */
 
     public void addDrive(Drive drive) {
-        Thread driveThread = new Thread(drive);
-        driveThread.start();
+        for(Rider rider: this.requests.values()){
+            this.userEdges.add(new UserEdge(drive, rider));
+
+        }
         drives.put(drive.getId(), drive);
     }
-    public Drive addDrive(Node src, Node dst, String type, String id, Date date) {
-        return drives.put(id, new Drive(src, dst, type, id, date));
+
+    public void addDrive(Node src, Node dst, String type, String id, Date date) {
+        drives.put(id, new Drive(src, dst, type, id, date));
     }
 
-    public void addRequest(Pedestrian pedestrian) { requests.put(pedestrian.getId(), pedestrian); }
+    public void addRequest(Rider rider) {
+        requests.put(rider.getId(), rider);
+    }
 
-    public Pedestrian addRequest(String id, Node src, Node dst, Date date) {
-        return requests.put(id, new Pedestrian(id, src, dst, date));
+    public void addRequest(String id, Node src, Node dst, Date date) {
+        requests.put(id, new Rider(id, src, dst, date));
+    }
+
+    public LinkedList<ElementsOnMap> getEventQueue(){
+        LinkedList<ElementsOnMap> events = new LinkedList<>();
+
+        events.addAll(getDrives());
+        events.addAll(getRequests());
+
+        events.sort(Comparator.comparing(ElementsOnMap::getStartTime)
+                .thenComparing(ElementsOnMap::getStartTime));
+
+        return events;
     }
 
 
 
-    /** REMOVE FROM GRAPH */
+
+    public void startRequest(Rider rider){
+        this.pendingRequests.put(rider.getId(), rider);
+    }
+
+    public void startDrive(Drive drive){
+        this.onGoingDrives.put(drive.getId(), drive);
+    }
+
+    /**  init events from DB */
+    public void initEvents(){
+        JsonHandler.UserMapType.load();
+    }
+
+    public void initRandomEvents(int driveNum, int pedestriansNum){
+        this.firstEventTime = new Date();
+        Random rand = new Random(1);
+
+        initRandDrives(driveNum, rand);
+        initRandRiders(pedestriansNum, rand);
+    }
+
+    public void initRandRiders(int requestsNum, Random rand){
+        List<Node> nodes = new ArrayList<>(RoadMap.INSTANCE.getNodes());
+        long pedestriansStartTime = firstEventTime.getTime() + 10000; //10 seconds after drives
+        Node src, dst;
+
+        int[] randomIndexes = rand.ints(requestsNum* 2L, 0, nodes.size()).toArray();
+
+        //create drives
+        for (int i = 0; i < requestsNum; i++) {
+            src = nodes.get(randomIndexes[i*2]);
+            dst = nodes.get(randomIndexes[i*2 +1 ]);
+            int timeAdded = rand.nextInt(75000);
+
+            requests.put(String.valueOf(i), new Rider(String.valueOf(i), src, dst, new Date(pedestriansStartTime + ((long) (750000 + timeAdded) * i))));
+        }
+
+        LOGGER.finer("init "+ requestsNum + " pedestrians.");
+    }
+
+    public void initRandDrives(int drivesNum, Random rand) {
+
+        // drives variables
+        List<Node> nodes = new ArrayList<>(RoadMap.INSTANCE.getNodes());
+        Node src, dst;
+
+        // init random indexes for nodes
+        int[] randomIndexes = rand.ints(drivesNum* 2L, 0, nodes.size()).toArray();
+
+        //create drives
+        for (int i = 0; i < drivesNum; i++) {
+            src = nodes.get(randomIndexes[i*2]);
+            dst = nodes.get(randomIndexes[i*2 +1 ]);
+
+            Path shortestPath;
+            Drive drive = null;
+
+            if(src != null && dst != null ){
+                shortestPath = GraphAlgo.getShortestPath(src, dst);
+                int timeAdded = rand.nextInt(75000);
+                if(shortestPath != null) {
+                    drive = new Drive(String.valueOf(i), shortestPath, "unknown", new Date(firstEventTime.getTime() + ((long) (750000 + timeAdded) * i)) );
+                }
+            }
+
+            drives.put(drive.getId(), drive);
+        }
+
+        LOGGER.finer("init " + drivesNum + " drives.");
+    }
+
+    /* REMOVE FROM GRAPH */
 
     public void finished(ElementsOnMap element) {
         if(element instanceof Drive){
@@ -71,21 +179,22 @@ public class UserMap {
             requests.remove(element.getId());
         }
         finished.add(element);
-    }//todo cancel when thread pool ready
-
-    public void pickPedestrian(Pedestrian pedestrian){
-        requests.remove(pedestrian.getId());
     }
 
-//    public void remove(ElementsOnMap element) { finished.remove(element); }
+    public void pickPedestrian(Rider rider){
+        pendingRequests.remove(rider.getId());
+    }
+
 
 
 
     @Override
     public String toString() {
         return "UserMap{" +
-                ", pedestrians=" + requests.size() +
-                ", drives=" + drives.size() +
+                ", total requests=" + requests.size() +
+                ", total drives=" + drives.size() +
+                ", started drives=" + onGoingDrives.size() +
+                ", started requests=" + pendingRequests.size() +
                 '}';
     }
 }

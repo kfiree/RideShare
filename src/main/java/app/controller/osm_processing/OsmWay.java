@@ -57,11 +57,11 @@ public class OsmWay implements Located {
      * @return coordinates of way's start
      */
     @Override
-    public GeoLocation getCoordinates() {
+    public GeoLocation getLocation() {
         if(objectsOnWay.isEmpty()) {
             return null;
         }
-        return objectsOnWay.get(0).getCoordinates();
+        return objectsOnWay.get(0).getLocation();
     }
 
     @Override

@@ -33,14 +33,14 @@ public class OsmObject  implements Located {
     private final Map<String, String> tags = new HashMap<>();
     private int linkCounter;
 
-    /** CONSTRUCTORS */
+    /* CONSTRUCTORS */
     public OsmObject(Node osmNode){
         coordinates = new GeoLocation(osmNode.getLatitude(), osmNode.getLongitude());
         id = osmNode.getId();
         addAllTags(osmNode.getTags());
     }
 
-    /** GETTERS */
+    /* GETTERS */
 
     public long getID() {
         return id;
@@ -51,7 +51,7 @@ public class OsmObject  implements Located {
     }
 
     @Override
-    public GeoLocation getCoordinates() {
+    public GeoLocation getLocation() {
         return coordinates;
     }
 
@@ -64,7 +64,7 @@ public class OsmObject  implements Located {
         coordinates = new GeoLocation(latitude, longitude);
     }
 
-    /** SETTERS */
+    /* SETTERS */
 
     public void addAllTags(Collection<Tag> tags) {
         if (!tags.isEmpty()) {

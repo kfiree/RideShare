@@ -1,15 +1,19 @@
 package app.controller;
 
 import app.model.Drive;
-import app.model.Pedestrian;
-import app.model.RoadMap;
+import app.model.Rider;
 import app.model.UserMap;
 
 import java.util.Collection;
 
+import static java.lang.Thread.sleep;
 import static utils.LogHandler.LOGGER;
+import static utils.Utils.lock;
+import static utils.Utils.unLock;
 
-/** todo replace pickIfWorthIt(Drive drive) with pickIfWorthIt( ) (without drivers calling this method). */
+/* todo replace match(Drive drive) with match( ) (without drivers calling this method).
+ *      might use https://github.com/frankfarrell/kds4j
+ * */
 public class MatchMaker implements Runnable{
     private static final int MAX_KM_ADDITION_TO_PATH;
     private MatchMaker() {}
@@ -20,39 +24,35 @@ public class MatchMaker implements Runnable{
          MAX_KM_ADDITION_TO_PATH = 10;
     }
 
-    public synchronized void pickIfWorthIt(){
+    public void init(){
 
-        Collection<Pedestrian> requests = UserMap.INSTANCE.getRequests();
-        Collection<Drive> drives = UserMap.INSTANCE.getDrives();
+    }
 
-        for(Drive drive: drives) {
-            /*  find close passenger to pick up */
-            for (Pedestrian pedestrian : requests) {
-                /* check addition to path if picked up */
+    public synchronized void match(){
+        try {
+            lock(true);
+            Collection<Rider> requests = UserMap.INSTANCE.getPendingRequests();
+            Collection<Drive> drives = UserMap.INSTANCE.getOnGoingDrives();
 
-                if (isWorthIt(drive, pedestrian)) {
-                    pedestrian.markTaken();
-                    drive.pickPassenger(pedestrian);
-                }
+            for (Drive drive : drives) {
+                match(drive, requests);
             }
+        } finally {
+            unLock();
         }
     }
 
-    /**
-     *
-     * @param drive
-     * @return true if picked someone up
-     */
-    public synchronized boolean pickIfWorthIt(Drive drive){
+    /** @return true if picked someone up */
+    public synchronized boolean match(Drive drive, Collection<Rider> requests){
 
         /*  find close passenger to pick up */
-        for (Pedestrian pedestrian : UserMap.INSTANCE.getRequests()) {
+        for (Rider rider : requests) {
             /* check addition to path if picked up */
 
 
-            if(isWorthIt(drive, pedestrian)){
-                pedestrian.markTaken();
-                drive.pickPassenger(pedestrian);
+            if(isWorthItBruteForceSolution(drive, rider)){
+                rider.markTaken();
+                drive.pickPassenger(rider);
                 return true;
             }
         }
@@ -60,21 +60,44 @@ public class MatchMaker implements Runnable{
         return false;
     }
 
-    /** heuristic for pickup*/
-    private boolean isWorthIt(Drive d, Pedestrian p){
+
+    /* heuristic for pickup*/
+
+    private boolean isWorthItBruteForceSolution(Drive d, Rider p){
         double distanceTo = GraphAlgo.distance(d.getLocation(), p.getLocation()),
                 addedPathDistance = GraphAlgo.distance(p.getLocation(), p.getDestination().getLocation()),
                 distanceFrom = GraphAlgo.distance(p.getDestination().getLocation(), d.getDestination().getLocation());
 
         double newPathLength_heuristic = distanceTo + addedPathDistance + distanceFrom;
 
-        boolean worthIt = newPathLength_heuristic < d.getEstimatedDistance() + MAX_KM_ADDITION_TO_PATH;
+        boolean worthIt = newPathLength_heuristic < d.getTotalTime() + MAX_KM_ADDITION_TO_PATH;
 
         if(worthIt) {
             LOGGER.fine(
                     "drive " + d.getId() + " change path to pick up passenger: " + p.getId() +
                             ".\nPath length heuristics:" +
-                            "\n * Prev path: " + d.getEstimatedDistance() +
+                            "\n * Prev path: " + d.getTotalTime() +
+                            "\n * new path: " + newPathLength_heuristic
+            );
+        }
+
+        return worthIt;
+    }
+
+    private boolean isWorthItBitBetterSolution(Drive d, Rider p){
+        double distanceTo = GraphAlgo.distance(d.getLocation(), p.getLocation()),
+
+                distanceFrom = GraphAlgo.distance(p.getDestination().getLocation(), d.getDestination().getLocation());
+
+        double newPathLength_heuristic = distanceTo + distanceFrom;
+
+        boolean worthIt = newPathLength_heuristic < d.getTotalTime() + MAX_KM_ADDITION_TO_PATH;
+
+        if(worthIt) {
+            LOGGER.fine(
+                    "drive " + d.getId() + " change path to pick up passenger: " + p.getId() +
+                            ".\nPath length heuristics:" +
+                            "\n * Prev path: " + d.getTotalTime() +
                             "\n * new path: " + newPathLength_heuristic
             );
         }
@@ -84,6 +107,13 @@ public class MatchMaker implements Runnable{
 
     @Override
     public void run() {
-
+        while(true){
+            try {
+                sleep(15000);
+                match();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

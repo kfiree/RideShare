@@ -16,6 +16,16 @@ import java.util.logging.Logger;
  *      use LoggerExample.java    ->     https://examples.javacodegeeks.com/core-java/util/logging/java-util-logging-example/
  *      current reference         ->     https://www.journaldev.com/977/logger-in-java-logging-example
  *      close handler             ->     https://stackoverflow.com/questions/1154025/problem-with-java-util-logging-and-lock-file
+ *
+ *      todo add treeStack to logs?
+ *                  with one of this:
+ *                      * 1)  treeStack
+ *                      * 2)  System.out.println("Printing stack trace:");
+ *                      *     StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+ *                      *     for (int i = 1; i < elements.length; i++) {
+ *                      *         StackTraceElement s = elements[i];
+ *                      *         System.out.println("\tat " + s.getClassName() + "." + s.getMethodName() + "(" + s.getFileName() + ":" + s.getLineNumber() + ")");
+ *                      *     }
  */
 public class LogHandler{
     public static Logger LOGGER;
@@ -46,14 +56,9 @@ public class LogHandler{
             LOGGER.addHandler(FILE_HANDLER);
             LOGGER.addHandler(CONSOLE_HANDLER);
 
-//            for(Handler handler : LOGGER.getHandlers()){
-//                handler.setLevel(Level.ALL);
-//            }
-
         } catch (SecurityException | IOException e) {
             e.printStackTrace();
         }
-//        logHandler = this;
     }
 
     public static void ConsoleLevel(String lvl) {

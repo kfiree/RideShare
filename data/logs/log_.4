@@ -1,215 +1,177 @@
-1::[2022-07-05 22:10:18] [App] [FINEST] - Let's GO!!
-1::[2022-07-05 22:10:19] [App] [INFO] - Start parsing main map.
-1::[2022-07-05 22:10:21] [App] [INFO] - Map is ready. Map = RoadMap{edges=13631, nodes=9640}
-1::[2022-07-05 22:10:24] [app.controller.GraphAlgo] [FINE] - Path between 530842268 and 2446033616 found using A*.
-1::[2022-07-05 22:10:24] [app.controller.GraphAlgo] [FINE] - Path between 6164276607 and 1936282471 found using A*.
-1::[2022-07-05 22:10:24] [app.controller.GraphAlgo] [FINE] - Path between 4064420010 and 2219330666 found using A*.
-1::[2022-07-05 22:10:24] [app.controller.GraphAlgo] [FINE] - Path between 446167471 and 286542239 found using A*.
-1::[2022-07-05 22:10:24] [app.controller.GraphAlgo] [FINE] - Path between 1696821954 and 950853540 found using A*.
-1::[2022-07-05 22:10:25] [app.controller.GraphAlgo] [FINE] - Path between 1589453305 and 1672108170 found using A*.
-1::[2022-07-05 22:10:25] [app.controller.GraphAlgo] [FINE] - Path between 1671579973 and 552958616 found using A*.
-1::[2022-07-05 22:10:25] [app.controller.GraphAlgo] [FINE] - Path between 1568022559 and 1199373034 found using A*.
-1::[2022-07-05 22:10:25] [app.controller.GraphAlgo] [FINE] - Path between 1365179183 and 418891528 found using A*.
-1::[2022-07-05 22:10:25] [app.controller.GraphAlgo] [FINE] - Path between 6454784777 and 2349733321 found using A*.
-1::[2022-07-05 22:10:25] [app.view.RealTimeEvents] [FINER] - init 10 drives.
-1::[2022-07-05 22:10:25] [app.controller.GraphAlgo] [FINE] - Path between 354044077 and 340008586 found using A*.
-1::[2022-07-05 22:10:25] [app.controller.GraphAlgo] [FINE] - Path between 1696868611 and 2716680539 found using A*.
-1::[2022-07-05 22:10:25] [app.controller.GraphAlgo] [FINE] - Path between 411859452 and 2987888124 found using A*.
-1::[2022-07-05 22:10:25] [app.controller.GraphAlgo] [FINE] - Path between 1133488002 and 2266143431 found using A*.
-1::[2022-07-05 22:10:25] [app.controller.GraphAlgo] [FINE] - Path between 3991299385 and 271326030 found using A*.
-1::[2022-07-05 22:10:25] [app.view.RealTimeEvents] [FINER] - init 5 pedestrians.
-24::[2022-07-05 22:10:26] [app.view.RealTimeEvents] [FINE] - RealTimeEvents star running
-25::[2022-07-05 22:10:29] [app.model.Drive] [FINE] - Drive 0 started.
-24::[2022-07-05 22:10:29] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{, ownerId='0', passengers=0, leaveTime=Tue, 05 Jul 2022 22:10:24 EEST, paths=101, currNode=Node{id = 530842268, coordinates = (32.122290500000005,34.797605000000004), adjacent = (530842257, 3147530474, 3147530493, 3147530475)}
-} event. at Tue, 05 Jul 2022 22:10:24 EEST.
-25::[2022-07-05 22:10:31] [app.model.Drive] [INFO] - driver (0) 2.97% complete.
-24::[2022-07-05 22:10:32] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Pedestrian{id='00', askTime=Tue, 05 Jul 2022 22:10:34 EEST, currNode=Node{id = 354044077, coordinates = (32.120600800000005,34.7917882), adjacent = (354045093, 354045257, 1157434452, 409693240)}
-, destination=340008586} event. at Tue, 05 Jul 2022 22:10:34 EEST.
-25::[2022-07-05 22:10:35] [app.controller.MatchMaker] [FINE] - drive 0 change path to pick up passenger: 00.
+30::[2022-07-19 15:44:03] [app.model.Drive] [INFO] - driver (D4) 0.40% complete.
+24::[2022-07-19 15:44:05] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Rider{id='10', long id='R10', askTime=Tue, 19 Jul 2022 17:56:26 EEST, currNode=1697441440, destination=318867658} event. at Tue, 19 Jul 2022 17:56:26 EEST.
+33::[2022-07-19 15:44:06] [app.model.Drive] [FINEST] - Drive D7 finished!.
+24::[2022-07-19 15:44:08] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='10', long id='D10', passengers=0, leaveTime=Tue, 19 Jul 2022 17:59:34 EEST, pathSize=68, currNode=c8cc1c23-f834-407e-9826-22c9c1adb38e} event. at Tue, 19 Jul 2022 17:59:34 EEST.
+33::[2022-07-19 15:44:08] [app.model.Drive] [FINE] - Drive D10 started.
+33::[2022-07-19 15:44:08] [app.model.Drive] [INFO] - driver (D10) 1.47% complete.
+24::[2022-07-19 15:44:11] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Rider{id='11', long id='R11', askTime=Tue, 19 Jul 2022 18:06:11 EEST, currNode=417642078, destination=5914441601} event. at Tue, 19 Jul 2022 18:06:11 EEST.
+24::[2022-07-19 15:44:14] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='11', long id='D11', passengers=0, leaveTime=Tue, 19 Jul 2022 18:08:19 EEST, pathSize=48, currNode=31bd6cd1-515a-4544-b918-497878be9687} event. at Tue, 19 Jul 2022 18:08:19 EEST.
+36::[2022-07-19 15:44:14] [app.model.Drive] [FINE] - Drive D11 started.
+36::[2022-07-19 15:44:14] [app.model.Drive] [INFO] - driver (D11) 2.08% complete.
+25::[2022-07-19 15:44:17] [app.controller.MatchMaker] [FINE] - drive D11 change path to pick up passenger: R11.
 Path length heuristics:
- * Prev path: 8.079452822346738
- * new path: 8.012394587859081
-25::[2022-07-05 22:10:35] [app.controller.GraphAlgo] [FINE] - Path between 1104550226 and 354044077 found using A*.
-25::[2022-07-05 22:10:35] [app.controller.GraphAlgo] [FINE] - Path between 340008586 and 2446033616 found using A*.
-26::[2022-07-05 22:10:35] [app.model.Drive] [FINE] - Drive 1 started.
-24::[2022-07-05 22:10:35] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{, ownerId='1', passengers=0, leaveTime=Tue, 05 Jul 2022 22:23:20 EEST, paths=62, currNode=Node{id = 6164276607, coordinates = (32.0526914,34.7635823), adjacent = (1931841490)}
-} event. at Tue, 05 Jul 2022 22:23:20 EEST.
-25::[2022-07-05 22:10:35] [app.model.Drive] [INFO] - driver (0) 2.31% complete.
-26::[2022-07-05 22:10:36] [app.model.Drive] [INFO] - driver (1) 4.84% complete.
-26::[2022-07-05 22:10:37] [app.model.Drive] [INFO] - driver (1) 9.68% complete.
-25::[2022-07-05 22:10:38] [app.model.Drive] [INFO] - driver (0) 4.62% complete.
-24::[2022-07-05 22:10:38] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Pedestrian{id='01', askTime=Tue, 05 Jul 2022 22:23:56 EEST, currNode=Node{id = 1696868611, coordinates = (32.0814122,34.8237499), adjacent = (1696868625)}
-, destination=2716680539} event. at Tue, 05 Jul 2022 22:23:56 EEST.
-26::[2022-07-05 22:10:39] [app.model.Drive] [INFO] - driver (1) 14.52% complete.
-26::[2022-07-05 22:10:40] [app.controller.MatchMaker] [FINE] - drive 1 change path to pick up passenger: 01.
+ * Prev path: 351.60918373187786
+ * new path: 19.593612014206865
+25::[2022-07-19 15:44:17] [app.controller.GraphAlgo] [FINE] - Path between 1234762870 and 417642078 found using A*.
+25::[2022-07-19 15:44:17] [app.controller.GraphAlgo] [FINE] - Path between 5914441601 and 735959908 found using A*.
+25::[2022-07-19 15:44:17] [app.controller.MatchMaker] [FINE] - drive D10 change path to pick up passenger: R10.
 Path length heuristics:
- * Prev path: 2.7736138829442627
- * new path: 12.68888377981855
-26::[2022-07-05 22:10:40] [app.controller.GraphAlgo] [FINE] - Path between 6137993426 and 1696868611 found using A*.
-26::[2022-07-05 22:10:40] [app.controller.GraphAlgo] [FINE] - Path between 2716680539 and 1936282471 found using A*.
-25::[2022-07-05 22:10:40] [app.model.Drive] [INFO] - driver (0) 6.92% complete.
-26::[2022-07-05 22:10:40] [app.model.Drive] [INFO] - driver (1) 1.30% complete.
-24::[2022-07-05 22:10:41] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{, ownerId='2', passengers=0, leaveTime=Tue, 05 Jul 2022 22:36:54 EEST, paths=62, currNode=Node{id = 4064420010, coordinates = (32.0470532,34.7861007), adjacent = (1382676544, 1225576605)}
-} event. at Tue, 05 Jul 2022 22:36:54 EEST.
-27::[2022-07-05 22:10:41] [app.model.Drive] [FINE] - Drive 2 started.
-27::[2022-07-05 22:10:42] [app.model.Drive] [INFO] - driver (2) 4.84% complete.
-26::[2022-07-05 22:10:42] [app.model.Drive] [INFO] - driver (1) 2.60% complete.
-26::[2022-07-05 22:10:43] [app.model.Drive] [INFO] - driver (1) 3.90% complete.
-27::[2022-07-05 22:10:43] [app.model.Drive] [INFO] - driver (2) 9.68% complete.
-24::[2022-07-05 22:10:44] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Pedestrian{id='02', askTime=Tue, 05 Jul 2022 22:37:18 EEST, currNode=Node{id = 411859452, coordinates = (32.112988200000004,34.7978515), adjacent = (2288738339, 3496915990, 1104578683, 289069649)}
-, destination=2987888124} event. at Tue, 05 Jul 2022 22:37:18 EEST.
-26::[2022-07-05 22:10:45] [app.model.Drive] [INFO] - driver (1) 5.19% complete.
-27::[2022-07-05 22:10:45] [app.model.Drive] [INFO] - driver (2) 14.52% complete.
-25::[2022-07-05 22:10:45] [app.model.Drive] [INFO] - driver (0) 9.23% complete.
-25::[2022-07-05 22:10:46] [app.model.Drive] [INFO] - driver (0) 11.54% complete.
-27::[2022-07-05 22:10:46] [app.model.Drive] [INFO] - driver (2) 19.35% complete.
-26::[2022-07-05 22:10:46] [app.model.Drive] [INFO] - driver (1) 6.49% complete.
-26::[2022-07-05 22:10:47] [app.model.Drive] [INFO] - driver (1) 7.79% complete.
-24::[2022-07-05 22:10:47] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Pedestrian{id='03', askTime=Tue, 05 Jul 2022 22:51:05 EEST, currNode=Node{id = 1133488002, coordinates = (32.130259200000005,34.7942647), adjacent = (1131410801)}
-, destination=2266143431} event. at Tue, 05 Jul 2022 22:51:05 EEST.
-26::[2022-07-05 22:10:48] [app.model.Drive] [INFO] - driver (1) 9.09% complete.
-25::[2022-07-05 22:10:48] [app.model.Drive] [INFO] - driver (0) 13.85% complete.
-27::[2022-07-05 22:10:48] [app.model.Drive] [INFO] - driver (2) 24.19% complete.
-26::[2022-07-05 22:10:49] [app.model.Drive] [INFO] - driver (1) 10.39% complete.
-27::[2022-07-05 22:10:49] [app.model.Drive] [INFO] - driver (2) 29.03% complete.
-25::[2022-07-05 22:10:49] [app.model.Drive] [INFO] - driver (0) 16.15% complete.
-26::[2022-07-05 22:10:50] [app.model.Drive] [INFO] - driver (1) 11.69% complete.
-24::[2022-07-05 22:10:50] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{, ownerId='3', passengers=0, leaveTime=Tue, 05 Jul 2022 22:51:13 EEST, paths=39, currNode=Node{id = 446167471, coordinates = (32.0634972,34.7921038), adjacent = (1688171004, 2692325666, 1688194327, 6271076529)}
-} event. at Tue, 05 Jul 2022 22:51:13 EEST.
-28::[2022-07-05 22:10:50] [app.model.Drive] [FINE] - Drive 3 started.
-25::[2022-07-05 22:10:50] [app.model.Drive] [INFO] - driver (0) 18.46% complete.
-27::[2022-07-05 22:10:51] [app.model.Drive] [INFO] - driver (2) 33.87% complete.
-27::[2022-07-05 22:10:51] [app.model.Drive] [INFO] - driver (2) 38.71% complete.
-28::[2022-07-05 22:10:52] [app.model.Drive] [INFO] - driver (3) 7.69% complete.
-26::[2022-07-05 22:10:52] [app.model.Drive] [INFO] - driver (1) 12.99% complete.
-27::[2022-07-05 22:10:52] [app.model.Drive] [INFO] - driver (2) 43.55% complete.
-24::[2022-07-05 22:10:53] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{, ownerId='4', passengers=0, leaveTime=Tue, 05 Jul 2022 23:01:23 EEST, paths=43, currNode=Node{id = 1696821954, coordinates = (32.0752589,34.802914), adjacent = (1696894982, 1696894975, 361148704)}
-} event. at Tue, 05 Jul 2022 23:01:23 EEST.
-29::[2022-07-05 22:10:53] [app.model.Drive] [FINE] - Drive 4 started.
-28::[2022-07-05 22:10:53] [app.model.Drive] [INFO] - driver (3) 15.38% complete.
-27::[2022-07-05 22:10:54] [app.model.Drive] [INFO] - driver (2) 48.39% complete.
-26::[2022-07-05 22:10:54] [app.model.Drive] [INFO] - driver (1) 14.29% complete.
-28::[2022-07-05 22:10:54] [app.model.Drive] [INFO] - driver (3) 23.08% complete.
-29::[2022-07-05 22:10:55] [app.model.Drive] [INFO] - driver (4) 6.98% complete.
-25::[2022-07-05 22:10:55] [app.model.Drive] [INFO] - driver (0) 20.77% complete.
-26::[2022-07-05 22:10:56] [app.model.Drive] [INFO] - driver (1) 15.58% complete.
-28::[2022-07-05 22:10:56] [app.model.Drive] [INFO] - driver (3) 30.77% complete.
-24::[2022-07-05 22:10:56] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Pedestrian{id='04', askTime=Tue, 05 Jul 2022 23:05:08 EEST, currNode=Node{id = 3991299385, coordinates = (32.1201287,34.8355745), adjacent = (417643420, 369338961, 417643293, 417642197)}
-, destination=271326030} event. at Tue, 05 Jul 2022 23:05:08 EEST.
-27::[2022-07-05 22:10:56] [app.model.Drive] [INFO] - driver (2) 53.23% complete.
-25::[2022-07-05 22:10:56] [app.model.Drive] [INFO] - driver (0) 23.08% complete.
-29::[2022-07-05 22:10:56] [app.model.Drive] [INFO] - driver (4) 13.95% complete.
-28::[2022-07-05 22:10:57] [app.model.Drive] [INFO] - driver (3) 38.46% complete.
-25::[2022-07-05 22:10:57] [app.model.Drive] [INFO] - driver (0) 25.38% complete.
-26::[2022-07-05 22:10:58] [app.model.Drive] [INFO] - driver (1) 16.88% complete.
-27::[2022-07-05 22:10:58] [app.model.Drive] [INFO] - driver (2) 58.06% complete.
-29::[2022-07-05 22:10:59] [app.model.Drive] [INFO] - driver (4) 20.93% complete.
-27::[2022-07-05 22:10:59] [app.controller.MatchMaker] [FINE] - drive 2 change path to pick up passenger: 04.
+ * Prev path: 351.108657235782
+ * new path: 14.179740049031867
+25::[2022-07-19 15:44:17] [app.controller.GraphAlgo] [FINE] - Path between 968515553 and 1697441440 found using A*.
+25::[2022-07-19 15:44:17] [app.controller.GraphAlgo] [FINE] - Path between 318867658 and 953799791 found using A*.
+24::[2022-07-19 15:44:17] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Rider{id='12', long id='R12', askTime=Tue, 19 Jul 2022 18:17:51 EEST, currNode=1790662878, destination=684521415} event. at Tue, 19 Jul 2022 18:17:51 EEST.
+36::[2022-07-19 15:44:17] [app.model.Drive] [INFO] - driver (D11) 0.40% complete.
+33::[2022-07-19 15:44:18] [app.model.Drive] [INFO] - driver (D10) 0.53% complete.
+24::[2022-07-19 15:44:20] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='12', long id='D12', passengers=0, leaveTime=Tue, 19 Jul 2022 18:19:44 EEST, pathSize=107, currNode=c15be875-23cb-449b-b599-d08cfbdaeadd} event. at Tue, 19 Jul 2022 18:19:44 EEST.
+37::[2022-07-19 15:44:20] [app.model.Drive] [FINE] - Drive D12 started.
+37::[2022-07-19 15:44:20] [app.model.Drive] [INFO] - driver (D12) 0.93% complete.
+24::[2022-07-19 15:44:23] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='13', long id='D13', passengers=0, leaveTime=Tue, 19 Jul 2022 18:28:50 EEST, pathSize=79, currNode=a04cca1e-d8db-4928-b3b3-06944c464aed} event. at Tue, 19 Jul 2022 18:28:50 EEST.
+38::[2022-07-19 15:44:23] [app.model.Drive] [FINE] - Drive D13 started.
+38::[2022-07-19 15:44:23] [app.model.Drive] [INFO] - driver (D13) 1.27% complete.
+24::[2022-07-19 15:44:26] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Rider{id='13', long id='R13', askTime=Tue, 19 Jul 2022 18:28:51 EEST, currNode=581973092, destination=341344078} event. at Tue, 19 Jul 2022 18:28:51 EEST.
+24::[2022-07-19 15:44:29] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='14', long id='D14', passengers=0, leaveTime=Tue, 19 Jul 2022 18:41:50 EEST, pathSize=43, currNode=6db85ab5-b432-4884-a98b-940a95f5fe82} event. at Tue, 19 Jul 2022 18:41:50 EEST.
+39::[2022-07-19 15:44:29] [app.model.Drive] [FINE] - Drive D14 started.
+39::[2022-07-19 15:44:29] [app.model.Drive] [INFO] - driver (D14) 2.33% complete.
+35::[2022-07-19 15:44:30] [app.model.Drive] [FINEST] - Drive D9 finished!.
+25::[2022-07-19 15:44:32] [app.controller.MatchMaker] [FINE] - drive D14 change path to pick up passenger: R13.
 Path length heuristics:
- * Prev path: 4.696995865984944
- * new path: 14.65684666726073
-27::[2022-07-05 22:10:59] [app.controller.GraphAlgo] [FINE] - Path between 6438921844 and 3991299385 found using A*.
-27::[2022-07-05 22:10:59] [app.controller.GraphAlgo] [FINE] - Path between 271326030 and 2219330666 found using A*.
-24::[2022-07-05 22:10:59] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{, ownerId='5', passengers=0, leaveTime=Tue, 05 Jul 2022 23:14:01 EEST, paths=64, currNode=Node{id = 1589453305, coordinates = (32.0915514,34.835290900000004), adjacent = (1589453240, 809590931, 393995688)}
-} event. at Tue, 05 Jul 2022 23:14:01 EEST.
-30::[2022-07-05 22:10:59] [app.model.Drive] [FINE] - Drive 5 started.
-26::[2022-07-05 22:10:59] [app.model.Drive] [INFO] - driver (1) 18.18% complete.
-27::[2022-07-05 22:10:59] [app.model.Drive] [INFO] - driver (2) 1.78% complete.
-25::[2022-07-05 22:11:00] [app.model.Drive] [INFO] - driver (0) 27.69% complete.
-30::[2022-07-05 22:11:00] [app.model.Drive] [INFO] - driver (5) 4.69% complete.
-25::[2022-07-05 22:11:00] [app.model.Drive] [INFO] - driver (0) 30.00% complete.
-29::[2022-07-05 22:11:00] [app.model.Drive] [INFO] - driver (4) 27.91% complete.
-27::[2022-07-05 22:11:00] [app.model.Drive] [INFO] - driver (2) 3.55% complete.
-28::[2022-07-05 22:11:00] [app.model.Drive] [INFO] - driver (3) 46.15% complete.
-26::[2022-07-05 22:11:00] [app.model.Drive] [INFO] - driver (1) 19.48% complete.
-29::[2022-07-05 22:11:01] [app.model.Drive] [INFO] - driver (4) 34.88% complete.
-28::[2022-07-05 22:11:02] [app.model.Drive] [INFO] - driver (3) 53.85% complete.
-27::[2022-07-05 22:11:02] [app.model.Drive] [INFO] - driver (2) 5.33% complete.
-30::[2022-07-05 22:11:02] [app.model.Drive] [INFO] - driver (5) 9.38% complete.
-24::[2022-07-05 22:11:02] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{, ownerId='6', passengers=0, leaveTime=Tue, 05 Jul 2022 23:27:25 EEST, paths=68, currNode=Node{id = 1671579973, coordinates = (32.0686313,34.7920012), adjacent = (1671579974)}
-} event. at Tue, 05 Jul 2022 23:27:25 EEST.
-31::[2022-07-05 22:11:02] [app.model.Drive] [FINE] - Drive 6 started.
-27::[2022-07-05 22:11:02] [app.model.Drive] [INFO] - driver (2) 7.10% complete.
-28::[2022-07-05 22:11:03] [app.model.Drive] [INFO] - driver (3) 61.54% complete.
-26::[2022-07-05 22:11:03] [app.model.Drive] [INFO] - driver (1) 20.78% complete.
-29::[2022-07-05 22:11:03] [app.model.Drive] [INFO] - driver (4) 41.86% complete.
-31::[2022-07-05 22:11:03] [app.model.Drive] [INFO] - driver (6) 4.41% complete.
-28::[2022-07-05 22:11:03] [app.model.Drive] [INFO] - driver (3) 69.23% complete.
-27::[2022-07-05 22:11:04] [app.model.Drive] [INFO] - driver (2) 8.88% complete.
-26::[2022-07-05 22:11:04] [app.model.Drive] [INFO] - driver (1) 22.08% complete.
-25::[2022-07-05 22:11:04] [app.model.Drive] [INFO] - driver (0) 32.31% complete.
-29::[2022-07-05 22:11:05] [app.model.Drive] [INFO] - driver (4) 48.84% complete.
-31::[2022-07-05 22:11:05] [app.model.Drive] [INFO] - driver (6) 8.82% complete.
-25::[2022-07-05 22:11:05] [app.model.Drive] [INFO] - driver (0) 34.62% complete.
-30::[2022-07-05 22:11:05] [app.model.Drive] [INFO] - driver (5) 14.06% complete.
-26::[2022-07-05 22:11:05] [app.model.Drive] [INFO] - driver (1) 23.38% complete.
-24::[2022-07-05 22:11:05] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{, ownerId='7', passengers=0, leaveTime=Tue, 05 Jul 2022 23:38:27 EEST, paths=42, currNode=Node{id = 1568022559, coordinates = (32.0502261,34.777859400000004), adjacent = (1568022618)}
-} event. at Tue, 05 Jul 2022 23:38:27 EEST.
-32::[2022-07-05 22:11:05] [app.model.Drive] [FINE] - Drive 7 started.
-28::[2022-07-05 22:11:05] [app.model.Drive] [INFO] - driver (3) 76.92% complete.
-27::[2022-07-05 22:11:05] [app.model.Drive] [INFO] - driver (2) 10.65% complete.
-29::[2022-07-05 22:11:05] [app.model.Drive] [INFO] - driver (4) 55.81% complete.
-32::[2022-07-05 22:11:06] [app.model.Drive] [INFO] - driver (7) 7.14% complete.
-29::[2022-07-05 22:11:06] [app.model.Drive] [INFO] - driver (4) 62.79% complete.
-27::[2022-07-05 22:11:06] [app.model.Drive] [INFO] - driver (2) 12.43% complete.
-30::[2022-07-05 22:11:06] [app.model.Drive] [INFO] - driver (5) 18.75% complete.
-31::[2022-07-05 22:11:06] [app.model.Drive] [INFO] - driver (6) 13.24% complete.
-26::[2022-07-05 22:11:07] [app.model.Drive] [INFO] - driver (1) 24.68% complete.
-27::[2022-07-05 22:11:07] [app.model.Drive] [INFO] - driver (2) 14.20% complete.
-25::[2022-07-05 22:11:07] [app.model.Drive] [INFO] - driver (0) 36.92% complete.
-28::[2022-07-05 22:11:07] [app.model.Drive] [INFO] - driver (3) 84.62% complete.
-26::[2022-07-05 22:11:08] [app.model.Drive] [INFO] - driver (1) 25.97% complete.
-30::[2022-07-05 22:11:08] [app.model.Drive] [INFO] - driver (5) 23.44% complete.
-24::[2022-07-05 22:11:08] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{, ownerId='8', passengers=0, leaveTime=Tue, 05 Jul 2022 23:53:10 EEST, paths=88, currNode=Node{id = 1365179183, coordinates = (32.0625553,34.7973677), adjacent = (1365179182)}
-} event. at Tue, 05 Jul 2022 23:53:10 EEST.
-33::[2022-07-05 22:11:08] [app.model.Drive] [FINE] - Drive 8 started.
-32::[2022-07-05 22:11:08] [app.model.Drive] [INFO] - driver (7) 14.29% complete.
-31::[2022-07-05 22:11:08] [app.model.Drive] [INFO] - driver (6) 17.65% complete.
-27::[2022-07-05 22:11:09] [app.model.Drive] [INFO] - driver (2) 15.98% complete.
-29::[2022-07-05 22:11:09] [app.model.Drive] [INFO] - driver (4) 69.77% complete.
-33::[2022-07-05 22:11:09] [app.model.Drive] [INFO] - driver (8) 3.41% complete.
-32::[2022-07-05 22:11:09] [app.model.Drive] [INFO] - driver (7) 21.43% complete.
-30::[2022-07-05 22:11:09] [app.model.Drive] [INFO] - driver (5) 28.13% complete.
-25::[2022-07-05 22:11:10] [app.model.Drive] [INFO] - driver (0) 39.23% complete.
-32::[2022-07-05 22:11:10] [app.model.Drive] [INFO] - driver (7) 28.57% complete.
-28::[2022-07-05 22:11:10] [app.model.Drive] [INFO] - driver (3) 92.31% complete.
-33::[2022-07-05 22:11:10] [app.model.Drive] [INFO] - driver (8) 6.82% complete.
-26::[2022-07-05 22:11:10] [app.model.Drive] [INFO] - driver (1) 27.27% complete.
-27::[2022-07-05 22:11:10] [app.model.Drive] [INFO] - driver (2) 17.75% complete.
-31::[2022-07-05 22:11:11] [app.model.Drive] [INFO] - driver (6) 22.06% complete.
-25::[2022-07-05 22:11:11] [app.model.Drive] [INFO] - driver (0) 41.54% complete.
-24::[2022-07-05 22:11:11] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{, ownerId='9', passengers=0, leaveTime=Wed, 06 Jul 2022 00:10:09 EEST, paths=124, currNode=Node{id = 6454784777, coordinates = (32.055412100000005,34.7594447), adjacent = (1199976580)}
-} event. at Wed, 06 Jul 2022 00:10:09 EEST.
-34::[2022-07-05 22:11:11] [app.model.Drive] [FINE] - Drive 9 started.
-24::[2022-07-05 22:11:11] [app.view.RealTimeEvents] [INFO] - RealTimeEvents finished.
-32::[2022-07-05 22:11:11] [app.model.Drive] [INFO] - driver (7) 35.71% complete.
-28::[2022-07-05 22:11:11] [app.model.Drive] [INFO] - driver (3) 100.00% complete.
-30::[2022-07-05 22:11:12] [app.model.Drive] [INFO] - driver (5) 32.81% complete.
-28::[2022-07-05 22:11:12] [app.model.Drive] [FINEST] - Drive 3 finished!.
-31::[2022-07-05 22:11:12] [app.model.Drive] [INFO] - driver (6) 26.47% complete.
-33::[2022-07-05 22:11:12] [app.model.Drive] [INFO] - driver (8) 10.23% complete.
-34::[2022-07-05 22:11:12] [app.model.Drive] [INFO] - driver (9) 2.42% complete.
-32::[2022-07-05 22:11:12] [app.model.Drive] [INFO] - driver (7) 42.86% complete.
-31::[2022-07-05 22:11:13] [app.model.Drive] [INFO] - driver (6) 30.88% complete.
-30::[2022-07-05 22:11:13] [app.model.Drive] [INFO] - driver (5) 37.50% complete.
-29::[2022-07-05 22:11:13] [app.model.Drive] [INFO] - driver (4) 76.74% complete.
-27::[2022-07-05 22:11:13] [app.model.Drive] [INFO] - driver (2) 19.53% complete.
-25::[2022-07-05 22:11:13] [app.model.Drive] [INFO] - driver (0) 43.85% complete.
-32::[2022-07-05 22:11:14] [app.model.Drive] [INFO] - driver (7) 50.00% complete.
-26::[2022-07-05 22:11:14] [app.model.Drive] [INFO] - driver (1) 28.57% complete.
-29::[2022-07-05 22:11:14] [app.model.Drive] [INFO] - driver (4) 83.72% complete.
-34::[2022-07-05 22:11:14] [app.model.Drive] [INFO] - driver (9) 4.84% complete.
-31::[2022-07-05 22:11:15] [app.model.Drive] [INFO] - driver (6) 35.29% complete.
-30::[2022-07-05 22:11:15] [app.model.Drive] [INFO] - driver (5) 42.19% complete.
-25::[2022-07-05 22:11:15] [app.model.Drive] [INFO] - driver (0) 46.15% complete.
-34::[2022-07-05 22:11:15] [app.model.Drive] [INFO] - driver (9) 7.26% complete.
-32::[2022-07-05 22:11:15] [app.model.Drive] [INFO] - driver (7) 57.14% complete.
-29::[2022-07-05 22:11:16] [app.model.Drive] [INFO] - driver (4) 90.70% complete.
-31::[2022-07-05 22:11:16] [app.model.Drive] [INFO] - driver (6) 39.71% complete.
-30::[2022-07-05 22:11:16] [app.model.Drive] [INFO] - driver (5) 46.88% complete.
-25::[2022-07-05 22:11:16] [app.model.Drive] [INFO] - driver (0) 48.46% complete.
-27::[2022-07-05 22:11:16] [app.model.Drive] [INFO] - driver (2) 21.30% complete.
-34::[2022-07-05 22:11:17] [app.model.Drive] [INFO] - driver (9) 9.68% complete.
-31::[2022-07-05 22:11:17] [app.model.Drive] [INFO] - driver (6) 44.12% complete.
-26::[2022-07-05 22:11:17] [app.model.Drive] [INFO] - driver (1) 29.87% complete.
-33::[2022-07-05 22:11:17] [app.model.Drive] [INFO] - driver (8) 13.64% complete.
+ * Prev path: 392.6081940262445
+ * new path: 8.56096707988044
+25::[2022-07-19 15:44:32] [app.controller.GraphAlgo] [FINE] - Path between 900648374 and 581973092 found using A*.
+25::[2022-07-19 15:44:32] [app.controller.GraphAlgo] [FINE] - Path between 341344078 and 7982624728 found using A*.
+25::[2022-07-19 15:44:32] [app.controller.MatchMaker] [FINE] - drive D13 change path to pick up passenger: R12.
+Path length heuristics:
+ * Prev path: 320.2382444150708
+ * new path: 7.798128615181349
+25::[2022-07-19 15:44:32] [app.controller.GraphAlgo] [FINE] - Path between 591891227 and 1790662878 found using A*.
+25::[2022-07-19 15:44:32] [app.controller.GraphAlgo] [FINE] - Path between 684521415 and 342374880 found using A*.
+24::[2022-07-19 15:44:32] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Rider{id='14', long id='R14', askTime=Tue, 19 Jul 2022 18:54:26 EEST, currNode=415452223, destination=3029394866} event. at Tue, 19 Jul 2022 18:54:26 EEST.
+38::[2022-07-19 15:44:32] [app.model.Drive] [INFO] - driver (D13) 0.68% complete.
+39::[2022-07-19 15:44:32] [app.model.Drive] [INFO] - driver (D14) 1.67% complete.
+34::[2022-07-19 15:44:34] [app.model.Drive] [FINEST] - Drive D8 finished!.
+24::[2022-07-19 15:44:35] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Rider{id='15', long id='R15', askTime=Tue, 19 Jul 2022 18:58:23 EEST, currNode=339472702, destination=440062733} event. at Tue, 19 Jul 2022 18:58:23 EEST.
+34::[2022-07-19 15:44:38] [app.model.Drive] [FINE] - Drive D15 started.
+24::[2022-07-19 15:44:38] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='15', long id='D15', passengers=0, leaveTime=Tue, 19 Jul 2022 18:59:00 EEST, pathSize=60, currNode=26659b49-82ff-482b-8359-bfaebe55b2c3} event. at Tue, 19 Jul 2022 18:59:00 EEST.
+34::[2022-07-19 15:44:38] [app.model.Drive] [INFO] - driver (D15) 1.67% complete.
+24::[2022-07-19 15:44:41] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Rider{id='16', long id='R16', askTime=Tue, 19 Jul 2022 19:20:20 EEST, currNode=471557022, destination=619446973} event. at Tue, 19 Jul 2022 19:20:20 EEST.
+35::[2022-07-19 15:44:44] [app.model.Drive] [FINE] - Drive D16 started.
+24::[2022-07-19 15:44:44] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='16', long id='D16', passengers=0, leaveTime=Tue, 19 Jul 2022 19:20:36 EEST, pathSize=96, currNode=0cb5ac62-1bee-475c-80c3-5450db0a1f12} event. at Tue, 19 Jul 2022 19:20:36 EEST.
+35::[2022-07-19 15:44:44] [app.model.Drive] [INFO] - driver (D16) 1.04% complete.
+25::[2022-07-19 15:44:47] [app.controller.MatchMaker] [FINE] - drive D16 change path to pick up passenger: R16.
+Path length heuristics:
+ * Prev path: 553.0708742200706
+ * new path: 12.92679344587098
+25::[2022-07-19 15:44:47] [app.controller.GraphAlgo] [FINE] - Path between 1100404694 and 471557022 found using A*.
+25::[2022-07-19 15:44:47] [app.controller.GraphAlgo] [FINE] - Path between 619446973 and 563941290 found using A*.
+25::[2022-07-19 15:44:47] [app.controller.MatchMaker] [FINE] - drive D15 change path to pick up passenger: R15.
+Path length heuristics:
+ * Prev path: 374.7995626992217
+ * new path: 11.285271311121697
+25::[2022-07-19 15:44:47] [app.controller.GraphAlgo] [FINE] - Path between 290033964 and 339472702 found using A*.
+25::[2022-07-19 15:44:47] [app.controller.GraphAlgo] [FINE] - Path between 440062733 and 393982902 found using A*.
+25::[2022-07-19 15:44:47] [app.controller.MatchMaker] [FINE] - drive D14 change path to pick up passenger: R14.
+Path length heuristics:
+ * Prev path: 241.10524104263715
+ * new path: 15.01350968510074
+25::[2022-07-19 15:44:47] [app.controller.GraphAlgo] [FINE] - Path between 581973092 and 415452223 found using A*.
+25::[2022-07-19 15:44:47] [app.controller.GraphAlgo] [FINE] - Path between 3029394866 and 7982624728 found using A*.
+24::[2022-07-19 15:44:47] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='17', long id='D17', passengers=0, leaveTime=Tue, 19 Jul 2022 19:23:33 EEST, pathSize=60, currNode=69fd8f16-29a4-4fa2-a38e-52960931fab8} event. at Tue, 19 Jul 2022 19:23:33 EEST.
+40::[2022-07-19 15:44:47] [app.model.Drive] [FINE] - Drive D17 started.
+40::[2022-07-19 15:44:47] [app.model.Drive] [INFO] - driver (D17) 1.67% complete.
+39::[2022-07-19 15:44:47] [app.model.Drive] [INFO] - driver (D14) 0.53% complete.
+35::[2022-07-19 15:44:48] [app.model.Drive] [INFO] - driver (D16) 0.70% complete.
+34::[2022-07-19 15:44:49] [app.model.Drive] [INFO] - driver (D15) 0.56% complete.
+24::[2022-07-19 15:44:50] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Rider{id='18', long id='R18', askTime=Tue, 19 Jul 2022 19:29:29 EEST, currNode=3948268458, destination=8921644429} event. at Tue, 19 Jul 2022 19:29:29 EEST.
+24::[2022-07-19 15:44:53] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Rider{id='17', long id='R17', askTime=Tue, 19 Jul 2022 19:32:41 EEST, currNode=2716672940, destination=1697440265} event. at Tue, 19 Jul 2022 19:32:41 EEST.
+24::[2022-07-19 15:44:56] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Rider{id='19', long id='R19', askTime=Tue, 19 Jul 2022 19:43:13 EEST, currNode=563997191, destination=549240225} event. at Tue, 19 Jul 2022 19:43:13 EEST.
+24::[2022-07-19 15:44:59] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='18', long id='D18', passengers=0, leaveTime=Tue, 19 Jul 2022 19:45:26 EEST, pathSize=75, currNode=682b7d8f-32c9-429e-a631-168a3c213df1} event. at Tue, 19 Jul 2022 19:45:26 EEST.
+41::[2022-07-19 15:44:59] [app.model.Drive] [FINE] - Drive D18 started.
+41::[2022-07-19 15:44:59] [app.model.Drive] [INFO] - driver (D18) 1.33% complete.
+25::[2022-07-19 15:45:02] [app.controller.MatchMaker] [FINE] - drive D18 change path to pick up passenger: R17.
+Path length heuristics:
+ * Prev path: 410.82236736519616
+ * new path: 8.816071297144676
+25::[2022-07-19 15:45:02] [app.controller.GraphAlgo] [FINE] - Path between 958446733 and 2716672940 found using A*.
+25::[2022-07-19 15:45:02] [app.controller.GraphAlgo] [FINE] - Path between 1697440265 and 563914312 found using A*.
+25::[2022-07-19 15:45:02] [app.controller.MatchMaker] [FINE] - drive D17 change path to pick up passenger: R19.
+Path length heuristics:
+ * Prev path: 379.8848165924935
+ * new path: 13.187806732606667
+25::[2022-07-19 15:45:02] [app.controller.GraphAlgo] [FINE] - Path between 1306274882 and 563997191 found using A*.
+25::[2022-07-19 15:45:02] [app.controller.GraphAlgo] [FINE] - Path between 549240225 and 3655444776 found using A*.
+25::[2022-07-19 15:45:02] [app.controller.MatchMaker] [FINE] - drive D16 change path to pick up passenger: R18.
+Path length heuristics:
+ * Prev path: 400.5627071926427
+ * new path: 15.819141283726449
+25::[2022-07-19 15:45:02] [app.controller.GraphAlgo] [FINE] - Path between 1164229428 and 3948268458 found using A*.
+25::[2022-07-19 15:45:02] [app.controller.GraphAlgo] [FINE] - Path between 8921644429 and 563941290 found using A*.
+24::[2022-07-19 15:45:02] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='19', long id='D19', passengers=0, leaveTime=Tue, 19 Jul 2022 19:55:28 EEST, pathSize=38, currNode=2d686baf-efde-4520-b9b2-dcc919b6ba65} event. at Tue, 19 Jul 2022 19:55:28 EEST.
+40::[2022-07-19 15:45:02] [app.model.Drive] [INFO] - driver (D17) 0.56% complete.
+42::[2022-07-19 15:45:02] [app.model.Drive] [FINE] - Drive D19 started.
+42::[2022-07-19 15:45:02] [app.model.Drive] [INFO] - driver (D19) 2.63% complete.
+41::[2022-07-19 15:45:02] [app.model.Drive] [INFO] - driver (D18) 0.77% complete.
+35::[2022-07-19 15:45:02] [app.model.Drive] [INFO] - driver (D16) 0.49% complete.
+26::[2022-07-19 15:45:02] [app.model.Drive] [FINEST] - Drive D0 finished!.
+26::[2022-07-19 15:45:05] [app.model.Drive] [FINE] - Drive D20 started.
+24::[2022-07-19 15:45:05] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='20', long id='D20', passengers=0, leaveTime=Tue, 19 Jul 2022 20:03:35 EEST, pathSize=121, currNode=77534c8d-636d-4a83-a7f1-231453d23787} event. at Tue, 19 Jul 2022 20:03:35 EEST.
+26::[2022-07-19 15:45:05] [app.model.Drive] [INFO] - driver (D20) 0.83% complete.
+27::[2022-07-19 15:45:07] [app.model.Drive] [FINEST] - Drive D1 finished!.
+24::[2022-07-19 15:45:08] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='21', long id='D21', passengers=0, leaveTime=Tue, 19 Jul 2022 20:28:35 EEST, pathSize=70, currNode=6e1b418a-f7a8-46f3-ad11-6257bf714bab} event. at Tue, 19 Jul 2022 20:28:35 EEST.
+27::[2022-07-19 15:45:08] [app.model.Drive] [FINE] - Drive D21 started.
+27::[2022-07-19 15:45:08] [app.model.Drive] [INFO] - driver (D21) 1.43% complete.
+24::[2022-07-19 15:45:11] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='22', long id='D22', passengers=0, leaveTime=Tue, 19 Jul 2022 20:36:03 EEST, pathSize=62, currNode=59469211-600c-4ca0-bb38-5082655d26fe} event. at Tue, 19 Jul 2022 20:36:03 EEST.
+43::[2022-07-19 15:45:11] [app.model.Drive] [FINE] - Drive D22 started.
+43::[2022-07-19 15:45:11] [app.model.Drive] [INFO] - driver (D22) 1.61% complete.
+24::[2022-07-19 15:45:14] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='23', long id='D23', passengers=0, leaveTime=Tue, 19 Jul 2022 20:37:20 EEST, pathSize=9, currNode=705e6a88-67bd-4a56-8225-f053333225c0} event. at Tue, 19 Jul 2022 20:37:20 EEST.
+44::[2022-07-19 15:45:14] [app.model.Drive] [FINE] - Drive D23 started.
+44::[2022-07-19 15:45:14] [app.model.Drive] [INFO] - driver (D23) 11.11% complete.
+24::[2022-07-19 15:45:17] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='24', long id='D24', passengers=0, leaveTime=Tue, 19 Jul 2022 20:48:09 EEST, pathSize=76, currNode=fa8352bd-572a-4495-b072-916d9a16d9b1} event. at Tue, 19 Jul 2022 20:48:09 EEST.
+45::[2022-07-19 15:45:17] [app.model.Drive] [FINE] - Drive D24 started.
+45::[2022-07-19 15:45:17] [app.model.Drive] [INFO] - driver (D24) 1.32% complete.
+44::[2022-07-19 15:45:18] [app.model.Drive] [FINEST] - Drive D23 finished!.
+44::[2022-07-19 15:45:20] [app.model.Drive] [FINE] - Drive D25 started.
+24::[2022-07-19 15:45:20] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='25', long id='D25', passengers=0, leaveTime=Tue, 19 Jul 2022 21:10:52 EEST, pathSize=34, currNode=dfef36a3-0283-4ec3-8768-19e0b3827e78} event. at Tue, 19 Jul 2022 21:10:52 EEST.
+44::[2022-07-19 15:45:20] [app.model.Drive] [INFO] - driver (D25) 2.94% complete.
+29::[2022-07-19 15:45:21] [app.model.Drive] [FINEST] - Drive D3 finished!.
+29::[2022-07-19 15:45:23] [app.model.Drive] [FINE] - Drive D27 started.
+24::[2022-07-19 15:45:23] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='27', long id='D27', passengers=0, leaveTime=Tue, 19 Jul 2022 21:37:22 EEST, pathSize=25, currNode=65fa2aa0-5d5b-4e94-8590-0e6b2aafb0c7} event. at Tue, 19 Jul 2022 21:37:22 EEST.
+29::[2022-07-19 15:45:23] [app.model.Drive] [INFO] - driver (D27) 4.00% complete.
+24::[2022-07-19 15:45:26] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='26', long id='D26', passengers=0, leaveTime=Tue, 19 Jul 2022 21:38:05 EEST, pathSize=53, currNode=0887580d-db25-4fa0-b9d4-5c89f5f2f558} event. at Tue, 19 Jul 2022 21:38:05 EEST.
+46::[2022-07-19 15:45:26] [app.model.Drive] [FINE] - Drive D26 started.
+46::[2022-07-19 15:45:26] [app.model.Drive] [INFO] - driver (D26) 1.89% complete.
+37::[2022-07-19 15:45:26] [app.model.Drive] [FINEST] - Drive D12 finished!.
+37::[2022-07-19 15:45:29] [app.model.Drive] [FINE] - Drive D28 started.
+24::[2022-07-19 15:45:29] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='28', long id='D28', passengers=0, leaveTime=Tue, 19 Jul 2022 21:47:57 EEST, pathSize=29, currNode=52c15601-23c5-4cf3-b49f-f3002a7d5221} event. at Tue, 19 Jul 2022 21:47:57 EEST.
+37::[2022-07-19 15:45:29] [app.model.Drive] [INFO] - driver (D28) 3.45% complete.
+42::[2022-07-19 15:45:29] [app.model.Drive] [FINEST] - Drive D19 finished!.
+24::[2022-07-19 15:45:32] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='29', long id='D29', passengers=0, leaveTime=Tue, 19 Jul 2022 21:50:15 EEST, pathSize=38, currNode=0b5b5bb9-1c46-4408-bf2e-3927c1661ecc} event. at Tue, 19 Jul 2022 21:50:15 EEST.
+42::[2022-07-19 15:45:32] [app.model.Drive] [FINE] - Drive D29 started.
+42::[2022-07-19 15:45:32] [app.model.Drive] [INFO] - driver (D29) 2.63% complete.
+29::[2022-07-19 15:45:35] [app.model.Drive] [FINEST] - Drive D27 finished!.
+29::[2022-07-19 15:45:35] [app.model.Drive] [FINE] - Drive D30 started.
+24::[2022-07-19 15:45:35] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='30', long id='D30', passengers=0, leaveTime=Tue, 19 Jul 2022 22:15:40 EEST, pathSize=35, currNode=75b6a205-b614-483f-9e55-7f74ae41b31a} event. at Tue, 19 Jul 2022 22:15:40 EEST.
+29::[2022-07-19 15:45:35] [app.model.Drive] [INFO] - driver (D30) 2.86% complete.
+38::[2022-07-19 15:45:37] [app.model.Drive] [FINEST] - Drive D13 finished!.
+38::[2022-07-19 15:45:38] [app.model.Drive] [FINE] - Drive D32 started.
+24::[2022-07-19 15:45:38] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='32', long id='D32', passengers=0, leaveTime=Tue, 19 Jul 2022 22:31:44 EEST, pathSize=29, currNode=a8b334ff-f964-4cf8-9bc6-8de060fea6a0} event. at Tue, 19 Jul 2022 22:31:44 EEST.
+38::[2022-07-19 15:45:38] [app.model.Drive] [INFO] - driver (D32) 3.45% complete.
+24::[2022-07-19 15:45:41] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='31', long id='D31', passengers=0, leaveTime=Tue, 19 Jul 2022 22:45:41 EEST, pathSize=93, currNode=4c070423-a219-4c21-bc80-c33023d38cf7} event. at Tue, 19 Jul 2022 22:45:41 EEST.
+47::[2022-07-19 15:45:41] [app.model.Drive] [FINE] - Drive D31 started.
+47::[2022-07-19 15:45:41] [app.model.Drive] [INFO] - driver (D31) 1.08% complete.
+43::[2022-07-19 15:45:43] [app.model.Drive] [FINEST] - Drive D22 finished!.
+44::[2022-07-19 15:45:44] [app.model.Drive] [FINEST] - Drive D25 finished!.
+37::[2022-07-19 15:45:44] [app.model.Drive] [FINEST] - Drive D28 finished!.
+37::[2022-07-19 15:45:44] [app.model.Drive] [FINE] - Drive D33 started.
+24::[2022-07-19 15:45:44] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='33', long id='D33', passengers=0, leaveTime=Tue, 19 Jul 2022 23:01:06 EEST, pathSize=32, currNode=4ab101b1-9425-4feb-a2e3-8316caa4d448} event. at Tue, 19 Jul 2022 23:01:06 EEST.
+37::[2022-07-19 15:45:44] [app.model.Drive] [INFO] - driver (D33) 3.13% complete.
+24::[2022-07-19 15:45:47] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='35', long id='D35', passengers=0, leaveTime=Tue, 19 Jul 2022 23:04:24 EEST, pathSize=71, currNode=bdcb6d1a-bd66-4d01-a3c5-8c76fad0f797} event. at Tue, 19 Jul 2022 23:04:24 EEST.
+44::[2022-07-19 15:45:47] [app.model.Drive] [FINE] - Drive D35 started.
+44::[2022-07-19 15:45:47] [app.model.Drive] [INFO] - driver (D35) 1.41% complete.
+27::[2022-07-19 15:45:50] [app.model.Drive] [FINEST] - Drive D21 finished!.
+27::[2022-07-19 15:45:50] [app.model.Drive] [FINE] - Drive D34 started.
+24::[2022-07-19 15:45:50] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='34', long id='D34', passengers=0, leaveTime=Tue, 19 Jul 2022 23:21:30 EEST, pathSize=66, currNode=d00381c3-b841-4174-a5d1-23681d7ea42f} event. at Tue, 19 Jul 2022 23:21:30 EEST.
+27::[2022-07-19 15:45:50] [app.model.Drive] [INFO] - driver (D34) 1.52% complete.
+31::[2022-07-19 15:45:52] [app.model.Drive] [FINEST] - Drive D5 finished!.
+31::[2022-07-19 15:45:53] [app.model.Drive] [FINE] - Drive D37 started.
+24::[2022-07-19 15:45:53] [app.view.RealTimeEvents] [INFO] - RealTimeEvents add Drive{id='37', long id='D37', passengers=0, leaveTime=Tue, 19 Jul 2022 23:47:47 EEST, pathSize=62, currNode=4e2574ba-5b2f-48ca-949b-63398fb2e8a3} event. at Tue, 19 Jul 2022 23:47:47 EEST.

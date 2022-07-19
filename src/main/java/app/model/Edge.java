@@ -5,7 +5,9 @@ import app.controller.osm_processing.OsmWay;
 import app.controller.MapUtils;
 import app.model.interfaces.Located;
 import app.model.interfaces.MapObject;
+import org.python.icu.impl.duration.TimeUnit;
 
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
@@ -52,6 +54,8 @@ public class Edge implements MapObject, Located {
      * time to cross edge in ms.
      *
      * I've added 1 second to each weight because of road conditions
+     *
+     * todo add time relative to highway type and distance (and time of day?)
      */
     private double calculateWeight(){
         double weight = node1.distanceTo(node2) / SPEED_LIMIT.getOrDefault(highwayType, 50);
@@ -60,7 +64,7 @@ public class Edge implements MapObject, Located {
 
 
 
-    /**  GETTERS */
+    /*  GETTERS */
 
     @Override
     public String getId() { return id; }
@@ -99,7 +103,6 @@ public class Edge implements MapObject, Located {
 
     @Override
     public boolean inBound() {
-
         return node1.inBound() && node2.inBound();
     }
 }

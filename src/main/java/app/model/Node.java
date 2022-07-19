@@ -41,7 +41,7 @@ public class Node implements Comparable<Node>, MapObject , Located {
     }
 
     public Node(@NotNull OsmObject object) {
-        this(MapUtils.generateId(), object.getID(), object.getCoordinates());
+        this(MapUtils.generateId(), object.getID(), object.getLocation());
     }
 
 
@@ -70,7 +70,7 @@ public class Node implements Comparable<Node>, MapObject , Located {
     }
 
     @Override
-    public GeoLocation getCoordinates() { return coordinates; }
+    public GeoLocation getLocation() { return coordinates; }
 
     @Override
     public boolean inBound() {
@@ -117,7 +117,7 @@ public class Node implements Comparable<Node>, MapObject , Located {
     }
 
     public double distanceTo(Node other){
-        return GraphAlgo.distance(getCoordinates(), other.getCoordinates());
+        return GraphAlgo.distance(getLocation(), other.getLocation());
     }
 
     public void removeEdgeTo(Node other){
@@ -167,6 +167,6 @@ public class Node implements Comparable<Node>, MapObject , Located {
 
 //        tagsStr = ", tags = (" + tagsStr +")";
 
-        return "Node{" + idStr + coordinatesStr + adjacentStr +"}\n";
+        return "Node{" + idStr + coordinatesStr + adjacentStr +"}";
     }
 }

@@ -1,10 +1,14 @@
 package app.controller.osm_processing;
 
-import app.controller.MapUtils;
-import app.model.RoadMap;
 import app.model.Node;
+import app.model.RoadMap;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static utils.Utils.validate;
 
 /**
  *      |==================================|
@@ -68,7 +72,7 @@ public final class Parser {
     }
 
     private void addWay(OsmObject first, OsmObject last, OsmWay way, boolean directed){
-        MapUtils.validate(first != null && last != null, "can't create edge because edge's node is null. node1 - "+ first + ", node2 - "+ last+".");
+        validate(first != null && last != null, "can't create edge because edge's node is null. node1 - "+ first + ", node2 - "+ last+".");
         addDirectedWay(first, last, way);
         if(!directed){
             addDirectedWay(last, first, way);

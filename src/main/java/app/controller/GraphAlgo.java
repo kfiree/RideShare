@@ -76,7 +76,7 @@ public final class GraphAlgo {
     return closestNode.get();
 }
 
-//    /**
+//    /*
 //     * This function will be adressed by all distance calculations
 //     * between two nodes in space
 //     * Current calculation method: Haversine Method
@@ -206,7 +206,7 @@ public final class GraphAlgo {
                 if(CloseSet.containsKey(neighbor.getId())){
                     continue;
                 }
-                double TentativeGScore = getG(current) + current.distanceTo(neighbor);//TODO use weight instead of distance
+                double TentativeGScore = getG(current) + current.getEdgeTo(neighbor).getWeight(); //TODO use weight instead of distance
                 if(!OpenSet.containsKey(neighbor.getId()) || TentativeGScore < getG(neighbor)){
                     cameFrom.put(neighbor, current);
                     setG(neighbor, TentativeGScore);
@@ -227,12 +227,14 @@ public final class GraphAlgo {
     private static Path reconstructPath(Hashtable<Node, Node> cameFrom, Node n){
         List<Node> pathNodes = new ArrayList<>();
         pathNodes.add(n);
+        double pathWeight = 0;
         while(cameFrom.containsKey(n)){
+            pathWeight += n.getEdgeTo(cameFrom.get(n)).getWeight();
             n = cameFrom.get(n);
             pathNodes.add(n);
         }
         Collections.reverse(pathNodes);
-        Path path =  new Path(pathNodes);
+        Path path =  new Path(pathNodes, pathWeight);
         return path;
     }
 

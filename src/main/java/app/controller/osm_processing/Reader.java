@@ -25,7 +25,7 @@ public class Reader implements Sink {
     private final Map<Long, OsmObject> mapObjects = new HashMap<>();
     private final HashMap<Long, Long> JUNCTIONS = new HashMap<>();
 
-    /** GETTERS */
+    /* GETTERS */
     public ArrayList<OsmWay> getWays() {
         return ways;
     }

@@ -33,7 +33,7 @@ public class RoadMap {
 
 
 
-    /** GETTERS */
+    /* GETTERS */
 
     public Node getNode(long key){ return nodes.get(key); }
 
@@ -47,12 +47,12 @@ public class RoadMap {
 
 
 
-    /**     SETTERS     */
+    /*     SETTERS     */
 
     public void setEdges(Collection<Edge> edges) { this.edges.addAll(edges); }
 
     /** add edge from Parser */
-    public Edge addEdge(Node src, Node dst, OsmWay way){
+    public void addEdge(Node src, Node dst, OsmWay way){
         Edge edge = setEdgeIfExists(src, dst);
 
         if(edge == null){
@@ -61,11 +61,10 @@ public class RoadMap {
             edges.add(edge);
         }
 
-        return edge;
     }
 
     /** add edge from DB */
-    public Edge addEdge(String id, Long startNodeId, Long endNodeID, Double weight, String highwayType) {
+    public void addEdge(String id, Long startNodeId, Long endNodeID, Double weight, String highwayType) {
         Node src = getNode(startNodeId), dst = getNode(endNodeID);
 
         Edge edge = setEdgeIfExists(src, dst);
@@ -76,7 +75,6 @@ public class RoadMap {
             edges.add(edge);
         }
 
-        return edge;
     }
 
     private Edge setEdgeIfExists(Node src, Node dst){
@@ -110,7 +108,7 @@ public class RoadMap {
     }
 
     /** add edge from DB */
-    public Node addNode(String id, Long osmID, Double latitude, Double longitude){
+    public void addNode(String id, Long osmID, Double latitude, Double longitude){
         Node node = getNode(osmID);
 
         if( node == null){
@@ -118,14 +116,13 @@ public class RoadMap {
             nodes.put(node.getOsmID(), node);
         }
 
-        return node;
     }
 
 
 
-    /** REMOVE FROM GRAPH */
+    /* REMOVE FROM GRAPH */
 
-    public Node removeNode(long id){ //TODO Sh1tToIgnore.test
+    public Node removeNode(long id){ //TODO check this
         Node node = this.nodes.remove(id);
 
         node.getEdges().forEach(edge ->{
@@ -148,10 +145,20 @@ public class RoadMap {
             }
         }
 
-        edges.removeAll(edgesToRemove);//TODO check if removed for dest
+        edgesToRemove.forEach(edges::remove);
+
+        /*
+            TODO:
+                1) check if removed for dest
+                2) for faster performance I've replaced
+                    "edges.removeAll(edgesToRemove);"
+                    with "edgesToRemove.forEach(edges::remove);"
+                    check if working.
+        */
+
     }
 
-    public boolean removeEdge(Edge edge){ //TODO Sh1tToIgnore.test
+    public boolean removeEdge(Edge edge){ //TODO Sh1tToIgnore.IgnoreThatSh1t.test
         edge.getNode2().removeEdge(edge);
         edge.getNode1().removeEdge(edge);
         return edges.remove(edge);

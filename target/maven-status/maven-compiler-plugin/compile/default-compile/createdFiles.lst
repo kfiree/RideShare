@@ -1,11 +1,11 @@
+app\model\Match.class
 utils\logs\LineFormat.class
+utils\JsonHandler$1.class
+app\model\Rider.class
 App.class
-rds\JsonHandler.class
-app\model\Pedestrian.class
-app\Utils.class
+utils\JsonHandler.class
 utils\logs\formatUtils.class
 app\model\UserMap.class
-rds\JsonHandler$1.class
 app\model\Edge$1.class
 app\controller\osm_processing\OsmObject.class
 app\model\interfaces\MapObject.class
@@ -13,6 +13,7 @@ app\model\Edge.class
 app\view\MapView.class
 utils\logs\colorFormat.class
 app\controller\MapUtils.class
+utils\Utils.class
 app\controller\MatchMaker.class
 app\controller\osm_processing\OsmWay.class
 app\model\interfaces\ElementsOnMap.class
