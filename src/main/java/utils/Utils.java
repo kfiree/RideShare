@@ -35,7 +35,7 @@ public class Utils {
         if(!condition) {
             throwException(errorMsg );
         }
-        return !condition;
+        return condition;
     }
 
     public static void throwException(String errorMsg){

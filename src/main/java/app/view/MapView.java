@@ -41,7 +41,7 @@ public class MapView {
     static protected final Hashtable<ElementsOnMap, Node> elementsOnMap;
     static protected final Graph displayGraph;
     protected RealTimeEvents events;
-
+    static public double simulatorSpeed;
     /* DISPLAY */
     protected final Viewer viewer;
     private final ViewerPipe pipeIn;
@@ -49,6 +49,7 @@ public class MapView {
     protected static Date simulatorCurrTime;
     private static Sprite clock;
     private static final long SLEEP_BETWEEN_FRAMES = 2000;
+    public static final boolean DEBUG = true;
 
 
     static{
@@ -70,18 +71,19 @@ public class MapView {
         viewer.setCloseFramePolicy(Viewer.CloseFramePolicy.CLOSE_VIEWER);
         pipeIn.addAttributeSink( displayGraph );
 
-        displayGraph.setAttribute("ui.stylesheet", styleSheet);
-        displayGraph.setAttribute("ui.quality");
-        displayGraph.setAttribute("ui.antialias");
+        displayGraph.addAttribute("ui.stylesheet", styleSheet);
+        displayGraph.addAttribute("ui.quality");
+        displayGraph.addAttribute("ui.antialias");
     }
 
     /** Singleton specific properties */
     public static final MapView instance = new MapView();
 
 
-    public void show(double simulatorSpeed, boolean showMode){
+    public void show(double speed, boolean showMode){
         //load events
-        events = new RealTimeEvents(simulatorSpeed);
+        simulatorSpeed = speed;
+        events = new RealTimeEvents();
         simulatorCurrTime = userMap.getFirstEventTime();
         showAllPaths = showMode;
         pipeIn.pump();
@@ -118,7 +120,7 @@ public class MapView {
                 node = displayGraph.addNode(drive.getId());
                 elementsOnMap.put(drive, node);
                 drawElement(drive, node, "car");
-                node.setAttribute("ui.style", randomGradientColor());
+                node.addAttribute("ui.style", randomGradientColor());
             } else {
                 moveCar(drive, node);
             }
@@ -129,7 +131,6 @@ public class MapView {
             Node node = elementsOnMap.get(request);
 
             if (node == null) {
-
                 node = displayGraph.addNode(request.getId());
                 elementsOnMap.put(request, node);
                 drawElement(request, node, "rider");
@@ -158,7 +159,7 @@ public class MapView {
 
     private void sleep() {
         simulatorCurrTime = new Date(simulatorCurrTime.getTime()+SLEEP_BETWEEN_FRAMES);
-        clock.setAttribute("ui.label", FORMAT(simulatorCurrTime));
+        clock.addAttribute("ui.label", FORMAT(simulatorCurrTime));
         try { Thread.sleep(SLEEP_BETWEEN_FRAMES) ; }
         catch (InterruptedException e) { e.printStackTrace(); }
     }
@@ -169,7 +170,7 @@ public class MapView {
                 Node start = drawNode(e.getNode1());
                 Node end = drawNode(e.getNode2());
                 Edge displayEdge = displayGraph.addEdge(e.getId(), start, end);//, e.isDirected());
-                displayEdge.setAttribute("ui.class", "edge."+e.getHighwayType());
+                displayEdge.addAttribute("ui.class", "edge."+e.getHighwayType());
             }
 
         });
@@ -183,8 +184,8 @@ public class MapView {
         if(displayNode == null){
 
             displayNode = displayGraph.addNode(keyStr);
-            displayNode.setAttribute("xy", node.getLongitude(), node.getLatitude());
-            displayNode.setAttribute("ui.label", node.getOsmID().toString());
+            displayNode.addAttribute("xy", node.getLongitude(), node.getLatitude());
+            displayNode.addAttribute("ui.label", node.getOsmID().toString());
                     }
 
         return displayNode;

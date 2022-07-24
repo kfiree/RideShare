@@ -3,7 +3,6 @@ package app.model;
 import org.jetbrains.annotations.NotNull;
 import java.util.Date;
 
-import app.controller.GraphAlgo;
 import app.model.interfaces.ElementsOnMap;
 import static utils.Utils.FORMAT;
 
@@ -11,17 +10,17 @@ import static utils.Utils.FORMAT;
 
 public class Rider implements ElementsOnMap  {
     private final Date askTime;
-    private final Node currNode, destination;
+    private final Node src, dest;
     private final String id;
-    private final Path path;
     private boolean taken;
+    private boolean pickedUp;
+
 
     public Rider(String id, @NotNull Node currNode, @NotNull Node destination, Date askTime) {
         this.id = "R" + id;
         this.askTime = askTime;
-        this.destination = destination;
-        this.currNode = currNode;
-        path = GraphAlgo.getShortestPath(currNode, destination);
+        this.dest = destination;
+        this.src = currNode;
     }
 
     public void markTaken() {
@@ -34,16 +33,19 @@ public class Rider implements ElementsOnMap  {
         return taken;
     }
 
-    @Override
-    public Path getPath() {
-        return path;
+    public Node getNextStop(){
+        return isPickedUp()? getDest() : getCurrentNode();
     }
 
     @Override
-    public Node getDestination() { return destination; }
+    public Node getDest() { return dest; }
 
     @Override
-    public Node getCurrNode() { return currNode; }
+    public Node getCurrentNode() { return src; }
+
+    public boolean isPickedUp() {
+        return pickedUp;
+    }
 
     @Override
     public Date getStartTime() { return askTime; }
@@ -52,7 +54,7 @@ public class Rider implements ElementsOnMap  {
     public String getId() { return id; }
 
     @Override
-    public GeoLocation getLocation() { return currNode.getLocation(); }
+    public GeoLocation getLocation() { return src.getLocation(); }
 
     @Override
     public String toString() {
@@ -61,8 +63,8 @@ public class Rider implements ElementsOnMap  {
                 "id='" + id.substring(1) + '\'' +
                 ", long id='" + id + '\'' +
                 ", askTime=" + FORMAT(askTime) +
-                ", currNode=" + currNode.getOsmID() +
-                ", destination=" + destination.getOsmID() +
+                ", currNode=" + src.getOsmID() +
+                ", destination=" + dest.getOsmID() +
                 '}';
     }
 }

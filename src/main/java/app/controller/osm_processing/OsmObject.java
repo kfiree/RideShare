@@ -1,6 +1,6 @@
 package app.controller.osm_processing;
 
-import app.controller.MapUtils;
+import app.controller.RoadMapUtils;
 import app.model.GeoLocation;
 import app.model.interfaces.Located;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
@@ -57,7 +57,7 @@ public class OsmObject  implements Located {
 
     @Override
     public boolean inBound() {
-        return MapUtils.inBound(coordinates);
+        return RoadMapUtils.inBound(coordinates);
     }
 
     public void setCoordinates(Double latitude, Double longitude) {

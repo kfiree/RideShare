@@ -1,5 +1,5 @@
 import app.controller.GraphAlgo;
-import app.controller.MapUtils;
+import app.controller.RoadMapUtils;
 import app.controller.osm_processing.Parser;
 import app.controller.osm_processing.Reader;
 import app.model.RoadMap;
@@ -58,7 +58,7 @@ import static utils.LogHandler.*;
  *
  *  todo:
  *          1st Priority:
- *              - 1) Make drive-pedestrian match (may be base algo on Shortest Hamiltonian Path Problem (SHPP)).
+ *              - 1) Make drive-pedestrian matchBruteForce1Pickup (may be base algo on Shortest Hamiltonian Path Problem (SHPP)).
  *    .
  *          Last priority:
  *              -
@@ -67,8 +67,8 @@ import static utils.LogHandler.*;
  *                          ---------------------------------
  *    .
  *    .
- *      1 Make drive-pedestrian match algorithms:
- *          1.1 match with split routes that address user profiles
+ *      1 Make drive-pedestrian matchBruteForce1Pickup algorithms:
+ *          1.1 matchBruteForce1Pickup with split routes that address user profiles
  *              src: https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229674
  *              .
  *          1.2 Wolfram-Alpha - FindShortestTour function. (explanation : https://mathematica.stackexchange.com/questions/23733/how-does-findshortesttour-work)
@@ -152,24 +152,24 @@ public final class App{
         LOAD_FROM_JSON = true;
         PBF_PATH = "data/maps/israel.pbf";
         NODE_IN_MAIN_COMPONENT =2432701015L;
-        SIMULATOR_SPEED = 20.0;
+        SIMULATOR_SPEED = 10.0;
         BOUNDS = true;
         CONSOLE_LOG_LEVEL =
                 "SEVERE";
 //                "ALL";
-        SHOW_ALL_PATHS = true;
-        DRIVE_NUM = 20;
-        REQUEST_NUM = 7;
+        SHOW_ALL_PATHS = false;
+        DRIVE_NUM = 1;
+        REQUEST_NUM = 1;
     }
 
     public static void main(String[] args) {
-        showCliFlow();
+//        CLI();
 
         init(args);
         LOGGER.finest("Let's GO!!");
 
         LOGGER.info( "Start parsing main map.");// : '" + pbfFilePath+"'");
-        MapUtils.setBounds(BOUNDS);
+        RoadMapUtils.setBounds(BOUNDS);
 
         if(LOAD_FROM_JSON){
             JsonHandler.RoadMapType.load();
@@ -191,11 +191,6 @@ public final class App{
         LOGGER.info("Finished!");
 
         System.exit(0);
-    }
-
-    private static void showCliFlow(){
-        System.out.println("java -jar RideShare.jar -h\n\n" + Instructions
-                + "\n\n\njava -jar RideShare.jar   -s 10  -l ALL  -b y\n");
     }
 
     public static void CreateMap() {
@@ -249,7 +244,7 @@ public final class App{
                     case "-l" -> CONSOLE_LOG_LEVEL = args[++i];
                     case "-b" -> BOUNDS = args[++i].equals("y") ||
                             args[++i].equals("Y") || args[++i].equals("yes") || args[++i].equals("hell yeah");
-                    case "-c" -> MapUtils.updateBounds(
+                    case "-c" -> RoadMapUtils.updateBounds(
                             Double.parseDouble(args[++i]), Double.parseDouble(args[++i]),
                             Double.parseDouble(args[++i]), Double.parseDouble(args[++i])
                     );
@@ -276,6 +271,11 @@ public final class App{
     }
 
     private App() {}
+
+    private static void CLI(){
+        System.out.println("java -jar RideShare.jar -h\n\n" + Instructions
+                + "\n\n\njava -jar RideShare.jar   -s 10  -l ALL  -b y\n");
+    }
 
     private static final String Instructions =
             """

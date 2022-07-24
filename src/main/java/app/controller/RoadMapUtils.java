@@ -1,16 +1,12 @@
 package app.controller;
 
-import app.model.Drive;
 import app.model.GeoLocation;
 import app.model.Node;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
-import static utils.LogHandler.LOGGER;
 import static utils.Utils.throwException;
 
 
@@ -25,7 +21,7 @@ import static utils.Utils.throwException;
  * @version 1.0
  * @since   2021-06-20
  */
-public final class MapUtils {
+public final class RoadMapUtils {
     private static final Map<String, Node> locations= new HashMap<>();//TODO check if locations needed
     private static boolean bound;
     private static Double maxLatitude = 32.13073917015928, minLatitude = 32.0449580796914,
@@ -45,12 +41,12 @@ public final class MapUtils {
      */
 
     public static void setBounds(boolean bound){
-        MapUtils.bound = bound;
+        RoadMapUtils.bound = bound;
     }
 
     public static void updateBounds(@NotNull Double topLatitude, @NotNull Double bottomLatitude, @NotNull Double topLongitude, @NotNull Double bottomLongitude){
 
-        MapUtils.maxLatitude = topLatitude;
+        RoadMapUtils.maxLatitude = topLatitude;
         minLatitude = bottomLatitude;
         maxLongitude = topLongitude;
         minLongitude = bottomLongitude;
@@ -100,7 +96,20 @@ public final class MapUtils {
         return  latitudeInBound && longitudeInBound;
     }
 
+    public static Node getClosestNode(Node node, ArrayList<Node> nodes){
+        return nodes.stream().min(Comparator.comparingDouble(node::distanceTo)).orElse(null);
+    }
 
+    public static double getShortestDist(Node node, Collection<Node> nodes, Node... additional){
+        List<Double> dists  = new ArrayList<>();
+
+        nodes.forEach(n-> dists.add(n.distanceTo(node)));
+        for (int i = 0; i < additional.length; i++) {
+            dists.add(additional[i].distanceTo(node));
+        }
+
+        return Collections.min(dists);
+    }
 
     /*
      *   |================================|
@@ -115,13 +124,15 @@ public final class MapUtils {
     }
 
     public static void setLocations(Map<String, Node> locations) {
-        MapUtils.locations.putAll(locations);
+        RoadMapUtils.locations.putAll(locations);
     }
 
     public static String generateId() {
         return UUID.randomUUID().toString();
     }
 
+
+
     /* private constructor for static class */
-    private MapUtils() {}
+    private RoadMapUtils() {}
 }

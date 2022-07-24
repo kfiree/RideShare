@@ -218,7 +218,8 @@ public enum JsonHandler {
         JSONObject pedestrianJSON = new JSONObject();
 
         pedestrianJSON.put("id", rider.getId());
-        pedestrianJSON.put("path", pathToJSON(rider.getPath()));
+        pedestrianJSON.put("src", rider.getCurrentNode().getOsmID());
+        pedestrianJSON.put("dst", rider.getDest().getOsmID());
         pedestrianJSON.put("date", rider.getStartTime().getTime());
 
         return pedestrianJSON;
@@ -226,7 +227,6 @@ public enum JsonHandler {
 
     private static void JSONToPedestrian(JSONObject pedestrianObj, UserMap userMap){
         String id = (String) pedestrianObj.get("id");
-        Path path = JSONToPath((JSONObject) pedestrianObj.get("path"));
         Node src = RoadMap.INSTANCE.getNode((long) pedestrianObj.get("src_id"));
         Node dst = RoadMap.INSTANCE.getNode((long) pedestrianObj.get("dst_id"));
         Date date = new Date((long) pedestrianObj.get("date"));

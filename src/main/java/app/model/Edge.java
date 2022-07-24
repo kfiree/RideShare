@@ -2,12 +2,10 @@ package app.model;
 
 import app.controller.GraphAlgo;
 import app.controller.osm_processing.OsmWay;
-import app.controller.MapUtils;
+import app.controller.RoadMapUtils;
 import app.model.interfaces.Located;
 import app.model.interfaces.MapObject;
-import org.python.icu.impl.duration.TimeUnit;
 
-import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
@@ -41,7 +39,7 @@ public class Edge implements MapObject, Located {
         tagNames.add(highwayType); //TODO make highway type enum ?
         this.node1 = node1;
         this.node2 = node2;
-        this.id = id == null ? MapUtils.generateId() : id;
+        this.id = id == null ? RoadMapUtils.generateId() : id;
         this.highwayType = highwayType;
         this.weight = weight == 0.0 ? calculateWeight() : weight;
     }

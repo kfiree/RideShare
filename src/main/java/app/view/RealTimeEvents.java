@@ -36,12 +36,10 @@ public class RealTimeEvents implements Runnable{
     private final ReentrantLock lock;
     private final ExecutorService pool;
     private final Queue<ElementsOnMap> eventsQueue;
-    private final double simulatorSpeed;
     private Date currTime;
 
-    public RealTimeEvents(double simulatorSpeed) {
+    public RealTimeEvents() {
         lock = new ReentrantLock();
-        this.simulatorSpeed = simulatorSpeed;
         pool = Executors.newCachedThreadPool();
 
         eventsQueue = UserMap.INSTANCE.getEventQueue();
@@ -76,7 +74,6 @@ public class RealTimeEvents implements Runnable{
             lock.lock();
             lock(false);//todo combine
             if(newEvent instanceof Drive drive){
-                drive.setSimulatorSpeed(simulatorSpeed);
                 UserMap.INSTANCE.startDrive(drive);
                 pool.execute(drive);
             }else{

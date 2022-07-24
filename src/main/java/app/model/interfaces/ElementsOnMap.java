@@ -20,11 +20,9 @@ public interface ElementsOnMap extends Comparable<ElementsOnMap> {
 
     GeoLocation getLocation();
 
-    Node getDestination();
+    Node getDest();
 
-    Path getPath();
-
-    Node getCurrNode();
+    Node getCurrentNode();
 
     Date getStartTime();
 

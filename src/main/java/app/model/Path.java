@@ -2,6 +2,7 @@ package app.model;
 
 import app.controller.GraphAlgo;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,52 +26,32 @@ public class Path implements Comparable<Path> , Iterable<Node>{
     private List<Node>  nodes;
     private double weight; /*  times crossing */
 
+    public Path(List<Path> pathParts){
+        this.nodes = new ArrayList<>();
+        this.nodes.add(pathParts.get(0).nodes.get(0));
+
+        for(Path part: pathParts){
+            part.getNodes().remove(0);
+            this.nodes.addAll(part.getNodes());
+        }
+    }
+
     public Path(List<Node> nodes, double weight){
         this.nodes = nodes;
         this.weight = weight;
     }
 
     public List<Node> getNodes() {
+        //TODO ADD sync method getEdgeIterator()
         return nodes;
-    } //TODO ADD sync method getEdgeIterator()
-
-
-    public Node get_src() { return nodes.get(0); }
-
-
-    //todo improve naive solution
-    public void addMiddlePath(Path path, Node currNode){
-        Path toPathSrc = GraphAlgo.getShortestPath(currNode, path.get_src()),
-                fromPathDest = GraphAlgo.getShortestPath(path.getDest(), getDest());
-
-        path.getNodes().remove(0);
-        fromPathDest.getNodes().remove(0);
-
-        nodes.clear();
-
-        nodes.addAll(toPathSrc.getNodes());
-
-        nodes.addAll(path.getNodes());
-
-        nodes.addAll(fromPathDest.getNodes());
-
-        weight = fromPathDest.weight + path.weight + fromPathDest.weight;
     }
 
-//    public void set_src(Node _src) { this._src = _src; }
-//    TODO run A* After every change of dest or src (might delete this method)
+    public Node getSrc() { return nodes.get(0); }
 
     public Node getDest() { return nodes.get(nodes.size()-1); }
 
-//    public void set_dest(Node _dest) { this._dest = _dest; }
-
-    /**
-     *  todo get in constructor
-     *
-     *  in ms
-     *
-     */
     public double getWeight(){
+        //todo get in constructor
         return this.weight;
     }
 
@@ -86,4 +67,13 @@ public class Path implements Comparable<Path> , Iterable<Node>{
         return nodes.iterator();
     }
 
+    @Override
+    public String toString() {
+        return "Path{" +
+                "length=" + nodes.size() +
+                ", src = " + weight +
+                ", dst=" + weight +
+                ", weight=" + weight +
+                '}';
+    }
 }

@@ -3,6 +3,7 @@ package app.view;
 
 import app.model.Drive;
 import app.model.GeoLocation;
+import app.model.Rider;
 import app.model.UserMap;
 import app.model.interfaces.ElementsOnMap;
 import org.graphstream.graph.Edge;
@@ -14,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static app.view.MapView.displayGraph;
 import static app.view.MapView.elementsOnMap;
@@ -74,18 +76,19 @@ public class StyleUtils {
     protected static Node focusedCar;
     protected static Drive focusedDrive;
     protected static final HashMap<String, Edge[]> carPaths = new HashMap<>();
+    protected static final HashMap<String, String> carColors = new HashMap<>();
     protected static Edge[] focusedPath;
     protected static final String
             nodeStyleSheet, riderStyleSheet, carStyleSheet,
             edgeStyleSheet, secondaryEdgeStyleSheet, primaryEdgeStyleSheet,
             motorwayEdgeStyleSheet, tertiaryEdgeStyleSheet, pathStyleSheet,
             spriteStyleSheet, styleSheet, focusedCarStyleSheet;
-
+    private static ReentrantLock lock = new ReentrantLock();
 
 
     /* STYLE USERS DATA */
 
-    protected static synchronized void styleDrives(Drive... drives) {
+    private static synchronized void styleDrives(Drive... drives) {
         for(Drive drive: drives){
             Edge[] currPath = carPaths.get(drive.getId());
             /* if path changed */
@@ -103,6 +106,7 @@ public class StyleUtils {
     }
 
     private static synchronized void StylePath(Drive drive){
+
         if(drive !=null) {
             Node car = focusedCar;
             Edge[] edges = focusedPath;
@@ -124,63 +128,88 @@ public class StyleUtils {
                 color = extractAttribute("fill-color", car);
             }
 
-
+            if(!color.equals("")) {
+                carColors.put(car.getId(), color);
+            }else {
+                String c = carColors.get(car.getId());
+                if (c != null) {
+                    color = c;
+                }
+            }
 
             if (edges != null) {
                 styleEdges(pathStyleSheet + color,edges);
             }
 
-            String finalColor = color;
-            drive.getPassengers().forEach(passenger ->
-                    styleNodes(finalColor, displayGraph.getNode(passenger.getId())));
-
+            stylePassenger(drive, color);
+//
             //todo
             //  1. make lighter color.
             //  2. style taken.
         }
     }
 
+    private static synchronized void stylePassenger(Drive drive, String color){
+        for (Rider passenger : drive.getPassengers()) {//todo lock
+            styleNodes(color, elementsOnMap.get(passenger));
+        }
+    }
+
+
     /* style */
     protected static void styleFocusedDrive( Drive drive) {
-        if(focusedCar!=null && drive == focusedDrive){
-            StylePath(focusedDrive); //todo add focusedEdges to carPaths with sending it to styleDrives
-            styleNodes(focusedCarStyleSheet, focusedCar);
+        try {
+            lock.lock();
+            if (focusedCar != null && drive == focusedDrive) {
+                StylePath(focusedDrive); //todo add focusedEdges to carPaths with sending it to styleDrives
+//                System.out.println(""+focusedCar.getAttribute("ui.style"));
+                styleNodes(focusedCarStyleSheet+focusedCar.getAttribute("ui.style"), focusedCar);
+            }//todo duplicate 2
+        }finally {
+            lock.unlock();
         }
     }
 
     /* call from MouseManager */
     public static void focusOn(@NotNull Drive drive){
-        if(focusedDrive != drive){
-            if(focusedDrive != null){
-                /* reset prev drive style */
-                styleEdges(edgeStyleSheet);
-                styleNodes(carStyleSheet, focusedCar);
+        try {
+            lock.lock();
+            if (focusedDrive != drive) {
+                if (focusedDrive != null) {
+                    /* reset prev drive style */
+                    styleEdges(edgeStyleSheet);
+                    styleNodes(carStyleSheet, focusedCar);//todo duplicate 1
+                }
+
+                /* set new drive */
+                int pathSize = drive.getNodes().size();
+                focusedPath = new Edge[pathSize];
+                for (int i = 0; i < pathSize - 1; i++) {
+                    focusedPath[i] =
+                            displayGraph.getEdge(drive.getNodes().get(i).getEdgeTo(drive.getNodes().get(i + 1)).getId());
+                }
+
+                focusedDrive = drive;
+                focusedCar = elementsOnMap.get(drive);
+
+                /* style new drive */
+                styleFocusedDrive(drive);
             }
-
-            /* set new drive */
-            int pathSize = drive.getNodes().size();
-            focusedPath = new Edge[pathSize];
-            for (int i = 0; i < pathSize-1; i++) {
-                focusedPath[i] = displayGraph.getEdge(
-                        drive.getNodes().get(i).getEdgeTo(drive.getNodes().get(i+1)).getId());
-
-                        //displayGraph.getEdge(drive.getNodes().get(i).getId());
-
-            }
-
-            focusedDrive = drive;
-            focusedCar = displayGraph.getNode(drive.getId());
-
-            /* style new drive */
-            styleFocusedDrive(drive);
+        }finally {
+            lock.unlock();
         }
     }
 
     protected static void drawElement(ElementsOnMap element, Node node, String styleClass) {
         GeoLocation location = element.getLocation();
-        node.setAttribute("xy", location.getLongitude(), location.getLatitude());
-        node.setAttribute("ui.label", element.getId().substring(1));
-        node.setAttribute("ui.class", styleClass);
+        node.addAttribute("xy", location.getLongitude(), location.getLatitude());
+        node.addAttribute("ui.label", element.getId().substring(1));
+        if(styleClass.equals("rider")){
+            node.setAttribute("ui.style", riderStyleSheet);
+        }else{
+            node.setAttribute("ui.style", carStyleSheet);
+        }
+//        node.addAttribute("ui.class", styleClass);
     }
 
 
@@ -188,36 +217,47 @@ public class StyleUtils {
         GeoLocation location = drive.getLocation();
 
         if(location != null){
-            car.setAttribute("xy", location.getLongitude(), location.getLatitude());
+            car.addAttribute("xy", location.getLongitude(), location.getLatitude());
         }else{
             LOGGER.info(UserMap.INSTANCE.getDrives().size() + " On-Going drives.");
             displayGraph.removeNode(drive.getId());
         }
 
-        if (showAllPaths) {
-            styleDrives(drive);
-        } else {
-            styleFocusedDrive(drive);
+        try {
+            lock.lock();
+            if (showAllPaths) {
+                styleDrives(drive);
+            } else {
+                styleFocusedDrive(drive);
+            }
+            String color = carColors.get(drive.getId());
+            if(color == null) {
+                color = extractAttribute("fill-color", elementsOnMap.get(drive));
+            }
+            stylePassenger(drive, color);
+
+        } finally {
+            lock.unlock();
         }
     }
 
     /* STYLE MAP PARTS */
 
-    protected static void styleEdges(String styleSheet, Edge... edges) {
+    private static void styleEdges(String styleSheet, Edge... edges) {
         if(edges.length ==0){
             edges = focusedPath;
         }
 
         for (Edge edge : edges) {
             if (edge != null) {
-                displayGraph.getEdge(edge.getId()).setAttribute("ui.style", styleSheet);
+                displayGraph.getEdge(edge.getId()).addAttribute("ui.style", styleSheet);
             }
         }
     }
 
-    protected static void styleNodes(String styleSheet, Node... nodes){
+    private static void styleNodes(String styleSheet, Node... nodes){
         if(nodes.length == 0){
-            focusedCar.setAttribute("ui.style", styleSheet);
+            focusedCar.addAttribute("ui.style", styleSheet);
         }else for (Node node : nodes) {
             if (node != null) {
                 node.setAttribute("ui.style", styleSheet);
@@ -229,7 +269,7 @@ public class StyleUtils {
 
     /* STYLE UTILS */
 
-    protected static String extractAttribute(String style, @NotNull Node displayNode){
+    private static String extractAttribute(String style, @NotNull Node displayNode){
         String styleSheet = displayNode.getAttribute("ui.style");
         String[] styleAttributes = styleSheet.split(";"); //split to attributes
 
@@ -262,13 +302,13 @@ public class StyleUtils {
     public static Sprite drawClock(){
         Node clockNode = displayGraph.addNode("clockNode");
 
-        clockNode.setAttribute("xy", 34.7615, 32.1179); //todo locate relative to map
+        clockNode.addAttribute("xy", 34.7615, 32.1179); //todo locate relative to map
 
         SpriteManager spriteManager = new SpriteManager(displayGraph);
         Sprite clock = spriteManager.addSprite("clock");
         clock.addAttribute("ui.label", "YYYY-MM-DD HH:mm:ss");
 
-        clock.setAttribute("ui.style",
+        clock.addAttribute("ui.style",
                 "   fill-mode: plain;"+
                         "   fill-color: #CCC;"+
                         "   stroke-mode: plain;"+

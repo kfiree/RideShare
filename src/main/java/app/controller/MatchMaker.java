@@ -1,17 +1,20 @@
 package app.controller;
 
 import app.model.Drive;
+import app.model.Node;
 import app.model.Rider;
 import app.model.UserMap;
 
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
 import static java.lang.Thread.sleep;
 import static utils.LogHandler.LOGGER;
 import static utils.Utils.lock;
 import static utils.Utils.unLock;
 
-/* todo replace match(Drive drive) with match( ) (without drivers calling this method).
+/* todo replace matchBruteForce1Pickup(Drive drive) with matchBruteForce1Pickup( ) (without drivers calling this method).
  *      might use https://github.com/frankfarrell/kds4j
  * */
 public class MatchMaker implements Runnable{
@@ -24,19 +27,56 @@ public class MatchMaker implements Runnable{
          MAX_KM_ADDITION_TO_PATH = 10;
     }
 
-    public void init(){
+
+    public synchronized void matchMultiplePickup(){
+        try {
+            lock(true);
+            for (Rider rider : UserMap.INSTANCE.getPendingRequests()) {
+                PriorityQueue<Drive> matches = new PriorityQueue<>(
+                        Comparator.comparingDouble(drive -> detourCost(drive, rider))
+                );
+
+                UserMap.INSTANCE.getOnGoingDrives().forEach(drive -> {
+                    if(drive.canSqueezeOneMore()){
+                        matches.add(drive);
+                    }
+                });
+                Drive bestMatch = matches.poll();
+                if(bestMatch != null) {
+                    System.out.println("sending " + bestMatch.getId() + " to " + rider);
+                    assert bestMatch != null;
+                    bestMatch.addDetour(rider);
+                    rider.markTaken();
+                }
+                return;
+            }
+        }finally {
+            unLock();
+        }
+    }
+
+    private double detourCost(Drive drive, Rider rider){
+        Node driveSrc, riderSrc, driveDest, riderDest;
+
+        driveSrc = drive.getCurrentNode();
+        driveDest = drive.getDest();
+        riderSrc = rider.getCurrentNode();
+        riderDest = rider.getDest();
+
+        return -1*( driveSrc.distanceTo(riderSrc) + driveDest.distanceTo(riderDest) + drive.getDetoursTime());
 
     }
 
-    public synchronized void match(){
+    /** @return true if picked someone up */
+    public synchronized void matchBruteForce1Pickup(){
         try {
             lock(true);
             Collection<Rider> requests = UserMap.INSTANCE.getPendingRequests();
             Collection<Drive> drives = UserMap.INSTANCE.getOnGoingDrives();
 
             for (Drive drive : drives) {
-                if(!drive.isFull()) {
-                    match(drive, requests);
+                if(drive.canSqueezeOneMore()) {
+                    matchBruteForce1Pickup(drive, requests);
                 }
             }
         } finally {
@@ -44,8 +84,8 @@ public class MatchMaker implements Runnable{
         }
     }
 
-    /** @return true if picked someone up */
-    public synchronized boolean match(Drive drive, Collection<Rider> requests){
+
+    public synchronized boolean matchBruteForce1Pickup(Drive drive, Collection<Rider> requests){
 
         /*  find close passenger to pick up */
         for (Rider rider : requests) {
@@ -54,7 +94,7 @@ public class MatchMaker implements Runnable{
 
             if(isWorthItBruteForceSolution(drive, rider)){
                 rider.markTaken();
-                drive.pickPassenger(rider);
+                drive.addDetour(rider);
                 return true;
             }
         }
@@ -67,8 +107,8 @@ public class MatchMaker implements Runnable{
 
     private boolean isWorthItBruteForceSolution(Drive d, Rider p){
         double distanceTo = GraphAlgo.distance(d.getLocation(), p.getLocation()),
-                addedPathDistance = GraphAlgo.distance(p.getLocation(), p.getDestination().getLocation()),
-                distanceFrom = GraphAlgo.distance(p.getDestination().getLocation(), d.getDestination().getLocation());
+                addedPathDistance = GraphAlgo.distance(p.getLocation(), p.getDest().getLocation()),
+                distanceFrom = GraphAlgo.distance(p.getDest().getLocation(), d.getDest().getLocation());
 
         double newPathLength_heuristic = distanceTo + addedPathDistance + distanceFrom;
 
@@ -89,7 +129,7 @@ public class MatchMaker implements Runnable{
     private boolean isWorthItBitBetterSolution(Drive d, Rider p){
         double distanceTo = GraphAlgo.distance(d.getLocation(), p.getLocation()),
 
-                distanceFrom = GraphAlgo.distance(p.getDestination().getLocation(), d.getDestination().getLocation());
+                distanceFrom = GraphAlgo.distance(p.getDest().getLocation(), d.getDest().getLocation());
 
         double newPathLength_heuristic = distanceTo + distanceFrom;
 
@@ -112,7 +152,10 @@ public class MatchMaker implements Runnable{
         while(true){
             try {
                 sleep(15000);
-                match();
+//                matchBruteForce1Pickup();
+                if(!UserMap.INSTANCE.getPendingRequests().isEmpty()){
+                    matchMultiplePickup();
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
