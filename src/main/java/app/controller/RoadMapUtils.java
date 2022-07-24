@@ -1,8 +1,11 @@
 package app.controller;
 
+import app.model.Drive;
 import app.model.GeoLocation;
 import app.model.Node;
 
+import app.model.Rider;
+import app.model.interfaces.ElementOnMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -100,16 +103,6 @@ public final class RoadMapUtils {
         return nodes.stream().min(Comparator.comparingDouble(node::distanceTo)).orElse(null);
     }
 
-    public static double getShortestDist(Node node, Collection<Node> nodes, Node... additional){
-        List<Double> dists  = new ArrayList<>();
-
-        nodes.forEach(n-> dists.add(n.distanceTo(node)));
-        for (int i = 0; i < additional.length; i++) {
-            dists.add(additional[i].distanceTo(node));
-        }
-
-        return Collections.min(dists);
-    }
 
     /*
      *   |================================|

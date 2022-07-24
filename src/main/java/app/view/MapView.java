@@ -6,7 +6,7 @@ import app.model.*;
 import static utils.Utils.FORMAT;
 import static app.view.StyleUtils.*;
 
-import app.model.interfaces.ElementsOnMap;
+import app.model.interfaces.ElementOnMap;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -38,7 +38,7 @@ import java.util.*;
 public class MapView {
     /* MAP */
     protected final UserMap userMap;
-    static protected final Hashtable<ElementsOnMap, Node> elementsOnMap;
+    static protected final Hashtable<ElementOnMap, Node> elementsOnMap;
     static protected final Graph displayGraph;
     protected RealTimeEvents events;
     static public double simulatorSpeed;
@@ -139,10 +139,10 @@ public class MapView {
     }
 
     private void removeFinishedEvents(){
-        Iterator<ElementsOnMap> eventIter = userMap.getFinished().iterator();
+        Iterator<ElementOnMap> eventIter = userMap.getFinished().iterator();
 
         while(eventIter.hasNext()){
-            ElementsOnMap nextEvent = eventIter.next();
+            ElementOnMap nextEvent = eventIter.next();
 
             try {
                 if(elementsOnMap.containsKey(nextEvent)){

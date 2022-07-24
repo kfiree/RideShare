@@ -72,8 +72,8 @@ public class Path implements Comparable<Path> , Iterable<Node>{
         return "Path{" +
                 "length=" + nodes.size() +
                 ", src = " + weight +
-                ", dst=" + weight +
-                ", weight=" + weight +
+                ", dst=" + getDest() +
+                ", weight=" + getSrc() +
                 '}';
     }
 }

@@ -4,7 +4,9 @@ import app.model.Drive;
 import app.model.Node;
 import app.model.Rider;
 import app.model.UserMap;
+import app.view.MapView;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -151,7 +153,7 @@ public class MatchMaker implements Runnable{
     public void run() {
         while(true){
             try {
-                sleep(15000);
+                sleep((long) (15000/MapView.simulatorSpeed));
 //                matchBruteForce1Pickup();
                 if(!UserMap.INSTANCE.getPendingRequests().isEmpty()){
                     matchMultiplePickup();

@@ -3,16 +3,16 @@ package app.model;
 /* third party */
 import java.util.*;
 
-import app.model.interfaces.ElementsOnMap;
+import app.model.interfaces.ElementOnMap;
 import app.model.interfaces.Located;
 import app.view.MapView;
 import org.jetbrains.annotations.NotNull;
 
 /* local */
 import app.controller.GraphAlgo;
+import utils.HashPriorityQueue;
 
 /* static imports */
-import static app.controller.RoadMapUtils.getShortestDist;
 import static utils.LogHandler.LOGGER;
 import static utils.Utils.*;
 
@@ -21,11 +21,12 @@ import static utils.Utils.*;
  * todo make long way with stop-point instead of paths
  *      make drives thread-pool
  */
-public class Drive implements Runnable, ElementsOnMap, Located {
+public class Drive implements Runnable, ElementOnMap, Located {
     private static final int MAX_PASSENGERS_NUM = 2; //todo set to 3
     private final String type, id;  //todo is type needed?
-    private final PriorityQueue<Rider> passengers;
-    private final HashMap<Node, ElementsOnMap> stops = new HashMap<>();
+    private final HashPriorityQueue<Rider> stopsOnTheWay;
+//    private final PriorityQueue<Rider> passengers;
+//    private final HashMap<Node, ElementsOnMap> stops = new HashMap<>();
     private final Date leaveTime;
     private Path path;
     private Node currNode, destination;
@@ -35,10 +36,12 @@ public class Drive implements Runnable, ElementsOnMap, Located {
     /** CONSTRUCTORS */
 
     private Drive(String type, String id, Date leaveTime) {
-        this.passengers = new PriorityQueue<>(Comparator.comparingDouble(rider -> getNextPassengerStop(rider).distanceTo(currNode)));
         this.type = type;
         this.id = "D" + id;
         this.leaveTime = leaveTime;
+        this.stopsOnTheWay = new HashPriorityQueue<>(
+                Comparator.comparingDouble(rider -> rider.getNextStop().distanceTo(currNode))
+        );
     }
 
     public Drive(String id, @NotNull Path path, String type, Date leaveTime) {
@@ -56,8 +59,6 @@ public class Drive implements Runnable, ElementsOnMap, Located {
         currNode = path.getSrc();
         destination = path.getDest();
         totalTime = path.getWeight();
-
-        addStop(destination, this);
     }
 
 
@@ -69,9 +70,10 @@ public class Drive implements Runnable, ElementsOnMap, Located {
         LOGGER.fine("Drive "+ id +" started.");
         validate(getPath() != null, "can't start a drive if path is null. Drive owner id - " + id);
 
-        while(currNode!= getDest()){
+        while(!stopsOnTheWay.isEmpty() || currNode!=getDest()){
+            getNextDest();
+
             driveToNextStop();
-            setNextStop();
         }
 
         UserMap.INSTANCE.finished(this);
@@ -102,129 +104,62 @@ public class Drive implements Runnable, ElementsOnMap, Located {
             totalTime -= timeToNextNode;
 
 //            System.out.println("curr " + currNode.getOsmID() + " ,  nextNode " + nextNode.getOsmID());
+
             /* pick passenger on the way */
-            if(currNode.getOsmID() == 1154683176l){
-                System.out.println("close");
-            }
-            if(currNode.getOsmID() == 563938249l){
-                System.out.println("at stop");
-            }
-            if(pathChange || currNode == this.destination){
+            lock(false);
+
+            if(pathChange){
                 return;
             }
-
-            if(AtStop()){
-                nextStop(stops.remove(currNode));
-                ElementsOnMap remove = stops.remove(currNode);
-                if(remove instanceof Rider passenger){
-                    if(passenger.isPickedUp()){
-                        passengers.remove(passenger);
-                        System.out.println("just droped "+ passenger.getId());
-                        setNextStop();
-                    }else{
-                        addStop(passenger.getDest(), passenger);
-                        UserMap.INSTANCE.finished(passenger);
-                    }
-                    System.out.println("reached " + passenger.getId());
-                    setNextStop();
-                }
-            }
-
-            lock(false);
 
             currNode = nextNode;
 
         }
     }
-    private void nextStop(ElementsOnMap element){
-        //todo continue here
-    }
 
-    private void nextStop(Node node){
-        ElementsOnMap element = stops.remove(node);
-        if(element instanceof Rider passenger) {
-            stops.remove(passenger.getNextStop());
-            if (!passenger.isPickedUp()) {
-                addStop(element.getDest(), element);
-                UserMap.INSTANCE.finished(element);
-            } else {
-                passengers.remove(element);
-            }
-        }else{
-
-        }
-        setNextStop();
-    }
-
-
-
-    private boolean AtStop(){
-        return stops.containsKey(currNode);
-    }
 
     /**
      * todo improve detour time heuristic
      *
-     *
+     * add  detour to pick new passenger
      * @param rider
      */
     public void addDetour(Rider rider){
         /* extend path to pick up pedestrian */
-        passengers.add(rider);
+        addStop(rider);
 
-        setNextStop();
-
-        detourHeuristic(rider);
-
-        addStop(rider.getCurrentNode(), rider);
-        addStop(rider.getDest(), rider);
-
-        if(passengers.peek() == rider){
-            setPath(getCurrentNode(), rider.getCurrentNode());
-            changePath(rider);
+        if(stopsOnTheWay.peek() == rider){
+            detoursTime += distTo(rider.getDest()) + distTo(rider.getCurrentNode());
+            setPathTo(rider.getNextStop());
         }
     }
 
-    private void changePath(Rider rider){
+    private void getNextDest(){
+        if(!stopsOnTheWay.isEmpty()){
+            if(currNode == stopsOnTheWay.peek().getNextStop()) {
+                Rider rider = stopsOnTheWay.poll();
 
-    }
-    // 2 סוגים של הוצאה אחד כשמגיעים לנקודה ואחד כשמוסיפים עיקוף למסלול
-    private void setNextStop(){
-        if(!passengers.isEmpty()) {
-            Rider nextStop = passengers.poll();
-            stops.remove(nextStop.getNextStop());
-            for(Map.Entry<Node, ElementsOnMap> stopEntry : stops.entrySet()){
-                if(stopEntry.getValue() == nextStop){
-                    setPath(currNode, nextStop.getNextStop());
-                    this.pathChange = true;
-                    stops.remove(stopEntry.getKey());
-                    break;
+                if (!rider.isPickedUp()) { /* passenger picked up */
+                    addStop(rider);
+                    stopsOnTheWay.add(rider);
+                    rider.setPickUp();
+                    setPathTo(rider.getNextStop());
+                    UserMap.INSTANCE.finished(rider);
+                } else { /* passenger dropped */
+                    if(currNode == rider.getDest()) {
+                        getNextDest();
+                    }
+                    setPathTo(rider.getNextStop());
                 }
             }
-//            if()
-            // todo loop it
-            if (!nextStop.isPickedUp()) {
-                addStop(nextStop.getDest(), nextStop);
-            }
-
-            setPath(currNode, nextStop.getNextStop());
-            this.pathChange = true;
+        }else{
+            setPathTo(getDest());
         }
     }
 
-    private void addStop(Node stop, ElementsOnMap type){
-        stops.put(stop, type);
-    }
 
 
 
-    private void detourHeuristic(Rider rider){
-
-        double passengerDestToPathDist =  getShortestDist(rider.getDest(), stops.keySet(), currNode),
-         passengerSrcToPathDist = getShortestDist(rider.getCurrentNode(), stops.keySet(), currNode);
-
-        detoursTime += passengerSrcToPathDist + passengerDestToPathDist;
-    }
 
     /* TODO add multiple middle paths (TSP):
         public void addDetour(Path currPath) {
@@ -244,6 +179,17 @@ public class Drive implements Runnable, ElementsOnMap, Located {
     }
 
 
+    public double distTo(Node node){
+        double minDist = Math.min(getCurrentNode().distanceTo(node), getDest().distanceTo(node));
+
+        for(Rider rider: getPassengers()) {
+            minDist = Math.min(minDist, rider.getDest().distanceTo(node));
+            if (!rider.isPickedUp()) {
+                minDist = Math.min(minDist, rider.getCurrentNode().distanceTo(node));
+            }
+        }
+        return minDist;
+    }
 
     /** GETTERS */
 
@@ -251,12 +197,12 @@ public class Drive implements Runnable, ElementsOnMap, Located {
         return detoursTime;
     }
 
-    private Node getNextPassengerStop(Rider rider){
-        return rider.isPickedUp()? rider.getDest() : rider.getCurrentNode();
-    }
+//    private Node getNextPassengerStop(ElementOnMap rider){
+//        return rider.isPickedUp()? rider.getDest() : rider.getCurrentNode();
+//    }
 
     public boolean canSqueezeOneMore(){
-        return passengers.size() < MAX_PASSENGERS_NUM;
+        return stopsOnTheWay.size() < MAX_PASSENGERS_NUM;
     }
 
     public double getTotalTime() {
@@ -288,13 +234,22 @@ public class Drive implements Runnable, ElementsOnMap, Located {
         return id;
     }
 
-    public Queue<Rider> getPassengers() {
-        return passengers;
+    public Set<Rider> getPassengers() {
+        return stopsOnTheWay;
     }
 
     @Override
     public Date getStartTime() {
         return leaveTime;
+    }
+
+    private void addStop(Rider rider){
+        stopsOnTheWay.add(rider);
+    }
+
+    @Override
+    public Node getNextStop() {
+        return getDest();
     }
 
     public Path getPath(){
@@ -306,8 +261,9 @@ public class Drive implements Runnable, ElementsOnMap, Located {
         this.path = path;
     }
 
-    public void setPath(Node src, Node dst) {
-        setPath(GraphAlgo.getShortestPath(src, dst));
+    public void setPathTo(Node dst) {//todo add null check
+        this.pathChange = true;
+        setPath(GraphAlgo.getShortestPath(getCurrentNode(), dst));
     }
 
     public List<Node> getNodes(){
@@ -320,7 +276,7 @@ public class Drive implements Runnable, ElementsOnMap, Located {
         return "Drive{" +
                 "id='" + id.substring(1) + '\'' +
                 ", long id='" + id + '\'' +
-                ", passengers=" + passengers.size() +
+                ", passengers=" + stopsOnTheWay.size() +
                 ", leaveTime=" + FORMAT(leaveTime) +
                 ", pathSize=" + getPath().getSize() +
                 ", currNode=" + currNode.getId() +

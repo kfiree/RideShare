@@ -7,15 +7,13 @@ import java.util.*;
 /**
  * Hashmap with a priority queue to Map's keySet.
  *
- * @param <K> key type.
- * @param <V> value type.
  */
-public class HashPriorityQueue<K, V> extends HashMap<K, V> implements Iterable<AbstractMap.SimpleEntry<K, V>>{
-    private final PriorityQueue<K> queue;
+public class HashPriorityQueue<T> extends HashSet<T> implements Iterable<T>{
+    private final PriorityQueue<T> queue;
     private boolean changed;
     /* CONSTRUCTORS */
 
-    public HashPriorityQueue(Comparator<K> comparator) {
+    public HashPriorityQueue(Comparator<T> comparator) {
         queue = new PriorityQueue(comparator);
     }
 
@@ -26,47 +24,41 @@ public class HashPriorityQueue<K, V> extends HashMap<K, V> implements Iterable<A
 
     /* QUEUE METHODS */
 
-    public AbstractMap.SimpleEntry<K, V> poll() {
-        K key = queue.poll();
-        V val = remove(key);
-        return new AbstractMap.SimpleEntry<K, V>(key, val);
+    public T poll() {
+        T key = queue.poll();
+        remove(key);
+
+        return key;
     }
 
-    public AbstractMap.SimpleEntry<K, V> peek() {
-        K key = queue.peek();
-        V val = get(key);
-        return new AbstractMap.SimpleEntry<K, V>(key, val);
+    public T peek() {
+        return queue.peek();
     }
 
 
 
-    /* MAP METHODS */
+    /* HASHSET METHODS */
 
     @Override
-    public V remove(Object key) {
+    public boolean remove(Object key) {
         queue.remove(key);
         return super.remove(key);
     }
 
-    public V remove(AbstractMap.SimpleEntry<V, K> entry) {
-        return remove(entry.getKey());
+    @Override
+    public boolean add(T val) {
+        return super.add(val) && queue.add(val);
     }
 
     @Override
-    public V put(K key, V value) {
-        queue.add(key);
-        return super.put(key, value);
-    }
-
-    @Override
-    public Iterator<AbstractMap.SimpleEntry<K, V>> iterator() {
+    public Iterator<T> iterator() {
         return new PriorityIterator();
     }
 
 
-    private class PriorityIterator implements Iterator<AbstractMap.SimpleEntry<K, V>>{
-        PriorityQueue<K> keys;
-        K cursor;
+    private class PriorityIterator implements Iterator<T>{
+        PriorityQueue<T> keys;
+        T cursor;
 
         public PriorityIterator() {
             keys = new PriorityQueue<>(HashPriorityQueue.this.queue);
@@ -78,10 +70,9 @@ public class HashPriorityQueue<K, V> extends HashMap<K, V> implements Iterable<A
         }
 
         @Override
-        public AbstractMap.SimpleEntry<K, V> next() {
+        public T next() {
             cursor = keys.poll();
-            V v = HashPriorityQueue.this.get(cursor);
-            return new AbstractMap.SimpleEntry<>(cursor,v);
+            return cursor;
         }
 
         @Override
@@ -93,25 +84,38 @@ public class HashPriorityQueue<K, V> extends HashMap<K, V> implements Iterable<A
 
     public static void main(String[] args) {
         double[] keys = {30.1, 1.2, 5.01, 3.3, 2.4, -1.0};
-        String[] values = {"E", "A", "D", "C", "B", "D"};
-        Comparator<Double> objectComparator = Comparator.comparingDouble(e -> e - e.intValue());
-        HashPriorityQueue<Double, String> pm = new HashPriorityQueue<>(Comparator.comparingDouble(e -> e - e.intValue()));
-        for (int i = 0; i < keys.length; i++) {
-            pm.put(keys[i], values[i]);
 
-        }
-        Iterator<SimpleEntry<Double, String>> iterator = pm.iterator();
-        while(iterator.hasNext()){
-            SimpleEntry<Double, String> poll = pm.peek();
-            SimpleEntry<Double, String> next = iterator.next();
-            System.out.println(poll);
-            System.out.println(next);
-        }
-        iterator = pm.iterator();
-        while(iterator.hasNext()) {
-            System.out.println(iterator.next());
+        HashPriorityQueue<Double> q = new HashPriorityQueue<>(Comparator.comparingDouble(e -> e - e.intValue()));
 
-        }
+        q.add(30.1);
+        q.add(1.2);
+        q.add(5.01);
+        q.add(3.3);
+        q.add(2.4);
+
+        q.forEach(System.out::println);
+        Iterator<Double> iterator = q.iterator();
+
+        q.poll();
+
+        System.out.println(iterator.next());
+//
+//        for (int i = 0; i < keys.length; i++) {
+//            pm.add(keys[i]);
+//
+//        }
+//        Iterator<Double> iterator = pm.iterator();
+//        while(iterator.hasNext()){
+//            Double poll = pm.poll();
+//            Double next = iterator.next();
+//            System.out.println(poll);
+//            System.out.println(next);
+//        }
+//        iterator = pm.iterator();
+//        while(iterator.hasNext()) {
+//            System.out.println(iterator.next());
+//
+//        }
     }
 
 

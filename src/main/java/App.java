@@ -152,14 +152,14 @@ public final class App{
         LOAD_FROM_JSON = true;
         PBF_PATH = "data/maps/israel.pbf";
         NODE_IN_MAIN_COMPONENT =2432701015L;
-        SIMULATOR_SPEED = 10.0;
+        SIMULATOR_SPEED = 20.0;
         BOUNDS = true;
         CONSOLE_LOG_LEVEL =
                 "SEVERE";
 //                "ALL";
         SHOW_ALL_PATHS = false;
         DRIVE_NUM = 1;
-        REQUEST_NUM = 1;
+        REQUEST_NUM = 2;
     }
 
     public static void main(String[] args) {

@@ -5,7 +5,7 @@ import app.model.Drive;
 import app.model.GeoLocation;
 import app.model.Rider;
 import app.model.UserMap;
-import app.model.interfaces.ElementsOnMap;
+import app.model.interfaces.ElementOnMap;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 import org.graphstream.ui.spriteManager.Sprite;
@@ -150,8 +150,10 @@ public class StyleUtils {
     }
 
     private static synchronized void stylePassenger(Drive drive, String color){
-        for (Rider passenger : drive.getPassengers()) {//todo lock
-            styleNodes(color, elementsOnMap.get(passenger));
+        for (ElementOnMap element : drive.getPassengers()) {//todo lock
+            if(element instanceof Rider) {
+                styleNodes(color, elementsOnMap.get(element));
+            }
         }
     }
 
@@ -200,7 +202,7 @@ public class StyleUtils {
         }
     }
 
-    protected static void drawElement(ElementsOnMap element, Node node, String styleClass) {
+    protected static void drawElement(ElementOnMap element, Node node, String styleClass) {
         GeoLocation location = element.getLocation();
         node.addAttribute("xy", location.getLongitude(), location.getLatitude());
         node.addAttribute("ui.label", element.getId().substring(1));

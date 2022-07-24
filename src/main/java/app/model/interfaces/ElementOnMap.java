@@ -2,13 +2,12 @@ package app.model.interfaces;
 
 import app.model.GeoLocation;
 import app.model.Node;
-import app.model.Path;
 
 import java.util.Date;
 //import static app.controller.GraphAlgo.distance;
 
 //TODO remove "D" & "R" when loading from DB
-public interface ElementsOnMap extends Comparable<ElementsOnMap> {
+public interface ElementOnMap extends Comparable<ElementOnMap> {
 //    GeoLocation location= new GeoLocation(0.0, 0.0);
 //    enum status {
 //        WAITING,
@@ -26,12 +25,14 @@ public interface ElementsOnMap extends Comparable<ElementsOnMap> {
 
     Date getStartTime();
 
+    Node getNextStop();
+
 //    default status getStatus(){
 //        return status.WAITING;
 //    }todo add status
 
     @Override
-    default int compareTo(ElementsOnMap other){
+    default int compareTo(ElementOnMap other){
         return (int) (getStartTime().getTime() - other.getStartTime().getTime());
     }
 }

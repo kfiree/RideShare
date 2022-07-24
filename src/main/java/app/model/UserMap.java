@@ -1,7 +1,7 @@
 package app.model;
 
 import app.controller.GraphAlgo;
-import app.model.interfaces.ElementsOnMap;
+import app.model.interfaces.ElementOnMap;
 import utils.JsonHandler;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ import static utils.LogHandler.LOGGER;
 public class UserMap {
     private final Hashtable<String, Drive> drives, onGoingDrives;
     private final Hashtable<String, Rider> requests, pendingRequests;
-    private final HashSet<ElementsOnMap> finished;
+    private final HashSet<ElementOnMap> finished;
     private final HashSet<UserEdge> userEdges;
     private Date firstEventTime;
 
@@ -54,7 +54,7 @@ public class UserMap {
 
     public Collection<Rider> getPendingRequests() { return pendingRequests.values(); }
 
-    public HashSet<ElementsOnMap> getFinished() {
+    public HashSet<ElementOnMap> getFinished() {
         return finished;
     }
 
@@ -84,14 +84,14 @@ public class UserMap {
         requests.put(id, new Rider(id, src, dst, date));
     }
 
-    public LinkedList<ElementsOnMap> getEventQueue(){
-        LinkedList<ElementsOnMap> events = new LinkedList<>();
+    public LinkedList<ElementOnMap> getEventQueue(){
+        LinkedList<ElementOnMap> events = new LinkedList<>();
 
         events.addAll(getDrives());
         events.addAll(getRequests());
 
-        events.sort(Comparator.comparing(ElementsOnMap::getStartTime)
-                .thenComparing(ElementsOnMap::getStartTime));
+        events.sort(Comparator.comparing(ElementOnMap::getStartTime)
+                .thenComparing(ElementOnMap::getStartTime));
 
         return events;
     }
@@ -172,7 +172,7 @@ public class UserMap {
 
     /* REMOVE FROM GRAPH */
 
-    public void finished(ElementsOnMap element) {
+    public void finished(ElementOnMap element) {
         if(element instanceof Drive){
             drives.remove(element.getId());
         }else{

@@ -3,12 +3,12 @@ package app.model;
 import org.jetbrains.annotations.NotNull;
 import java.util.Date;
 
-import app.model.interfaces.ElementsOnMap;
+import app.model.interfaces.ElementOnMap;
 import static utils.Utils.FORMAT;
 
 
 
-public class Rider implements ElementsOnMap  {
+public class Rider implements ElementOnMap {
     private final Date askTime;
     private final Node src, dest;
     private final String id;
@@ -33,8 +33,14 @@ public class Rider implements ElementsOnMap  {
         return taken;
     }
 
+    @Override
     public Node getNextStop(){
-        return isPickedUp()? getDest() : getCurrentNode();
+        if( isPickedUp()){
+            return getDest();
+        }else{
+            return getCurrentNode();
+        }
+
     }
 
     @Override
@@ -42,6 +48,10 @@ public class Rider implements ElementsOnMap  {
 
     @Override
     public Node getCurrentNode() { return src; }
+
+    public void setPickUp() {
+        this.pickedUp = true;
+    }
 
     public boolean isPickedUp() {
         return pickedUp;

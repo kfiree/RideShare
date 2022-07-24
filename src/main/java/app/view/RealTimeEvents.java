@@ -1,7 +1,7 @@
 package app.view;
 
 import app.model.*;
-import app.model.interfaces.ElementsOnMap;
+import app.model.interfaces.ElementOnMap;
 import utils.JsonHandler;
 
 import java.util.*;
@@ -35,7 +35,7 @@ import static utils.Utils.lock;
 public class RealTimeEvents implements Runnable{
     private final ReentrantLock lock;
     private final ExecutorService pool;
-    private final Queue<ElementsOnMap> eventsQueue;
+    private final Queue<ElementOnMap> eventsQueue;
     private Date currTime;
 
     public RealTimeEvents() {
@@ -52,7 +52,7 @@ public class RealTimeEvents implements Runnable{
 
         while(!eventsQueue.isEmpty()){
             /*  poll new event and wait till it is his start time */
-            ElementsOnMap newEvent = eventsQueue.poll();
+            ElementOnMap newEvent = eventsQueue.poll();
 
             sleep(currTime.compareTo(newEvent.getStartTime()));
 
@@ -69,7 +69,7 @@ public class RealTimeEvents implements Runnable{
         LOGGER.info("RealTimeEvents finished.");
     }
 
-    private void startEvent(ElementsOnMap newEvent){
+    private void startEvent(ElementOnMap newEvent){
         try {
             lock.lock();
             lock(false);//todo combine
