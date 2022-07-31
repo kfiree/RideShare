@@ -4,15 +4,8 @@ import app.controller.GraphAlgo;
 import app.model.interfaces.ElementOnMap;
 import utils.JsonHandler;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static utils.LogHandler.LOGGER;
 
@@ -23,11 +16,12 @@ import static utils.LogHandler.LOGGER;
  *      - check if need hashtable for data structures that doesnt use get();
  */
 public class UserMap {
-    private final Hashtable<String, Drive> drives, onGoingDrives;
-    private final Hashtable<String, Rider> requests, pendingRequests;
+    private final Hashtable<Integer, Drive> drives, onGoingDrives;
+    private final Hashtable<Integer, Rider> requests, pendingRequests;
     private final HashSet<ElementOnMap> finished;
     private final HashSet<UserEdge> userEdges;
     private Date firstEventTime;
+    protected static AtomicInteger keyGenerator = new AtomicInteger(-1);
 
     /** CONSTRUCTORS  */
     public UserMap() {
@@ -72,16 +66,19 @@ public class UserMap {
         drives.put(drive.getId(), drive);
     }
 
-    public void addDrive(Node src, Node dst, String type, String id, Date date) {
-        drives.put(id, new Drive(src, dst, type, id, date));
+    public Drive addDrive(Node src, Node dst, Date date) {
+        Drive drive = new Drive(src, dst, date);
+        drives.put(drive.getId(), drive);
+        return drive;
     }
 
-    public void addRequest(Rider rider) {
+    public void addRequest(Rider rider){
         requests.put(rider.getId(), rider);
     }
 
-    public void addRequest(String id, Node src, Node dst, Date date) {
-        requests.put(id, new Rider(id, src, dst, date));
+    public void addRequest(Node src, Node dst, Date date) {
+        Rider rider = new Rider(src, dst, date);
+        requests.put(rider.getId(), rider);
     }
 
     public LinkedList<ElementOnMap> getEventQueue(){
@@ -120,6 +117,42 @@ public class UserMap {
         initRandRiders(pedestriansNum, rand);
     }
 
+    public void initEventsInLine(int requestsNum){
+        Random rand = new Random(1);
+        Node src = RoadMap.INSTANCE.getNode(417772575L);
+        Node dst = RoadMap.INSTANCE.getNode(1589498340L);
+
+        this.firstEventTime = new Date();
+        Path path = UserMap.INSTANCE.addDrive(src, dst, new Date(this.firstEventTime.getTime() + 5000)).getPath();
+
+        ArrayList<Integer> randomIndexes = new ArrayList<>();
+
+
+        Arrays.stream(rand.ints(requestsNum* 2L, 0, path.getSize()).toArray())
+                .forEach(randomIndexes::add);
+
+        int srcIndex, dstIndex;
+        for (int i = 0; i < requestsNum*2; i+=2) {
+
+            srcIndex = Math.min(randomIndexes.get(i),  randomIndexes.get(i + 1));
+            dstIndex = Math.max(randomIndexes.get(i),  randomIndexes.get(i + 1));
+
+            src = path.getNodes().get(srcIndex);
+            dst = path.getNodes().get(dstIndex);
+
+
+            UserMap.INSTANCE.addRequest(src, dst, new Date(this.firstEventTime.getTime() + i* 100L));
+
+        }
+        UserMap.INSTANCE.drives.values().forEach(d ->
+                System.out.println("drive " + d.getId() + " from " + d.getCurrentNode().getId() + " to " + d.getDest().getId() + ", size " + d.getPath().getSize())
+        );
+
+        UserMap.INSTANCE.requests.values().forEach(d ->
+                System.out.println("request " + d.getId() + " from " + d.getCurrentNode().getId() + " to " + d.getDest().getId())
+        );
+    }
+
     public void initRandRiders(int requestsNum, Random rand){
         List<Node> nodes = new ArrayList<>(RoadMap.INSTANCE.getNodes());
         long pedestriansStartTime = firstEventTime.getTime() + 10000; //10 seconds after drives
@@ -133,7 +166,8 @@ public class UserMap {
             dst = nodes.get(randomIndexes[i*2 +1 ]);
             int timeAdded = rand.nextInt(75000);
 
-            requests.put(String.valueOf(i), new Rider(String.valueOf(i), src, dst, new Date(pedestriansStartTime + ((long) (750000 + timeAdded) * i))));
+            Rider rider = new Rider(src, dst, new Date(pedestriansStartTime + ((long) (750000 + timeAdded) * i)));
+            requests.put(rider.getId(), rider);
         }
 
         LOGGER.finer("init "+ requestsNum + " pedestrians.");
@@ -160,7 +194,7 @@ public class UserMap {
                 shortestPath = GraphAlgo.getShortestPath(src, dst);
                 int timeAdded = rand.nextInt(75000);
                 if(shortestPath != null) {
-                    drive = new Drive(String.valueOf(i), shortestPath, "unknown", new Date(firstEventTime.getTime() + ((long) (750000 + timeAdded) * i)) );
+                    drive = new Drive(shortestPath, new Date(firstEventTime.getTime() + ((long) (750000 + timeAdded) * i)) );
                 }
             }
 

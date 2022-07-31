@@ -45,7 +45,7 @@ public class MatchMaker implements Runnable{
                 });
                 Drive bestMatch = matches.poll();
                 if(bestMatch != null) {
-                    System.out.println("sending " + bestMatch.getId() + " to " + rider);
+                    System.out.println("Cupid sending " + bestMatch.getId() + " to " + rider.getId());
                     assert bestMatch != null;
                     bestMatch.addDetour(rider);
                     rider.markTaken();

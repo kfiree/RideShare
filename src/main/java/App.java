@@ -1,4 +1,5 @@
 import app.controller.GraphAlgo;
+import app.controller.RealTimeEvents;
 import app.controller.RoadMapUtils;
 import app.controller.osm_processing.Parser;
 import app.controller.osm_processing.Reader;
@@ -150,9 +151,9 @@ public final class App{
 
     static{
         LOAD_FROM_JSON = true;
-        PBF_PATH = "data/maps/israel.pbf";
+        PBF_PATH = "data/maps/osm/israel.pbf";
         NODE_IN_MAIN_COMPONENT =2432701015L;
-        SIMULATOR_SPEED = 20.0;
+        SIMULATOR_SPEED = 15.0;
         BOUNDS = true;
         CONSOLE_LOG_LEVEL =
                 "SEVERE";
@@ -178,12 +179,10 @@ public final class App{
             JsonHandler.RoadMapType.save();
         }
 
-
         LOGGER.info("Map is ready. Map = " + RoadMap.INSTANCE);
 
-
-        UserMap.INSTANCE.initRandomEvents(DRIVE_NUM, REQUEST_NUM);
-//        RealTimeEvents.init();
+        UserMap.INSTANCE.initEventsInLine(REQUEST_NUM);
+//        UserMap.INSTANCE.initRandomEvents(DRIVE_NUM, REQUEST_NUM);
 
         MapView.instance.show(SIMULATOR_SPEED, SHOW_ALL_PATHS);
 

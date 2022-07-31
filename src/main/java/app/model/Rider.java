@@ -11,13 +11,13 @@ import static utils.Utils.FORMAT;
 public class Rider implements ElementOnMap {
     private final Date askTime;
     private final Node src, dest;
-    private final String id;
+    private final int id;
     private boolean taken;
-    private boolean pickedUp;
+    private boolean carNextTarget;
 
 
-    public Rider(String id, @NotNull Node currNode, @NotNull Node destination, Date askTime) {
-        this.id = "R" + id;
+    public Rider(@NotNull Node currNode, @NotNull Node destination, Date askTime) {
+        this.id = UserMap.keyGenerator.incrementAndGet();
         this.askTime = askTime;
         this.dest = destination;
         this.src = currNode;
@@ -35,7 +35,7 @@ public class Rider implements ElementOnMap {
 
     @Override
     public Node getNextStop(){
-        if( isPickedUp()){
+        if( isCarNextTarget()){
             return getDest();
         }else{
             return getCurrentNode();
@@ -49,19 +49,19 @@ public class Rider implements ElementOnMap {
     @Override
     public Node getCurrentNode() { return src; }
 
-    public void setPickUp() {
-        this.pickedUp = true;
+    public void setCarNextTarget(boolean nextTarget) {
+        this.carNextTarget = nextTarget;
     }
 
-    public boolean isPickedUp() {
-        return pickedUp;
+    public boolean isCarNextTarget() {
+        return carNextTarget;
     }
 
     @Override
     public Date getStartTime() { return askTime; }
 
     @Override
-    public String getId() { return id; }
+    public int getId() { return id; }
 
     @Override
     public GeoLocation getLocation() { return src.getLocation(); }
@@ -70,11 +70,10 @@ public class Rider implements ElementOnMap {
     public String toString() {
 
         return "Rider{" +
-                "id='" + id.substring(1) + '\'' +
-                ", long id='" + id + '\'' +
+                "id=" + id +
                 ", askTime=" + FORMAT(askTime) +
-                ", currNode=" + src.getOsmID() +
-                ", destination=" + dest.getOsmID() +
+                ", currNode=" + src.getId() +
+                ", destination=" + dest.getId() +
                 '}';
     }
 }

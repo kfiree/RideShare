@@ -119,9 +119,9 @@ public class StyleUtils {
                     int pathSize = drive.getNodes().size();
                     edges = new Edge[pathSize];
                     for (int i = 0; i < pathSize; i++) {
-                        edges[i] = displayGraph.getEdge(drive.getNodes().get(i).getId());
+                        edges[i] = displayGraph.getEdge(String.valueOf(drive.getNodes().get(i).getId()));
                     }
-                    carPaths.put(drive.getId(), edges);
+                    carPaths.put(String.valueOf(drive.getId()), edges);
                     color = extractAttribute("fill-color", car);
                 }
             }else if(validate(car != null, "drive "+drive.getId()+"'s display node is null")){
@@ -188,7 +188,7 @@ public class StyleUtils {
                 focusedPath = new Edge[pathSize];
                 for (int i = 0; i < pathSize - 1; i++) {
                     focusedPath[i] =
-                            displayGraph.getEdge(drive.getNodes().get(i).getEdgeTo(drive.getNodes().get(i + 1)).getId());
+                            displayGraph.getEdge(String.valueOf(drive.getNodes().get(i).getEdgeTo(drive.getNodes().get(i + 1)).getId()));
                 }
 
                 focusedDrive = drive;
@@ -205,13 +205,13 @@ public class StyleUtils {
     protected static void drawElement(ElementOnMap element, Node node, String styleClass) {
         GeoLocation location = element.getLocation();
         node.addAttribute("xy", location.getLongitude(), location.getLatitude());
-        node.addAttribute("ui.label", element.getId().substring(1));
+        node.addAttribute("ui.label", element.getId());
         if(styleClass.equals("rider")){
             node.setAttribute("ui.style", riderStyleSheet);
         }else{
             node.setAttribute("ui.style", carStyleSheet);
         }
-//        node.addAttribute("ui.class", styleClass);
+        // node.addAttribute("ui.class", styleClass);
     }
 
 

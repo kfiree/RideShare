@@ -1,7 +1,8 @@
-package app.view;
+package app.controller;
 
 import app.model.*;
 import app.model.interfaces.ElementOnMap;
+import app.view.MapView;
 import utils.JsonHandler;
 
 import java.util.*;
@@ -66,6 +67,7 @@ public class RealTimeEvents implements Runnable{
         }
 
         JsonHandler.UserMapType.save();
+        System.out.println("RealTimeEvents finished.");
         LOGGER.info("RealTimeEvents finished.");
     }
 

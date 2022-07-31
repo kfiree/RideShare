@@ -2,7 +2,6 @@ package app.model;
 
 import app.controller.GraphAlgo;
 import app.controller.osm_processing.OsmWay;
-import app.controller.RoadMapUtils;
 import app.model.interfaces.Located;
 import app.model.interfaces.MapObject;
 
@@ -23,29 +22,37 @@ import java.util.Set;
 public class Edge implements MapObject, Located {
     private final Node node1, node2;
     private final double weight;
-    static Set<String> tagNames = new HashSet<>();
-    private final String id, highwayType;
+    private final String highwayType;
+    private final long id;
 
-    private static final Hashtable<String, Integer> SPEED_LIMIT =  new Hashtable<>(){{
-                put("motorway", 110);
-                put("trunk", 100);
-                put("primary", 90);
-                put("secondary", 70);
-                put("tertiary", 50);
-    }};
+    static private final Hashtable<String, Integer> SPEED_LIMIT;
+    static{
+        SPEED_LIMIT =  new Hashtable<>(){{
+            put("motorway", 110);
+            put("trunk", 100);
+            put("primary", 90);
+            put("secondary", 70);
+            put("tertiary", 50);
+        }};
+    }
     // TODO set lower speed
 
-    public Edge(String id, Node node1, Node node2, Double weight, String highwayType){
-        tagNames.add(highwayType); //TODO make highway type enum ?
+    /** add edge from DB */
+    public Edge(long id, Node node1, Node node2, Double weight, String highwayType){
         this.node1 = node1;
         this.node2 = node2;
-        this.id = id == null ? RoadMapUtils.generateId() : id;
+        this.id = id;
         this.highwayType = highwayType;
-        this.weight = weight == 0.0 ? calculateWeight() : weight;
+        this.weight = weight;
     }
 
+    /** add edge from Parser */
     public Edge(OsmWay way, Node node1, Node node2) {
-        this(null, node1, node2,0.0, way.getTags().get("highway"));
+        this.node1 = node1;
+        this.node2 = node2;
+        this.id = RoadMap.keyGenerator.incrementAndGet();
+        this.highwayType = way.getTags().get("highway");
+        this.weight = calculateWeight();
     }
 
     /**
@@ -64,8 +71,8 @@ public class Edge implements MapObject, Located {
 
     /*  GETTERS */
 
-    @Override
-    public String getId() { return id; }
+//    @Override
+    public long getId() { return id; }
 
     public String getHighwayType() {
         return highwayType;
@@ -83,10 +90,10 @@ public class Edge implements MapObject, Located {
         return weight;
     }
 
-    public Node getOtherEnd(String nodeId){
-        if(nodeId.equals(node2.getId())) {
+    public Node getOtherEnd(long nodeId){
+        if(nodeId == node2.getId()){
             return node1;
-        } else if(nodeId.equals(node1.getId())) {
+        } else if(nodeId == node1.getId()){
             return node2;
         }
         return null;

@@ -22,7 +22,9 @@ public class MapMouseManager extends DefaultMouseManager {
     protected View view;
     protected GraphicGraph displayGraph;
     private boolean firstClicked;
+    private Node node1, node2;
 
+    private static boolean editing;
     //todo check & clean unused
     private Node focusedNode;
     private Map.Entry<Node, Drive> focusedCar;
@@ -30,6 +32,20 @@ public class MapMouseManager extends DefaultMouseManager {
 
 
 
+    public static void addDrive(){
+        editing = true;
+
+//        UserMap.INSTANCE.addDrive();
+
+
+        editing = false;
+    }
+
+    public static void addRider(){
+        editing = true;
+
+        editing = false;
+    }
 
     @Override
     public void init(GraphicGraph displayGraph, View view) {

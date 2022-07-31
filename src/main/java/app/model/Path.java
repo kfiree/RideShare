@@ -1,7 +1,5 @@
 package app.model;
 
-import app.controller.GraphAlgo;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -48,7 +46,16 @@ public class Path implements Comparable<Path> , Iterable<Node>{
 
     public Node getSrc() { return nodes.get(0); }
 
-    public Node getDest() { return nodes.get(nodes.size()-1); }
+    public Node getDest() {
+        Node node;
+        try {
+            node = nodes.get(nodes.size() - 1);
+            return node;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public double getWeight(){
         //todo get in constructor
@@ -71,9 +78,9 @@ public class Path implements Comparable<Path> , Iterable<Node>{
     public String toString() {
         return "Path{" +
                 "length=" + nodes.size() +
-                ", src = " + weight +
-                ", dst=" + getDest() +
-                ", weight=" + getSrc() +
+                ", weight=" + weight +
+                ", src = " + getSrc().getId() +
+                ", dst=" + getDest().getId() +
                 '}';
     }
 }

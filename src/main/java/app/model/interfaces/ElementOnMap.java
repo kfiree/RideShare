@@ -15,7 +15,7 @@ public interface ElementOnMap extends Comparable<ElementOnMap> {
 //        FINISHED
 //    }
 
-    String getId();
+    int getId();
 
     GeoLocation getLocation();
 

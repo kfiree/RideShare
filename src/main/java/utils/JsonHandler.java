@@ -97,7 +97,6 @@ public enum JsonHandler {
         JSONObject nodeJSON = new JSONObject();
 
         nodeJSON.put("id", node.getId());
-        nodeJSON.put("osm_Id", node.getOsmID());
         nodeJSON.put("latitude", node.getLatitude());
         nodeJSON.put("longitude", node.getLongitude());
         node.getEdges().forEach(edge -> {});
@@ -106,12 +105,11 @@ public enum JsonHandler {
     }
 
     private static void jsonToNode(JSONObject nodeJSON, RoadMap roadMap){
-        String id = (String) nodeJSON.get("id");
-        Long osmId = (Long) nodeJSON.get("osm_Id");
+        Long osmId = (Long) nodeJSON.get("id");
         double lat = (double) nodeJSON.get("latitude");
         double lon = (double) nodeJSON.get("longitude");
 
-        roadMap.addNode(id, osmId, lat, lon);
+        roadMap.addNode(osmId, lat, lon);
 
     }
 
@@ -124,8 +122,8 @@ public enum JsonHandler {
         int srcNode = node1IsSrc && node2IsSrc ? 0 : node1IsSrc? 1:2;
 
         edgeJSON.put("id", edge.getId());
-        edgeJSON.put("node1", edge.getNode1().getOsmID());
-        edgeJSON.put("node2", edge.getNode2().getOsmID());
+        edgeJSON.put("node1", edge.getNode1().getId());
+        edgeJSON.put("node2", edge.getNode2().getId());
         edgeJSON.put("weight", edge.getWeight());
         edgeJSON.put("highwayType", edge.getHighwayType());
         edgeJSON.put("bidirectional", srcNode);
@@ -134,7 +132,7 @@ public enum JsonHandler {
     }
 
     private static void jsonToEdge(JSONObject edgeJSON, RoadMap roadMap){
-        String edgeId = (String) edgeJSON.get("id");
+        Long edgeId = (long) edgeJSON.get("id");
         Long startNodeId = (long) edgeJSON.get("node1");
         Long endNodeId = (long)  edgeJSON.get("node2");
         Double weight = (Double) edgeJSON.get("weight");
@@ -193,7 +191,6 @@ public enum JsonHandler {
         JSONObject driveJSON = new JSONObject();
 
         driveJSON.put("id", drive.getId());
-        driveJSON.put("type", drive.getType());
         driveJSON.put("date", drive.getStartTime().getTime());
         driveJSON.put("path", pathToJSON(drive.getPath()));
 
@@ -205,12 +202,11 @@ public enum JsonHandler {
         //        Path path = jsonToPath((JSONObject) driverObj.get("path")); todo accept path
 
         String id = (String) driveObj.get("id");
-        String type = (String) driveObj.get("type");
         Node src = RoadMap.INSTANCE.getNode((long) driveObj.get("src_id"));
         Node dst = RoadMap.INSTANCE.getNode((long) driveObj.get("dst_id"));
         Date date = new Date((long) driveObj.get("date"));
 
-        userMap.addDrive(src, dst, type, id, date);
+        userMap.addDrive(src, dst, date);
     }
 
     @SuppressWarnings("unchecked")
@@ -218,8 +214,8 @@ public enum JsonHandler {
         JSONObject pedestrianJSON = new JSONObject();
 
         pedestrianJSON.put("id", rider.getId());
-        pedestrianJSON.put("src", rider.getCurrentNode().getOsmID());
-        pedestrianJSON.put("dst", rider.getDest().getOsmID());
+        pedestrianJSON.put("src", rider.getCurrentNode().getId());
+        pedestrianJSON.put("dst", rider.getDest().getId());
         pedestrianJSON.put("date", rider.getStartTime().getTime());
 
         return pedestrianJSON;
@@ -231,7 +227,7 @@ public enum JsonHandler {
         Node dst = RoadMap.INSTANCE.getNode((long) pedestrianObj.get("dst_id"));
         Date date = new Date((long) pedestrianObj.get("date"));
 
-        userMap.addRequest(id, src, dst, date);
+        userMap.addRequest(src, dst, date);
     }
 
     @SuppressWarnings("unchecked")
@@ -241,7 +237,7 @@ public enum JsonHandler {
         JSONArray nodes = new JSONArray();
 
         for(Node node: path.getNodes()){
-            nodes.add(node.getOsmID());
+            nodes.add(node.getId());
         }
 
         pathJSON.put("nodes", nodes);

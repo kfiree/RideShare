@@ -158,7 +158,7 @@ public final class GraphAlgo {
                 }
             }
         }
-        LOGGER.fine("BFS from node "+ node.getOsmID());
+        LOGGER.fine("BFS from node "+ node.getId());
         return visited.stream().toList();
     }
 
@@ -181,8 +181,8 @@ public final class GraphAlgo {
      */
     public static Path getShortestPath(Node src, Node dst){
 
-        Hashtable<String, Node> CloseSet = new Hashtable<>();
-        Hashtable<String, Node> OpenSet = new Hashtable<>();
+        Hashtable<Long, Node> CloseSet = new Hashtable<>();
+        Hashtable<Long, Node> OpenSet = new Hashtable<>();
         PriorityQueue<Node> PQ_OpenSet = new PriorityQueue<>();
         Hashtable<Node, Node> cameFrom = new Hashtable<>();
 
@@ -196,7 +196,7 @@ public final class GraphAlgo {
         while(!OpenSet.isEmpty()){
             Node current = PQ_OpenSet.poll();
             if(current.equals(dst)){
-                LOGGER.fine("Path between "+src.getOsmID()+" and "+ dst.getOsmID() +" found using A*.");
+                LOGGER.fine("Path between "+src.getId()+" and "+ dst.getId() +" found using A*.");
                 return reconstructPath(cameFrom, dst);
             }
 
@@ -287,7 +287,7 @@ public final class GraphAlgo {
 
         // //check if duplicate
         //    public boolean isOpposite(Edge other){
-        //        return getNode1().getOsmID().equals(other.getNode2().getOsmID()) && getNode2().getOsmID().equals(other.getNode1().getOsmID());
+        //        return getNode1().getId().equals(other.getNode2().getId()) && getNode2().getId().equals(other.getNode1().getId());
         //    }
     }
 }

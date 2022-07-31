@@ -4,6 +4,7 @@ import app.controller.osm_processing.OsmObject;
 import app.controller.osm_processing.OsmWay;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *      |==================================|
@@ -21,6 +22,7 @@ public class RoadMap {
 
     private final Set<Edge> edges;
     private final Map<Long, Node> nodes;
+    protected static AtomicInteger keyGenerator = new AtomicInteger(-1);
 
     /** CONSTRUCTORS */
     private RoadMap(){
@@ -64,7 +66,7 @@ public class RoadMap {
     }
 
     /** add edge from DB */
-    public void addEdge(String id, Long startNodeId, Long endNodeID, Double weight, String highwayType) {
+    public void addEdge(Long id, Long startNodeId, Long endNodeID, Double weight, String highwayType) {
         Node src = getNode(startNodeId), dst = getNode(endNodeID);
 
         Edge edge = setEdgeIfExists(src, dst);
@@ -108,12 +110,12 @@ public class RoadMap {
     }
 
     /** add edge from DB */
-    public void addNode(String id, Long osmID, Double latitude, Double longitude){
+    public void addNode(Long osmID, Double latitude, Double longitude){
         Node node = getNode(osmID);
 
         if( node == null){
-            node = new Node(id, osmID, new GeoLocation(latitude, longitude));
-            nodes.put(node.getOsmID(), node);
+            node = new Node(osmID, new GeoLocation(latitude, longitude));
+            nodes.put(node.getId(), node);
         }
 
     }
@@ -138,7 +140,7 @@ public class RoadMap {
         List<Edge> edgesToRemove = new ArrayList<>();
 
         for(Node node:nodesToRemove) {
-            nodes.remove(node.getOsmID());
+            nodes.remove(node.getId());
             for (Edge edge : node.getEdges()) {
                 edge.getOtherEnd(node.getId()).removeEdgeTo(node);
                 edgesToRemove.add(edge);
@@ -158,7 +160,7 @@ public class RoadMap {
 
     }
 
-    public boolean removeEdge(Edge edge){ //TODO Sh1tToIgnore.IgnoreThatSh1t.test
+    public boolean removeEdge(Edge edge){
         edge.getNode2().removeEdge(edge);
         edge.getNode1().removeEdge(edge);
         return edges.remove(edge);

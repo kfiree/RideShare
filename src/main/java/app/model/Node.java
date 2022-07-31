@@ -21,27 +21,21 @@ import java.util.stream.Collectors;
  * @since   2021-06-20
  */
 public class Node implements Comparable<Node>, MapObject , Located {
-
-    private final String id;
-    private Long osmID;
+    private final Long id;
     private final GeoLocation coordinates;
     private final Set<Edge> edges;
     private double f;
 
 
-    public Node(String id, GeoLocation coordinates) {
-        this.id = id;
+    public Node(long id, GeoLocation coordinates) {
         this.coordinates = coordinates;
         edges = new HashSet<>();
+        this.id = id;
     }
 
-    public Node(String id, Long osmID, GeoLocation coordinates) {
-        this(id, coordinates);
-        this.osmID = osmID;
-    }
 
     public Node(@NotNull OsmObject object) {
-        this(RoadMapUtils.generateId(), object.getID(), object.getLocation());
+        this(object.getID(), object.getLocation());
     }
 
 
@@ -53,12 +47,10 @@ public class Node implements Comparable<Node>, MapObject , Located {
         this.f = f;
     }
 
-    // GETTERS:
-    @Override
-    public String getId() {return id;}
-
-    public Long getOsmID() {
-        return osmID;
+    /* GETTERS */
+//    @Override
+    public Long getId() {
+        return id;
     }
 
     public Double getLatitude() {
@@ -98,8 +90,8 @@ public class Node implements Comparable<Node>, MapObject , Located {
 
     public boolean isAdjacent(Node targetNode) {
         for (Edge e : edges) {
-            if (e.getNode1().getOsmID().equals(targetNode.getOsmID()) ||
-                    e.getNode2().getOsmID().equals(targetNode.getOsmID())) {
+            if (e.getNode1().getId().equals(targetNode.getId()) ||
+                    e.getNode2().getId().equals(targetNode.getId())) {
                 return true;
             }
         }
@@ -108,8 +100,8 @@ public class Node implements Comparable<Node>, MapObject , Located {
 
     public Edge getEdgeTo(Node targetNode) {
         for (Edge e : edges) {
-            if (e.getNode1().getOsmID().equals(targetNode.getOsmID()) ||
-                    e.getNode2().getOsmID().equals(targetNode.getOsmID())) {
+            if (e.getNode1().getId().equals(targetNode.getId()) ||
+                    e.getNode2().getId().equals(targetNode.getId())) {
                 return e;
             }
         }
@@ -140,7 +132,7 @@ public class Node implements Comparable<Node>, MapObject , Located {
             return -1;
         }
         else{
-            return Integer.compare(other.getId().compareTo(id), 0);
+            return Integer.compare(other.getId().compareTo(this.id), 0);
         }
     }
 
@@ -154,10 +146,10 @@ public class Node implements Comparable<Node>, MapObject , Located {
 
     @Override
     public String toString() {
-        String idStr = "id = " + osmID;
+        String idStr = "id = " + id;
         String coordinatesStr = ", "+ coordinates;
         String adjacentStr = edges.stream()
-                .map(edge ->edge.getOtherEnd(getId()).getOsmID().toString())
+                .map(edge ->edge.getOtherEnd(getId()).getId().toString())
                 .collect(Collectors.joining(", "));
 
         adjacentStr = ", adjacent = (" + adjacentStr +")";

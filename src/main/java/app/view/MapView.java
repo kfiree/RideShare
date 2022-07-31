@@ -1,6 +1,7 @@
 package app.view;
 
 import app.controller.MatchMaker;
+import app.controller.RealTimeEvents;
 import app.model.*;
 
 import static utils.Utils.FORMAT;
@@ -67,6 +68,8 @@ public class MapView {
         pipeIn = viewer.newViewerPipe();
         viewer.addView("view1", new J2DGraphRenderer());
         viewer.disableAutoLayout();
+
+        viewer.getView("view1").setShortcutManager(new MapShortcutManager());
         viewer.getView("view1").setMouseManager(new MapMouseManager());
         viewer.setCloseFramePolicy(Viewer.CloseFramePolicy.CLOSE_VIEWER);
         pipeIn.addAttributeSink( displayGraph );
@@ -108,6 +111,7 @@ public class MapView {
             drawElementsOnMap();
 
         }while(eventsThread.isAlive() || !userMap.getDrives().isEmpty());
+        System.out.println("show finished");
     }
 
     private void drawElementsOnMap(){
@@ -117,7 +121,7 @@ public class MapView {
             Node node = elementsOnMap.get(drive);
 
             if (node == null) {
-                node = displayGraph.addNode(drive.getId());
+                node = displayGraph.addNode(String.valueOf(drive.getId()));
                 elementsOnMap.put(drive, node);
                 drawElement(drive, node, "car");
                 node.addAttribute("ui.style", randomGradientColor());
@@ -131,7 +135,7 @@ public class MapView {
             Node node = elementsOnMap.get(request);
 
             if (node == null) {
-                node = displayGraph.addNode(request.getId());
+                node = displayGraph.addNode(String.valueOf(request.getId()));
                 elementsOnMap.put(request, node);
                 drawElement(request, node, "rider");
             }
@@ -146,7 +150,7 @@ public class MapView {
 
             try {
                 if(elementsOnMap.containsKey(nextEvent)){
-                    displayGraph.removeNode(nextEvent.getId());
+                    displayGraph.removeNode(String.valueOf(nextEvent.getId()));
                     elementsOnMap.remove(nextEvent);
                 }
             } catch (Exception e) {
@@ -166,10 +170,10 @@ public class MapView {
 
     private void drawMapComponents(){
         RoadMap.INSTANCE.getEdges().forEach(e -> {
-            if(displayGraph.getEdge(e.getId()) == null) {
+            if(displayGraph.getEdge(String.valueOf(e.getId())) == null) {
                 Node start = drawNode(e.getNode1());
                 Node end = drawNode(e.getNode2());
-                Edge displayEdge = displayGraph.addEdge(e.getId(), start, end);//, e.isDirected());
+                Edge displayEdge = displayGraph.addEdge(String.valueOf(e.getId()), start, end);//, e.isDirected());
                 displayEdge.addAttribute("ui.class", "edge."+e.getHighwayType());
             }
 
@@ -178,14 +182,14 @@ public class MapView {
 
     private Node drawNode(app.model.Node node){
 
-        String keyStr = String.valueOf(node.getOsmID());
+        String keyStr = String.valueOf(node.getId());
         Node displayNode = displayGraph.getNode(keyStr);
 
         if(displayNode == null){
 
             displayNode = displayGraph.addNode(keyStr);
             displayNode.addAttribute("xy", node.getLongitude(), node.getLatitude());
-            displayNode.addAttribute("ui.label", node.getOsmID().toString());
+            displayNode.addAttribute("ui.label", node.getId().toString());
                     }
 
         return displayNode;
