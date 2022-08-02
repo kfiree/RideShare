@@ -1,11 +1,8 @@
 package app.controller;
 
-import app.model.Drive;
 import app.model.GeoLocation;
 import app.model.Node;
 
-import app.model.Rider;
-import app.model.interfaces.ElementOnMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -24,7 +21,7 @@ import static utils.Utils.throwException;
  * @version 1.0
  * @since   2021-06-20
  */
-public final class RoadMapUtils {
+public final class RoadMapHandler {
     private static final Map<String, Node> locations= new HashMap<>();//TODO check if locations needed
     private static boolean bound;
     private static Double maxLatitude = 32.13073917015928, minLatitude = 32.0449580796914,
@@ -44,12 +41,12 @@ public final class RoadMapUtils {
      */
 
     public static void setBounds(boolean bound){
-        RoadMapUtils.bound = bound;
+        RoadMapHandler.bound = bound;
     }
 
     public static void updateBounds(@NotNull Double topLatitude, @NotNull Double bottomLatitude, @NotNull Double topLongitude, @NotNull Double bottomLongitude){
 
-        RoadMapUtils.maxLatitude = topLatitude;
+        RoadMapHandler.maxLatitude = topLatitude;
         minLatitude = bottomLatitude;
         maxLongitude = topLongitude;
         minLongitude = bottomLongitude;
@@ -99,10 +96,6 @@ public final class RoadMapUtils {
         return  latitudeInBound && longitudeInBound;
     }
 
-    public static Node getClosestNode(Node node, ArrayList<Node> nodes){
-        return nodes.stream().min(Comparator.comparingDouble(node::distanceTo)).orElse(null);
-    }
-
 
     /*
      *   |================================|
@@ -117,7 +110,7 @@ public final class RoadMapUtils {
     }
 
     public static void setLocations(Map<String, Node> locations) {
-        RoadMapUtils.locations.putAll(locations);
+        RoadMapHandler.locations.putAll(locations);
     }
 
     public static String generateId() {
@@ -127,5 +120,5 @@ public final class RoadMapUtils {
 
 
     /* private constructor for static class */
-    private RoadMapUtils() {}
+    private RoadMapHandler() {}
 }

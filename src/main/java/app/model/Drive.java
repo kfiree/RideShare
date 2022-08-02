@@ -3,6 +3,7 @@ package app.model;
 /* third party */
 import java.util.*;
 
+import app.controller.Simulator;
 import app.model.interfaces.ElementOnMap;
 import app.model.interfaces.Located;
 import app.view.MapView;
@@ -29,7 +30,7 @@ public class Drive implements Runnable, ElementOnMap, Located {
     private Path path;
     private Node currNode, destination;
     private Rider onTheWayTo;
-    private double totalTime, detoursTime;
+    private double originalTime, detoursTime;
     private boolean pathChange;
 
     /** CONSTRUCTORS */
@@ -56,7 +57,7 @@ public class Drive implements Runnable, ElementOnMap, Located {
         setPath(path);
         currNode = path.getSrc();
         destination = path.getDest();
-        totalTime = path.getWeight();
+        originalTime = path.getWeight();
     }
 
 
@@ -74,18 +75,12 @@ public class Drive implements Runnable, ElementOnMap, Located {
             driveToNextStop();
         }
 
-        UserMap.INSTANCE.finished(this);
+        UserMap.INSTANCE.finishedDriveOrPickedUp(this);
 
-        LOGGER.finest("Drive "+ id +" finished!.");
+        LOGGER.finest("Drive "+ id +" finishedDriveOrPickedUp!.");
     }
 
     private void driveToNextStop(){
-        if(this.path.getNodes().size() <= 1) {
-            int stop = 1;
-        }else{
-            System.out.println("Go to " + this.path.getNodes().get(this.path.getNodes().size()-1) + ".");
-        }
-
         pathChange = false;
         int nodeIndex = 0;
 
@@ -105,7 +100,7 @@ public class Drive implements Runnable, ElementOnMap, Located {
 
             sleep(timeToNextNode);
 
-            totalTime -= timeToNextNode;
+            originalTime -= timeToNextNode;
 
 //            System.out.println("curr " + currNode.getId() + " ,  nextNode " + nextNode.getId());
 
@@ -153,7 +148,7 @@ public class Drive implements Runnable, ElementOnMap, Located {
                     passengers.add(onTheWayTo);
                     onTheWayTo.setCarNextTarget(true);
                     setSecondaryPathTo(onTheWayTo.getNextStop());
-                    UserMap.INSTANCE.finished(onTheWayTo);
+                    UserMap.INSTANCE.finishedDriveOrPickedUp(onTheWayTo);
                 } else { /* passenger dropped */
                     if (currNode == onTheWayTo.getDest()) {
                         getNextDest();
@@ -192,7 +187,7 @@ public class Drive implements Runnable, ElementOnMap, Located {
         }
 
         try {
-            Thread.sleep( (long) (sleepTime * 1000 / MapView.simulatorSpeed));
+            Thread.sleep( (long) (sleepTime * 1000 / Simulator.INSTANCE.speed()));
         } catch (InterruptedException e) {
             LOGGER.severe(e.getMessage() +"\n"+ Arrays.toString(e.getStackTrace()));
         }
@@ -225,8 +220,8 @@ public class Drive implements Runnable, ElementOnMap, Located {
         return passengers.size() < MAX_PASSENGERS_NUM;
     }
 
-    public double getTotalTime() {
-        return totalTime;
+    public double getOriginalTime() {
+        return originalTime;
     }
 
     @Override

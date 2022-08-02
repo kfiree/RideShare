@@ -1,7 +1,7 @@
 package app.model;
 
 import app.controller.GraphAlgo;
-import app.controller.RoadMapUtils;
+import app.controller.RoadMapHandler;
 import app.model.interfaces.Located;
 import app.model.interfaces.MapObject;
 import org.jetbrains.annotations.NotNull;
@@ -66,7 +66,7 @@ public class Node implements Comparable<Node>, MapObject , Located {
 
     @Override
     public boolean inBound() {
-        return RoadMapUtils.inBound(coordinates);
+        return RoadMapHandler.inBound(coordinates);
     }
 
 

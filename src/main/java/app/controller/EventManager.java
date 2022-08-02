@@ -6,6 +6,7 @@ import app.view.MapView;
 import utils.JsonHandler;
 
 import java.util.*;
+import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
@@ -33,18 +34,21 @@ import static utils.Utils.lock;
  *          - https://www.baeldung.com/java-add-hours-date
  *          - https://stackabuse.com/how-to-get-the-number-of-days-between-dates-in-java/
  */
-public class RealTimeEvents implements Runnable{
+public class EventManager implements Runnable{
     private final ReentrantLock lock;
     private final ExecutorService pool;
     private final Queue<ElementOnMap> eventsQueue;
     private Date currTime;
+    private final Simulator simulator;
 
-    public RealTimeEvents() {
+
+    public EventManager(Simulator simulator) {
         lock = new ReentrantLock();
         pool = Executors.newCachedThreadPool();
 
         eventsQueue = UserMap.INSTANCE.getEventQueue();
         currTime = eventsQueue.peek().getStartTime();
+        this.simulator = simulator;
     }
 
     @Override
@@ -66,9 +70,21 @@ public class RealTimeEvents implements Runnable{
             LOGGER.info("RealTimeEvents add "+newEvent +" event. at " + FORMAT(newEvent.getStartTime())+".");
         }
 
-        JsonHandler.UserMapType.save();
-        System.out.println("RealTimeEvents finished.");
-        LOGGER.info("RealTimeEvents finished.");
+        finish();
+
+    }
+
+    private void finish(){
+        try {
+            simulator.cyclicBarrier.await();
+            JsonHandler.UserMapType.save();
+            System.out.println("RealTimeEvents done.");
+            LOGGER.info("RealTimeEvents done.");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (BrokenBarrierException e) {
+            e.printStackTrace();
+        }
     }
 
     private void startEvent(ElementOnMap newEvent){
@@ -87,14 +103,18 @@ public class RealTimeEvents implements Runnable{
 
     }
 
+    public Date getTime() {
+        return currTime;
+    }
+
     /*
      * todo fix sleep time:
      *      double sleepTime = ms / timeSpeed;
      */
-    private void sleep(long ms ) {
-        long sleepTime = 3000;
+    private void sleep(long sleepTime ) {
+//        long sleepTime = 3000;
         try {
-            Thread.sleep(sleepTime);
+            Thread.sleep((long) (sleepTime/ Simulator.INSTANCE.speed()));
         }
         catch (InterruptedException e) { e.printStackTrace(); }
     }

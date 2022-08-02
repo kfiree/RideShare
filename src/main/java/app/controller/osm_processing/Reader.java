@@ -1,6 +1,6 @@
 package app.controller.osm_processing;
 
-import static app.controller.RoadMapUtils.inBound;
+import static app.controller.RoadMapHandler.inBound;
 
 import org.openstreetmap.osmosis.core.container.v0_6.*;
 import org.openstreetmap.osmosis.core.domain.v0_6.*;

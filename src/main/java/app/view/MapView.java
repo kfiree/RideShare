@@ -1,7 +1,6 @@
 package app.view;
 
-import app.controller.MatchMaker;
-import app.controller.RealTimeEvents;
+import app.controller.Simulator;
 import app.model.*;
 
 import static utils.Utils.FORMAT;
@@ -36,26 +35,28 @@ import java.util.*;
  * @version 2.0
  * @since   2021-06-20
  */
-public class MapView {
+public class MapView{
     /* MAP */
     protected final UserMap userMap;
-    static protected final Hashtable<ElementOnMap, Node> elementsOnMap;
+    static protected final Hashtable<ElementOnMap, Node> elementsOnMapNodes;
     static protected final Graph displayGraph;
-    protected RealTimeEvents events;
-    static public double simulatorSpeed;
+
     /* DISPLAY */
     protected final Viewer viewer;
     private final ViewerPipe pipeIn;
-
-    protected static Date simulatorCurrTime;
     private static Sprite clock;
-    private static final long SLEEP_BETWEEN_FRAMES = 2000;
+
+    /* SIMULATOR */
+    private Simulator simulator;
+    private static final long SLEEP_BETWEEN_FRAMES;
     public static final boolean DEBUG = true;
+    private Date simulatorCurrTime;
 
 
     static{
         displayGraph = new MultiGraph("map simulation");
-        elementsOnMap = new Hashtable<>();
+        elementsOnMapNodes = new Hashtable<>();
+        SLEEP_BETWEEN_FRAMES = 2000;
     }
 
     /** CONSTRUCTORS */
@@ -77,52 +78,64 @@ public class MapView {
         displayGraph.addAttribute("ui.stylesheet", styleSheet);
         displayGraph.addAttribute("ui.quality");
         displayGraph.addAttribute("ui.antialias");
+
+
     }
 
     /** Singleton specific properties */
     public static final MapView instance = new MapView();
 
+//    @Override
+//    public void run() {
+//        this.simulatorCurrTime = simulator.time();
+//
+//        pipeIn.pump();
+//
+//        // draw map components
+//        drawMapComponents();
+//        clock = drawClock();
+//
+//        do{
+//            pipeIn.pump();
+//
+//            sleep();
+//
+//            drawElementsOnMap();
+//
+//        }while(simulator.isAlive());
+//
+//        System.out.println("Simulator show done.");
+//    }
 
-    public void show(double speed, boolean showMode){
-        //load events
-        simulatorSpeed = speed;
-        events = new RealTimeEvents();
-        simulatorCurrTime = userMap.getFirstEventTime();
-        showAllPaths = showMode;
+    public void init(Simulator simulator){
+        this.simulator = simulator;
+
         pipeIn.pump();
 
-        // draw map components
         drawMapComponents();
+
         clock = drawClock();
 
-        // start simulator
-        Thread eventsThread = new Thread(events);
-        eventsThread.start();
+        update();
+    }
 
-        // start cupid
-        Thread cupidThread = new Thread(MatchMaker.INSTANCE);
-        cupidThread.start();
+    public void update(){
+        pipeIn.pump();
 
-        do{
-            pipeIn.pump();
+        clock.addAttribute("ui.label", FORMAT(simulator.time()));
 
-            sleep();
-
-            drawElementsOnMap();
-
-        }while(eventsThread.isAlive() || !userMap.getDrives().isEmpty());
-        System.out.println("show finished");
+        drawElementsOnMap();
     }
 
     private void drawElementsOnMap(){
         removeFinishedEvents();
 
         for (Drive drive : userMap.getOnGoingDrives()) {
-            Node node = elementsOnMap.get(drive);
+            Node node = elementsOnMapNodes.get(drive);
 
             if (node == null) {
                 node = displayGraph.addNode(String.valueOf(drive.getId()));
-                elementsOnMap.put(drive, node);
+                elementsOnMapNodes.put(drive, node);
                 drawElement(drive, node, "car");
                 node.addAttribute("ui.style", randomGradientColor());
             } else {
@@ -132,26 +145,26 @@ public class MapView {
         }
 
         for (Rider request : userMap.getPendingRequests()) {
-            Node node = elementsOnMap.get(request);
+            Node node = elementsOnMapNodes.get(request);
 
             if (node == null) {
                 node = displayGraph.addNode(String.valueOf(request.getId()));
-                elementsOnMap.put(request, node);
+                elementsOnMapNodes.put(request, node);
                 drawElement(request, node, "rider");
             }
         }
     }
 
     private void removeFinishedEvents(){
-        Iterator<ElementOnMap> eventIter = userMap.getFinished().iterator();
+        Iterator<ElementOnMap> eventIter = userMap.getFinishedEvents().iterator();
 
         while(eventIter.hasNext()){
             ElementOnMap nextEvent = eventIter.next();
 
             try {
-                if(elementsOnMap.containsKey(nextEvent)){
+                if(elementsOnMapNodes.containsKey(nextEvent)){
                     displayGraph.removeNode(String.valueOf(nextEvent.getId()));
-                    elementsOnMap.remove(nextEvent);
+                    elementsOnMapNodes.remove(nextEvent);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

@@ -1,5 +1,8 @@
 package utils;
 
+import app.model.Drive;
+import app.model.Rider;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -56,5 +59,21 @@ public class Utils {
 
     public static void unLock(){
         lock.unlock();
+    }
+
+
+    static HashMap<Report, Date> reports = new HashMap<>();
+    public static void report(Report type, Date date){
+
+    }
+
+    public static enum Report{
+        PATH_CHANGE(),
+        MATCH(null, null),
+        Pickup(null, null),
+        DropOff(null, null);
+
+        Report(Rider r, Drive d) {}
+        Report(){}
     }
 }

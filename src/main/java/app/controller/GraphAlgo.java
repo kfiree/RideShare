@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static utils.LogHandler.LOGGER;
+import static utils.Utils.validate;
 
 /**
  *      |==================================|
@@ -116,6 +117,11 @@ public final class GraphAlgo {
 //        return (dist);
 //    }
 
+
+    public static Node getClosestNode(Node node, ArrayList<Node> nodes){
+        return nodes.stream().min(Comparator.comparingDouble(node::distanceTo)).orElse(null);
+    }
+
     public static double distance(GeoLocation location1, GeoLocation location2){
         return distance(location1.getLatitude(), location1.getLongitude(), location2.getLatitude(), location2.getLongitude());
     }
@@ -189,8 +195,8 @@ public final class GraphAlgo {
         setH(src,dst);
         setG(src, 0);
         src.setF(getG(src) + getH(src));
-
-        OpenSet.put(src.getId(), src);
+        AlgoNode aSrc = new AlgoNode(src);
+        OpenSet.put(aSrc.getNode().getId(), src);
         PQ_OpenSet.add(src);
 
         while(!OpenSet.isEmpty()){
@@ -235,6 +241,7 @@ public final class GraphAlgo {
         }
         Collections.reverse(pathNodes);
         Path path =  new Path(pathNodes, pathWeight);
+        validate(path.getNodes().size() > 1, "Bad path size :"+ pathNodes.size());
         return path;
     }
 
@@ -274,21 +281,9 @@ public final class GraphAlgo {
         return hour * 3600;
     }
 
-    public static void main(String[] args) {
-        GeoLocation g1 = new GeoLocation(32.07797575620036, 34.79729189827567);
-        GeoLocation g2 = new GeoLocation(32.05726675523634, 34.75974355641115);
-
-        Random random = new Random(1);
-
-        for (int i = 0; i < 10; i++) {
-            System.out.println(random.nextInt(20));
-        }
-
-
-        // //check if duplicate
-        //    public boolean isOpposite(Edge other){
-        //        return getNode1().getId().equals(other.getNode2().getId()) && getNode2().getId().equals(other.getNode1().getId());
-        //    }
+    public static long minToMs(double minute){
+        return (long) (minute * 60000);
     }
+
 }
 

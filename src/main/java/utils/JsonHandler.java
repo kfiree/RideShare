@@ -204,7 +204,7 @@ public enum JsonHandler {
         String id = (String) driveObj.get("id");
         Node src = RoadMap.INSTANCE.getNode((long) driveObj.get("src_id"));
         Node dst = RoadMap.INSTANCE.getNode((long) driveObj.get("dst_id"));
-        Date date = new Date((long) driveObj.get("date"));
+        Long date = (long) driveObj.get("date");
 
         userMap.addDrive(src, dst, date);
     }

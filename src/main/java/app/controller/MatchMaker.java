@@ -6,7 +6,6 @@ import app.model.Rider;
 import app.model.UserMap;
 import app.view.MapView;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -21,9 +20,11 @@ import static utils.Utils.unLock;
  * */
 public class MatchMaker implements Runnable{
     private static final int MAX_KM_ADDITION_TO_PATH;
-    private MatchMaker() {}
+    private Simulator simulator;
 
-    public static final MatchMaker INSTANCE = new MatchMaker();
+    public MatchMaker(Simulator simulator) {
+        this.simulator = simulator;
+    }
 
     static{
          MAX_KM_ADDITION_TO_PATH = 10;
@@ -45,7 +46,7 @@ public class MatchMaker implements Runnable{
                 });
                 Drive bestMatch = matches.poll();
                 if(bestMatch != null) {
-                    System.out.println("Cupid sending " + bestMatch.getId() + " to " + rider.getId());
+                    System.out.println("Match " + bestMatch.getId() + " with " + rider.getId());
                     assert bestMatch != null;
                     bestMatch.addDetour(rider);
                     rider.markTaken();
@@ -114,13 +115,13 @@ public class MatchMaker implements Runnable{
 
         double newPathLength_heuristic = distanceTo + addedPathDistance + distanceFrom;
 
-        boolean worthIt = newPathLength_heuristic < d.getTotalTime() + MAX_KM_ADDITION_TO_PATH;
+        boolean worthIt = newPathLength_heuristic < d.getOriginalTime() + MAX_KM_ADDITION_TO_PATH;
 
         if(worthIt) {
             LOGGER.fine(
                     "drive " + d.getId() + " change path to pick up passenger: " + p.getId() +
                             ".\nPath length heuristics:" +
-                            "\n * Prev path: " + d.getTotalTime() +
+                            "\n * Prev path: " + d.getOriginalTime() +
                             "\n * new path: " + newPathLength_heuristic
             );
         }
@@ -135,13 +136,13 @@ public class MatchMaker implements Runnable{
 
         double newPathLength_heuristic = distanceTo + distanceFrom;
 
-        boolean worthIt = newPathLength_heuristic < d.getTotalTime() + MAX_KM_ADDITION_TO_PATH;
+        boolean worthIt = newPathLength_heuristic < d.getOriginalTime() + MAX_KM_ADDITION_TO_PATH;
 
         if(worthIt) {
             LOGGER.fine(
                     "drive " + d.getId() + " change path to pick up passenger: " + p.getId() +
                             ".\nPath length heuristics:" +
-                            "\n * Prev path: " + d.getTotalTime() +
+                            "\n * Prev path: " + d.getOriginalTime() +
                             "\n * new path: " + newPathLength_heuristic
             );
         }
@@ -153,8 +154,7 @@ public class MatchMaker implements Runnable{
     public void run() {
         while(true){
             try {
-                sleep((long) (15000/MapView.simulatorSpeed));
-//                matchBruteForce1Pickup();
+                sleep((long) (15000/ simulator.speed()));
                 if(!UserMap.INSTANCE.getPendingRequests().isEmpty()){
                     matchMultiplePickup();
                 }

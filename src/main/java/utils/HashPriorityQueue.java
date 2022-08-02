@@ -83,22 +83,39 @@ public class HashPriorityQueue<T> extends HashSet<T> implements Iterable<T>{
 
 
     public static void main(String[] args) {
-        double[] keys = {30.1, 1.2, 5.01, 3.3, 2.4, -1.0};
+//        double[] keys = {30.1, 1.2, 5.01, 3.3, 2.4, -1.0};
+//
+//        HashPriorityQueue<Double> q = new HashPriorityQueue<>(Comparator.comparingDouble(e -> e - e.intValue()));
+//
+//        q.add(30.1);
+//        q.add(1.2);
+//        q.add(5.01);
+//        q.add(3.3);
+//        q.add(2.4);
+//
+//
+//
+//        q.forEach(System.out::println);
+//        Iterator<Double> iterator = q.iterator();
+//
+//        q.poll();
+//
+//        System.out.println(iterator.next());
 
-        HashPriorityQueue<Double> q = new HashPriorityQueue<>(Comparator.comparingDouble(e -> e - e.intValue()));
 
-        q.add(30.1);
-        q.add(1.2);
-        q.add(5.01);
-        q.add(3.3);
-        q.add(2.4);
+        HashPriorityQueue<Double> pq = new HashPriorityQueue<>(Comparator.comparingDouble(e -> e - e.intValue()));
+        pq.add(30.1);
+        pq.add(1.2);
+        pq.add(5.01);
+        pq.add(3.3);
+        pq.add(2.4);
 
-        q.forEach(System.out::println);
-        Iterator<Double> iterator = q.iterator();
 
-        q.poll();
+        Iterator<Double> itr = pq.iterator();
 
-        System.out.println(iterator.next());
+        while(itr.hasNext()){
+            System.out.println(itr.next());
+        }
 //
 //        for (int i = 0; i < keys.length; i++) {
 //            pm.add(keys[i]);

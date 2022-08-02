@@ -1,20 +1,12 @@
-import app.controller.GraphAlgo;
-import app.controller.RealTimeEvents;
-import app.controller.RoadMapUtils;
-import app.controller.osm_processing.Parser;
-import app.controller.osm_processing.Reader;
+import app.controller.RoadMapHandler;
+import app.controller.Simulator;
 import app.model.RoadMap;
-import app.model.UserMap;
-import app.view.MapView;
-import crosby.binary.osmosis.OsmosisReader;
 import utils.JsonHandler;
 
 import javax.swing.*;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 
+import static app.controller.UserMapHandler.initEventsInLine;
 import static utils.LogHandler.*;
 
 /**
@@ -146,11 +138,11 @@ public final class App{
     private static Long  NODE_IN_MAIN_COMPONENT;
     private static Double SIMULATOR_SPEED;
     private static String CONSOLE_LOG_LEVEL, PBF_PATH;
-    private static Boolean BOUNDS, SHOW_ALL_PATHS, LOAD_FROM_JSON;
+    private static Boolean BOUNDS, SHOW_MAP, PARSE_NEW;
     private static int DRIVE_NUM, REQUEST_NUM;
 
     static{
-        LOAD_FROM_JSON = true;
+        PARSE_NEW = true;
         PBF_PATH = "data/maps/osm/israel.pbf";
         NODE_IN_MAIN_COMPONENT =2432701015L;
         SIMULATOR_SPEED = 15.0;
@@ -158,92 +150,60 @@ public final class App{
         CONSOLE_LOG_LEVEL =
                 "SEVERE";
 //                "ALL";
-        SHOW_ALL_PATHS = false;
+        SHOW_MAP = true;
         DRIVE_NUM = 1;
         REQUEST_NUM = 2;
     }
 
     public static void main(String[] args) {
-//        CLI();
+        CLI();
 
         init(args);
         LOGGER.finest("Let's GO!!");
 
-        LOGGER.info( "Start parsing main map.");// : '" + pbfFilePath+"'");
-        RoadMapUtils.setBounds(BOUNDS);
+//        RoadMapHandler.setBounds(BOUNDS);
+//
+//        if(PARSE_NEW){
+//            LOGGER.info( "Read road map from JSON.");
+//            JsonHandler.RoadMapType.load();
+//        }else{
+//            LOGGER.info( "Start parsing main map.");
+//            CreateMap();
+//            JsonHandler.RoadMapType.save();
+//        }
+//
+//        LOGGER.info("Map is ready. Map = " + RoadMap.INSTANCE);
+//
+//        initEventsInLine(REQUEST_NUM);
+////        UserMap.INSTANCE.initRandomEvents(DRIVE_NUM, REQUEST_NUM);
 
-        if(LOAD_FROM_JSON){
-            JsonHandler.RoadMapType.load();
-        }else{
-            CreateMap();
-            JsonHandler.RoadMapType.save();
+        try {
+            Simulator.INSTANCE.init(SIMULATOR_SPEED, DRIVE_NUM, REQUEST_NUM, SHOW_MAP, BOUNDS, PARSE_NEW);
+            Thread thread = new Thread(Simulator.INSTANCE);
+            thread.start();
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            closeLogHandlers();
+            LOGGER.info("Finished!");
         }
 
-        LOGGER.info("Map is ready. Map = " + RoadMap.INSTANCE);
-
-        UserMap.INSTANCE.initEventsInLine(REQUEST_NUM);
-//        UserMap.INSTANCE.initRandomEvents(DRIVE_NUM, REQUEST_NUM);
-
-        MapView.instance.show(SIMULATOR_SPEED, SHOW_ALL_PATHS);
-
-        closeLogHandlers();
-        LOGGER.info("Finished!");
 
         System.exit(0);
     }
 
-    public static void CreateMap() {
-        if(PBF_PATH == null){
-            PBF_PATH = chooseFile();
-        }
-
-
-        try {
-            InputStream inputStream = new FileInputStream(PBF_PATH);
-
-            // read from osm pbf file:
-            Reader reader = new Reader();
-            OsmosisReader osmosisReader = new OsmosisReader(inputStream);
-            osmosisReader.setSink(reader);
-
-            // initial parsing of the .pbf file:
-            osmosisReader.run();
-
-            // secondary parsing of ways/creation of edges:
-            Parser parser = new Parser();
-            parser.parseMapWays(reader.getWays());
-
-            // get riders & drivers
-            GraphAlgo.removeNodesThatNotConnectedTo(RoadMap.INSTANCE.getNode(NODE_IN_MAIN_COMPONENT));
-
-        } catch (FileNotFoundException e) {
-            LOGGER.severe("File not found!, "+e.getMessage());
-            JOptionPane.showMessageDialog(new JFrame(), "File not found!", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-
-            System.exit(0);
-        }
-    }
-
-    /*
-     * TODO add:
-     *          - set bounds coordinates
-     *          -
-     *          - set NODE_IN_MAIN_COMPONENT to closest given coordinates
-     *
- *          fix to read arguments between flags
-     */
     private static void init(String[] args){
          for (int i = 0; i < args.length; i++) {
             if (args[i].charAt(0) == '-') {
                 switch (args[i]) {
-                    case "-m" -> LOAD_FROM_JSON = false;
+                    case "-m" -> PARSE_NEW = false;
                     case "-n" -> NODE_IN_MAIN_COMPONENT = Long.parseLong(args[++i]);
                     case "-s" -> SIMULATOR_SPEED = Double.parseDouble(args[++i]);
                     case "-l" -> CONSOLE_LOG_LEVEL = args[++i];
                     case "-b" -> BOUNDS = args[++i].equals("y") ||
                             args[++i].equals("Y") || args[++i].equals("yes") || args[++i].equals("hell yeah");
-                    case "-c" -> RoadMapUtils.updateBounds(
+                    case "-c" -> RoadMapHandler.updateBounds(
                             Double.parseDouble(args[++i]), Double.parseDouble(args[++i]),
                             Double.parseDouble(args[++i]), Double.parseDouble(args[++i])
                     );
@@ -255,18 +215,6 @@ public final class App{
             }
         }
         ConsoleLevel(CONSOLE_LOG_LEVEL);
-    }
-
-    private static String chooseFile() {
-        // JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-        JFileChooser jfc = new JFileChooser("data");
-        jfc.setDialogTitle("Select .osm.pbf file to read");
-        int returnValue = jfc.showOpenDialog(null);
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = jfc.getSelectedFile();
-            return selectedFile.getAbsolutePath();
-        }
-        return "Not A Valid Path";
     }
 
     private App() {}

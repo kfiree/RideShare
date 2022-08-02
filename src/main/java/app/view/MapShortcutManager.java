@@ -5,16 +5,21 @@ import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.util.DefaultShortcutManager;
 
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import static utils.Utils.JSON_PATH;
 
 public class MapShortcutManager extends DefaultShortcutManager {
-    boolean shiftPressed,ctrlPressed;
+    private boolean shiftPressed,ctrlPressed, driveInput, requestInput;
+    private char[] digits = new char[3];
+    private int id = 0;
+    private int index = 0;
+
     private enum KeyMap{
         SHIFT(16),
         CTRL(17),
+        LEFT(37),
+        UP(38),
+        RIGHT(39),
+        DOWN(40),
+        ENTER(10),
         MINUS(45),
         PLUS(61),
         D(68),
@@ -40,19 +45,50 @@ public class MapShortcutManager extends DefaultShortcutManager {
         super.release();
     }
 
+    private void addDigit(KeyEvent event){
+        id*=10;
+        id += event.getKeyCode() - 48;
+    }
+
+    private boolean isNumber(KeyEvent event){
+        int keyCode = event.getKeyCode();
+        return keyCode >= 48 && keyCode <= 57;
+    }
+
     @Override
     public void keyPressed(KeyEvent event) {
-        System.out.println(event.getKeyCode());
-        if(event.getKeyCode() == KeyMap.CTRL.key){
+
+        if(driveInput){
+            if(isNumber(event)){
+                addDigit(event);
+                index ++;
+            }
+        }else if(event.getKeyCode() == KeyMap.CTRL.key){
             ctrlPressed = true;
         }else if(event.getKeyCode() == KeyMap.SHIFT.key){
             shiftPressed = true;
         }else if(ctrlPressed){
             if(event.getKeyCode() == KeyMap.D.key){
+                driveInput = true;
                 System.out.println("pressed ctrl + d " + event.getKeyCode());
             }else if(event.getKeyCode() == KeyMap.R.key){
+                requestInput = true;
                 System.out.println("pressed ctrl + r " + event.getKeyCode());
             }
+        }
+
+        if(index == 3){
+            System.out.println("d id : " + id);
+            id = 0;
+            driveInput = false;
+
+//            for (int i = 0; i < 3; i++) {
+//                System.out.println(digits[i]);
+//            }
+//            System.out.println(digits);
+//            int id = Integer.parseInt(String.valueOf(digits));
+//            System.out.println(id);
+            index = 0;
         }
 
         super.keyPressed(event);
@@ -66,7 +102,7 @@ public class MapShortcutManager extends DefaultShortcutManager {
             shiftPressed = false;
         }
 
-        System.out.println("released " + event.getKeyCode());
+//        System.out.println("released " + event.getKeyCode());
         super.keyReleased(event);
     }
 

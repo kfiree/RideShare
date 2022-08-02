@@ -18,7 +18,7 @@ import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static app.view.MapView.displayGraph;
-import static app.view.MapView.elementsOnMap;
+import static app.view.MapView.elementsOnMapNodes;
 import static utils.LogHandler.LOGGER;
 import static utils.Utils.validate;
 
@@ -72,7 +72,7 @@ public class StyleUtils {
 
 
     /*     |==== NODE STYLE ====|      */
-    protected static boolean showAllPaths;
+//    protected static boolean showAllPaths;
     protected static Node focusedCar;
     protected static Drive focusedDrive;
     protected static final HashMap<String, Edge[]> carPaths = new HashMap<>();
@@ -88,22 +88,22 @@ public class StyleUtils {
 
     /* STYLE USERS DATA */
 
-    private static synchronized void styleDrives(Drive... drives) {
-        for(Drive drive: drives){
-            Edge[] currPath = carPaths.get(drive.getId());
-            /* if path changed */
-            if (currPath != null && currPath.length != drive.getNodes().size()) {
-                /* clean old path style */
-                styleEdges(edgeStyleSheet, currPath);
-                /* update path and paint */
-                StylePath(drive);
-            } else if (currPath == null) {
-
-                /* add path and paint */
-                StylePath(drive);
-            }
-        }
-    }
+//    private static synchronized void styleDrives(Drive... drives) {
+//        for(Drive drive: drives){
+//            Edge[] currPath = carPaths.get(drive.getId());
+//            /* if path changed */
+//            if (currPath != null && currPath.length != drive.getNodes().size()) {
+//                /* clean old path style */
+//                styleEdges(edgeStyleSheet, currPath);
+//                /* update path and paint */
+//                StylePath(drive);
+//            } else if (currPath == null) {
+//
+//                /* add path and paint */
+//                StylePath(drive);
+//            }
+//        }
+//    }
 
     private static synchronized void StylePath(Drive drive){
 
@@ -113,7 +113,7 @@ public class StyleUtils {
             String color = "";
 
             if(drive != focusedDrive){
-                car = elementsOnMap.get(drive);
+                car = elementsOnMapNodes.get(drive);
 
                 if(validate(car != null, "drive "+drive.getId()+"'s display node is null")){
                     int pathSize = drive.getNodes().size();
@@ -152,7 +152,7 @@ public class StyleUtils {
     private static synchronized void stylePassenger(Drive drive, String color){
         for (ElementOnMap element : drive.getPassengers()) {//todo lock
             if(element instanceof Rider) {
-                styleNodes(color, elementsOnMap.get(element));
+                styleNodes(color, elementsOnMapNodes.get(element));
             }
         }
     }
@@ -192,7 +192,7 @@ public class StyleUtils {
                 }
 
                 focusedDrive = drive;
-                focusedCar = elementsOnMap.get(drive);
+                focusedCar = elementsOnMapNodes.get(drive);
 
                 /* style new drive */
                 styleFocusedDrive(drive);
@@ -227,14 +227,14 @@ public class StyleUtils {
 
         try {
             lock.lock();
-            if (showAllPaths) {
-                styleDrives(drive);
-            } else {
+//            if (showAllPaths) {
+//                styleDrives(drive);
+//            } else {
                 styleFocusedDrive(drive);
-            }
+//            }
             String color = carColors.get(drive.getId());
             if(color == null) {
-                color = extractAttribute("fill-color", elementsOnMap.get(drive));
+                color = extractAttribute("fill-color", elementsOnMapNodes.get(drive));
             }
             stylePassenger(drive, color);
 
