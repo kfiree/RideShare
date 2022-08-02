@@ -238,7 +238,7 @@ public final class GraphAlgo {
         AlgoNode algoSrc = new AlgoNode(src);
         AlgoNode algoDst = new AlgoNode(dst);
 
-        getShortestPathAlgoNodesVersion(algoSrc, algoDst);
+        return getShortestPathAlgoNodesVersion(algoSrc, algoDst);
 
 //        Hashtable<Long, Node> CloseSet = new Hashtable<>();
 //        Hashtable<Long, Node> OpenSet = new Hashtable<>();
