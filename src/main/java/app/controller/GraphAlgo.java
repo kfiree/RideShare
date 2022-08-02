@@ -178,49 +178,45 @@ public final class GraphAlgo {
 
     private static Double getG(Node node){ return NodesG.get(node); }
 
-    /**
-     * calculate shortest path using A*
-     *
-     * @param src origin
-     * @param dst destination
-     * @return shortest path from src to dest
-     */
-    public static Path getShortestPath(Node src, Node dst){
 
-        Hashtable<Long, Node> CloseSet = new Hashtable<>();
-        Hashtable<Long, Node> OpenSet = new Hashtable<>();
-        PriorityQueue<Node> PQ_OpenSet = new PriorityQueue<>();
-        Hashtable<Node, Node> cameFrom = new Hashtable<>();
+    public static Path getShortestPathAlgoNodesVersion(AlgoNode src, AlgoNode dst) {
 
-        setH(src,dst);
-        setG(src, 0);
-        src.setF(getG(src) + getH(src));
-        AlgoNode aSrc = new AlgoNode(src);
-        OpenSet.put(aSrc.getNode().getId(), src);
-        PQ_OpenSet.add(src);
+        Hashtable<Long, AlgoNode> CloseSeta = new Hashtable<>();
+        Hashtable<Long, AlgoNode> OpenSeta = new Hashtable<>();
+        PriorityQueue<AlgoNode> PQ_OpenSeta = new PriorityQueue<>();
+        Hashtable<Node, Node> cameFroma = new Hashtable<>();
 
-        while(!OpenSet.isEmpty()){
-            Node current = PQ_OpenSet.poll();
+        src.setH(src.getNode().distanceTo(dst.getNode()));
+        src.setG(0);
+        src.setF(src.getH() + src.getG());
+
+        OpenSeta.put(src.getNode().getId(), src);
+        PQ_OpenSeta.add(src);
+
+        while(!OpenSeta.isEmpty()){
+            AlgoNode current = PQ_OpenSeta.poll();
             if(current.equals(dst)){
-                LOGGER.fine("Path between "+src.getId()+" and "+ dst.getId() +" found using A*.");
-                return reconstructPath(cameFrom, dst);
+                LOGGER.fine("Path between "+src.getNode().getId()+" and "+ dst.getNode().getId() +" found using A*.");
+                return reconstructPath(cameFroma, dst.getNode());
             }
 
-            OpenSet.remove(current.getId());
-            CloseSet.put(current.getId(), current);
-            for(Node neighbor : current.getAdjacentNodes()){
-                if(CloseSet.containsKey(neighbor.getId())){
+            OpenSeta.remove(current.getNode().getId());
+            CloseSeta.put(current.getNode().getId(), current);
+
+            List<AlgoNode> algoNodeNeighbors = nodesToAlgoNodes(current.getNode().getAdjacentNodes());
+            for(AlgoNode neighbor : algoNodeNeighbors){
+                if(CloseSeta.containsKey(neighbor.getNode().getId())){
                     continue;
                 }
-                double TentativeGScore = getG(current) + current.getEdgeTo(neighbor).getWeight(); //TODO use weight instead of distance
-                if(!OpenSet.containsKey(neighbor.getId()) || TentativeGScore < getG(neighbor)){
-                    cameFrom.put(neighbor, current);
-                    setG(neighbor, TentativeGScore);
-                    setH(neighbor, dst);
-                    neighbor.setF(getG(neighbor) + getH(neighbor));
-                    if(!OpenSet.containsKey(neighbor.getId())){
-                        OpenSet.put(neighbor.getId(), neighbor);
-                        PQ_OpenSet.add(neighbor);
+                double TentativeGScore = current.getG() + current.getNode().getEdgeTo(neighbor.getNode()).getWeight(); //TODO use weight instead of distance
+                if(!OpenSeta.containsKey(neighbor.getNode().getId()) || TentativeGScore < neighbor.getG()){
+                    cameFroma.put(neighbor.getNode(), current.getNode());
+                    neighbor.setG(TentativeGScore);
+                    neighbor.setH(neighbor.getNode().distanceTo(dst.getNode()));
+                    neighbor.setF(neighbor.getH() + neighbor.getG());
+                    if(!OpenSeta.containsKey(neighbor.getNode().getId())){
+                        OpenSeta.put(neighbor.getNode().getId(), neighbor);
+                        PQ_OpenSeta.add(neighbor);
                     }
                 }
             }
@@ -230,12 +226,92 @@ public final class GraphAlgo {
 
     }
 
+    /**
+     * calculate shortest path using A*
+     *
+     * @param src origin
+     * @param dst destination
+     * @return shortest path from src to dest
+     */
+    public static Path getShortestPath(Node src, Node dst){
+
+        AlgoNode algoSrc = new AlgoNode(src);
+        AlgoNode algoDst = new AlgoNode(dst);
+
+        getShortestPathAlgoNodesVersion(algoSrc, algoDst);
+
+//        Hashtable<Long, Node> CloseSet = new Hashtable<>();
+//        Hashtable<Long, Node> OpenSet = new Hashtable<>();
+//        PriorityQueue<Node> PQ_OpenSet = new PriorityQueue<>();
+//        Hashtable<Node, Node> cameFrom = new Hashtable<>();
+//
+//        setH(src,dst);
+//        setG(src, 0);
+//        src.setF(getG(src) + getH(src));
+//        AlgoNode aSrc = new AlgoNode(src);
+//        OpenSet.put(aSrc.getNode().getId(), src);
+//        PQ_OpenSet.add(src);
+//
+//        while(!OpenSet.isEmpty()){
+//            Node current = PQ_OpenSet.poll();
+//            if(current.equals(dst)){
+//                LOGGER.fine("Path between "+src.getId()+" and "+ dst.getId() +" found using A*.");
+//                return reconstructPath(cameFrom, dst);
+//            }
+//
+//            OpenSet.remove(current.getId());
+//            CloseSet.put(current.getId(), current);
+//            for(Node neighbor : current.getAdjacentNodes()){
+//                if(CloseSet.containsKey(neighbor.getId())){
+//                    continue;
+//                }
+//                double TentativeGScore = getG(current) + current.getEdgeTo(neighbor).getWeight(); //TODO use weight instead of distance
+//                if(!OpenSet.containsKey(neighbor.getId()) || TentativeGScore < getG(neighbor)){
+//                    cameFrom.put(neighbor, current);
+//                    setG(neighbor, TentativeGScore);
+//                    setH(neighbor, dst);
+//                    neighbor.setF(getG(neighbor) + getH(neighbor));
+//                    if(!OpenSet.containsKey(neighbor.getId())){
+//                        OpenSet.put(neighbor.getId(), neighbor);
+//                        PQ_OpenSet.add(neighbor);
+//                    }
+//                }
+//            }
+//        }
+//        LOGGER.severe("couldn't find path between nodes, src "+ src+", dst "+ dst);
+//        return null;
+
+    }
+
+    private static List<AlgoNode> nodesToAlgoNodes(List<Node> neighbors) {
+        ArrayList<AlgoNode> algoNeighbors = new ArrayList<>();
+
+        neighbors.stream().forEach(neighbor -> algoNeighbors.add(new AlgoNode(neighbor)));
+
+        return algoNeighbors;
+    }
+
     private static Path reconstructPath(Hashtable<Node, Node> cameFrom, Node n){
         List<Node> pathNodes = new ArrayList<>();
         pathNodes.add(n);
         double pathWeight = 0;
         while(cameFrom.containsKey(n)){
             pathWeight += n.getEdgeTo(cameFrom.get(n)).getWeight();
+            n = cameFrom.get(n);
+            pathNodes.add(n);
+        }
+        Collections.reverse(pathNodes);
+        Path path =  new Path(pathNodes, pathWeight);
+        validate(path.getNodes().size() > 1, "Bad path size :"+ pathNodes.size());
+        return path;
+    }
+
+    private static Path reconstructPatha(Hashtable<AlgoNode, AlgoNode> cameFrom, AlgoNode n){
+        List<Node> pathNodes = new ArrayList<>();
+        pathNodes.add(n.getNode());
+        double pathWeight = 0;
+        while(cameFrom.containsKey(n)){
+            pathWeight += n.getNode().getEdgeTo(cameFrom.get(n)).getWeight();
             n = cameFrom.get(n);
             pathNodes.add(n);
         }
