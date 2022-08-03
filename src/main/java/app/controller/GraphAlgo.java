@@ -311,9 +311,9 @@ public final class GraphAlgo {
         pathNodes.add(n.getNode());
         double pathWeight = 0;
         while(cameFrom.containsKey(n)){
-            pathWeight += n.getNode().getEdgeTo(cameFrom.get(n)).getWeight();
+            pathWeight += n.getNode().getEdgeTo(cameFrom.get(n).getNode()).getWeight();
             n = cameFrom.get(n);
-            pathNodes.add(n);
+            pathNodes.add(n.getNode());
         }
         Collections.reverse(pathNodes);
         Path path =  new Path(pathNodes, pathWeight);
