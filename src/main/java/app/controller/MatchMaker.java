@@ -45,12 +45,17 @@ public class MatchMaker implements Runnable{
                     }
                 });
                 Drive bestMatch = matches.poll();
-                if(bestMatch != null) {
-                    System.out.println("Match " + bestMatch.getId() + " with " + rider.getId());
-                    assert bestMatch != null;
+
+                assert bestMatch != null;
+                double matchHeuristic = bestMatch.getCurrentNode().distanceTo(rider.getCurrentNode());
+                if(matchHeuristic<MAX_KM_ADDITION_TO_PATH){
+                    System.out.println("Match " + bestMatch.getId() + " with " + rider.getId()+ ", match heuristic:" + matchHeuristic);
                     bestMatch.addDetour(rider);
                     rider.markTaken();
+                }else{
+                    System.out.println("Match too expensive, " + bestMatch.getId() + " with " + rider.getId()+ ", match heuristic:" + matchHeuristic);
                 }
+
                 return;
             }
         }finally {

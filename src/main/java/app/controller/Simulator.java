@@ -14,11 +14,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Date;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CyclicBarrier;
+//import java.util.concurrent.BrokenBarrierException;
+//import java.util.concurrent.CyclicBarrier;
 
 import static app.controller.GraphAlgo.minToMs;
 import static app.controller.UserMapHandler.initEventsInLine;
+import static app.controller.UserMapHandler.initRandomEvents;
 import static utils.LogHandler.LOGGER;
 import static utils.Utils.FORMAT;
 import static utils.Utils.validate;
@@ -30,14 +31,14 @@ public class Simulator implements Runnable{
     private MatchMaker cupid;
     private Thread eventsThread, cupidThread;
     private Date time;
-    public final CyclicBarrier cyclicBarrier;
+//    public final CyclicBarrier cyclicBarrier;
     private Thread thread;
     private MapView mapView = MapView.instance;
     private static long SLEEP_BETWEEN_FRAMES;
 
     /** CONSTRUCTORS */
     private Simulator(){
-        this.cyclicBarrier = new CyclicBarrier(3);
+//        this.cyclicBarrier = new CyclicBarrier(2);
         SLEEP_BETWEEN_FRAMES = 2000;
     }
 
@@ -45,12 +46,12 @@ public class Simulator implements Runnable{
     public static final Simulator INSTANCE = new Simulator();
 
     /** Singleton thread */
-    public void init(double simulatorSpeed, int requestNum, int driveNum, boolean show, boolean bounds, boolean parseNew){
+    public void init(double simulatorSpeed, int requestNum, int driveNum, boolean show, boolean bounds, boolean loadJSON){
         validate(simulatorSpeed > 0, "Illegal simulator speed "+ simulatorSpeed + ".");
 
         RoadMapHandler.setBounds(bounds);
 
-        if(parseNew){
+        if(loadJSON){
             LOGGER.info( "Read road map from JSON.");
             JsonHandler.RoadMapType.load();
         }else{
@@ -61,7 +62,8 @@ public class Simulator implements Runnable{
 
         LOGGER.info("Map is ready. Map = " + RoadMap.INSTANCE);
 
-        initEventsInLine(requestNum);
+        // initEventsInLine(requestNum);
+        initRandomEvents(driveNum, requestNum);
 
         this.speed = simulatorSpeed;
         this.events = new EventManager(this);
@@ -76,7 +78,7 @@ public class Simulator implements Runnable{
 
         // start simulator
         eventsThread = new Thread(events);
-        eventsThread.start();
+         eventsThread.start();
 
         // start cupid
         cupidThread = new Thread(cupid);
@@ -95,20 +97,22 @@ public class Simulator implements Runnable{
     }
 
     private void finish(){
-        try {
-            cyclicBarrier.await();
-
-            System.out.println("Simulator done.");
-            LOGGER.info("Simulator done.");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (BrokenBarrierException e) {
-            e.printStackTrace();
-        }
+        System.out.println("Simulator done.");
+        LOGGER.info("Simulator done.");
+//        try {
+//            System.out.println("simulator | cyclicBarrier "+ cyclicBarrier.getNumberWaiting());
+//            cyclicBarrier.await();
+//
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        } catch (BrokenBarrierException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public boolean isAlive(){
-        return eventsThread.isAlive() || !UserMap.INSTANCE.getDrives().isEmpty();
+        return true;
+//        return eventsThread.isAlive() || !UserMap.INSTANCE.getDrives().isEmpty();
     }
 
     private void sleep() {

@@ -151,12 +151,12 @@ public final class App{
                 "SEVERE";
 //                "ALL";
         SHOW_MAP = true;
-        DRIVE_NUM = 1;
-        REQUEST_NUM = 2;
+        DRIVE_NUM = 15;
+        REQUEST_NUM = 0;
     }
 
     public static void main(String[] args) {
-        CLI();
+//        CLI();
 
         init(args);
         LOGGER.finest("Let's GO!!");
@@ -178,7 +178,7 @@ public final class App{
 ////        UserMap.INSTANCE.initRandomEvents(DRIVE_NUM, REQUEST_NUM);
 
         try {
-            Simulator.INSTANCE.init(SIMULATOR_SPEED, DRIVE_NUM, REQUEST_NUM, SHOW_MAP, BOUNDS, PARSE_NEW);
+            Simulator.INSTANCE.init(SIMULATOR_SPEED, REQUEST_NUM, DRIVE_NUM, SHOW_MAP, BOUNDS, PARSE_NEW);
             Thread thread = new Thread(Simulator.INSTANCE);
             thread.start();
             thread.join();

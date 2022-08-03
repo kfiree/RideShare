@@ -1,10 +1,15 @@
 package app.view;
 
+import org.graphstream.graph.Node;
 import org.graphstream.ui.graphicGraph.GraphicGraph;
 import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.util.DefaultShortcutManager;
 
+import javax.swing.*;
 import java.awt.event.KeyEvent;
+import java.util.stream.Stream;
+
+import static app.view.MapView.elementsOnMapNodes;
 
 public class MapShortcutManager extends DefaultShortcutManager {
     private boolean shiftPressed,ctrlPressed, driveInput, requestInput;
@@ -30,6 +35,7 @@ public class MapShortcutManager extends DefaultShortcutManager {
             this.key = key;
         }
     }
+
     public MapShortcutManager() {
         super();
     }
@@ -37,7 +43,6 @@ public class MapShortcutManager extends DefaultShortcutManager {
     @Override
     public void init(GraphicGraph graph, View view) {
         super.init(graph, view);
-
     }
 
     @Override
@@ -69,29 +74,47 @@ public class MapShortcutManager extends DefaultShortcutManager {
             shiftPressed = true;
         }else if(ctrlPressed){
             if(event.getKeyCode() == KeyMap.D.key){
-                driveInput = true;
-                System.out.println("pressed ctrl + d " + event.getKeyCode());
+                dropdownList();
             }else if(event.getKeyCode() == KeyMap.R.key){
-                requestInput = true;
-                System.out.println("pressed ctrl + r " + event.getKeyCode());
+                dropdownList();
             }
         }
-
-        if(index == 3){
-            System.out.println("d id : " + id);
-            id = 0;
-            driveInput = false;
-
-//            for (int i = 0; i < 3; i++) {
-//                System.out.println(digits[i]);
-//            }
-//            System.out.println(digits);
-//            int id = Integer.parseInt(String.valueOf(digits));
-//            System.out.println(id);
-            index = 0;
-        }
+//
+//        if(index == 3){
+//            System.out.println("d id : " + id);
+//            id = 0;
+//            driveInput = false;
+//
+////            for (int i = 0; i < 3; i++) {
+////                System.out.println(digits[i]);
+////            }
+////            System.out.println(digits);
+////            int id = Integer.parseInt(String.valueOf(digits));
+////            System.out.println(id);
+//            index = 0;
+//        }
 
         super.keyPressed(event);
+    }
+
+    private static void dropdownList(){
+        String[] ids = elementsOnMapNodes.values().stream().map(Node::getId).toArray(String[]::new);
+
+
+        if(ids.length>0) {
+            String userId = (String) JOptionPane.showInputDialog(
+                    null,
+                    "Choose User",
+                    "Show user information",
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    ids,
+                    ids[0]);
+
+
+            System.out.println("Choose user : " + userId);
+        }
+
     }
 
     @Override

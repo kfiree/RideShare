@@ -75,16 +75,17 @@ public class EventManager implements Runnable{
     }
 
     private void finish(){
-        try {
-            simulator.cyclicBarrier.await();
-            JsonHandler.UserMapType.save();
-            System.out.println("RealTimeEvents done.");
-            LOGGER.info("RealTimeEvents done.");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (BrokenBarrierException e) {
-            e.printStackTrace();
-        }
+        JsonHandler.UserMapType.save();
+        System.out.println("RealTimeEvents done.");
+        LOGGER.info("RealTimeEvents done.");
+//        try {
+//        System.out.println("cyclicBarrier "+ simulator.cyclicBarrier.getNumberWaiting());
+////            simulator.cyclicBarrier.await();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        } catch (BrokenBarrierException e) {
+//            e.printStackTrace();
+//        }
     }
 
     private void startEvent(ElementOnMap newEvent){

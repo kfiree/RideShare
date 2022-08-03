@@ -160,6 +160,7 @@ public class MapView{
 
         while(eventIter.hasNext()){
             ElementOnMap nextEvent = eventIter.next();
+            System.out.println("MapView remove finished event " + nextEvent);
 
             try {
                 if(elementsOnMapNodes.containsKey(nextEvent)){
@@ -174,12 +175,12 @@ public class MapView{
         }
     }
 
-    private void sleep() {
-        simulatorCurrTime = new Date(simulatorCurrTime.getTime()+SLEEP_BETWEEN_FRAMES);
-        clock.addAttribute("ui.label", FORMAT(simulatorCurrTime));
-        try { Thread.sleep(SLEEP_BETWEEN_FRAMES) ; }
-        catch (InterruptedException e) { e.printStackTrace(); }
-    }
+//    private void sleep() {
+//        simulatorCurrTime = new Date(simulatorCurrTime.getTime()+SLEEP_BETWEEN_FRAMES);
+//        clock.addAttribute("ui.label", FORMAT(simulatorCurrTime));
+//        try { Thread.sleep(SLEEP_BETWEEN_FRAMES) ; }
+//        catch (InterruptedException e) { e.printStackTrace(); }
+//    }
 
     private void drawMapComponents(){
         RoadMap.INSTANCE.getEdges().forEach(e -> {

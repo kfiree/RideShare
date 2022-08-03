@@ -10,6 +10,7 @@ import static utils.LogHandler.LOGGER;
 public class UserMapHandler {
     private static UserMap userMap = UserMap.INSTANCE;
     private static RoadMap roadMap = RoadMap.INSTANCE;
+    private static Random rand = new Random(1);
 
     /**  init events from DB */
 
@@ -19,13 +20,12 @@ public class UserMapHandler {
 
     public static void initRandomEvents(int driveNum, int pedestriansNum){
         userMap.setFirstEventTime();
-        Random rand = new Random(1);
 
-        initRandDrives(driveNum, rand);
-        initRandRiders(pedestriansNum, rand);
+        initRandDrives(driveNum);
+        initRandRiders(pedestriansNum);
     }
 
-    public static void initRandRiders(int requestsNum, Random rand){
+    public static void initRandRiders(int requestsNum){
         List<Node> nodes = new ArrayList<>(roadMap.getNodes());
         long pedestriansStartTime = userMap.getFirstEventTime().getTime() + 10000; //10 seconds after drives
         Node src, dst;
@@ -45,7 +45,7 @@ public class UserMapHandler {
         LOGGER.finer("init "+ requestsNum + " pedestrians.");
     }
 
-    public static void initRandDrives(int drivesNum, Random rand) {
+    public static void initRandDrives(int drivesNum) {
 
         // drives variables
         List<Node> nodes = new ArrayList<>(RoadMap.INSTANCE.getNodes());
@@ -64,9 +64,13 @@ public class UserMapHandler {
 
             if(src != null && dst != null ){
                 shortestPath = GraphAlgo.getShortestPath(src, dst);
-                int timeAdded = rand.nextInt(75000);
+                long timeAdded = rand.nextInt(75000);
                 if(shortestPath != null) {
-                    userMap.addDrive(src, dst, ((long) (750000 + timeAdded) * i));
+                    if(drive != null){
+                        timeAdded = (long) (drive.getPath().getWeight()/2);
+                    }
+                    drive = userMap.addDrive(src, dst, ((long) (750000 + timeAdded) * i));
+
 //                    drive = new Drive(shortestPath, new Date(firstEventTime.getTime() + ((long) (750000 + timeAdded) * i)) );
                 }
             }

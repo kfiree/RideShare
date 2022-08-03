@@ -20,7 +20,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import static app.view.MapView.displayGraph;
 import static app.view.MapView.elementsOnMapNodes;
 import static utils.LogHandler.LOGGER;
-import static utils.Utils.validate;
 
 /**
  * MAP ELEMENTS ATTRIBUTES
@@ -75,7 +74,7 @@ public class StyleUtils {
 //    protected static boolean showAllPaths;
     protected static Node focusedCar;
     protected static Drive focusedDrive;
-    protected static final HashMap<String, Edge[]> carPaths = new HashMap<>();
+//    protected static final HashMap<String, Edge[]> carPaths = new HashMap<>();
     protected static final HashMap<String, String> carColors = new HashMap<>();
     protected static Edge[] focusedPath;
     protected static final String
@@ -96,53 +95,37 @@ public class StyleUtils {
 //                /* clean old path style */
 //                styleEdges(edgeStyleSheet, currPath);
 //                /* update path and paint */
-//                StylePath(drive);
+//                stylePath(drive);
 //            } else if (currPath == null) {
 //
 //                /* add path and paint */
-//                StylePath(drive);
+//                stylePath(drive);
 //            }
 //        }
 //    }
 
-    private static synchronized void StylePath(Drive drive){
-
+    private static synchronized void stylePath(Drive drive){
         if(drive !=null) {
             Node car = focusedCar;
             Edge[] edges = focusedPath;
             String color = "";
 
-            if(drive != focusedDrive){
-                car = elementsOnMapNodes.get(drive);
+            car = elementsOnMapNodes.get(drive);
 
-                if(validate(car != null, "drive "+drive.getId()+"'s display node is null")){
-                    int pathSize = drive.getNodes().size();
-                    edges = new Edge[pathSize];
-                    for (int i = 0; i < pathSize; i++) {
-                        edges[i] = displayGraph.getEdge(String.valueOf(drive.getNodes().get(i).getId()));
-                    }
-                    carPaths.put(String.valueOf(drive.getId()), edges);
-                    color = extractAttribute("fill-color", car);
+            if(car != null){
+                int pathSize = drive.getNodes().size();
+                edges = new Edge[pathSize];
+                for (int i = 0; i < pathSize; i++) {
+                    edges[i] = displayGraph.getEdge(String.valueOf(drive.getNodes().get(i).getId()));
                 }
-            }else if(validate(car != null, "drive "+drive.getId()+"'s display node is null")){
                 color = extractAttribute("fill-color", car);
-            }
 
-            if(!color.equals("")) {
-                carColors.put(car.getId(), color);
-            }else {
-                String c = carColors.get(car.getId());
-                if (c != null) {
-                    color = c;
+                if (edges != null) {
+                    styleEdges(pathStyleSheet + color,edges);
                 }
-            }
 
-            if (edges != null) {
-                styleEdges(pathStyleSheet + color,edges);
+                stylePassenger(drive, color);
             }
-
-            stylePassenger(drive, color);
-//
             //todo
             //  1. make lighter color.
             //  2. style taken.
@@ -163,7 +146,7 @@ public class StyleUtils {
         try {
             lock.lock();
             if (focusedCar != null && drive == focusedDrive) {
-                StylePath(focusedDrive); //todo add focusedEdges to carPaths with sending it to styleDrives
+                stylePath(focusedDrive); //todo add focusedEdges to carPaths with sending it to styleDrives
 //                System.out.println(""+focusedCar.getAttribute("ui.style"));
                 styleNodes(focusedCarStyleSheet+focusedCar.getAttribute("ui.style"), focusedCar);
             }//todo duplicate 2
@@ -227,11 +210,7 @@ public class StyleUtils {
 
         try {
             lock.lock();
-//            if (showAllPaths) {
-//                styleDrives(drive);
-//            } else {
-                styleFocusedDrive(drive);
-//            }
+
             String color = carColors.get(drive.getId());
             if(color == null) {
                 color = extractAttribute("fill-color", elementsOnMapNodes.get(drive));

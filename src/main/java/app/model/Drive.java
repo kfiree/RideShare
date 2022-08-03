@@ -144,6 +144,7 @@ public class Drive implements Runnable, ElementOnMap, Located {
                 onTheWayTo = passengers.poll();
 
                 if (!onTheWayTo.isCarNextTarget()) { /* passenger picked up */
+                    System.out.println(this.id + " picked up " + onTheWayTo.getId());
                     addStop(onTheWayTo);
                     passengers.add(onTheWayTo);
                     onTheWayTo.setCarNextTarget(true);
@@ -151,8 +152,8 @@ public class Drive implements Runnable, ElementOnMap, Located {
                     UserMap.INSTANCE.finishedDriveOrPickedUp(onTheWayTo);
                 } else { /* passenger dropped */
                     if (currNode == onTheWayTo.getDest()) {
+                        System.out.println(this.id + " dropped up " + onTheWayTo.getId());
                         getNextDest();
-                        return;
                     }
 //                        setSecondaryPathTo(rider.getNextStop());
                 }
@@ -278,7 +279,7 @@ public class Drive implements Runnable, ElementOnMap, Located {
     @Override
     public String toString() {
         return "Drive{" +
-                ", id=" + id +
+                "id=" + id +
                 ", passengers=" + passengers.size() +
                 ", leaveTime=" + FORMAT(leaveTime) +
                 ", pathSize=" + getPath().getSize() +

@@ -118,9 +118,9 @@ public class UserMap {
 
     public void finishedDriveOrPickedUp(ElementOnMap element) {
         if(element instanceof Drive){
-            drives.remove(element.getId());
+            onGoingDrives.remove(element.getId());
         }else{
-            requests.remove(element.getId());
+            pendingRequests.remove(element.getId());
         }
         finished.add(element);
     }
