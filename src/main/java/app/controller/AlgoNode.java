@@ -41,4 +41,15 @@ public class AlgoNode {
     public void setF(double f) {
         this.f = f;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof AlgoNode) {
+            if (((AlgoNode) o).getNode().equals(this.getNode())) {
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
 }
