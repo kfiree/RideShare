@@ -92,7 +92,7 @@ public class MapView{
 //        pipeIn.pump();
 //
 //        // draw map components
-//        drawMapComponents();
+//        drawRoadMap();
 //        clock = drawClock();
 //
 //        do{
@@ -100,7 +100,7 @@ public class MapView{
 //
 //            sleep();
 //
-//            drawElementsOnMap();
+//            drawUsers();
 //
 //        }while(simulator.isAlive());
 //
@@ -112,22 +112,22 @@ public class MapView{
 
         pipeIn.pump();
 
-        drawMapComponents();
+        drawRoadMap();
 
         clock = drawClock();
 
-        update();
+        updateUsers();
     }
 
-    public void update(){
+    public void updateUsers(){
         pipeIn.pump();
 
         clock.addAttribute("ui.label", FORMAT(simulator.time()));
 
-        drawElementsOnMap();
+        drawUsers();
     }
 
-    private void drawElementsOnMap(){
+    private void drawUsers(){
         removeFinishedEvents();
 
         for (Drive drive : userMap.getOnGoingDrives()) {
@@ -182,7 +182,7 @@ public class MapView{
 //        catch (InterruptedException e) { e.printStackTrace(); }
 //    }
 
-    private void drawMapComponents(){
+    private void drawRoadMap(){
         RoadMap.INSTANCE.getEdges().forEach(e -> {
             if(displayGraph.getEdge(String.valueOf(e.getId())) == null) {
                 Node start = drawNode(e.getNode1());

@@ -115,7 +115,7 @@ public class EventManager implements Runnable{
     private void sleep(long sleepTime ) {
 //        long sleepTime = 3000;
         try {
-            Thread.sleep((long) (sleepTime/ Simulator.INSTANCE.speed()));
+            Thread.sleep((long) Math.max(1,(sleepTime/ Simulator.INSTANCE.speed())));
         }
         catch (InterruptedException e) { e.printStackTrace(); }
     }

@@ -17,8 +17,6 @@ import java.util.Date;
 //import java.util.concurrent.BrokenBarrierException;
 //import java.util.concurrent.CyclicBarrier;
 
-import static app.controller.GraphAlgo.minToMs;
-import static app.controller.UserMapHandler.initEventsInLine;
 import static app.controller.UserMapHandler.initRandomEvents;
 import static utils.LogHandler.LOGGER;
 import static utils.Utils.FORMAT;
@@ -89,7 +87,7 @@ public class Simulator implements Runnable{
 
             do{
                 sleep();
-                mapView.update();
+                mapView.updateUsers();
             }while(isAlive());
         }
 
@@ -111,8 +109,7 @@ public class Simulator implements Runnable{
     }
 
     public boolean isAlive(){
-        return true;
-//        return eventsThread.isAlive() || !UserMap.INSTANCE.getDrives().isEmpty();
+        return eventsThread.isAlive() || !UserMap.INSTANCE.getDrives().isEmpty();
     }
 
     private void sleep() {

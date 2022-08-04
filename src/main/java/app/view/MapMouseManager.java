@@ -63,23 +63,32 @@ public class MapMouseManager extends DefaultMouseManager {
         firstClicked  = !firstClicked; //prevent double click
 
         if(firstClicked) { //todo add min distance for paint
-            System.out.println( "MouseEvent xy ("+e.getX() +","+e.getY()+"), coordinates ("
-                    +view.getCamera().transformPxToGu(e.getX() ,e.getY())+").");
 
-            if(MapView.DEBUG){
-                GraphicElement currentNode = view.findNodeOrSpriteAt(e.getX(), e.getY());
-                if(currentNode!= null){
-                    app.model.Node node = RoadMap.INSTANCE.getNode(Long.parseLong(currentNode.getLabel()));
-                    if(node != null) {
-                        System.out.println(node);
-                    }
+            GraphicElement currentNode = view.findNodeOrSpriteAt(e.getX(), e.getY());
+            if(currentNode!= null){
+                app.model.Node node = RoadMap.INSTANCE.getNode(Long.parseLong(currentNode.getLabel()));
+                if(node != null) {
+                    System.out.println(node);
                 }
             }
-            Drive closestDrive = getClosestDrive(e);
-            if (closestDrive != null) {
 
-                focusOn(closestDrive);
-            }
+//            System.out.println( "MouseEvent xy ("+e.getX() +","+e.getY()+"), coordinates ("
+//                    +view.getCamera().transformPxToGu(e.getX() ,e.getY())+").");
+//
+//            if(MapView.DEBUG){
+//                GraphicElement currentNode = view.findNodeOrSpriteAt(e.getX(), e.getY());
+//                if(currentNode!= null){
+//                    app.model.Node node = RoadMap.INSTANCE.getNode(Long.parseLong(currentNode.getLabel()));
+//                    if(node != null) {
+//                        System.out.println(node);
+//                    }
+//                }
+//            }
+//            Drive closestDrive = getClosestDrive(e);
+//            if (closestDrive != null) {
+//
+//                focusOn(closestDrive);
+//            }
 
         }
     }

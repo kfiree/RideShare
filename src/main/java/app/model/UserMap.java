@@ -42,6 +42,10 @@ public class UserMap {
 
     public Collection<Drive> getDrives() { return drives.values(); }
 
+    public Drive getOnGoingDrive(int id){
+        return onGoingDrives.get(id);
+    }
+
     public Collection<Drive> getOnGoingDrives() { return onGoingDrives.values(); }
 
     public Collection<Rider> getRequests() { return requests.values(); }

@@ -145,7 +145,7 @@ public final class App{
         PARSE_NEW = true;
         PBF_PATH = "data/maps/osm/israel.pbf";
         NODE_IN_MAIN_COMPONENT =2432701015L;
-        SIMULATOR_SPEED = 15.0;
+        SIMULATOR_SPEED = 1.0;
         BOUNDS = true;
         CONSOLE_LOG_LEVEL =
                 "SEVERE";

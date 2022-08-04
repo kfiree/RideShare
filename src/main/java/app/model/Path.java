@@ -1,8 +1,11 @@
 package app.model;
 
+import utils.HashPriorityQueue;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.PriorityQueue;
 
 /**
  *      |==================================|
@@ -72,6 +75,15 @@ public class Path implements Comparable<Path> , Iterable<Node>{
     @Override
     public Iterator<Node> iterator() {
         return nodes.iterator();
+    }
+
+    public String[] getEdgeIds(){
+        String[] ids = new String[nodes.size() - 1];
+        for (int i = 0; i < ids.length; i++) {
+            ids[i] = String.valueOf(nodes.get(i).getEdgeTo(nodes.get(i+1)).getId());
+        }
+
+        return ids;
     }
 
     @Override

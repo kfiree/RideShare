@@ -1,5 +1,8 @@
 package app.view;
 
+import app.model.Drive;
+import app.model.UserMap;
+import app.model.interfaces.ElementOnMap;
 import org.graphstream.graph.Node;
 import org.graphstream.ui.graphicGraph.GraphicGraph;
 import org.graphstream.ui.view.View;
@@ -7,9 +10,11 @@ import org.graphstream.ui.view.util.DefaultShortcutManager;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
+import java.util.Hashtable;
 import java.util.stream.Stream;
 
 import static app.view.MapView.elementsOnMapNodes;
+import static app.view.StyleUtils.stylePath;
 
 public class MapShortcutManager extends DefaultShortcutManager {
     private boolean shiftPressed,ctrlPressed, driveInput, requestInput;
@@ -102,17 +107,20 @@ public class MapShortcutManager extends DefaultShortcutManager {
 
 
         if(ids.length>0) {
-            String userId = (String) JOptionPane.showInputDialog(
+            int userId =
+                    Integer.parseInt((String) JOptionPane.showInputDialog(
                     null,
                     "Choose User",
                     "Show user information",
                     JOptionPane.QUESTION_MESSAGE,
                     null,
                     ids,
-                    ids[0]);
-
+                    ids[0]
+            ));
 
             System.out.println("Choose user : " + userId);
+
+            stylePath(UserMap.INSTANCE.getOnGoingDrive(userId));
         }
 
     }

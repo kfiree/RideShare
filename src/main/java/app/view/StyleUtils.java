@@ -1,10 +1,7 @@
 package app.view;
 
 
-import app.model.Drive;
-import app.model.GeoLocation;
-import app.model.Rider;
-import app.model.UserMap;
+import app.model.*;
 import app.model.interfaces.ElementOnMap;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
@@ -16,6 +13,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Stream;
 
 import static app.view.MapView.displayGraph;
 import static app.view.MapView.elementsOnMapNodes;
@@ -94,7 +92,7 @@ public class StyleUtils {
 //            if (currPath != null && currPath.length != drive.getNodes().size()) {
 //                /* clean old path style */
 //                styleEdges(edgeStyleSheet, currPath);
-//                /* update path and paint */
+//                /* updateUsers path and paint */
 //                stylePath(drive);
 //            } else if (currPath == null) {
 //
@@ -104,25 +102,35 @@ public class StyleUtils {
 //        }
 //    }
 
-    private static synchronized void stylePath(Drive drive){
+    protected static synchronized void stylePath(Drive drive){
         if(drive !=null) {
-            Node car = focusedCar;
-            Edge[] edges = focusedPath;
+
+            Node car = elementsOnMapNodes.get(drive);
+//            Edge[] edges = focusedPath;
             String color = "";
 
-            car = elementsOnMapNodes.get(drive);
 
             if(car != null){
-                int pathSize = drive.getNodes().size();
-                edges = new Edge[pathSize];
-                for (int i = 0; i < pathSize; i++) {
-                    edges[i] = displayGraph.getEdge(String.valueOf(drive.getNodes().get(i).getId()));
-                }
+
                 color = extractAttribute("fill-color", car);
 
-                if (edges != null) {
-                    styleEdges(pathStyleSheet + color,edges);
-                }
+                Edge[] edges = Arrays.stream(drive.getPath().getEdgeIds())
+                        .map(displayGraph::getEdge).toArray(Edge[]::new);
+
+                styleEdges(pathStyleSheet + color,  edges);
+
+//                Arrays.stream(drive.getPath().getEdges()).forEach(edge -> {
+//                    styleEdges(pathStyleSheet + finalColor,  displayGraph.getEdge(String.valueOf(edge.getId())));
+//                });
+//                for (int i = 0; i < pathSize; i++) {
+//
+//                    edges[i] = displayGraph.getEdge(String.valueOf(drive.getNodes().get(i).getId()));
+//                }
+//                color = extractAttribute("fill-color", car);
+//
+//                if (edges != null) {
+//                    styleEdges(pathStyleSheet + color,edges);
+//                }
 
                 stylePassenger(drive, color);
             }

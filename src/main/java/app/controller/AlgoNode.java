@@ -1,8 +1,9 @@
 package app.controller;
 
 import app.model.Node;
+import org.jetbrains.annotations.NotNull;
 
-public class AlgoNode {
+public class AlgoNode implements Comparable<AlgoNode>{
     private Node node;
     private double h = 0, g = 0, f = 0;
 
@@ -51,5 +52,18 @@ public class AlgoNode {
             return false;
         }
         return false;
+    }
+
+    @Override
+    public int compareTo(@NotNull AlgoNode other) {
+        if(other.getF() < f){
+            return 1;
+        }
+        else if(other.getF() > f){
+            return -1;
+        }
+        else{
+            return Integer.compare(other.node.getId().compareTo(this.node.getId()), 0);
+        }
     }
 }
