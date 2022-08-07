@@ -2,38 +2,38 @@ const { v4: uuidv4 } = require('uuid');
 const moment = require('moment-timezone');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const config = require('./config/default.json');
-const client = require('./config/DB');
+const config = require('./../config/default.json');
+const client = require('./../config/DB');
 
 
 
-const geoLocation_query = require('./config/querys/geoLocation_query');
-const getRandomGeoLocation = require('./classes/randomData//geoLocation');
-let GeoLocation = require('./classes/Geo_Location');
-let geoLocation = new GeoLocation(getRandomGeoLocation());
-console.log('geoLocation', geoLocation);
+const node_query = require('./../config/querys/node_query');
+const getRandomNode = require('./../classes/randomData/node');
+let Node = require('./../classes/Node');
+let node = new Node(getRandomNode());
+console.log('node', node);
 
 
 
-const addGeoLocation = async () => {
+const addNode = async () => {
     try {
-        let query = geoLocation_query.getGeoLocationById(geoLocation);
-        //Check if geoLocation is exist
+        let query = node_query.getNodeById(node);
+        //Check if node is exist
         await client.query(query,
             async (err, result, fields) => {
                 if (err) console.log('err', err);
                 if (result.rows.length > 0) {
-                    console.log('GeoLocation exist');
+                    console.log('Node exist');
                 } else {
-                    query = geoLocation_query.addGeoLocation(geoLocation);
-                    //Save geoLocation in DB
+                    query = node_query.addNode(node);
+                    //Save node in DB
                     await client.query(query,
                         async (err, result, fields) => {
                             if (err) console.log('err', err);
                             else if (result.rowCount === 1) {
-                                console.log('GeoLocation created');
+                                console.log('Node created');
                             } else {
-                                console.log('GeoLocation not created');
+                                console.log('Node not created');
                             }
                         });
                 }
@@ -42,38 +42,38 @@ const addGeoLocation = async () => {
         console.error(err.message);
     }
 }
-
-const updateGeoLocation = async () => {
+const updateNode = async () => {
     try {
-        let query = geoLocation_query.getGeoLocationById(geoLocation);
-        //Check if geoLocation is exist
+        let query = node_query.getNodeById(node);
+        //Check if node is exist
         await client.query(query,
             async (err, result, fields) => {
                 if (err) console.log('err', err);
+                // console.log('result', result.rows);
                 if (result.rows.length > 0) {
-                    query = geoLocation_query.updateGeoLocation(geoLocation);
-                    //Save geoLocation in DB
+                    query = node_query.updateNode(node);
+                    //Save node in DB
                     await client.query(query,
                         async (err, result, fields) => {
                             if (err) console.log('err', err);
                             else if (result.rowCount === 1) {
-                                console.log('GeoLocation updated');
+                                console.log('Node updated');
                             } else {
-                                console.log('GeoLocation not updated');
+                                console.log('Node not updated');
                             }
                         });
                 } else {
-                    return console.log('GeoLocation is not exist');
+                    return console.log('Node is not exist');
                 }
             });
     } catch (err) {
         console.error(err.message);
     }
 }
-const getGeoLocationById = async () => {
+const getNodeById = async () => {
     try {
-        let query = geoLocation_query.getGeoLocationById(geoLocation);
-        //Check if geoLocation is exist
+        let query = node_query.getNodeById(node);
+        //Check if node is exist
         await client.query(query,
             async (err, result, fields) => {
                 if (err) console.log('err', err);
@@ -81,17 +81,17 @@ const getGeoLocationById = async () => {
                     console.log(result.rows[0]);
                     return result.rows[0];
                 } else {
-                    console.log('GeoLocation not exist');
+                    console.log('Node not exist');
                 }
             });
     } catch (err) {
         console.error(err.message);
     }
 }
-const getAllGeoLocations = async () => {
+const getAllNodes = async () => {
     try {
-        let query = geoLocation_query.getAllGeoLocations();
-        //Check if geoLocation is exist
+        let query = node_query.getAllNodes();
+        //Check if node is exist
         await client.query(query,
             async (err, result, fields) => {
                 if (err) console.log('err', err);
@@ -106,55 +106,27 @@ const getAllGeoLocations = async () => {
         console.error(err.message);
     }
 }
-const deleteGeoLocationById = async () => {
+const deleteNodeById = async () => {
     try {
-        let query = geoLocation_query.getGeoLocationById(geoLocation);
-        //Check if geoLocation is exist
+        let query = node_query.getNodeById(node);
+        //Check if node is exist
         await client.query(query,
             async (err, result, fields) => {
                 if (err) console.log('err', err);
                 if (result.rows.length > 0) {
-                    query = geoLocation_query.deleteGeoLocationById(geoLocation);
+                    query = node_query.deleteNodeById(node);
 
                     await client.query(query,
                         async (err, result, fields) => {
                             if (err) console.log('err', err);
                             else if (result.rowCount === 1) {
-                                console.log('GeoLocation deleted by Id');
+                                console.log('Node deleted by Id');
                             } else {
-                                console.log('GeoLocation not deleted by Id');
+                                console.log('Node not deleted by Id');
                             }
                         });
                 } else {
-                    console.log('GeoLocation not exist');
-                }
-            });
-    } catch (err) {
-        console.error(err.message);
-    }
-}
-const deleteGeoLocationByGeoLocation = async () => {
-
-    try {
-        let query = geoLocation_query.getGeoLocationByGeoLocationId(geoLocation);
-        //Check if geoLocation is exist
-        await client.query(query,
-            async (err, result, fields) => {
-                if (err) console.log('err', err);
-                if (result.rows.length > 0) {
-                    query = geoLocation_query.deleteGeoLocationByGeoLocationId(geoLocation);
-
-                    await client.query(query,
-                        async (err, result, fields) => {
-                            if (err) console.log('err', err);
-                            else if (result.rowCount === 1) {
-                                console.log('GeoLocation deleted by Id');
-                            } else {
-                                console.log('GeoLocation not deleted by Id');
-                            }
-                        });
-                } else {
-                    console.log('GeoLocation not exist');
+                    console.log('Node not exist');
                 }
             });
     } catch (err) {
@@ -162,29 +134,63 @@ const deleteGeoLocationByGeoLocation = async () => {
     }
 }
 
+const deleteNodeByOSMId = async () => {
+    try {
+        let query = node_query.getNodeById(node);
+        //Check if node is exist
+        await client.query(query,
+            async (err, result, fields) => {
+                if (err) console.log('err', err);
+                if (result.rows.length > 0) {
+                    query = node_query.deleteNodeByOSMId(node);
+
+                    await client.query(query,
+                        async (err, result, fields) => {
+                            if (err) console.log('err', err);
+                            else if (result.rowCount === 1) {
+                                console.log('Node deleted by Id');
+                            } else {
+                                console.log('Node not deleted by OSM Id');
+                            }
+                        });
+                } else {
+                    console.log('Node not exist');
+                }
+            });
+    } catch (err) {
+        console.error(err.message);
+    }
+}
 const run = async () => {
     try {
-        console.log('********************************************addGeoLocation******************************************** ');
-        await addGeoLocation();
+        console.log('********************************************addNode******************************************** ');
+        await addNode();
         setTimeout(async () => {
-            console.log('********************************************updateGeoLocation******************************************** ');
-            await updateGeoLocation();
+            console.log('********************************************updateNode******************************************** ');
+            await updateNode();
         }, 2000)
         setTimeout(async () => {
-            console.log('********************************************getGeoLocationById******************************************** ');
-            await getGeoLocationById();
+            console.log('********************************************getNodeById******************************************** ');
+            await getNodeById();
         }, 4000)
 
         setTimeout(async () => {
-            console.log('********************************************getAllUniversities******************************************** ');
-            await getAllGeoLocations();
+            console.log('********************************************getAllNodes******************************************** ');
+            await getAllNodes();
         }, 6000)
 
         setTimeout(async () => {
-            console.log('********************************************deleteGeoLocationById******************************************** ');
-            await deleteGeoLocationById();
+            console.log('********************************************deleteNodeById******************************************** ');
+            await deleteNodeById();
         }, 8000)
-
+        setTimeout(async () => {
+            console.log('********************************************addNode******************************************** ');
+            await addNode();
+        }, 10000)
+        setTimeout(async () => {
+            console.log('********************************************deleteNodeByOSMId******************************************** ');
+            await deleteNodeByOSMId();
+        }, 12000)
     } catch (error) {
         console.log('error', error);
     }

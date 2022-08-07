@@ -2,38 +2,38 @@ const { v4: uuidv4 } = require('uuid');
 const moment = require('moment-timezone');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const config = require('./config/default.json');
-const client = require('./config/DB');
+const config = require('./../config/default.json');
+const client = require('./../config/DB');
 
 
 
-const node_query = require('./config/querys/node_query');
-const getRandomNode = require('./classes/randomData/node');
-let Node = require('./classes/Node');
-let node = new Node(getRandomNode());
-console.log('node', node);
+const path_query = require('./../config/querys/path_query');
+const getRandomPath = require('./../classes/randomData/path');
+let Path = require('./../classes/Path');
+let path = new Path(getRandomPath());
+console.log('path', path);
 
 
 
-const addNode = async () => {
+const addPath = async () => {
     try {
-        let query = node_query.getNodeById(node);
-        //Check if node is exist
+        let query = path_query.getPathById(path);
+        //Check if path is exist
         await client.query(query,
             async (err, result, fields) => {
                 if (err) console.log('err', err);
                 if (result.rows.length > 0) {
-                    console.log('Node exist');
+                    console.log('Path exist');
                 } else {
-                    query = node_query.addNode(node);
-                    //Save node in DB
+                    query = path_query.addPath(path);
+                    //Save path in DB
                     await client.query(query,
                         async (err, result, fields) => {
                             if (err) console.log('err', err);
                             else if (result.rowCount === 1) {
-                                console.log('Node created');
+                                console.log('Path created');
                             } else {
-                                console.log('Node not created');
+                                console.log('Path not created');
                             }
                         });
                 }
@@ -42,38 +42,38 @@ const addNode = async () => {
         console.error(err.message);
     }
 }
-const updateNode = async () => {
+const updatePath = async () => {
     try {
-        let query = node_query.getNodeById(node);
-        //Check if node is exist
+        let query = path_query.getPathById(path);
+        //Check if path is exist
         await client.query(query,
             async (err, result, fields) => {
                 if (err) console.log('err', err);
                 // console.log('result', result.rows);
                 if (result.rows.length > 0) {
-                    query = node_query.updateNode(node);
-                    //Save node in DB
+                    query = path_query.updatePath(path);
+                    //Save path in DB
                     await client.query(query,
                         async (err, result, fields) => {
                             if (err) console.log('err', err);
                             else if (result.rowCount === 1) {
-                                console.log('Node updated');
+                                console.log('Path updated');
                             } else {
-                                console.log('Node not updated');
+                                console.log('Path not updated');
                             }
                         });
                 } else {
-                    return console.log('Node is not exist');
+                    return console.log('Path is not exist');
                 }
             });
     } catch (err) {
         console.error(err.message);
     }
 }
-const getNodeById = async () => {
+const getPathById = async () => {
     try {
-        let query = node_query.getNodeById(node);
-        //Check if node is exist
+        let query = path_query.getPathById(path);
+        //Check if path is exist
         await client.query(query,
             async (err, result, fields) => {
                 if (err) console.log('err', err);
@@ -81,17 +81,17 @@ const getNodeById = async () => {
                     console.log(result.rows[0]);
                     return result.rows[0];
                 } else {
-                    console.log('Node not exist');
+                    console.log('Path not exist');
                 }
             });
     } catch (err) {
         console.error(err.message);
     }
 }
-const getAllNodes = async () => {
+const getAllPaths = async () => {
     try {
-        let query = node_query.getAllNodes();
-        //Check if node is exist
+        let query = path_query.getAllPaths();
+        //Check if path is exist
         await client.query(query,
             async (err, result, fields) => {
                 if (err) console.log('err', err);
@@ -106,27 +106,27 @@ const getAllNodes = async () => {
         console.error(err.message);
     }
 }
-const deleteNodeById = async () => {
+const deletePathById = async () => {
     try {
-        let query = node_query.getNodeById(node);
-        //Check if node is exist
+        let query = path_query.getPathById(path);
+        //Check if path is exist
         await client.query(query,
             async (err, result, fields) => {
                 if (err) console.log('err', err);
                 if (result.rows.length > 0) {
-                    query = node_query.deleteNodeById(node);
+                    query = path_query.deletePathById(path);
 
                     await client.query(query,
                         async (err, result, fields) => {
                             if (err) console.log('err', err);
                             else if (result.rowCount === 1) {
-                                console.log('Node deleted by Id');
+                                console.log('Path deleted by Id');
                             } else {
-                                console.log('Node not deleted by Id');
+                                console.log('Path not deleted by Id');
                             }
                         });
                 } else {
-                    console.log('Node not exist');
+                    console.log('Path not exist');
                 }
             });
     } catch (err) {
@@ -134,27 +134,27 @@ const deleteNodeById = async () => {
     }
 }
 
-const deleteNodeByOSMId = async () => {
+const deletePathByOSMId = async () => {
     try {
-        let query = node_query.getNodeById(node);
-        //Check if node is exist
+        let query = path_query.getPathById(path);
+        //Check if path is exist
         await client.query(query,
             async (err, result, fields) => {
                 if (err) console.log('err', err);
                 if (result.rows.length > 0) {
-                    query = node_query.deleteNodeByOSMId(node);
+                    query = path_query.deletePathByOSMId(path);
 
                     await client.query(query,
                         async (err, result, fields) => {
                             if (err) console.log('err', err);
                             else if (result.rowCount === 1) {
-                                console.log('Node deleted by Id');
+                                console.log('Path deleted by Id');
                             } else {
-                                console.log('Node not deleted by OSM Id');
+                                console.log('Path not deleted by OSM Id');
                             }
                         });
                 } else {
-                    console.log('Node not exist');
+                    console.log('Path not exist');
                 }
             });
     } catch (err) {
@@ -163,34 +163,31 @@ const deleteNodeByOSMId = async () => {
 }
 const run = async () => {
     try {
-        console.log('********************************************addNode******************************************** ');
-        await addNode();
+        console.log('********************************************addPath******************************************** ');
+        await addPath();
         setTimeout(async () => {
-            console.log('********************************************updateNode******************************************** ');
-            await updateNode();
+            console.log('********************************************updatePath******************************************** ');
+            await updatePath();
         }, 2000)
         setTimeout(async () => {
-            console.log('********************************************getNodeById******************************************** ');
-            await getNodeById();
+            console.log('********************************************getPathById******************************************** ');
+            await getPathById();
         }, 4000)
 
         setTimeout(async () => {
-            console.log('********************************************getAllNodes******************************************** ');
-            await getAllNodes();
+            console.log('********************************************getAllPaths******************************************** ');
+            await getAllPaths();
         }, 6000)
 
         setTimeout(async () => {
-            console.log('********************************************deleteNodeById******************************************** ');
-            await deleteNodeById();
+            console.log('********************************************deletePathById******************************************** ');
+            await deletePathById();
         }, 8000)
+
         setTimeout(async () => {
-            console.log('********************************************addNode******************************************** ');
-            await addNode();
+            console.log('********************************************addPath******************************************** ');
+            await addPath();
         }, 10000)
-        setTimeout(async () => {
-            console.log('********************************************deleteNodeByOSMId******************************************** ');
-            await deleteNodeByOSMId();
-        }, 12000)
     } catch (error) {
         console.log('error', error);
     }

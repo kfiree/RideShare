@@ -9,16 +9,16 @@ const client = require('./config/DB');
 const user_university_query = require('./config/querys/user_university_query');
 
 
-const user_query = require('./config/querys/user_query');
-const getRandomUser = require('./classes/randomData/user');
-let User = require('./classes/User');
+const user_query = require('./../config/querys/user_query');
+const getRandomUser = require('./../classes/randomData/user');
+let User = require('./../classes/User');
 let user = new User(getRandomUser());
 console.log('user', user);
 
 
-const university_query = require('./config/querys/university_query');
-const getRandomUniversity = require('./classes/randomData/university');
-let University = require('./classes/University');
+const university_query = require('./../config/querys/university_query');
+const getRandomUniversity = require('./../classes/randomData/university');
+let University = require('./../classes/University');
 let university = new University(getRandomUniversity('296755c4-518b-4b9f-804f-471a14406ab6'));
 console.log('university', university);
 

@@ -3,15 +3,15 @@ const { v4: uuidv4 } = require('uuid');
 const moment = require('moment-timezone');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const config = require('./config/default.json');
-const client = require('./config/DB');
+const config = require('../config/default.json');
+const client = require('../config/DB');
 
 
 
 
-const user_query = require('./config/querys/user_query');
-const getRandomUser = require('./classes/randomData/user');
-let User = require('./classes/User');
+const user_query = require('../config/querys/user_query');
+const getRandomUser = require('../classes/randomData/user');
+let User = require('../classes/User');
 let user = new User(getRandomUser());
 // console.log('user', user);
 const addUser = async () => {

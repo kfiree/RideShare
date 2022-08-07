@@ -41,7 +41,7 @@ const driveQuerys = {
         return `SELECT * FROM "public"."rs_drives"
                 WHERE "drive_Id" = '${drive.drive_Id}';`;
     },
-    getAllUniversities: () => { return `SELECT * FROM "public"."rs_drives";`; },
+    getAllDrives: () => { return `SELECT * FROM "public"."rs_drives";`; },
 }
 
 module.exports = driveQuerys;

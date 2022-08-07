@@ -7,39 +7,33 @@ const client = require('./config/DB');
 
 
 
-const user_query = require('./../config/querys/user_query');
-const getRandomUser = require('./../classes/randomData/user');
-let User = require('./../classes/User');
-let user = new User(getRandomUser());
-// console.log('user', user);
+const geoLocation_query = require('./../config/querys/geoLocation_query');
+const getRandomGeoLocation = require('./../classes/randomData//geoLocation');
+let GeoLocation = require('./../classes/Geo_Location');
+let geoLocation = new GeoLocation(getRandomGeoLocation());
+console.log('geoLocation', geoLocation);
 
 
-const drive_query = require('./config/querys/drive_query');
-const getRandomDrive = require('./classes/randomData/drive');
-let Drive = require('./classes/Drive');
-let drive = new Drive(getRandomDrive());
-// console.log('drive', drive);
 
-
-const addDrive = async () => {
+const addGeoLocation = async () => {
     try {
-        let query = drive_query.getDriveById(drive);
-        //Check if drive is exist
+        let query = geoLocation_query.getGeoLocationById(geoLocation);
+        //Check if geoLocation is exist
         await client.query(query,
             async (err, result, fields) => {
                 if (err) console.log('err', err);
                 if (result.rows.length > 0) {
-                    console.log('Drive exist');
+                    console.log('GeoLocation exist');
                 } else {
-                    query = drive_query.addDrive(drive);
-                    //Save drive in DB
+                    query = geoLocation_query.addGeoLocation(geoLocation);
+                    //Save geoLocation in DB
                     await client.query(query,
                         async (err, result, fields) => {
                             if (err) console.log('err', err);
                             else if (result.rowCount === 1) {
-                                console.log('Drive created');
+                                console.log('GeoLocation created');
                             } else {
-                                console.log('Drive not created');
+                                console.log('GeoLocation not created');
                             }
                         });
                 }
@@ -49,38 +43,37 @@ const addDrive = async () => {
     }
 }
 
-const updateDrive = async () => {
+const updateGeoLocation = async () => {
     try {
-        let query = drive_query.getDriveById(drive);
-        //Check if drive is exist
+        let query = geoLocation_query.getGeoLocationById(geoLocation);
+        //Check if geoLocation is exist
         await client.query(query,
             async (err, result, fields) => {
                 if (err) console.log('err', err);
-                // console.log('result', result.rows);
                 if (result.rows.length > 0) {
-                    query = drive_query.updateDrive(drive);
-                    //Save drive in DB
+                    query = geoLocation_query.updateGeoLocation(geoLocation);
+                    //Save geoLocation in DB
                     await client.query(query,
                         async (err, result, fields) => {
                             if (err) console.log('err', err);
                             else if (result.rowCount === 1) {
-                                console.log('Drive updated');
+                                console.log('GeoLocation updated');
                             } else {
-                                console.log('Drive not updated');
+                                console.log('GeoLocation not updated');
                             }
                         });
                 } else {
-                    return console.log('Drive is not exist');
+                    return console.log('GeoLocation is not exist');
                 }
             });
     } catch (err) {
         console.error(err.message);
     }
 }
-const getDriveById = async () => {
+const getGeoLocationById = async () => {
     try {
-        let query = drive_query.getDriveById(drive);
-        //Check if drive is exist
+        let query = geoLocation_query.getGeoLocationById(geoLocation);
+        //Check if geoLocation is exist
         await client.query(query,
             async (err, result, fields) => {
                 if (err) console.log('err', err);
@@ -88,17 +81,17 @@ const getDriveById = async () => {
                     console.log(result.rows[0]);
                     return result.rows[0];
                 } else {
-                    console.log('Drive not exist');
+                    console.log('GeoLocation not exist');
                 }
             });
     } catch (err) {
         console.error(err.message);
     }
 }
-const getAllDrives = async () => {
+const getAllGeoLocations = async () => {
     try {
-        let query = drive_query.getAllUniversities();
-        //Check if drive is exist
+        let query = geoLocation_query.getAllGeoLocations();
+        //Check if geoLocation is exist
         await client.query(query,
             async (err, result, fields) => {
                 if (err) console.log('err', err);
@@ -113,55 +106,55 @@ const getAllDrives = async () => {
         console.error(err.message);
     }
 }
-const deleteDriveById = async () => {
+const deleteGeoLocationById = async () => {
     try {
-        let query = drive_query.getDriveById(drive);
-        //Check if drive is exist
+        let query = geoLocation_query.getGeoLocationById(geoLocation);
+        //Check if geoLocation is exist
         await client.query(query,
             async (err, result, fields) => {
                 if (err) console.log('err', err);
                 if (result.rows.length > 0) {
-                    query = drive_query.deleteDriveById(drive);
+                    query = geoLocation_query.deleteGeoLocationById(geoLocation);
 
                     await client.query(query,
                         async (err, result, fields) => {
                             if (err) console.log('err', err);
                             else if (result.rowCount === 1) {
-                                console.log('Drive deleted by Id');
+                                console.log('GeoLocation deleted by Id');
                             } else {
-                                console.log('Drive not deleted by Id');
+                                console.log('GeoLocation not deleted by Id');
                             }
                         });
                 } else {
-                    console.log('Drive not exist');
+                    console.log('GeoLocation not exist');
                 }
             });
     } catch (err) {
         console.error(err.message);
     }
 }
-const deleteDriveByGeoLocation = async () => {
+const deleteGeoLocationByGeoLocation = async () => {
 
     try {
-        let query = drive_query.getDriveByGeoLocationId(drive);
-        //Check if drive is exist
+        let query = geoLocation_query.getGeoLocationByGeoLocationId(geoLocation);
+        //Check if geoLocation is exist
         await client.query(query,
             async (err, result, fields) => {
                 if (err) console.log('err', err);
                 if (result.rows.length > 0) {
-                    query = drive_query.deleteDriveByGeoLocationId(drive);
+                    query = geoLocation_query.deleteGeoLocationByGeoLocationId(geoLocation);
 
                     await client.query(query,
                         async (err, result, fields) => {
                             if (err) console.log('err', err);
                             else if (result.rowCount === 1) {
-                                console.log('Drive deleted by Id');
+                                console.log('GeoLocation deleted by Id');
                             } else {
-                                console.log('Drive not deleted by Id');
+                                console.log('GeoLocation not deleted by Id');
                             }
                         });
                 } else {
-                    console.log('Drive not exist');
+                    console.log('GeoLocation not exist');
                 }
             });
     } catch (err) {
@@ -171,25 +164,25 @@ const deleteDriveByGeoLocation = async () => {
 
 const run = async () => {
     try {
-        console.log('********************************************addDrive******************************************** ');
-        await addDrive();
+        console.log('********************************************addGeoLocation******************************************** ');
+        await addGeoLocation();
         setTimeout(async () => {
-            console.log('********************************************updateDrive******************************************** ');
-            await updateDrive();
+            console.log('********************************************updateGeoLocation******************************************** ');
+            await updateGeoLocation();
         }, 2000)
         setTimeout(async () => {
-            console.log('********************************************getDriveById******************************************** ');
-            await getDriveById();
+            console.log('********************************************getGeoLocationById******************************************** ');
+            await getGeoLocationById();
         }, 4000)
 
         setTimeout(async () => {
             console.log('********************************************getAllUniversities******************************************** ');
-            await getAllDrives();
+            await getAllGeoLocations();
         }, 6000)
 
         setTimeout(async () => {
-            console.log('********************************************deleteDriveById******************************************** ');
-            await deleteDriveById();
+            console.log('********************************************deleteGeoLocationById******************************************** ');
+            await deleteGeoLocationById();
         }, 8000)
 
     } catch (error) {

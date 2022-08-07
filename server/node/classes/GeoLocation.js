@@ -1,9 +1,11 @@
+const { v4: uuidv4 } = require('uuid');
+
 module.exports = class GeoLocation {
     constructor(geoLocation) {
-        this.geoLocation_Id = geoLocation.geoLocation_Id;
+        this.geoLocation_Id = uuidv4();
         this.latitude = geoLocation.latitude;
-        this.longitude = geoLocation.longitude;
-        this.nameLocation = geoLocation.nameLocation;
+        this.longitude = geoLocation.longtitude;
+        this.nameLocation = geoLocation.name;
     }
     getGeoLocation() {
         return this;

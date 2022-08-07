@@ -2,38 +2,44 @@ const { v4: uuidv4 } = require('uuid');
 const moment = require('moment-timezone');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const config = require('./config/default.json');
-const client = require('./config/DB');
+const config = require('./../config/default.json');
+const client = require('./../config/DB');
 
 
 
-const path_query = require('./config/querys/path_query');
-const getRandomPath = require('./classes/randomData/path');
-let Path = require('./classes/Path');
-let path = new Path(getRandomPath());
-console.log('path', path);
+const user_query = require('./../config/querys/user_query');
+const getRandomUser = require('./../classes/randomData/user');
+let User = require('./../classes/User');
+let user = new User(getRandomUser());
+// console.log('user', user);
 
 
+const drive_query = require('./config/querys/drive_query');
+const getRandomDrive = require('./classes/randomData/drive');
+let Drive = require('./classes/Drive');
+let drive = new Drive(getRandomDrive());
+// console.log('drive', drive);
 
-const addPath = async () => {
+
+const addDrive = async () => {
     try {
-        let query = path_query.getPathById(path);
-        //Check if path is exist
+        let query = drive_query.getDriveById(drive);
+        //Check if drive is exist
         await client.query(query,
             async (err, result, fields) => {
                 if (err) console.log('err', err);
                 if (result.rows.length > 0) {
-                    console.log('Path exist');
+                    console.log('Drive exist');
                 } else {
-                    query = path_query.addPath(path);
-                    //Save path in DB
+                    query = drive_query.addDrive(drive);
+                    //Save drive in DB
                     await client.query(query,
                         async (err, result, fields) => {
                             if (err) console.log('err', err);
                             else if (result.rowCount === 1) {
-                                console.log('Path created');
+                                console.log('Drive created');
                             } else {
-                                console.log('Path not created');
+                                console.log('Drive not created');
                             }
                         });
                 }
@@ -42,38 +48,39 @@ const addPath = async () => {
         console.error(err.message);
     }
 }
-const updatePath = async () => {
+
+const updateDrive = async () => {
     try {
-        let query = path_query.getPathById(path);
-        //Check if path is exist
+        let query = drive_query.getDriveById(drive);
+        //Check if drive is exist
         await client.query(query,
             async (err, result, fields) => {
                 if (err) console.log('err', err);
                 // console.log('result', result.rows);
                 if (result.rows.length > 0) {
-                    query = path_query.updatePath(path);
-                    //Save path in DB
+                    query = drive_query.updateDrive(drive);
+                    //Save drive in DB
                     await client.query(query,
                         async (err, result, fields) => {
                             if (err) console.log('err', err);
                             else if (result.rowCount === 1) {
-                                console.log('Path updated');
+                                console.log('Drive updated');
                             } else {
-                                console.log('Path not updated');
+                                console.log('Drive not updated');
                             }
                         });
                 } else {
-                    return console.log('Path is not exist');
+                    return console.log('Drive is not exist');
                 }
             });
     } catch (err) {
         console.error(err.message);
     }
 }
-const getPathById = async () => {
+const getDriveById = async () => {
     try {
-        let query = path_query.getPathById(path);
-        //Check if path is exist
+        let query = drive_query.getDriveById(drive);
+        //Check if drive is exist
         await client.query(query,
             async (err, result, fields) => {
                 if (err) console.log('err', err);
@@ -81,17 +88,17 @@ const getPathById = async () => {
                     console.log(result.rows[0]);
                     return result.rows[0];
                 } else {
-                    console.log('Path not exist');
+                    console.log('Drive not exist');
                 }
             });
     } catch (err) {
         console.error(err.message);
     }
 }
-const getAllPaths = async () => {
+const getAllDrives = async () => {
     try {
-        let query = path_query.getAllPaths();
-        //Check if path is exist
+        let query = drive_query.getAllUniversities();
+        //Check if drive is exist
         await client.query(query,
             async (err, result, fields) => {
                 if (err) console.log('err', err);
@@ -106,27 +113,55 @@ const getAllPaths = async () => {
         console.error(err.message);
     }
 }
-const deletePathById = async () => {
+const deleteDriveById = async () => {
     try {
-        let query = path_query.getPathById(path);
-        //Check if path is exist
+        let query = drive_query.getDriveById(drive);
+        //Check if drive is exist
         await client.query(query,
             async (err, result, fields) => {
                 if (err) console.log('err', err);
                 if (result.rows.length > 0) {
-                    query = path_query.deletePathById(path);
+                    query = drive_query.deleteDriveById(drive);
 
                     await client.query(query,
                         async (err, result, fields) => {
                             if (err) console.log('err', err);
                             else if (result.rowCount === 1) {
-                                console.log('Path deleted by Id');
+                                console.log('Drive deleted by Id');
                             } else {
-                                console.log('Path not deleted by Id');
+                                console.log('Drive not deleted by Id');
                             }
                         });
                 } else {
-                    console.log('Path not exist');
+                    console.log('Drive not exist');
+                }
+            });
+    } catch (err) {
+        console.error(err.message);
+    }
+}
+const deleteDriveByGeoLocation = async () => {
+
+    try {
+        let query = drive_query.getDriveByGeoLocationId(drive);
+        //Check if drive is exist
+        await client.query(query,
+            async (err, result, fields) => {
+                if (err) console.log('err', err);
+                if (result.rows.length > 0) {
+                    query = drive_query.deleteDriveByGeoLocationId(drive);
+
+                    await client.query(query,
+                        async (err, result, fields) => {
+                            if (err) console.log('err', err);
+                            else if (result.rowCount === 1) {
+                                console.log('Drive deleted by Id');
+                            } else {
+                                console.log('Drive not deleted by Id');
+                            }
+                        });
+                } else {
+                    console.log('Drive not exist');
                 }
             });
     } catch (err) {
@@ -134,60 +169,29 @@ const deletePathById = async () => {
     }
 }
 
-const deletePathByOSMId = async () => {
-    try {
-        let query = path_query.getPathById(path);
-        //Check if path is exist
-        await client.query(query,
-            async (err, result, fields) => {
-                if (err) console.log('err', err);
-                if (result.rows.length > 0) {
-                    query = path_query.deletePathByOSMId(path);
-
-                    await client.query(query,
-                        async (err, result, fields) => {
-                            if (err) console.log('err', err);
-                            else if (result.rowCount === 1) {
-                                console.log('Path deleted by Id');
-                            } else {
-                                console.log('Path not deleted by OSM Id');
-                            }
-                        });
-                } else {
-                    console.log('Path not exist');
-                }
-            });
-    } catch (err) {
-        console.error(err.message);
-    }
-}
 const run = async () => {
     try {
-        console.log('********************************************addPath******************************************** ');
-        await addPath();
+        console.log('********************************************addDrive******************************************** ');
+        await addDrive();
         setTimeout(async () => {
-            console.log('********************************************updatePath******************************************** ');
-            await updatePath();
+            console.log('********************************************updateDrive******************************************** ');
+            await updateDrive();
         }, 2000)
         setTimeout(async () => {
-            console.log('********************************************getPathById******************************************** ');
-            await getPathById();
+            console.log('********************************************getDriveById******************************************** ');
+            await getDriveById();
         }, 4000)
 
         setTimeout(async () => {
-            console.log('********************************************getAllPaths******************************************** ');
-            await getAllPaths();
+            console.log('********************************************getAllUniversities******************************************** ');
+            await getAllDrives();
         }, 6000)
 
         setTimeout(async () => {
-            console.log('********************************************deletePathById******************************************** ');
-            await deletePathById();
+            console.log('********************************************deleteDriveById******************************************** ');
+            await deleteDriveById();
         }, 8000)
 
-        setTimeout(async () => {
-            console.log('********************************************addPath******************************************** ');
-            await addPath();
-        }, 10000)
     } catch (error) {
         console.log('error', error);
     }
