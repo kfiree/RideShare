@@ -4,7 +4,7 @@ import app.model.Drive;
 import app.model.Node;
 import app.model.Rider;
 import app.model.UserMap;
-import app.view.MapView;
+import utils.SimulatorLatch;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -20,10 +20,10 @@ import static utils.Utils.unLock;
  * */
 public class MatchMaker implements Runnable{
     private static final int MAX_KM_ADDITION_TO_PATH;
-    private Simulator simulator;
+    private Simulator simulator = Simulator.INSTANCE;
+    private SimulatorLatch latch;
 
-    public MatchMaker(Simulator simulator) {
-        this.simulator = simulator;
+    public MatchMaker() {
     }
 
     static{
@@ -35,28 +35,30 @@ public class MatchMaker implements Runnable{
         try {
             lock(true);
             for (Rider rider : UserMap.INSTANCE.getPendingRequests()) {
-                PriorityQueue<Drive> matches = new PriorityQueue<>(
-                        Comparator.comparingDouble(drive -> detourCost(drive, rider))
-                );
+                if(!rider.isTaken()) {
+                    PriorityQueue<Drive> matches = new PriorityQueue<>(
+                            Comparator.comparingDouble(drive -> detourCost(drive, rider))
+                    );
 
-                UserMap.INSTANCE.getOnGoingDrives().forEach(drive -> {
-                    if(drive.canSqueezeOneMore()){
-                        matches.add(drive);
+                    UserMap.INSTANCE.getOnGoingDrives().forEach(drive -> {
+                        if (drive.canSqueezeOneMore()) {
+                            matches.add(drive);
+                        }
+                    });
+                    Drive bestMatch = matches.poll();
+
+                    if (bestMatch == null) return;
+                    double matchHeuristic = bestMatch.getCurrentNode().distanceTo(rider.getCurrentNode());
+                    if (matchHeuristic < MAX_KM_ADDITION_TO_PATH) {
+//                        System.out.println("Match " + bestMatch.getId() + " with " + rider.getId() + ", match heuristic:" + matchHeuristic);
+                        bestMatch.addPassenger(rider);
                     }
-                });
-                Drive bestMatch = matches.poll();
+//                else{
+//                    System.out.println("Match too expensive, " + bestMatch.getId() + " with " + rider.getId()+ ", match heuristic:" + matchHeuristic);
+//                }
 
-                assert bestMatch != null;
-                double matchHeuristic = bestMatch.getCurrentNode().distanceTo(rider.getCurrentNode());
-                if(matchHeuristic<MAX_KM_ADDITION_TO_PATH){
-                    System.out.println("Match " + bestMatch.getId() + " with " + rider.getId()+ ", match heuristic:" + matchHeuristic);
-                    bestMatch.addDetour(rider);
-                    rider.markTaken();
-                }else{
-                    System.out.println("Match too expensive, " + bestMatch.getId() + " with " + rider.getId()+ ", match heuristic:" + matchHeuristic);
+                    return;
                 }
-
-                return;
             }
         }finally {
             unLock();
@@ -102,7 +104,7 @@ public class MatchMaker implements Runnable{
 
             if(isWorthItBruteForceSolution(drive, rider)){
                 rider.markTaken();
-                drive.addDetour(rider);
+                drive.addPassenger(rider);
                 return true;
             }
         }
@@ -157,12 +159,15 @@ public class MatchMaker implements Runnable{
 
     @Override
     public void run() {
+        this.latch = SimulatorLatch.INSTANCE;
+
         while(true){
             try {
                 sleep((long) (15000/ simulator.speed()));
                 if(!UserMap.INSTANCE.getPendingRequests().isEmpty()){
                     matchMultiplePickup();
                 }
+                latch.waitIfPause();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

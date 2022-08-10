@@ -201,6 +201,7 @@ public class StyleUtils {
             node.setAttribute("ui.style", riderStyleSheet);
         }else{
             node.setAttribute("ui.style", carStyleSheet);
+            node.setAttribute("ui.style", "size: 15px;");
         }
         // node.addAttribute("ui.class", styleClass);
     }
@@ -231,6 +232,11 @@ public class StyleUtils {
     }
 
     /* STYLE MAP PARTS */
+
+    protected static void styleNode(Node node){
+            node.setAttribute("ui.style", nodeStyleSheet);
+
+    }
 
     private static void styleEdges(String styleSheet, Edge... edges) {
         if(edges.length ==0){
@@ -388,7 +394,7 @@ public class StyleUtils {
 
 
         styleSheet =
-                "node {" + nodeStyleSheet + "}" +
+//                "node {" + nodeStyleSheet + "}" +
                 "edge{" + edgeStyleSheet + "}" +
                 "node.car {" + carStyleSheet + "}" +
                 "node.rider {" + riderStyleSheet + "}";

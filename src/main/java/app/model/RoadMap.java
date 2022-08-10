@@ -66,7 +66,7 @@ public class RoadMap {
     }
 
     /** add edge from DB */
-    public void addEdge(Long id, Long startNodeId, Long endNodeID, Double weight, String highwayType) {
+    public void addEdge(Long id, Long startNodeId, Long endNodeID, long weight, String highwayType) {
         Node src = getNode(startNodeId), dst = getNode(endNodeID);
 
         Edge edge = setEdgeIfExists(src, dst);

@@ -6,7 +6,9 @@ import app.model.interfaces.ElementOnMap;
 import utils.JsonHandler;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static utils.LogHandler.LOGGER;
 
@@ -17,21 +19,24 @@ import static utils.LogHandler.LOGGER;
  *      - check if need hashtable for data structures that doesnt use get();
  */
 public class UserMap {
-    private final Hashtable<Integer, Drive> drives, onGoingDrives;
-    private final Hashtable<Integer, Rider> requests, pendingRequests;
-    private final HashSet<ElementOnMap> finished;
+    private final Hashtable<Integer, Drive> drives;
+    private final Hashtable<Integer, Rider> requests;
+    private final ArrayList<Rider>  pendingRequests;
+    private final ArrayList<Drive> onGoingDrives;
+    private final ArrayList<ElementOnMap> finished;
     protected static AtomicInteger keyGenerator = new AtomicInteger(-1);
     private Date firstEventTime;
     private final HashSet<UserEdge> userEdges;//todo use or delete
     private Simulator simulator;
-
+    public static ReentrantLock requestsLock = new ReentrantLock(), drivesLock = new ReentrantLock();
     /** CONSTRUCTORS  */
     private UserMap() {
-        this.onGoingDrives = new Hashtable<>();
-        this.pendingRequests = new Hashtable<>();
+        this.onGoingDrives = new ArrayList<>();
+        this.pendingRequests = new ArrayList<>();
+        finished = new ArrayList<>();
+
         drives = new Hashtable<>();
         requests = new Hashtable<>();
-        finished = new HashSet<>();
         userEdges = new HashSet<>();
     }
 
@@ -42,17 +47,17 @@ public class UserMap {
 
     public Collection<Drive> getDrives() { return drives.values(); }
 
-    public Drive getOnGoingDrive(int id){
-        return onGoingDrives.get(id);
-    }
+//    public Drive getOnGoingDrive(int id){
+//        return onGoingDrives.get(id);
+//    }
 
-    public Collection<Drive> getOnGoingDrives() { return onGoingDrives.values(); }
+    public Collection<Drive> getOnGoingDrives() { return onGoingDrives; }
 
     public Collection<Rider> getRequests() { return requests.values(); }
 
-    public Collection<Rider> getPendingRequests() { return pendingRequests.values(); }
+    public Collection<Rider> getPendingRequests() { return pendingRequests; }
 
-    public HashSet<ElementOnMap> getFinishedEvents() {
+    public ArrayList<ElementOnMap> getFinishedEvents() {
         return finished;
     }
 
@@ -98,11 +103,11 @@ public class UserMap {
     }
 
     public void startRequest(Rider rider){
-        this.pendingRequests.put(rider.getId(), rider);
+        this.pendingRequests.add(rider);
     }
 
     public void startDrive(Drive drive){
-        this.onGoingDrives.put(drive.getId(), drive);
+        this.onGoingDrives.add(drive);
     }
 
     public Date setFirstEventTime() {
@@ -120,17 +125,17 @@ public class UserMap {
 
     /* REMOVE FROM GRAPH */
 
-    public void finishedDriveOrPickedUp(ElementOnMap element) {
+    public void finishUserEvent(ElementOnMap element) {
         if(element instanceof Drive){
-            onGoingDrives.remove(element.getId());
+            onGoingDrives.remove(element);
         }else{
-            pendingRequests.remove(element.getId());
+            pendingRequests.remove(element);
         }
         finished.add(element);
     }
 
     public void pickPedestrian(Rider rider){
-        pendingRequests.remove(rider.getId());
+        pendingRequests.remove(rider);
     }
 
 

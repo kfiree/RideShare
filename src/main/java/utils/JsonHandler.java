@@ -131,14 +131,15 @@ public enum JsonHandler {
         return edgeJSON;
     }
 
-    private static void jsonToEdge(JSONObject edgeJSON, RoadMap roadMap){
+    private static void jsonToEdge(JSONObject edgeJSON, RoadMap roadMap){//todo save as long
         Long edgeId = (long) edgeJSON.get("id");
         Long startNodeId = (long) edgeJSON.get("node1");
         Long endNodeId = (long)  edgeJSON.get("node2");
-        Double weight = (Double) edgeJSON.get("weight");
+//        long weight = (long) edgeJSON.get("weight");
+        long weight =(long)Math.round((Double)(edgeJSON.get("weight")));
         String highwayType = (String) edgeJSON.get("highwayType");
         long direction = (long) edgeJSON.get("bidirectional");
-//        int srcNode = node1IsSrc && node2IsSrc ? 0 : node1IsSrc? 1:2;
+
         if(direction == 1L){
             roadMap.addEdge(edgeId, startNodeId, endNodeId, weight, highwayType);
         }else if(direction == 2L){

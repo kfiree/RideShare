@@ -21,7 +21,7 @@ import java.util.Set;
  */
 public class Edge implements MapObject, Located {
     private final Node node1, node2;
-    private final double weight;
+    private final long weight;
     private final String highwayType;
     private final long id;
 
@@ -38,7 +38,7 @@ public class Edge implements MapObject, Located {
     // TODO set lower speed
 
     /** add edge from DB */
-    public Edge(long id, Node node1, Node node2, Double weight, String highwayType){
+    public Edge(long id, Node node1, Node node2, Long weight, String highwayType){
         this.node1 = node1;
         this.node2 = node2;
         this.id = id;
@@ -62,8 +62,8 @@ public class Edge implements MapObject, Located {
      *
      * todo add time relative to highway type and distance (and time of day?)
      */
-    private double calculateWeight(){
-        double weight = node1.distanceTo(node2) / SPEED_LIMIT.getOrDefault(highwayType, 50);
+    private long calculateWeight(){
+        long weight = (long) (node1.distanceTo(node2) / SPEED_LIMIT.getOrDefault(highwayType, 50));
         return GraphAlgo.hourToSeconds(weight)+1;
     }
 
@@ -86,7 +86,7 @@ public class Edge implements MapObject, Located {
         return node2;
     }
 
-    public Double getWeight() {
+    public long getWeight() {
         return weight;
     }
 

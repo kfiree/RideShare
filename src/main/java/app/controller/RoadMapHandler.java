@@ -1,12 +1,22 @@
 package app.controller;
 
+import app.controller.osm_processing.Parser;
+import app.controller.osm_processing.Reader;
 import app.model.GeoLocation;
 import app.model.Node;
 
+import app.model.RoadMap;
+import crosby.binary.osmosis.OsmosisReader;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.*;
 
+import static utils.LogHandler.LOGGER;
+import static utils.Utils.chooseFile;
 import static utils.Utils.throwException;
 
 
@@ -26,7 +36,7 @@ public final class RoadMapHandler {
     private static boolean bound;
     private static Double maxLatitude = 32.13073917015928, minLatitude = 32.0449580796914,
                         maxLongitude = 34.852006, minLongitude = 34.72856;
-
+    private RoadMapHandler() {}
 
 
     /**
@@ -117,8 +127,34 @@ public final class RoadMapHandler {
         return UUID.randomUUID().toString();
     }
 
+    /* CREATE MAP */
+    public static void CreateMap() {
+        String pbfFilePath  = chooseFile();
 
+        try {
+            InputStream inputStream = new FileInputStream(pbfFilePath);
 
-    /* private constructor for static class */
-    private RoadMapHandler() {}
+            // read from osm pbf file:
+            Reader reader = new Reader();
+            OsmosisReader osmosisReader = new OsmosisReader(inputStream);
+            osmosisReader.setSink(reader);
+
+            // initial parsing of the .pbf file:
+            osmosisReader.run();
+
+            // secondary parsing of ways/creation of edges:
+            Parser parser = new Parser();
+            parser.parseMapWays(reader.getWays());
+
+            // get riders & drivers
+            GraphAlgo.removeNodesThatNotConnectedTo(RoadMap.INSTANCE.getNode(2432701015L));
+
+        } catch (FileNotFoundException e) {
+            LOGGER.severe("File not found!, "+e.getMessage());
+            JOptionPane.showMessageDialog(new JFrame(), "File not found!", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+
+            System.exit(0);
+        }
+    }
 }

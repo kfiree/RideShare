@@ -6,12 +6,12 @@ import java.util.*;
 import app.controller.Simulator;
 import app.model.interfaces.ElementOnMap;
 import app.model.interfaces.Located;
-import app.view.MapView;
 import org.jetbrains.annotations.NotNull;
 
 /* local */
 import app.controller.GraphAlgo;
 import utils.HashPriorityQueue;
+import utils.SimulatorLatch;
 
 /* static imports */
 import static utils.LogHandler.LOGGER;
@@ -32,7 +32,8 @@ public class Drive implements Runnable, ElementOnMap, Located {
     private Rider onTheWayTo;
     private double originalTime, detoursTime;
     private boolean pathChange;
-
+    Timer timer = new Timer();
+    private static SimulatorLatch latch = SimulatorLatch.INSTANCE;
     /** CONSTRUCTORS */
 
     private Drive(Date leaveTime) {
@@ -75,48 +76,66 @@ public class Drive implements Runnable, ElementOnMap, Located {
             driveToNextStop();
         }
 
-        UserMap.INSTANCE.finishedDriveOrPickedUp(this);
-
-        LOGGER.finest("Drive "+ id +" finishedDriveOrPickedUp!.");
+        UserMap.INSTANCE.finishUserEvent(this);
+        LOGGER.finest("Drive "+ id +" finishUserEvent!.");
     }
 
     private void driveToNextStop(){
         pathChange = false;
-        int nodeIndex = 0;
 
+        List<Node> nodes = getPath().getNodes();
         Iterator<Node> nodeIter = getPath().iterator();
         Node nextNode = nodeIter.next();
 
         while(nodeIter.hasNext()){
-            nodeIndex++;
+
             currNode = nextNode;
             nextNode = nodeIter.next();
 
-            if(nodeIndex % 5 ==0) {
-                LOGGER.info("driver (" + getId() + ") " + FORMAT( nodeIndex / (double) getPath().getSize() * 100) + "% complete.");
-            }
-
-            Double timeToNextNode = currNode.getEdgeTo(nextNode).getWeight();
+            long timeToNextNode = currNode.getEdgeTo(nextNode).getWeight();
 
             sleep(timeToNextNode);
 
             originalTime -= timeToNextNode;
 
-//            System.out.println("curr " + currNode.getId() + " ,  nextNode " + nextNode.getId());
-
-            /* pick passenger on the way */
             lock(false);
+
+            currNode = nextNode;
 
             if(pathChange){
                 return;
             }
 
-            currNode = nextNode;
 
+            latch.waitIfPause();
         }
         pathChange = true;
     }
 
+    TimerTask moveToNext = new TimerTask(){
+
+        @Override
+        public void run() {
+            Iterator<Node> nodeIter = getPath().iterator();
+            Node nextNode = nodeIter.next();
+
+            while(nodeIter.hasNext()){
+                currNode = nextNode;
+                nextNode = nodeIter.next();
+
+                long timeToNextNode = currNode.getEdgeTo(nextNode).getWeight();
+
+                sleep(timeToNextNode);
+
+                originalTime -= timeToNextNode;
+
+                lock(false);
+
+                currNode = nextNode;
+
+            }
+        }
+    };
 
     /**
      * todo improve detour time heuristic
@@ -124,8 +143,9 @@ public class Drive implements Runnable, ElementOnMap, Located {
      * add  detour to pick new passenger
      * @param rider
      */
-    public void addDetour(Rider rider){
+    public void addPassenger(Rider rider){
         /* extend path to pick up pedestrian */
+        rider.markTaken();
         addStop(rider);
 
         if(passengers.peek() == rider){
@@ -144,15 +164,15 @@ public class Drive implements Runnable, ElementOnMap, Located {
                 onTheWayTo = passengers.poll();
 
                 if (!onTheWayTo.isCarNextTarget()) { /* passenger picked up */
-                    System.out.println(this.id + " picked up " + onTheWayTo.getId());
+//                    System.out.println(this.id + " picked up " + onTheWayTo.getId());
                     addStop(onTheWayTo);
                     passengers.add(onTheWayTo);
                     onTheWayTo.setCarNextTarget(true);
                     setSecondaryPathTo(onTheWayTo.getNextStop());
-                    UserMap.INSTANCE.finishedDriveOrPickedUp(onTheWayTo);
+                    UserMap.INSTANCE.finishUserEvent(onTheWayTo);
                 } else { /* passenger dropped */
                     if (currNode == onTheWayTo.getDest()) {
-                        System.out.println(this.id + " dropped up " + onTheWayTo.getId());
+//                        System.out.println(this.id + " dropped up " + onTheWayTo.getId());
                         getNextDest();
                     }
 //                        setSecondaryPathTo(rider.getNextStop());
@@ -178,11 +198,11 @@ public class Drive implements Runnable, ElementOnMap, Located {
 
 
     /* TODO add multiple middle paths (TSP):
-        public void addDetour(Path currPath) {
+        public void addPassenger(Path currPath) {
             this.currPath = currPath;
         }
     */
-    private void sleep(double sleepTime ) {
+    private void sleep(long sleepTime ) {
         if(sleepTime <1 ){
             LOGGER.warning("drive " + getId()+" sleep time "+ FORMAT(sleepTime) +" seconds is too small.");
         }

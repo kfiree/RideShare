@@ -120,7 +120,7 @@ public class MapShortcutManager extends DefaultShortcutManager {
 
             System.out.println("Choose user : " + userId);
 
-            stylePath(UserMap.INSTANCE.getOnGoingDrive(userId));
+//            stylePath(UserMap.INSTANCE.getDrive(userId));
         }
 
     }

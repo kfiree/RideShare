@@ -4,6 +4,7 @@ import app.model.*;
 import app.model.interfaces.ElementOnMap;
 import app.view.MapView;
 import utils.JsonHandler;
+import utils.SimulatorLatch;
 
 import java.util.*;
 import java.util.concurrent.BrokenBarrierException;
@@ -12,8 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static utils.LogHandler.LOGGER;
-import static utils.Utils.FORMAT;
-import static utils.Utils.lock;
+import static utils.Utils.*;
 
 /**
  * TODO
@@ -40,26 +40,34 @@ public class EventManager implements Runnable{
     private final Queue<ElementOnMap> eventsQueue;
     private Date currTime;
     private final Simulator simulator;
+    private SimulatorLatch latch;
 
-
-    public EventManager(Simulator simulator) {
+    public EventManager() {
         lock = new ReentrantLock();
         pool = Executors.newCachedThreadPool();
 
         eventsQueue = UserMap.INSTANCE.getEventQueue();
-        currTime = eventsQueue.peek().getStartTime();
-        this.simulator = simulator;
+        if(eventsQueue.isEmpty()){
+            currTime = new Date();
+        }else {
+            currTime = eventsQueue.peek().getStartTime();
+        }
+        this.simulator = Simulator.INSTANCE;
     }
 
     @Override
     public void run() {
         LOGGER.fine("RealTimeEvents star running");
 
+        this.latch  = SimulatorLatch.INSTANCE;
+
         while(!eventsQueue.isEmpty()){
             /*  poll new event and wait till it is his start time */
             ElementOnMap newEvent = eventsQueue.poll();
 
-            sleep(currTime.compareTo(newEvent.getStartTime()));
+            long timeDiff = timeDiff(currTime, newEvent.getStartTime());
+            sleep(timeDiff);
+//            sleep(currTime.compareTo(newEvent.getStartTime()));
 
             /* jump in time to next event*/
             currTime = newEvent.getStartTime();
@@ -67,7 +75,11 @@ public class EventManager implements Runnable{
             /*  add new event */
             startEvent(newEvent);
 
-            LOGGER.info("RealTimeEvents add "+newEvent +" event. at " + FORMAT(newEvent.getStartTime())+".");
+            LOGGER.info("RealTimeEvents add: "//+newEvent +" event. at " + FORMAT(newEvent.getStartTime())+".");
+            + "\nevent time "+ FORMAT(newEvent.getStartTime()) + "."
+            + "\nSimulator time "+ FORMAT(simulator.time()) + ".");
+
+            latch.waitIfPause();
         }
 
         finish();
@@ -115,9 +127,12 @@ public class EventManager implements Runnable{
     private void sleep(long sleepTime ) {
 //        long sleepTime = 3000;
         try {
-            Thread.sleep((long) Math.max(1,(sleepTime/ Simulator.INSTANCE.speed())));
+            Thread.sleep((long) (sleepTime/ Simulator.INSTANCE.speed()));
         }
         catch (InterruptedException e) { e.printStackTrace(); }
     }
 
+    public ExecutorService getPool() {
+        return pool;
+    }
 }

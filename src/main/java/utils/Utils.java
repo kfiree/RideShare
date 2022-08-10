@@ -1,11 +1,9 @@
 package utils;
 
-import app.model.Drive;
-import app.model.Rider;
-
+import javax.swing.*;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static utils.LogHandler.LOGGER;
@@ -57,23 +55,23 @@ public class Utils {
         }
     }
 
+    public static long timeDiff(Date from, Date to){
+        return to.getTime() - from.getTime();
+    }
+
     public static void unLock(){
         lock.unlock();
     }
 
-
-    static HashMap<Report, Date> reports = new HashMap<>();
-    public static void report(Report type, Date date){
-
-    }
-
-    public static enum Report{
-        PATH_CHANGE(),
-        MATCH(null, null),
-        Pickup(null, null),
-        DropOff(null, null);
-
-        Report(Rider r, Drive d) {}
-        Report(){}
+    public static String chooseFile() {
+        // JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        JFileChooser jfc = new JFileChooser("data");
+        jfc.setDialogTitle("Select .osm.pbf file to read");
+        int returnValue = jfc.showOpenDialog(null);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = jfc.getSelectedFile();
+            return selectedFile.getAbsolutePath();
+        }
+        return "Not A Valid Path";
     }
 }

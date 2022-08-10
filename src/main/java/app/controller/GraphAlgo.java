@@ -196,7 +196,7 @@ public final class GraphAlgo {
         while(!OpenSeta.isEmpty()){
             AlgoNode current = PQ_OpenSeta.poll();
             if(current.equals(dst)){
-                LOGGER.fine("Path between "+src.getNode().getId()+" and "+ dst.getNode().getId() +" found using A*.");
+//                LOGGER.fine("Path between "+src.getNode().getId()+" and "+ dst.getNode().getId() +" found using A*.");
                 return reconstructPath(cameFroma, dst.getNode());
             }
 
@@ -353,7 +353,7 @@ public final class GraphAlgo {
         return rad * 180.0 / Math.PI;
     }
 
-    public static double hourToSeconds(double hour){
+    public static long hourToSeconds(long hour){
         return hour * 3600;
     }
 

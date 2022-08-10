@@ -2,6 +2,7 @@ import app.controller.RoadMapHandler;
 import app.controller.Simulator;
 import app.model.RoadMap;
 import utils.JsonHandler;
+import utils.SimulatorLatch;
 
 import javax.swing.*;
 import java.io.File;
@@ -51,7 +52,7 @@ import static utils.LogHandler.*;
  *
  *  todo:
  *          1st Priority:
- *              - 1) Make drive-pedestrian matchBruteForce1Pickup (may be base algo on Shortest Hamiltonian Path Problem (SHPP)).
+ *              - 1) Make drive-rider matchBruteForce1Pickup (may be base algo on Shortest Hamiltonian Path Problem (SHPP)).
  *    .
  *          Last priority:
  *              -
@@ -90,16 +91,15 @@ import static utils.LogHandler.*;
  *
  *      TODO project:
  *          Priority 1:
- *              - add Pedestrian and Drives to RoadMap
  *              - add summary of run
  *              - ReadMe (use javadocs).
  *              - Address warnings - optimize project.
- *              - Add 'alias-like' in Reader.java and MapView.java (org.openstreetmap.osmosis.core.domain.v0_6.Node and org.graphstream.Node)
- *                  src: https://stackoverflow.com/questions/2447880/change-name-of-import-in-java-or-import-two-classes-with-the-same-name
- *                  src: https://itecnote.com/tecnote/java-change-name-of-import-in-java-or-import-two-classes-with-the-same-name/
+ *              -
  *              .
  *          Last priority:
- *              -
+ *              - Add 'alias-like' in Reader.java and MapView.java (org.openstreetmap.osmosis.core.domain.v0_6.Node and org.graphstream.Node)
+ *  *                  src: https://stackoverflow.com/questions/2447880/change-name-of-import-in-java-or-import-two-classes-with-the-same-name
+ *  *                  src: https://itecnote.com/tecnote/java-change-name-of-import-in-java-or-import-two-classes-with-the-same-name/
  *
  * |==========================================================================================|
  * |==============================   SIMULATOR INFRASTRUCTURE   ==============================|
@@ -111,10 +111,8 @@ import static utils.LogHandler.*;
  *                  * src: https://www.geeksforgeeks.org/synchronization-in-java/
  *              - Check if car not moving for x time.
  *          Priority 2:
- *              - Save graph instead of recreating it.
- *              - Use only int id of classes.
  *              - Add @assertions.
- *              - Finish CLI --- sources: http://jcommander.org/  || https://commons.apache.org/proper/commons-cli/.
+ *              - Finish ExampleCLI --- sources: http://jcommander.org/  || https://commons.apache.org/proper/commons-cli/.
  *              .
  *          \\ Last priority \\:
  *              - Make accept .osm?.
@@ -140,46 +138,32 @@ public final class App{
     private static String CONSOLE_LOG_LEVEL, PBF_PATH;
     private static Boolean BOUNDS, SHOW_MAP, PARSE_NEW;
     private static int DRIVE_NUM, REQUEST_NUM;
+    private static final String Instructions;
+    private App() {}
 
     static{
         PARSE_NEW = true;
         PBF_PATH = "data/maps/osm/israel.pbf";
         NODE_IN_MAIN_COMPONENT =2432701015L;
-        SIMULATOR_SPEED = 1.0;
+        SIMULATOR_SPEED = 20.0;
         BOUNDS = true;
         CONSOLE_LOG_LEVEL =
-                "SEVERE";
-//                "ALL";
+//                "SEVERE";
+                "ALL";
         SHOW_MAP = true;
         DRIVE_NUM = 15;
-        REQUEST_NUM = 0;
+        REQUEST_NUM = 15;
     }
 
     public static void main(String[] args) {
-//        CLI();
+//        ExampleCLI();
 
         init(args);
         LOGGER.finest("Let's GO!!");
 
-//        RoadMapHandler.setBounds(BOUNDS);
-//
-//        if(PARSE_NEW){
-//            LOGGER.info( "Read road map from JSON.");
-//            JsonHandler.RoadMapType.load();
-//        }else{
-//            LOGGER.info( "Start parsing main map.");
-//            CreateMap();
-//            JsonHandler.RoadMapType.save();
-//        }
-//
-//        LOGGER.info("Map is ready. Map = " + RoadMap.INSTANCE);
-//
-//        initEventsInLine(REQUEST_NUM);
-////        UserMap.INSTANCE.initRandomEvents(DRIVE_NUM, REQUEST_NUM);
-
         try {
-            Simulator.INSTANCE.init(SIMULATOR_SPEED, REQUEST_NUM, DRIVE_NUM, SHOW_MAP, BOUNDS, PARSE_NEW);
             Thread thread = new Thread(Simulator.INSTANCE);
+            Simulator.INSTANCE.init(SIMULATOR_SPEED, REQUEST_NUM, DRIVE_NUM, SHOW_MAP, BOUNDS, PARSE_NEW);
             thread.start();
             thread.join();
         } catch (InterruptedException e) {
@@ -217,28 +201,29 @@ public final class App{
         ConsoleLevel(CONSOLE_LOG_LEVEL);
     }
 
-    private App() {}
-
-    private static void CLI(){
+    private static void ExampleCLI(){
         System.out.println("java -jar RideShare.jar -h\n\n" + Instructions
                 + "\n\n\njava -jar RideShare.jar   -s 10  -l ALL  -b y\n");
     }
 
-    private static final String Instructions =
-            """
-            Usage: rideShare.exe  [.pbf map path] [-n] [-s] [-l] [-b] [-c]\s
+    static {
+        Instructions =
+                """
+                Usage: rideShare.exe  [.pbf map path] [-n] [-s] [-l] [-b] [-c]\s
+    
+                Options:
+                    -m                      Load PBF file (use saved map otherwise).
+                    -n osm-node-id          Node id that will be in map, while the rest of the nodes will be cleaned from map (in order to keep graph connected).
+                                            Default: value will show center of israel.
+                    -s speed                Speed of simulator.
+                                            Default: 10.
+                    -l log-level            Log level for console can be a number or a string value of 'java.util.logging.Level'.
+                    -b 'y'/'n'              Set bounds to the map.
+                    -c max/min coordinates  Set bounds coordinates - top latitude, bottom latitude, top longitude, bottom longitude.  
+                                            Default: value will show center of israel.
+                """;
+    }
 
-            Options:
-                -m                      Load PBF file (use saved map otherwise).
-                -n osm-node-id          Node id that will be in map, while the rest of the nodes will be cleaned from map (in order to keep graph connected).
-                                        Default: value will show center of israel.
-                -s speed                Speed of simulator.
-                                        Default: 10.
-                -l log-level            Log level for console can be a number or a string value of 'java.util.logging.Level'.
-                -b 'y'/'n'              Set bounds to the map.
-                -c max/min coordinates  Set bounds coordinates - top latitude, bottom latitude, top longitude, bottom longitude.  
-                                        Default: value will show center of israel.
-            """;
 }
 
 

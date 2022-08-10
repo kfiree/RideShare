@@ -46,7 +46,6 @@ public class LogHandler{
             FILE_HANDLER = new FileHandler("data/logs/log_", 20000, 10);
             FILE_HANDLER.setFormatter(new LineFormat());
             FILE_HANDLER.setLevel(Level.ALL);
-
             //console handler
             CONSOLE_HANDLER = new ConsoleHandler();
             CONSOLE_HANDLER.setFormatter(new colorFormat());
