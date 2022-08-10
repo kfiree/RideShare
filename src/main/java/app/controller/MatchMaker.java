@@ -4,10 +4,12 @@ import app.model.users.Driver;
 import app.model.graph.Node;
 import app.model.users.Rider;
 import app.model.users.UserMap;
+import utils.JsonHandler;
 import utils.SimulatorLatch;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.PriorityQueue;
 
 import static java.lang.Thread.sleep;
@@ -18,10 +20,14 @@ import static utils.Utils.unLock;
 /* todo replace matchBruteForce1Pickup(Drive drive) with matchBruteForce1Pickup( ) (without drivers calling this method).
  *      might use https://github.com/frankfarrell/kds4j
  * */
-public class MatchMaker implements Runnable{
+public class MatchMaker implements Runnable, TimeSync{
     private static final int MAX_KM_ADDITION_TO_PATH;
     private Simulator simulator = Simulator.INSTANCE;
     private SimulatorLatch latch;
+    private Date localTime;
+
+
+    /* CONSTRUCTORS */
 
     public MatchMaker() {
     }
@@ -30,6 +36,39 @@ public class MatchMaker implements Runnable{
          MAX_KM_ADDITION_TO_PATH = 10;
     }
 
+
+
+    /* RUN */
+
+    @Override
+    public void run() {
+        register(this);
+
+        this.latch = SimulatorLatch.INSTANCE;
+
+        while(Simulator.INSTANCE.isAlive()){ //todo fix while by fixing 'simulator.isAlive()'
+            try {
+                sleep((long) (15000/ simulator.speed()));
+                if(!UserMap.INSTANCE.getPendingRequests().isEmpty()){
+                    matchMultiplePickup();
+                }
+                latch.waitIfPause();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        finish();
+    }
+
+    private void finish() {
+        unregister(this);
+        LOGGER.finest("MatchMaker finished!.");
+    }
+
+
+
+    /* MATCH ALGORITHMS */
 
     public synchronized void matchMultiplePickup(){
         try {
@@ -94,7 +133,6 @@ public class MatchMaker implements Runnable{
         }
     }
 
-
     public synchronized boolean matchBruteForce1Pickup(Driver drive, Collection<Rider> requests){
 
         /*  find close passenger to pick up */
@@ -113,9 +151,9 @@ public class MatchMaker implements Runnable{
     }
 
 
-    /* heuristic for pickup*/
-    // good for 1 pickup only per drive
-    private boolean isWorthItBruteForceSolution(Driver d, Rider p){
+    /* MATCH COST HEURISTIC */
+
+    private boolean isWorthItBruteForceSolution(Driver d, Rider p){// good for 1 pickup only per drive
         double distanceTo = GraphAlgo.distance(d.getCoordinates(), p.getCoordinates()),
                 addedPathDistance = GraphAlgo.distance(p.getCoordinates(), p.getCoordinates()),
                 distanceFrom = GraphAlgo.distance(p.getDestination().getCoordinates(), d.getDestination().getCoordinates());
@@ -157,20 +195,21 @@ public class MatchMaker implements Runnable{
         return worthIt;
     }
 
-    @Override
-    public void run() {
-        this.latch = SimulatorLatch.INSTANCE;
 
-        while(true){
-            try {
-                sleep((long) (15000/ simulator.speed()));
-                if(!UserMap.INSTANCE.getPendingRequests().isEmpty()){
-                    matchMultiplePickup();
-                }
-                latch.waitIfPause();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+
+    /* SETTERS */
+
+    @Override
+    public void setTime(Date date) {
+        this.localTime = date;
+    }
+
+
+
+    /* GETTERS */
+
+    @Override
+    public Date getTime() {
+        return localTime;
     }
 }

@@ -3,12 +3,13 @@ package app.model.users;
 /* third party */
 import java.util.*;
 
-import app.controller.Simulator;
-import app.model.graph.Node;
-import app.model.graph.Path;
+import app.controller.TimeSync;
 import org.jetbrains.annotations.NotNull;
 
 /* local */
+import app.controller.Simulator;
+import app.model.graph.Node;
+import app.model.graph.Path;
 import app.controller.GraphAlgo;
 import utils.HashPriorityQueue;
 import utils.SimulatorLatch;
@@ -17,12 +18,13 @@ import utils.SimulatorLatch;
 import static utils.LogHandler.LOGGER;
 import static utils.Utils.*;
 
-
-/*
- * todo make long way with stop-point instead of paths
- *      make drives thread-pool
- */
-public class Driver extends User implements Runnable {
+/**
+ * TODO add multiple middle paths (TSP):
+ *         public void addPassenger(Path currPath) {
+ *             this.currPath = currPath;
+ *         }
+*/
+public class Driver extends User implements Runnable, TimeSync{
     private static final int MAX_PASSENGERS_NUM = 2; //todo set to 3
     private final int id;
     private final HashPriorityQueue<Rider> passengers;
@@ -32,8 +34,9 @@ public class Driver extends User implements Runnable {
     private Rider onTheWayTo;
     private double originalTime, detoursTime;
     private boolean pathChange;
-    Timer timer = new Timer();
+    private Date localTime;
     private static SimulatorLatch latch = SimulatorLatch.INSTANCE;
+
     /** CONSTRUCTORS */
 
     private Driver(Date leaveTime) {
@@ -63,10 +66,12 @@ public class Driver extends User implements Runnable {
 
 
 
-    /** RUN */
+    /* RUN */
 
     @Override
     public void run() {
+        register(this);
+
         LOGGER.fine("Drive "+ id +" started.");
         validate(getPath() != null, "can't start a drive if path is null. Drive owner id - " + id);
 
@@ -77,7 +82,8 @@ public class Driver extends User implements Runnable {
         }
 
         UserMap.INSTANCE.finishUserEvent(this);
-        LOGGER.finest("Drive "+ id +" finishUserEvent!.");
+
+        finish();
     }
 
     private void driveToNextStop(){
@@ -112,96 +118,11 @@ public class Driver extends User implements Runnable {
         pathChange = true;
     }
 
-    TimerTask moveToNext = new TimerTask(){
-
-        @Override
-        public void run() {
-            Iterator<Node> nodeIter = getPath().iterator();
-            Node nextNode = nodeIter.next();
-
-            while(nodeIter.hasNext()){
-                currNode = nextNode;
-                nextNode = nodeIter.next();
-
-                long timeToNextNode = currNode.getEdgeTo(nextNode).getWeight();
-
-                sleep(timeToNextNode);
-
-                originalTime -= timeToNextNode;
-
-                lock(false);
-
-                currNode = nextNode;
-
-            }
-        }
-    };
-
-    /**
-     * todo improve detour time heuristic
-     *
-     * add  detour to pick new passenger
-     * @param rider
-     */
-    public void addPassenger(Rider rider){
-        /* extend path to pick up pedestrian */
-        rider.markTaken();
-        addStop(rider);
-
-        if(passengers.peek() == rider){
-            if(onTheWayTo != null) {
-                onTheWayTo.setCarNextTarget(false);
-            }
-            onTheWayTo = rider;
-            detoursTime += distTo(onTheWayTo.getDestination()) + distTo(onTheWayTo.getLocation());
-            setSecondaryPathTo(onTheWayTo.getNextStop());
-        }
+    private void finish() {
+        unregister(this);
+        LOGGER.finest("Drive "+ id +" finished!.");
     }
 
-    private void getNextDest(){//System.out.println(this.currNode.getId());
-        if(pathChange){
-            if (!passengers.isEmpty()) {
-                onTheWayTo = passengers.poll();
-
-                if (!onTheWayTo.isCarNextTarget()) { /* passenger picked up */
-//                    System.out.println(this.id + " picked up " + onTheWayTo.getId());
-                    addStop(onTheWayTo);
-                    passengers.add(onTheWayTo);
-                    onTheWayTo.setCarNextTarget(true);
-                    setSecondaryPathTo(onTheWayTo.getNextStop());
-                    UserMap.INSTANCE.finishUserEvent(onTheWayTo);
-                } else { /* passenger dropped */
-                    if (currNode == onTheWayTo.getDestination()) {
-//                        System.out.println(this.id + " dropped up " + onTheWayTo.getId());
-                        getNextDest();
-                    }
-//                        setSecondaryPathTo(rider.getNextStop());
-                }
-            } else {
-                setSecondaryPathTo(getDestination());
-            }
-        }
-    }
-
-    public void setSecondaryPathTo(Node dst) {//todo add null check
-        this.pathChange = true;
-
-        /* set new path without first node */
-        Path shortestPath = GraphAlgo.getShortestPath(getLocation(), dst);
-        shortestPath.getNodes().remove(0);
-
-        setPath(shortestPath);
-    }
-
-
-
-
-
-    /* TODO add multiple middle paths (TSP):
-        public void addPassenger(Path currPath) {
-            this.currPath = currPath;
-        }
-    */
     private void sleep(long sleepTime ) {
         if(sleepTime <1 ){
             LOGGER.warning("drive " + getId()+" sleep time "+ FORMAT(sleepTime) +" seconds is too small.");
@@ -215,6 +136,14 @@ public class Driver extends User implements Runnable {
     }
 
 
+
+    /* LOGIC */
+
+    /**
+     *  calculate the distance from the node to the closest stop of Driver
+     *
+     * @return distance to node
+     */
     public double distTo(Node node){
         double minDist = Math.min(getLocation().distanceTo(node), getDestination().distanceTo(node));
 
@@ -227,24 +156,92 @@ public class Driver extends User implements Runnable {
         return minDist;
     }
 
-    /** GETTERS */
-
-    public double getDetoursTime() {
-        return detoursTime;
-    }
-
-//    private Node getNextPassengerStop(ElementOnMap rider){
-//        return rider.isPickedUp()? rider.getDestination() : rider.getCurrentNode();
-//    }
-
+    /**
+     * @return true if car not full
+     */
     public boolean canSqueezeOneMore(){
         return passengers.size() < MAX_PASSENGERS_NUM;
     }
 
-    public double getOriginalTime() {
-        return originalTime;
+
+
+    /* SETTERS */
+
+    /**
+     * add passenger and calculate detour
+     *
+     * todo improve detour time heuristic
+     */
+    public void addPassenger(Rider rider){
+        /* extend path to pick up pedestrian */
+        rider.markTaken();
+        addStop(rider);
+
+        if(passengers.peek() == rider){
+            if(onTheWayTo != null) {
+                onTheWayTo.setCarNextTarget(false);
+            }
+            onTheWayTo = rider;
+            detoursTime += distTo(onTheWayTo.getDestination()) + distTo(onTheWayTo.getLocation());
+            updatePath(onTheWayTo.getNextStop());
+        }
     }
 
+    public void updatePath(Node dst) {//todo add null check
+        this.pathChange = true;
+
+        /* set new path without first node */
+        Path shortestPath = GraphAlgo.getShortestPath(getLocation(), dst);
+        shortestPath.getNodes().remove(0);
+
+        setPath(shortestPath);
+    }
+
+    @Override
+    public void setTime(Date date) {
+        this.localTime = date;
+    }
+
+    private void addStop(Rider rider){
+        passengers.add(rider);
+    }
+
+    public void setPath(Path path) {
+        this.path = path;
+    }
+
+
+
+    /* GETTERS */
+
+    private void getNextDest(){//System.out.println(this.currNode.getId());
+        if(pathChange){
+            if (!passengers.isEmpty()) {
+                onTheWayTo = passengers.poll();
+
+                if (!onTheWayTo.isCarNextTarget()) { /* passenger picked up */
+//                    System.out.println(this.id + " picked up " + onTheWayTo.getId());
+                    addStop(onTheWayTo);
+                    passengers.add(onTheWayTo);
+                    onTheWayTo.setCarNextTarget(true);
+                    updatePath(onTheWayTo.getNextStop());
+                    UserMap.INSTANCE.finishUserEvent(onTheWayTo);
+                } else { /* passenger dropped */
+                    if (currNode == onTheWayTo.getDestination()) {
+//                        System.out.println(this.id + " dropped up " + onTheWayTo.getId());
+                        getNextDest();
+                    }
+//                        updatePath(rider.getNextStop());
+                }
+            } else {
+                updatePath(getDestination());
+            }
+        }
+    }
+
+    public double getDetoursTime() {
+        return detoursTime;
+    }
 
     @Override
     public Node getDestination() {
@@ -271,10 +268,6 @@ public class Driver extends User implements Runnable {
         return leaveTime;
     }
 
-    private void addStop(Rider rider){
-        passengers.add(rider);
-    }
-
     @Override
     public Node getNextStop() {
         return getDestination();
@@ -284,14 +277,22 @@ public class Driver extends User implements Runnable {
         return path;
     }
 
-    public void setPath(Path path) {
-        this.path = path;
-    }
-
     public List<Node> getNodes(){
         return getPath().getNodes();
     }
 
+    public double getOriginalTime() {
+        return originalTime;
+    }
+
+    @Override
+    public Date getTime() {
+        return localTime;
+    }
+
+
+
+    /* SETTERS */
     @Override
     public String toString() {
         return "Drive{" +
@@ -303,3 +304,29 @@ public class Driver extends User implements Runnable {
                 '}';
     }
 }
+
+
+//    TimerTask moveToNext = new TimerTask(){
+//
+//        @Override
+//        public void run() {
+//            Iterator<Node> nodeIter = getPath().iterator();
+//            Node nextNode = nodeIter.next();
+//
+//            while(nodeIter.hasNext()){
+//                currNode = nextNode;
+//                nextNode = nodeIter.next();
+//
+//                long timeToNextNode = currNode.getEdgeTo(nextNode).getWeight();
+//
+//                sleep(timeToNextNode);
+//
+//                originalTime -= timeToNextNode;
+//
+//                lock(false);
+//
+//                currNode = nextNode;
+//
+//            }
+//        }
+//    };

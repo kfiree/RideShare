@@ -8,6 +8,7 @@ import utils.SimulatorLatch;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.concurrent.locks.ReentrantLock;
 //import java.util.concurrent.BrokenBarrierException;
 //import java.util.concurrent.CyclicBarrier;
@@ -17,22 +18,24 @@ import static app.controller.UserMapHandler.initRandomEvents;
 import static utils.LogHandler.LOGGER;
 import static utils.Utils.*;
 
-public class Simulator implements Runnable{
+public class Simulator implements Runnable, TimeSync{
+    private static long SLEEP_BETWEEN_FRAMES;
     private double speed;
     private boolean show;
+
     private EventManager events;
     private MatchMaker cupid;
     private Thread eventsThread, cupidThread;
-    private Date time;
-//    public final CyclicBarrier cyclicBarrier;
-    private Thread thread;
-    private MapView mapView = MapView.instance;
-    private static long SLEEP_BETWEEN_FRAMES;
+    private Date localTime;
+    private final MapView mapView = MapView.instance;
     private ReentrantLock simulatorLock = new ReentrantLock();
     private SimulatorLatch latch;
-    private ArrayList<Object> threads = new ArrayList<>();
+//    private ArrayList<Object> threads = new ArrayList<>();
+//    public final CyclicBarrier cyclicBarrier;
 
-    /** CONSTRUCTORS */
+
+    /* CONSTRUCTORS */
+
     private Simulator(){
 //        this.cyclicBarrier = new CyclicBarrier(2);
         SLEEP_BETWEEN_FRAMES = 2000;
@@ -67,9 +70,15 @@ public class Simulator implements Runnable{
 
     }
 
+
+
+    /* RUN */
+
     @Override
     public void run() {
-        time = events.getTime();
+        register(this);
+
+        localTime = events.getTime();
         if(show) {
             mapView.init(this);
 
@@ -95,16 +104,15 @@ public class Simulator implements Runnable{
         finish();
     }
 
+    private void finish(){
+        unregister(this);
+        LOGGER.info("Simulator finished!.");
+    }
+
     private void updateFrame(){
         mapView.update();
 
         latch.waitIfPause();
-    }
-
-
-    private void finish(){
-        System.out.println("Simulator done.");
-        LOGGER.info("Simulator done.");
     }
 
     public boolean isAlive(){
@@ -112,7 +120,7 @@ public class Simulator implements Runnable{
     }
 
     private void sleep() {
-        time = new Date(time.getTime()+SLEEP_BETWEEN_FRAMES);
+        localTime = new Date(localTime.getTime()+SLEEP_BETWEEN_FRAMES);
 
         try {
             Thread.sleep((long) (SLEEP_BETWEEN_FRAMES/this.speed())) ;
@@ -123,10 +131,10 @@ public class Simulator implements Runnable{
 
 
 
-    /** GETTERS */
+    /* GETTERS */
 
     public Date time() {
-        return time;
+        return localTime;
     }
 
     public double speed() {
@@ -145,7 +153,14 @@ public class Simulator implements Runnable{
         return cupidThread;
     }
 
-    /** SETTERS */
+    @Override
+    public Date getTime() {
+        return localTime;
+    }
+
+
+
+    /* SETTERS */
 
     public void setSpeed(double simulatorSpeed) {
         this.speed = simulatorSpeed;
@@ -154,4 +169,10 @@ public class Simulator implements Runnable{
     public void setEventsManager(EventManager events) {
         this.events = events;
     }
+
+    @Override
+    public void setTime(Date date) {
+        this.localTime = date;
+    }
+
 }

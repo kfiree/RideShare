@@ -34,13 +34,16 @@ import static utils.Utils.*;
  *          - https://www.baeldung.com/java-add-hours-date
  *          - https://stackabuse.com/how-to-get-the-number-of-days-between-dates-in-java/
  */
-public class EventManager implements Runnable{
+public class EventManager implements Runnable, TimeSync{
     private final ReentrantLock lock;
     private final ExecutorService pool;
     private final Queue<User> eventsQueue;
-    private Date currTime;
+    private Date localTime;
     private final Simulator simulator;
     private SimulatorLatch latch;
+
+
+    /* CONSTRUCTORS */
 
     public EventManager() {
         lock = new ReentrantLock();
@@ -48,15 +51,21 @@ public class EventManager implements Runnable{
 
         eventsQueue = UserMap.INSTANCE.getEventQueue();
         if(eventsQueue.isEmpty()){
-            currTime = new Date();
+            localTime = new Date();
         }else {
-            currTime = eventsQueue.peek().getStartTime();
+            localTime = eventsQueue.peek().getStartTime();
         }
         this.simulator = Simulator.INSTANCE;
     }
 
+
+
+    /* RUN */
+
     @Override
     public void run() {
+        register(this);
+
         LOGGER.fine("RealTimeEvents star running");
 
         this.latch  = SimulatorLatch.INSTANCE;
@@ -65,12 +74,12 @@ public class EventManager implements Runnable{
             /*  poll new event and wait till it is his start time */
             User newEvent = eventsQueue.poll();
 
-            long timeDiff = timeDiff(currTime, newEvent.getStartTime());
+            long timeDiff = timeDiff(localTime, newEvent.getStartTime());
             sleep(timeDiff);
 //            sleep(currTime.compareTo(newEvent.getStartTime()));
 
             /* jump in time to next event*/
-            currTime = newEvent.getStartTime();
+            localTime = newEvent.getStartTime();
 
             /*  add new event */
             startEvent(newEvent);
@@ -88,16 +97,8 @@ public class EventManager implements Runnable{
 
     private void finish(){
         JsonHandler.UserMapType.save();
-        System.out.println("RealTimeEvents done.");
-        LOGGER.info("RealTimeEvents done.");
-//        try {
-//        System.out.println("cyclicBarrier "+ simulator.cyclicBarrier.getNumberWaiting());
-////            simulator.cyclicBarrier.await();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        } catch (BrokenBarrierException e) {
-//            e.printStackTrace();
-//        }
+        LOGGER.info("EventManager finished!.");
+        unregister(this);
     }
 
     private void startEvent(User newEvent){
@@ -116,20 +117,30 @@ public class EventManager implements Runnable{
 
     }
 
-    public Date getTime() {
-        return currTime;
-    }
-
-    /*
-     * todo fix sleep time:
-     *      double sleepTime = ms / timeSpeed;
-     */
     private void sleep(long sleepTime ) {
 //        long sleepTime = 3000;
         try {
             Thread.sleep((long) (sleepTime/ Simulator.INSTANCE.speed()));
         }
         catch (InterruptedException e) { e.printStackTrace(); }
+    }
+
+
+
+    /* SETTERS */
+
+    @Override
+    public void setTime(Date date) {
+        this.localTime = date;
+    }
+
+
+
+    /* GETTERS */
+
+    @Override
+    public Date getTime() {
+        return localTime;
     }
 
     public ExecutorService getPool() {
