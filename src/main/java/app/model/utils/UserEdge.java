@@ -1,14 +1,18 @@
-package app.model;
+package app.model.utils;
+
+import app.model.users.Driver;
+import app.model.users.Rider;
+import app.model.utils.Coordinates;
 
 public class UserEdge {
-    private final Drive drive;
+    private final Driver drive;
     private final Rider rider;
     private double weight;
     private final int id;
     private static int  keyGenerator = 0;
 
 
-    public UserEdge(Drive drive, Rider ride){
+    public UserEdge(Driver drive, Rider ride){
         this.id = ++keyGenerator;
         this.drive = drive;
         this.rider = ride;
@@ -18,7 +22,7 @@ public class UserEdge {
 
     public int getId() { return id; }
 
-    public Drive getDrive() {
+    public Driver getDrive() {
         return drive;
     }
 
@@ -34,7 +38,7 @@ public class UserEdge {
         this.weight = weight;
     }
 
-    public GeoLocation getLocation(){
-        return drive.getLocation();
-    }
+//    public Coordinates getLocation(){
+//        return drive.getLocation();
+//    }
 }

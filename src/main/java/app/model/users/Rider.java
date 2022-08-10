@@ -1,14 +1,13 @@
-package app.model;
+package app.model.users;
 
+import app.model.graph.Node;
 import org.jetbrains.annotations.NotNull;
 import java.util.Date;
-
-import app.model.interfaces.ElementOnMap;
 import static utils.Utils.FORMAT;
 
 
 
-public class Rider implements ElementOnMap {
+public class Rider extends User {
     private final Date askTime;
     private final Node src, dest;
     private final int id;
@@ -36,18 +35,17 @@ public class Rider implements ElementOnMap {
     @Override
     public Node getNextStop(){
         if( isCarNextTarget()){
-            return getDest();
+            return getDestination();
         }else{
-            return getCurrentNode();
+            return getLocation();
         }
-
     }
 
     @Override
-    public Node getDest() { return dest; }
+    public Node getDestination() { return dest; }
 
     @Override
-    public Node getCurrentNode() { return src; }
+    public Node getLocation() { return src; }
 
     public void setCarNextTarget(boolean nextTarget) {
         this.carNextTarget = nextTarget;
@@ -63,8 +61,6 @@ public class Rider implements ElementOnMap {
     @Override
     public int getId() { return id; }
 
-    @Override
-    public GeoLocation getLocation() { return src.getLocation(); }
 
     @Override
     public String toString() {

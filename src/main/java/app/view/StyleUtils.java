@@ -1,8 +1,11 @@
 package app.view;
 
 
-import app.model.*;
-import app.model.interfaces.ElementOnMap;
+import app.model.users.Driver;
+import app.model.users.Rider;
+import app.model.users.User;
+import app.model.users.UserMap;
+import app.model.utils.Coordinates;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 import org.graphstream.ui.spriteManager.Sprite;
@@ -13,7 +16,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Stream;
 
 import static app.view.MapView.displayGraph;
 import static app.view.MapView.elementsOnMapNodes;
@@ -71,7 +73,7 @@ public class StyleUtils {
     /*     |==== NODE STYLE ====|      */
 //    protected static boolean showAllPaths;
     protected static Node focusedCar;
-    protected static Drive focusedDrive;
+    protected static Driver focusedDrive;
 //    protected static final HashMap<String, Edge[]> carPaths = new HashMap<>();
     protected static final HashMap<String, String> carColors = new HashMap<>();
     protected static Edge[] focusedPath;
@@ -102,7 +104,7 @@ public class StyleUtils {
 //        }
 //    }
 
-    protected static synchronized void stylePath(Drive drive){
+    protected static synchronized void stylePath(Driver drive){
         if(drive !=null) {
 
             Node car = elementsOnMapNodes.get(drive);
@@ -140,8 +142,8 @@ public class StyleUtils {
         }
     }
 
-    private static synchronized void stylePassenger(Drive drive, String color){
-        for (ElementOnMap element : drive.getPassengers()) {//todo lock
+    private static synchronized void stylePassenger(Driver drive, String color){
+        for (User element : drive.getPassengers()) {//todo lock
             if(element instanceof Rider) {
                 styleNodes(color, elementsOnMapNodes.get(element));
             }
@@ -150,7 +152,7 @@ public class StyleUtils {
 
 
     /* style */
-    protected static void styleFocusedDrive( Drive drive) {
+    protected static void styleFocusedDrive( Driver drive) {
         try {
             lock.lock();
             if (focusedCar != null && drive == focusedDrive) {
@@ -164,7 +166,7 @@ public class StyleUtils {
     }
 
     /* call from MouseManager */
-    public static void focusOn(@NotNull Drive drive){
+    public static void focusOn(@NotNull Driver drive){
         try {
             lock.lock();
             if (focusedDrive != drive) {
@@ -193,8 +195,8 @@ public class StyleUtils {
         }
     }
 
-    protected static void drawElement(ElementOnMap element, Node node, String styleClass) {
-        GeoLocation location = element.getLocation();
+    protected static void drawElement(User element, Node node, String styleClass) {
+        Coordinates location = element.getCoordinates();
         node.addAttribute("xy", location.getLongitude(), location.getLatitude());
         node.addAttribute("ui.label", element.getId());
         if(styleClass.equals("rider")){
@@ -207,8 +209,8 @@ public class StyleUtils {
     }
 
 
-    protected static void moveCar(Drive drive, Node car){
-        GeoLocation location = drive.getLocation();
+    protected static void moveCar(Driver drive, Node car){
+        Coordinates location = drive.getCoordinates();
 
         if(location != null){
             car.addAttribute("xy", location.getLongitude(), location.getLatitude());

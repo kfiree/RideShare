@@ -1,7 +1,8 @@
-package app.model;
+package app.model.graph;
 
 import app.controller.osm_processing.OsmObject;
 import app.controller.osm_processing.OsmWay;
+import app.model.utils.Coordinates;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -114,7 +115,7 @@ public class RoadMap {
         Node node = getNode(osmID);
 
         if( node == null){
-            node = new Node(osmID, new GeoLocation(latitude, longitude));
+            node = new Node(osmID, new Coordinates(latitude, longitude));
             nodes.put(node.getId(), node);
         }
 

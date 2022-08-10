@@ -1,13 +1,12 @@
-package app.model;
+package app.model.graph;
 
 import app.controller.GraphAlgo;
 import app.controller.osm_processing.OsmWay;
-import app.model.interfaces.Located;
-import app.model.interfaces.MapObject;
+import app.model.users.User;
+import app.model.utils.Coordinates;
+import app.model.utils.Located;
 
-import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Set;
 
 /**
  *      |==================================|
@@ -19,7 +18,7 @@ import java.util.Set;
  * @version 1.0
  * @since   2021-06-20
  */
-public class Edge implements MapObject, Located {
+public class Edge implements Located { // , GraphElement {
     private final Node node1, node2;
     private final long weight;
     private final String highwayType;
@@ -101,9 +100,14 @@ public class Edge implements MapObject, Located {
 
     public double getSpeedLimit() { return SPEED_LIMIT.get(highwayType); }
 
+//    @Override
+//    public double distanceTo(User other) {
+//        return Located.super.distanceTo(other);//todo choose shortest distance
+//    }
+
     @Override
-    public GeoLocation getLocation(){
-        return node1.getLocation();
+    public Coordinates getCoordinates() {
+        return getNode1().getCoordinates();
     }
 
     @Override

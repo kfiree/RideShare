@@ -1,7 +1,7 @@
 package app.controller.osm_processing;
 
-import app.model.GeoLocation;
-import app.model.interfaces.Located;
+import app.model.utils.Coordinates;
+import app.model.utils.Located;
 import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 
 import java.util.*;
@@ -57,11 +57,11 @@ public class OsmWay implements Located {
      * @return coordinates of way's start
      */
     @Override
-    public GeoLocation getLocation() {
+    public Coordinates getCoordinates() {
         if(objectsOnWay.isEmpty()) {
             return null;
         }
-        return objectsOnWay.get(0).getLocation();
+        return objectsOnWay.get(0).getCoordinates();
     }
 
     @Override

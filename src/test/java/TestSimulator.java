@@ -1,8 +1,9 @@
 import app.controller.EventManager;
 import app.controller.RoadMapHandler;
-import app.controller.Simulator;
-import app.model.*;
-import app.view.MapView;
+import app.model.graph.Node;
+import app.model.graph.Path;
+import app.model.graph.RoadMap;
+import app.model.users.UserMap;
 import org.junit.Before;
 import org.junit.Test;
 import utils.JsonHandler;
@@ -75,11 +76,11 @@ public class TestSimulator {
 
         }
         userMap.getDrives().forEach(d ->
-                System.out.println("drive " + d.getId() + " from " + d.getCurrentNode().getId() + " to " + d.getDest().getId() + ", size " + d.getPath().getSize())
+                System.out.println("drive " + d.getId() + " from " + d.getLocation().getId() + " to " + d.getDestination().getId() + ", size " + d.getPath().getSize())
         );
 
         userMap.getRequests().forEach(d ->
-                System.out.println("request " + d.getId() + " from " + d.getCurrentNode().getId() + " to " + d.getDest().getId())
+                System.out.println("request " + d.getId() + " from " + d.getLocation().getId() + " to " + d.getDestination().getId())
         );
     }
 }

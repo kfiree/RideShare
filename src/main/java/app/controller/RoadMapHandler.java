@@ -2,10 +2,10 @@ package app.controller;
 
 import app.controller.osm_processing.Parser;
 import app.controller.osm_processing.Reader;
-import app.model.GeoLocation;
-import app.model.Node;
+import app.model.utils.Coordinates;
+import app.model.graph.Node;
 
-import app.model.RoadMap;
+import app.model.graph.RoadMap;
 import crosby.binary.osmosis.OsmosisReader;
 import org.jetbrains.annotations.NotNull;
 
@@ -71,7 +71,7 @@ public final class RoadMapHandler {
 
     }
 
-    public static void updateBounds(@NotNull GeoLocation topRightBound, @NotNull GeoLocation bottomLeftBound){
+    public static void updateBounds(@NotNull Coordinates topRightBound, @NotNull Coordinates bottomLeftBound){
         updateBounds(topRightBound.getLatitude(), bottomLeftBound.getLatitude(), topRightBound.getLongitude(), bottomLeftBound.getLongitude());
     }
 
@@ -91,7 +91,7 @@ public final class RoadMapHandler {
         return minLongitude;
     }
 
-    public static boolean inBound(GeoLocation location){
+    public static boolean inBound(Coordinates location){
         return inBound(location.getLongitude(), location.getLatitude());
     }
 

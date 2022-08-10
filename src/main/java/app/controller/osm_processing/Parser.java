@@ -1,7 +1,7 @@
 package app.controller.osm_processing;
 
-import app.model.Node;
-import app.model.RoadMap;
+import app.model.graph.Node;
+import app.model.graph.RoadMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;

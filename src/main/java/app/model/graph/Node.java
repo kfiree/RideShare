@@ -1,9 +1,9 @@
-package app.model;
+package app.model.graph;
 
 import app.controller.GraphAlgo;
 import app.controller.RoadMapHandler;
-import app.model.interfaces.Located;
-import app.model.interfaces.MapObject;
+import app.model.utils.Coordinates;
+import app.model.utils.Located;
 import org.jetbrains.annotations.NotNull;
 import app.controller.osm_processing.OsmObject;
 
@@ -20,14 +20,14 @@ import java.util.stream.Collectors;
  * @version 1.0
  * @since   2021-06-20
  */
-public class Node implements Comparable<Node>, MapObject , Located {
+public class Node implements Comparable<Node>, Located {
     private final Long id;
-    private final GeoLocation coordinates;
+    private final Coordinates coordinates;
     private final Set<Edge> edges;
     private double f;
 
 
-    public Node(long id, GeoLocation coordinates) {
+    public Node(long id, Coordinates coordinates) {
         this.coordinates = coordinates;
         edges = new HashSet<>();
         this.id = id;
@@ -35,7 +35,7 @@ public class Node implements Comparable<Node>, MapObject , Located {
 
 
     public Node(@NotNull OsmObject object) {
-        this(object.getID(), object.getLocation());
+        this(object.getID(), object.getCoordinates());
     }
 
 
@@ -62,7 +62,7 @@ public class Node implements Comparable<Node>, MapObject , Located {
     }
 
     @Override
-    public GeoLocation getLocation() { return coordinates; }
+    public Coordinates getCoordinates() { return coordinates; }
 
     @Override
     public boolean inBound() {
@@ -106,10 +106,6 @@ public class Node implements Comparable<Node>, MapObject , Located {
             }
         }
         return null;
-    }
-
-    public double distanceTo(Node other){
-        return GraphAlgo.distance(getLocation(), other.getLocation());
     }
 
     public void removeEdgeTo(Node other){

@@ -1,6 +1,10 @@
 package app.view;
 
-import app.model.*;
+import app.model.graph.Edge;
+import app.model.graph.RoadMap;
+import app.model.users.Driver;
+import app.model.users.UserMap;
+import app.model.utils.Coordinates;
 import org.graphstream.graph.Node;
 import org.graphstream.ui.geom.Point3;
 import org.graphstream.ui.graphicGraph.GraphicElement;
@@ -9,10 +13,7 @@ import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.util.DefaultMouseManager;
 
 import java.awt.event.MouseEvent;
-import java.awt.event.KeyListener;
 import java.util.Map;
-
-import static app.view.StyleUtils.focusOn;
 
 
 /**
@@ -27,7 +28,7 @@ public class MapMouseManager extends DefaultMouseManager {
     private static boolean editing;
     //todo check & clean unused
     private Node focusedNode;
-    private Map.Entry<Node, Drive> focusedCar;
+    private Map.Entry<Node, Driver> focusedCar;
     private Edge[] edges;
 
 
@@ -66,7 +67,7 @@ public class MapMouseManager extends DefaultMouseManager {
 
             GraphicElement currentNode = view.findNodeOrSpriteAt(e.getX(), e.getY());
             if(currentNode!= null){
-                app.model.Node node = RoadMap.INSTANCE.getNode(Long.parseLong(currentNode.getLabel()));
+                app.model.graph.Node node = RoadMap.INSTANCE.getNode(Long.parseLong(currentNode.getLabel()));
                 if(node != null) {
                     System.out.println(node);
                 }
@@ -78,7 +79,7 @@ public class MapMouseManager extends DefaultMouseManager {
 //            if(MapView.DEBUG){
 //                GraphicElement currentNode = view.findNodeOrSpriteAt(e.getX(), e.getY());
 //                if(currentNode!= null){
-//                    app.model.Node node = RoadMap.INSTANCE.getNode(Long.parseLong(currentNode.getLabel()));
+//                    app.model.graph.Node node = RoadMap.INSTANCE.getNode(Long.parseLong(currentNode.getLabel()));
 //                    if(node != null) {
 //                        System.out.println(node);
 //                    }
@@ -93,12 +94,12 @@ public class MapMouseManager extends DefaultMouseManager {
         }
     }
 
-    private Drive getClosestDrive(MouseEvent e){
+    private Driver getClosestDrive(MouseEvent e){
         Point3 clickCoordinates = view.getCamera().transformPxToGu(e.getX(), e.getY());
         double minDistance = Integer.MAX_VALUE;
-        Drive car = null;
-        for (Drive drive: UserMap.INSTANCE.getOnGoingDrives()) {
-            GeoLocation carLocation = drive.getLocation();
+        Driver car = null;
+        for (Driver drive: UserMap.INSTANCE.getOnGoingDrives()) {
+            Coordinates carLocation = drive.getCoordinates();
 
             double currDis = Math.sqrt(( carLocation.getLatitude() - clickCoordinates.y) * (carLocation.getLatitude() - clickCoordinates.y)
                                         + (carLocation.getLongitude() - clickCoordinates.x) * (carLocation.getLongitude() - clickCoordinates.x));

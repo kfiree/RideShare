@@ -1,7 +1,12 @@
 package utils;
 
-import app.model.*;
-
+import app.model.graph.Edge;
+import app.model.graph.Node;
+import app.model.graph.Path;
+import app.model.graph.RoadMap;
+import app.model.users.Driver;
+import app.model.users.Rider;
+import app.model.users.UserMap;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -188,7 +193,7 @@ public enum JsonHandler {
     }
 
     @SuppressWarnings("unchecked")
-    private static JSONObject driveToJSON(Drive drive){
+    private static JSONObject driveToJSON(Driver drive){
         JSONObject driveJSON = new JSONObject();
 
         driveJSON.put("id", drive.getId());
@@ -215,8 +220,8 @@ public enum JsonHandler {
         JSONObject pedestrianJSON = new JSONObject();
 
         pedestrianJSON.put("id", rider.getId());
-        pedestrianJSON.put("src", rider.getCurrentNode().getId());
-        pedestrianJSON.put("dst", rider.getDest().getId());
+        pedestrianJSON.put("src", rider.getLocation().getId());
+        pedestrianJSON.put("dst", rider.getDestination().getId());
         pedestrianJSON.put("date", rider.getStartTime().getTime());
 
         return pedestrianJSON;

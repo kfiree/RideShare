@@ -1,13 +1,6 @@
 import app.controller.RoadMapHandler;
 import app.controller.Simulator;
-import app.model.RoadMap;
-import utils.JsonHandler;
-import utils.SimulatorLatch;
 
-import javax.swing.*;
-import java.io.File;
-
-import static app.controller.UserMapHandler.initEventsInLine;
 import static utils.LogHandler.*;
 
 /**

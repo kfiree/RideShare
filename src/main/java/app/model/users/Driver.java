@@ -1,11 +1,11 @@
-package app.model;
+package app.model.users;
 
 /* third party */
 import java.util.*;
 
 import app.controller.Simulator;
-import app.model.interfaces.ElementOnMap;
-import app.model.interfaces.Located;
+import app.model.graph.Node;
+import app.model.graph.Path;
 import org.jetbrains.annotations.NotNull;
 
 /* local */
@@ -22,7 +22,7 @@ import static utils.Utils.*;
  * todo make long way with stop-point instead of paths
  *      make drives thread-pool
  */
-public class Drive implements Runnable, ElementOnMap, Located {
+public class Driver extends User implements Runnable {
     private static final int MAX_PASSENGERS_NUM = 2; //todo set to 3
     private final int id;
     private final HashPriorityQueue<Rider> passengers;
@@ -36,7 +36,7 @@ public class Drive implements Runnable, ElementOnMap, Located {
     private static SimulatorLatch latch = SimulatorLatch.INSTANCE;
     /** CONSTRUCTORS */
 
-    private Drive(Date leaveTime) {
+    private Driver(Date leaveTime) {
         this.id = UserMap.keyGenerator.incrementAndGet();
         this.leaveTime = leaveTime;
         this.passengers = new HashPriorityQueue<>(
@@ -44,12 +44,12 @@ public class Drive implements Runnable, ElementOnMap, Located {
         );
     }
 
-    public Drive(@NotNull Path path, Date leaveTime) {
+    public Driver(@NotNull Path path, Date leaveTime) {
         this(leaveTime);
         initPathVariables(path);
     }
 
-    public Drive(@NotNull Node src, @NotNull Node dst, Date leaveTime) {
+    public Driver(@NotNull Node src, @NotNull Node dst, Date leaveTime) {
         this(leaveTime);
         initPathVariables(Objects.requireNonNull(GraphAlgo.getShortestPath(src, dst)));
     }
@@ -70,7 +70,7 @@ public class Drive implements Runnable, ElementOnMap, Located {
         LOGGER.fine("Drive "+ id +" started.");
         validate(getPath() != null, "can't start a drive if path is null. Drive owner id - " + id);
 
-        while(!passengers.isEmpty() || currNode!=getDest()){
+        while(!passengers.isEmpty() || currNode!= getDestination()){
             getNextDest();
 
             driveToNextStop();
@@ -153,7 +153,7 @@ public class Drive implements Runnable, ElementOnMap, Located {
                 onTheWayTo.setCarNextTarget(false);
             }
             onTheWayTo = rider;
-            detoursTime += distTo(onTheWayTo.getDest()) + distTo(onTheWayTo.getCurrentNode());
+            detoursTime += distTo(onTheWayTo.getDestination()) + distTo(onTheWayTo.getLocation());
             setSecondaryPathTo(onTheWayTo.getNextStop());
         }
     }
@@ -171,14 +171,14 @@ public class Drive implements Runnable, ElementOnMap, Located {
                     setSecondaryPathTo(onTheWayTo.getNextStop());
                     UserMap.INSTANCE.finishUserEvent(onTheWayTo);
                 } else { /* passenger dropped */
-                    if (currNode == onTheWayTo.getDest()) {
+                    if (currNode == onTheWayTo.getDestination()) {
 //                        System.out.println(this.id + " dropped up " + onTheWayTo.getId());
                         getNextDest();
                     }
 //                        setSecondaryPathTo(rider.getNextStop());
                 }
             } else {
-                setSecondaryPathTo(getDest());
+                setSecondaryPathTo(getDestination());
             }
         }
     }
@@ -187,7 +187,7 @@ public class Drive implements Runnable, ElementOnMap, Located {
         this.pathChange = true;
 
         /* set new path without first node */
-        Path shortestPath = GraphAlgo.getShortestPath(getCurrentNode(), dst);
+        Path shortestPath = GraphAlgo.getShortestPath(getLocation(), dst);
         shortestPath.getNodes().remove(0);
 
         setPath(shortestPath);
@@ -216,12 +216,12 @@ public class Drive implements Runnable, ElementOnMap, Located {
 
 
     public double distTo(Node node){
-        double minDist = Math.min(getCurrentNode().distanceTo(node), getDest().distanceTo(node));
+        double minDist = Math.min(getLocation().distanceTo(node), getDestination().distanceTo(node));
 
         for(Rider rider: getPassengers()) {
-            minDist = Math.min(minDist, rider.getDest().distanceTo(node));
+            minDist = Math.min(minDist, rider.getDestination().distanceTo(node));
             if (!rider.isCarNextTarget()) {
-                minDist = Math.min(minDist, rider.getCurrentNode().distanceTo(node));
+                minDist = Math.min(minDist, rider.getLocation().distanceTo(node));
             }
         }
         return minDist;
@@ -234,7 +234,7 @@ public class Drive implements Runnable, ElementOnMap, Located {
     }
 
 //    private Node getNextPassengerStop(ElementOnMap rider){
-//        return rider.isPickedUp()? rider.getDest() : rider.getCurrentNode();
+//        return rider.isPickedUp()? rider.getDestination() : rider.getCurrentNode();
 //    }
 
     public boolean canSqueezeOneMore(){
@@ -245,19 +245,15 @@ public class Drive implements Runnable, ElementOnMap, Located {
         return originalTime;
     }
 
-    @Override
-    public GeoLocation getLocation(){
-        return currNode.getLocation();
-    }
 
     @Override
-    public Node getDest() {
+    public Node getDestination() {
         return this.destination;
-//        return paths.get(paths.size() -1).getDest(); // TODO check if last
+//        return paths.get(paths.size() -1).getDestination(); // TODO check if last
     }
 
     @Override
-    public Node getCurrentNode() {
+    public Node getLocation() {
         return currNode;
     }
 
@@ -281,7 +277,7 @@ public class Drive implements Runnable, ElementOnMap, Located {
 
     @Override
     public Node getNextStop() {
-        return getDest();
+        return getDestination();
     }
 
     public Path getPath(){

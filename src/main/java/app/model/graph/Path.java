@@ -1,11 +1,8 @@
-package app.model;
-
-import utils.HashPriorityQueue;
+package app.model.graph;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.PriorityQueue;
 
 /**
  *      |==================================|

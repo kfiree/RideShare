@@ -1,7 +1,6 @@
 package app.view;
 
 import app.controller.Simulator;
-import app.model.UserMap;
 import org.graphstream.ui.view.Viewer;
 import org.graphstream.ui.view.ViewerPipe;
 import utils.SimulatorLatch;

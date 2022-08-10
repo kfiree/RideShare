@@ -1,22 +1,13 @@
 package app.controller;
 
-import app.controller.osm_processing.Parser;
-import app.controller.osm_processing.Reader;
-import app.model.RoadMap;
-import app.model.UserMap;
+import app.model.graph.RoadMap;
+import app.model.users.UserMap;
 import app.view.MapView;
-import crosby.binary.osmosis.OsmosisReader;
 import utils.JsonHandler;
 import utils.SimulatorLatch;
 
-import javax.swing.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.ReentrantLock;
 //import java.util.concurrent.BrokenBarrierException;
 //import java.util.concurrent.CyclicBarrier;

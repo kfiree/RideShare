@@ -1,8 +1,8 @@
 package app.controller.osm_processing;
 
 import app.controller.RoadMapHandler;
-import app.model.GeoLocation;
-import app.model.interfaces.Located;
+import app.model.utils.Coordinates;
+import app.model.utils.Located;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 
@@ -28,14 +28,14 @@ import java.util.Map;
  */
 public class OsmObject  implements Located {
 
-    private GeoLocation coordinates;
+    private Coordinates coordinates;
     private final long id;
     private final Map<String, String> tags = new HashMap<>();
     private int linkCounter;
 
     /* CONSTRUCTORS */
     public OsmObject(Node osmNode){
-        coordinates = new GeoLocation(osmNode.getLatitude(), osmNode.getLongitude());
+        coordinates = new Coordinates(osmNode.getLatitude(), osmNode.getLongitude());
         id = osmNode.getId();
         addAllTags(osmNode.getTags());
     }
@@ -51,7 +51,7 @@ public class OsmObject  implements Located {
     }
 
     @Override
-    public GeoLocation getLocation() {
+    public Coordinates getCoordinates() {
         return coordinates;
     }
 
@@ -61,7 +61,7 @@ public class OsmObject  implements Located {
     }
 
     public void setCoordinates(Double latitude, Double longitude) {
-        coordinates = new GeoLocation(latitude, longitude);
+        coordinates = new Coordinates(latitude, longitude);
     }
 
     /* SETTERS */

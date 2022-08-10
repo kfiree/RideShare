@@ -1,4 +1,4 @@
-package app.model;
+package app.model.utils;
 
 import java.awt.geom.Point2D;
 
@@ -14,8 +14,8 @@ import java.awt.geom.Point2D;
  * @version 1.0
  * @since   2021-06-20
  */
-public class GeoLocation extends Point2D.Double{
-    public GeoLocation(double latitude, double longitude) {
+public class Coordinates extends Point2D.Double{
+    public Coordinates(double latitude, double longitude) {
         super(latitude, longitude);
     }
 

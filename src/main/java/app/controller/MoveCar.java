@@ -1,6 +1,6 @@
 //package app.controller;
 //
-//import app.model.Node;
+//import app.model.graph.Node;
 //
 //import java.util.Iterator;
 //import java.util.TimerTask;

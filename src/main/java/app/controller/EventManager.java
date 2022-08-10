@@ -1,13 +1,13 @@
 package app.controller;
 
-import app.model.*;
-import app.model.interfaces.ElementOnMap;
-import app.view.MapView;
+import app.model.users.Driver;
+import app.model.users.Rider;
+import app.model.users.User;
+import app.model.users.UserMap;
 import utils.JsonHandler;
 import utils.SimulatorLatch;
 
 import java.util.*;
-import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
@@ -37,7 +37,7 @@ import static utils.Utils.*;
 public class EventManager implements Runnable{
     private final ReentrantLock lock;
     private final ExecutorService pool;
-    private final Queue<ElementOnMap> eventsQueue;
+    private final Queue<User> eventsQueue;
     private Date currTime;
     private final Simulator simulator;
     private SimulatorLatch latch;
@@ -63,7 +63,7 @@ public class EventManager implements Runnable{
 
         while(!eventsQueue.isEmpty()){
             /*  poll new event and wait till it is his start time */
-            ElementOnMap newEvent = eventsQueue.poll();
+            User newEvent = eventsQueue.poll();
 
             long timeDiff = timeDiff(currTime, newEvent.getStartTime());
             sleep(timeDiff);
@@ -100,11 +100,11 @@ public class EventManager implements Runnable{
 //        }
     }
 
-    private void startEvent(ElementOnMap newEvent){
+    private void startEvent(User newEvent){
         try {
             lock.lock();
             lock(false);//todo combine
-            if(newEvent instanceof Drive drive){
+            if(newEvent instanceof Driver drive){
                 UserMap.INSTANCE.startDrive(drive);
                 pool.execute(drive);
             }else{

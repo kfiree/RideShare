@@ -1,7 +1,11 @@
 package app.controller;
 
-import app.model.*;
-import app.model.interfaces.ElementOnMap;
+import app.model.graph.Node;
+import app.model.graph.Path;
+import app.model.graph.RoadMap;
+import app.model.users.Driver;
+import app.model.users.Rider;
+import app.model.users.UserMap;
 import utils.JsonHandler;
 
 import java.util.*;
@@ -45,7 +49,7 @@ public class UserMapHandler {
 
     }
 
-    private static void showDrives(String msg, Collection<Drive> users){
+    private static void showDrives(String msg, Collection<Driver> users){
         System.out.println("=========================");
         System.out.println(msg);
         System.out.println("=========================");
@@ -96,7 +100,7 @@ public class UserMapHandler {
             dst = nodes.get(randomIndexes[i*2 +1 ]);
 
             Path shortestPath;
-            Drive drive = null;
+            Driver drive = null;
 
             if(src != null && dst != null ){
                 shortestPath = GraphAlgo.getShortestPath(src, dst);
@@ -144,11 +148,11 @@ public class UserMapHandler {
 
         }
         userMap.getDrives().forEach(d ->
-                System.out.println("drive " + d.getId() + " from " + d.getCurrentNode().getId() + " to " + d.getDest().getId() + ", size " + d.getPath().getSize())
+                System.out.println("drive " + d.getId() + " from " + d.getLocation().getId() + " to " + d.getDestination().getId() + ", size " + d.getPath().getSize())
         );
 
         userMap.getRequests().forEach(d ->
-                System.out.println("request " + d.getId() + " from " + d.getCurrentNode().getId() + " to " + d.getDest().getId())
+                System.out.println("request " + d.getId() + " from " + d.getLocation().getId() + " to " + d.getDestination().getId())
         );
     }
 

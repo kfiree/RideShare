@@ -1,9 +1,10 @@
 package app.controller;
 
-import app.model.GeoLocation;
-import app.model.Path;
-import app.model.RoadMap;
-import app.model.Node;
+import app.model.utils.AlgoNode;
+import app.model.utils.Coordinates;
+import app.model.graph.Path;
+import app.model.graph.RoadMap;
+import app.model.graph.Node;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -55,7 +56,7 @@ public final class GraphAlgo {
      * @param nodes - collection of nodes
      * @return the closest node to the given coordinates
      */
-    public static Node findClosestNode(GeoLocation location, Collection<Node> nodes){
+    public static Node findClosestNode(Coordinates location, Collection<Node> nodes){
     //Get the coordinates of the node
     Double latitude = location.getLatitude();
     Double longitude = location.getLongitude();
@@ -67,7 +68,7 @@ public final class GraphAlgo {
 
     //Loop through all the nodes, and find the closest one
     nodes.forEach(other -> {
-                double dist = distance(other.getLocation(), location);
+                double dist = distance(other.getCoordinates(), location);
                 if(dist < minDistance.get()){
                     minDistance.set(dist);
                     closestNode.set(other);
@@ -122,7 +123,7 @@ public final class GraphAlgo {
         return nodes.stream().min(Comparator.comparingDouble(node::distanceTo)).orElse(null);
     }
 
-    public static double distance(GeoLocation location1, GeoLocation location2){
+    public static double distance(Coordinates location1, Coordinates location2){
         return distance(location1.getLatitude(), location1.getLongitude(), location2.getLatitude(), location2.getLongitude());
     }
     public static double distance(double lat1, double lon1,double lat2,double lon2){

@@ -1,16 +1,12 @@
-package app.model;
+package app.model.users;
 
-import app.controller.GraphAlgo;
 import app.controller.Simulator;
-import app.model.interfaces.ElementOnMap;
-import utils.JsonHandler;
+import app.model.utils.UserEdge;
+import app.model.graph.Node;
 
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
-
-import static utils.LogHandler.LOGGER;
 
 /**
  * todo make iterate on edges thread safe
@@ -19,11 +15,11 @@ import static utils.LogHandler.LOGGER;
  *      - check if need hashtable for data structures that doesnt use get();
  */
 public class UserMap {
-    private final Hashtable<Integer, Drive> drives;
+    private final Hashtable<Integer, Driver> drives;
     private final Hashtable<Integer, Rider> requests;
     private final ArrayList<Rider>  pendingRequests;
-    private final ArrayList<Drive> onGoingDrives;
-    private final ArrayList<ElementOnMap> finished;
+    private final ArrayList<Driver> onGoingDrives;
+    private final ArrayList<User> finished;
     protected static AtomicInteger keyGenerator = new AtomicInteger(-1);
     private Date firstEventTime;
     private final HashSet<UserEdge> userEdges;//todo use or delete
@@ -45,19 +41,19 @@ public class UserMap {
 
     /* GETTERS */
 
-    public Collection<Drive> getDrives() { return drives.values(); }
+    public Collection<Driver> getDrives() { return drives.values(); }
 
 //    public Drive getOnGoingDrive(int id){
 //        return onGoingDrives.get(id);
 //    }
 
-    public Collection<Drive> getOnGoingDrives() { return onGoingDrives; }
+    public Collection<Driver> getOnGoingDrives() { return onGoingDrives; }
 
     public Collection<Rider> getRequests() { return requests.values(); }
 
     public Collection<Rider> getPendingRequests() { return pendingRequests; }
 
-    public ArrayList<ElementOnMap> getFinishedEvents() {
+    public ArrayList<User> getFinishedEvents() {
         return finished;
     }
 
@@ -67,7 +63,7 @@ public class UserMap {
 
     /*     SETTERS     */
 
-    public void addDrive(Drive drive) {
+    public void addDrive(Driver drive) {
         for(Rider rider: this.requests.values()){
             this.userEdges.add(new UserEdge(drive, rider));
 
@@ -75,8 +71,8 @@ public class UserMap {
         drives.put(drive.getId(), drive);
     }
 
-    public Drive addDrive(Node src, Node dst, Long delayTime) {
-        Drive drive = new Drive(src, dst, new Date(firstEventTime.getTime()+ delayTime));
+    public Driver addDrive(Node src, Node dst, Long delayTime) {
+        Driver drive = new Driver(src, dst, new Date(firstEventTime.getTime()+ delayTime));
         drives.put(drive.getId(), drive);
         return drive;
     }
@@ -90,14 +86,14 @@ public class UserMap {
         requests.put(rider.getId(), rider);
     }
 
-    public LinkedList<ElementOnMap> getEventQueue(){
-        LinkedList<ElementOnMap> events = new LinkedList<>();
+    public LinkedList<User> getEventQueue(){
+        LinkedList<User> events = new LinkedList<>();
 
         events.addAll(getDrives());
         events.addAll(getRequests());
 
-        events.sort(Comparator.comparing(ElementOnMap::getStartTime)
-                .thenComparing(ElementOnMap::getStartTime));
+        events.sort(Comparator.comparing(User::getStartTime)
+                .thenComparing(User::getStartTime));
 
         return events;
     }
@@ -106,7 +102,7 @@ public class UserMap {
         this.pendingRequests.add(rider);
     }
 
-    public void startDrive(Drive drive){
+    public void startDrive(Driver drive){
         this.onGoingDrives.add(drive);
     }
 
@@ -125,13 +121,13 @@ public class UserMap {
 
     /* REMOVE FROM GRAPH */
 
-    public void finishUserEvent(ElementOnMap element) {
-        if(element instanceof Drive){
-            onGoingDrives.remove(element);
+    public void finishUserEvent(User user) {
+        if(user instanceof Driver){
+            onGoingDrives.remove(user);
         }else{
-            pendingRequests.remove(element);
+            pendingRequests.remove(user);
         }
-        finished.add(element);
+        finished.add(user);
     }
 
     public void pickPedestrian(Rider rider){

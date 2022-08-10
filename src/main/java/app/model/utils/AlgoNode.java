@@ -1,6 +1,6 @@
-package app.controller;
+package app.model.utils;
 
-import app.model.Node;
+import app.model.graph.Node;
 import org.jetbrains.annotations.NotNull;
 
 public class AlgoNode implements Comparable<AlgoNode>{

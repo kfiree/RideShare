@@ -2,12 +2,15 @@ package app.view;
 
 
 import app.controller.Simulator;
-import app.model.*;
 
 import static utils.Utils.FORMAT;
 import static app.view.StyleUtils.*;
 
-import app.model.interfaces.ElementOnMap;
+import app.model.graph.RoadMap;
+import app.model.users.Driver;
+import app.model.users.Rider;
+import app.model.users.User;
+import app.model.users.UserMap;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -36,7 +39,7 @@ import java.util.*;
 public class MapView{
     /* MAP */
     protected final UserMap userMap;
-    static protected final Hashtable<ElementOnMap, Node> elementsOnMapNodes;
+    static protected final Hashtable<User, Node> elementsOnMapNodes;
     static protected final Graph displayGraph;
 
     /* DISPLAY */
@@ -135,7 +138,7 @@ public class MapView{
 
     private void drawUsers(){
 
-        for (Drive drive : new ArrayList<>(userMap.getOnGoingDrives())) {
+        for (Driver drive : new ArrayList<>(userMap.getOnGoingDrives())) {
             Node node = elementsOnMapNodes.get(drive);
 
             if (node == null) {
@@ -161,10 +164,10 @@ public class MapView{
     }
 
     private void removeFinishedEvents(){
-        Iterator<ElementOnMap> eventIter = userMap.getFinishedEvents().iterator();
+        Iterator<User> eventIter = userMap.getFinishedEvents().iterator();
 
         while(eventIter.hasNext()){
-            ElementOnMap nextEvent = eventIter.next();
+            User nextEvent = eventIter.next();
             try {
                 if(elementsOnMapNodes.containsKey(nextEvent)){
                     displayGraph.removeNode(String.valueOf(nextEvent.getId()));
@@ -197,7 +200,7 @@ public class MapView{
         });
     }
 
-    private Node drawNode(app.model.Node node){
+    private Node drawNode(app.model.graph.Node node){
 
         String keyStr = String.valueOf(node.getId());
         Node displayNode = displayGraph.getNode(keyStr);
@@ -494,7 +497,7 @@ public class MapView{
 //        });
 //    }
 //
-//    private Node drawNode(app.model.Node node){
+//    private Node drawNode(app.model.graph.Node node){
 //
 //        String keyStr = String.valueOf(node.getId());
 //        Node displayNode = displayGraph.getNode(keyStr);
