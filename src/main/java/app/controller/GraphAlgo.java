@@ -354,13 +354,27 @@ public final class GraphAlgo {
         return rad * 180.0 / Math.PI;
     }
 
-    public static long hourToSeconds(long hour){
-        return hour * 3600;
+    public static long hourToMS(double hour){
+        return (long) (hour * 3600000);
     }
 
     public static long minToMs(double minute){
         return (long) (minute * 60000);
     }
+
+    public static double MsToHours(long hour){
+        return hour / 3600000.0;
+    }
+
+    public static double MsToMinutes(long hour){
+        return hour / 60000.0;
+    }
+
+    public static double MsToSeconds(long hour){
+        return hour / 1000.0;
+    }
+
+
 
 }
 

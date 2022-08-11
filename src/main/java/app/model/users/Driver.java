@@ -7,7 +7,6 @@ import app.controller.TimeSync;
 import org.jetbrains.annotations.NotNull;
 
 /* local */
-import app.controller.Simulator;
 import app.model.graph.Node;
 import app.model.graph.Path;
 import app.controller.GraphAlgo;
@@ -28,32 +27,33 @@ public class Driver extends User implements Runnable, TimeSync{
     private static final int MAX_PASSENGERS_NUM = 2; //todo set to 3
     private final int id;
     private final HashPriorityQueue<Rider> passengers;
-    private final Date leaveTime;
     private Path path;
     private Node currNode, destination;
     private Rider onTheWayTo;
     private double originalTime, detoursTime;
-    private boolean pathChange;
+    private final Date startTime;
     private Date localTime;
     private static SimulatorLatch latch = SimulatorLatch.INSTANCE;
+    private boolean pathChange;
 
     /** CONSTRUCTORS */
 
-    private Driver(Date leaveTime) {
+    private Driver(Date startTime) {
         this.id = UserMap.keyGenerator.incrementAndGet();
-        this.leaveTime = leaveTime;
+        this.startTime = startTime;
+        this.localTime = startTime;
         this.passengers = new HashPriorityQueue<>(
                 Comparator.comparingDouble(rider -> rider.getNextStop().distanceTo(currNode))
         );
     }
 
-    public Driver(@NotNull Path path, Date leaveTime) {
-        this(leaveTime);
+    public Driver(@NotNull Path path, Date startTime) {
+        this(startTime);
         initPathVariables(path);
     }
 
-    public Driver(@NotNull Node src, @NotNull Node dst, Date leaveTime) {
-        this(leaveTime);
+    public Driver(@NotNull Node src, @NotNull Node dst, Date startTime) {
+        this(startTime);
         initPathVariables(Objects.requireNonNull(GraphAlgo.getShortestPath(src, dst)));
     }
 
@@ -83,6 +83,7 @@ public class Driver extends User implements Runnable, TimeSync{
 
         UserMap.INSTANCE.finishUserEvent(this);
 
+
         finish();
     }
 
@@ -102,7 +103,7 @@ public class Driver extends User implements Runnable, TimeSync{
 
             sleep(timeToNextNode);
 
-            originalTime -= timeToNextNode;
+//            originalTime -= timeToNextNode;
 
             lock(false);
 
@@ -120,20 +121,22 @@ public class Driver extends User implements Runnable, TimeSync{
 
     private void finish() {
         unregister(this);
-        LOGGER.finest("Drive "+ id +" finished!.");
+        LOGGER.finest("Drive "+ id +" finished!, total time : " + (timeDiff(startTime, localTime)/ 60000.0) + " minutes.");
     }
 
-    private void sleep(long sleepTime ) {
-        if(sleepTime <1 ){
-            LOGGER.warning("drive " + getId()+" sleep time "+ FORMAT(sleepTime) +" seconds is too small.");
-        }
-
-        try {
-            Thread.sleep( (long) (sleepTime * 1000 / Simulator.INSTANCE.speed()));
-        } catch (InterruptedException e) {
-            LOGGER.severe(e.getMessage() +"\n"+ Arrays.toString(e.getStackTrace()));
-        }
-    }
+//    private void sleep(long sleepTime ) {
+//        if(sleepTime <1 ){
+//            LOGGER.warning("drive " + getId()+" sleep time "+ FORMAT(sleepTime) +" seconds is too small.");
+//        }
+//
+//        try {
+//            Thread.sleep((long) (sleepTime / Simulator.INSTANCE.speed()));
+////            Thread.sleep((long) (sleepTime * 1000 / Simulator.INSTANCE.speed()));
+//            addTime(sleepTime);
+//        } catch (InterruptedException e) {
+//            LOGGER.severe(e.getMessage() +"\n"+ Arrays.toString(e.getStackTrace()));
+//        }
+//    }
 
 
 
@@ -197,23 +200,6 @@ public class Driver extends User implements Runnable, TimeSync{
         setPath(shortestPath);
     }
 
-    @Override
-    public void setTime(Date date) {
-        this.localTime = date;
-    }
-
-    private void addStop(Rider rider){
-        passengers.add(rider);
-    }
-
-    public void setPath(Path path) {
-        this.path = path;
-    }
-
-
-
-    /* GETTERS */
-
     private void getNextDest(){//System.out.println(this.currNode.getId());
         if(pathChange){
             if (!passengers.isEmpty()) {
@@ -238,6 +224,23 @@ public class Driver extends User implements Runnable, TimeSync{
             }
         }
     }
+
+    @Override
+    public void setTime(Date date) {
+        this.localTime = date;
+    }
+
+    private void addStop(Rider rider){
+        passengers.add(rider);
+    }
+
+    public void setPath(Path path) {
+        this.path = path;
+    }
+
+
+
+    /* GETTERS */
 
     public double getDetoursTime() {
         return detoursTime;
@@ -265,7 +268,7 @@ public class Driver extends User implements Runnable, TimeSync{
 
     @Override
     public Date getStartTime() {
-        return leaveTime;
+        return startTime;
     }
 
     @Override
@@ -295,13 +298,7 @@ public class Driver extends User implements Runnable, TimeSync{
     /* SETTERS */
     @Override
     public String toString() {
-        return "Drive{" +
-                "id=" + id +
-                ", passengers=" + passengers.size() +
-                ", leaveTime=" + FORMAT(leaveTime) +
-                ", pathSize=" + getPath().getSize() +
-                ", currNode=" + currNode.getId() +
-                '}';
+        return "Drive " + id + ", start time =" + FORMAT(this.startTime) +", weight :  " + this.originalTime / 60000 +" minutes.";
     }
 }
 

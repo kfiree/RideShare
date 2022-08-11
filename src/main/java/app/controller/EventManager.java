@@ -49,12 +49,8 @@ public class EventManager implements Runnable, TimeSync{
         lock = new ReentrantLock();
         pool = Executors.newCachedThreadPool();
 
+        localTime = UserMap.INSTANCE.getFirstEventTime();
         eventsQueue = UserMap.INSTANCE.getEventQueue();
-        if(eventsQueue.isEmpty()){
-            localTime = new Date();
-        }else {
-            localTime = eventsQueue.peek().getStartTime();
-        }
         this.simulator = Simulator.INSTANCE;
     }
 
@@ -84,7 +80,7 @@ public class EventManager implements Runnable, TimeSync{
             /*  add new event */
             startEvent(newEvent);
 
-            LOGGER.info("RealTimeEvents add: "//+newEvent +" event. at " + FORMAT(newEvent.getStartTime())+".");
+            LOGGER.info("RealTimeEvents add: " + newEvent
             + "\nevent time "+ FORMAT(newEvent.getStartTime()) + "."
             + "\nSimulator time "+ FORMAT(simulator.time()) + ".");
 
@@ -102,6 +98,7 @@ public class EventManager implements Runnable, TimeSync{
     }
 
     private void startEvent(User newEvent){
+        System.out.println("Starting " + newEvent);
         try {
             lock.lock();
             lock(false);//todo combine
@@ -117,13 +114,14 @@ public class EventManager implements Runnable, TimeSync{
 
     }
 
-    private void sleep(long sleepTime ) {
-//        long sleepTime = 3000;
-        try {
-            Thread.sleep((long) (sleepTime/ Simulator.INSTANCE.speed()));
-        }
-        catch (InterruptedException e) { e.printStackTrace(); }
-    }
+//    private void sleep(long sleepTime ) {
+////        long sleepTime = 3000;
+//        try {
+//            Thread.sleep((long) (sleepTime / Simulator.INSTANCE.speed()));
+//            addTime(sleepTime);
+//        }
+//        catch (InterruptedException e) { e.printStackTrace(); }
+//    }
 
 
 

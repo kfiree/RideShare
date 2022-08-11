@@ -56,7 +56,7 @@ public class MapView{
 
 
     static{
-        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
+//        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
         displayGraph = new MultiGraph("map simulation");
 
         displayGraph.addAttribute("ui.stylesheet", styleSheet);

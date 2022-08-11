@@ -140,8 +140,7 @@ public enum JsonHandler {
         Long edgeId = (long) edgeJSON.get("id");
         Long startNodeId = (long) edgeJSON.get("node1");
         Long endNodeId = (long)  edgeJSON.get("node2");
-//        long weight = (long) edgeJSON.get("weight");
-        long weight =(long)Math.round((Double)(edgeJSON.get("weight")));
+        long weight = (long) edgeJSON.get("weight");
         String highwayType = (String) edgeJSON.get("highwayType");
         long direction = (long) edgeJSON.get("bidirectional");
 

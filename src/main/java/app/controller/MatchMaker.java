@@ -4,7 +4,6 @@ import app.model.users.Driver;
 import app.model.graph.Node;
 import app.model.users.Rider;
 import app.model.users.UserMap;
-import utils.JsonHandler;
 import utils.SimulatorLatch;
 
 import java.util.Collection;
@@ -21,7 +20,7 @@ import static utils.Utils.unLock;
  *      might use https://github.com/frankfarrell/kds4j
  * */
 public class MatchMaker implements Runnable, TimeSync{
-    private static final int MAX_KM_ADDITION_TO_PATH;
+    private static final int MAX_KM_ADDITION_TO_PATH, SECONDS_15;
     private Simulator simulator = Simulator.INSTANCE;
     private SimulatorLatch latch;
     private Date localTime;
@@ -30,10 +29,12 @@ public class MatchMaker implements Runnable, TimeSync{
     /* CONSTRUCTORS */
 
     public MatchMaker() {
+        localTime = UserMap.INSTANCE.getFirstEventTime();
     }
 
     static{
          MAX_KM_ADDITION_TO_PATH = 10;
+         SECONDS_15 = 15000;
     }
 
 
@@ -47,15 +48,12 @@ public class MatchMaker implements Runnable, TimeSync{
         this.latch = SimulatorLatch.INSTANCE;
 
         while(Simulator.INSTANCE.isAlive()){ //todo fix while by fixing 'simulator.isAlive()'
-            try {
-                sleep((long) (15000/ simulator.speed()));
-                if(!UserMap.INSTANCE.getPendingRequests().isEmpty()){
-                    matchMultiplePickup();
-                }
-                latch.waitIfPause();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            sleep(SECONDS_15);
+
+            if(!UserMap.INSTANCE.getPendingRequests().isEmpty()){
+                matchMultiplePickup();
             }
+            latch.waitIfPause();
         }
 
         finish();

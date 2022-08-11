@@ -64,12 +64,6 @@ public class Rider extends User {
 
     @Override
     public String toString() {
-
-        return "Rider{" +
-                "id=" + id +
-                ", askTime=" + FORMAT(askTime) +
-                ", currNode=" + src.getId() +
-                ", destination=" + dest.getId() +
-                '}';
+        return "Rider " + id + ", start time " + FORMAT(askTime) ;
     }
 }

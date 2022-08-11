@@ -2,7 +2,6 @@ package app.model.graph;
 
 import app.controller.GraphAlgo;
 import app.controller.osm_processing.OsmWay;
-import app.model.users.User;
 import app.model.utils.Coordinates;
 import app.model.utils.Located;
 
@@ -27,13 +26,23 @@ public class Edge implements Located { // , GraphElement {
     static private final Hashtable<String, Integer> SPEED_LIMIT;
     static{
         SPEED_LIMIT =  new Hashtable<>(){{
-            put("motorway", 110);
-            put("trunk", 100);
-            put("primary", 90);
-            put("secondary", 70);
-            put("tertiary", 50);
+            put("motorway", 70);
+            put("trunk", 65);
+            put("primary", 55);
+            put("secondary", 45);
+            put("tertiary", 30);
         }};
     }
+
+//    static{
+//        SPEED_LIMIT =  new Hashtable<>(){{
+//            put("motorway", 110);
+//            put("trunk", 100);
+//            put("primary", 90);
+//            put("secondary", 70);
+//            put("tertiary", 50);
+//        }};
+//    }
     // TODO set lower speed
 
     /** add edge from DB */
@@ -62,8 +71,8 @@ public class Edge implements Located { // , GraphElement {
      * todo add time relative to highway type and distance (and time of day?)
      */
     private long calculateWeight(){
-        long weight = (long) (node1.distanceTo(node2) / SPEED_LIMIT.getOrDefault(highwayType, 50));
-        return GraphAlgo.hourToSeconds(weight)+1;
+        double timeInHour = (node1.distanceTo(node2) / SPEED_LIMIT.getOrDefault(highwayType, 50));
+        return GraphAlgo.hourToMS(timeInHour);
     }
 
 
@@ -113,5 +122,16 @@ public class Edge implements Located { // , GraphElement {
     @Override
     public boolean inBound() {
         return node1.inBound() && node2.inBound();
+    }
+
+    @Override
+    public String toString() {
+        return "Edge{" +
+                "id=" + id +
+                ", node1=" + node1.getId() +
+                ", node2=" + node2.getId() +
+                ", weight=" + weight +
+                ", highwayType='" + highwayType + '\'' +
+                '}';
     }
 }

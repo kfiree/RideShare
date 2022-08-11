@@ -6,9 +6,7 @@ import app.view.MapView;
 import utils.JsonHandler;
 import utils.SimulatorLatch;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.concurrent.locks.ReentrantLock;
 //import java.util.concurrent.BrokenBarrierException;
 //import java.util.concurrent.CyclicBarrier;
@@ -23,7 +21,7 @@ public class Simulator implements Runnable, TimeSync{
     private double speed;
     private boolean show;
 
-    private EventManager events;
+    private EventManager eventManager;
     private MatchMaker cupid;
     private Thread eventsThread, cupidThread;
     private Date localTime;
@@ -44,18 +42,18 @@ public class Simulator implements Runnable, TimeSync{
     /** Singleton specific properties */
     public static final Simulator INSTANCE = new Simulator();
 
-    public void init(double simulatorSpeed, int requestNum, int driveNum, boolean show, boolean bounds, boolean loadJSON){
+    public void init(double simulatorSpeed, int requestNum, int driveNum, boolean show, boolean bounds, boolean createFromPBF){
         validate(simulatorSpeed > 0, "Illegal simulator speed "+ simulatorSpeed + ".");
         this.latch = SimulatorLatch.INSTANCE;
         RoadMapHandler.setBounds(bounds);
 
-        if(loadJSON){
-            LOGGER.info( "Read road map from JSON.");
-            JsonHandler.RoadMapType.load();
-        }else{
+        if (createFromPBF) {
             LOGGER.info( "Start parsing main map.");
             CreateMap();
             JsonHandler.RoadMapType.save();
+        } else {
+            LOGGER.info( "Read road map from JSON.");
+            JsonHandler.RoadMapType.load();
         }
 
         LOGGER.info("Map is ready. Map = " + RoadMap.INSTANCE);
@@ -64,8 +62,6 @@ public class Simulator implements Runnable, TimeSync{
         initRandomEvents(driveNum, requestNum);
 
         this.speed = simulatorSpeed;
-        this.events = new EventManager();
-        this.cupid = new MatchMaker();
         this.show = show;
 
     }
@@ -73,22 +69,25 @@ public class Simulator implements Runnable, TimeSync{
 
 
     /* RUN */
-
+//int i = 0;
     @Override
     public void run() {
+        localTime = UserMap.INSTANCE.getFirstEventTime();
+
         register(this);
 
-        localTime = events.getTime();
+        this.eventManager = new EventManager();
+        this.cupid = new MatchMaker();
         if(show) {
             mapView.init(this);
 
             updateFrame();
-            sleep();
+            sleep(SLEEP_BETWEEN_FRAMES);
         }
 
         // start simulator
-        eventsThread = new Thread(events);
-         eventsThread.start();
+        eventsThread = new Thread(eventManager);
+        eventsThread.start();
 
         // start cupid
         cupidThread = new Thread(cupid);
@@ -96,8 +95,12 @@ public class Simulator implements Runnable, TimeSync{
 
         if(show){
             do{
-                sleep();
+                sleep(SLEEP_BETWEEN_FRAMES);
                 updateFrame();
+//                i++;
+//                if(i%10 == 0){
+//                    TimeSync.showThreadsData();
+//                }
             }while(isAlive());
         }
 
@@ -119,15 +122,16 @@ public class Simulator implements Runnable, TimeSync{
         return eventsThread.isAlive() || !UserMap.INSTANCE.getDrives().isEmpty();
     }
 
-    private void sleep() {
-        localTime = new Date(localTime.getTime()+SLEEP_BETWEEN_FRAMES);
-
-        try {
-            Thread.sleep((long) (SLEEP_BETWEEN_FRAMES/this.speed())) ;
-        }catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+//    private void sleep() {
+//        localTime = new Date(localTime.getTime()+SLEEP_BETWEEN_FRAMES);
+//
+//        try {
+//            Thread.sleep((long) (SLEEP_BETWEEN_FRAMES/this.speed()));
+//            addTime(SLEEP_BETWEEN_FRAMES);
+//        }catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 
 
@@ -142,7 +146,7 @@ public class Simulator implements Runnable, TimeSync{
     }
 
     public EventManager events() {
-        return events;
+        return eventManager;
     }
 
     public Thread eventsThread() {
@@ -167,7 +171,7 @@ public class Simulator implements Runnable, TimeSync{
     }
 
     public void setEventsManager(EventManager events) {
-        this.events = events;
+        this.eventManager = events;
     }
 
     @Override

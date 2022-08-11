@@ -140,10 +140,12 @@ public final class RoadMapHandler {
             osmosisReader.setSink(reader);
 
             // initial parsing of the .pbf file:
+            LOGGER.info("Start reading osm file.");
             osmosisReader.run();
 
             // secondary parsing of ways/creation of edges:
             Parser parser = new Parser();
+            LOGGER.info("Start parsing Reader's data.");
             parser.parseMapWays(reader.getWays());
 
             // get riders & drivers

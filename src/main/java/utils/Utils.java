@@ -14,18 +14,20 @@ import static utils.LogHandler.LOGGER;
 public class Utils {
     private static final ReentrantLock lock;
     private static final SimpleDateFormat DATE_FORMATTER;
+    private static final SimpleDateFormat MINUTE_FORMATTER;
     public static final String ASSETS_PATH, LOGS_PATH, JSON_PATH;
 
     static{
         lock = new ReentrantLock();
         DATE_FORMATTER = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
+        MINUTE_FORMATTER = new SimpleDateFormat("HH:mm:ss");
         ASSETS_PATH = "data/assets/";
         LOGS_PATH = "data/logs/";
         JSON_PATH = "data/maps/";
     }
 
     public static String FORMAT(Date date){
-        return DATE_FORMATTER.format(date);
+        return MINUTE_FORMATTER.format(date);
     }
 
     public static String FORMAT(double d){

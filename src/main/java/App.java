@@ -129,23 +129,23 @@ public final class App{
     private static Long  NODE_IN_MAIN_COMPONENT;
     private static Double SIMULATOR_SPEED;
     private static String CONSOLE_LOG_LEVEL, PBF_PATH;
-    private static Boolean BOUNDS, SHOW_MAP, PARSE_NEW;
+    private static Boolean BOUNDS, SHOW_MAP, PARSE_FROM_PBF;
     private static int DRIVE_NUM, REQUEST_NUM;
     private static final String Instructions;
     private App() {}
 
     static{
-        PARSE_NEW = true;
+        PARSE_FROM_PBF = false;
         PBF_PATH = "data/maps/osm/israel.pbf";
         NODE_IN_MAIN_COMPONENT =2432701015L;
-        SIMULATOR_SPEED = 20.0;
+        SIMULATOR_SPEED = 5.0;
         BOUNDS = true;
         CONSOLE_LOG_LEVEL =
 //                "SEVERE";
                 "ALL";
         SHOW_MAP = true;
         DRIVE_NUM = 15;
-        REQUEST_NUM = 15;
+        REQUEST_NUM = 10;
     }
 
     public static void main(String[] args) {
@@ -156,7 +156,7 @@ public final class App{
 
         try {
             Thread thread = new Thread(Simulator.INSTANCE);
-            Simulator.INSTANCE.init(SIMULATOR_SPEED, REQUEST_NUM, DRIVE_NUM, SHOW_MAP, BOUNDS, PARSE_NEW);
+            Simulator.INSTANCE.init(SIMULATOR_SPEED, REQUEST_NUM, DRIVE_NUM, SHOW_MAP, BOUNDS, PARSE_FROM_PBF);
             thread.start();
             thread.join();
         } catch (InterruptedException e) {
@@ -174,7 +174,7 @@ public final class App{
          for (int i = 0; i < args.length; i++) {
             if (args[i].charAt(0) == '-') {
                 switch (args[i]) {
-                    case "-m" -> PARSE_NEW = false;
+                    case "-m" -> PARSE_FROM_PBF = false;
                     case "-n" -> NODE_IN_MAIN_COMPONENT = Long.parseLong(args[++i]);
                     case "-s" -> SIMULATOR_SPEED = Double.parseDouble(args[++i]);
                     case "-l" -> CONSOLE_LOG_LEVEL = args[++i];

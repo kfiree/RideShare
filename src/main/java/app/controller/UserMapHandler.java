@@ -17,6 +17,14 @@ public class UserMapHandler {
     private static final UserMap userMap = UserMap.INSTANCE;
     private static final RoadMap roadMap = RoadMap.INSTANCE;
     private static final Random rand = new Random(1);
+    private static final int CONST_EVENT_DIFF, RAND_MAX_EVENT_DIFF;
+
+    static{
+//        CONST_EVENT_DIFF = 750000;
+        CONST_EVENT_DIFF = 0;
+        RAND_MAX_EVENT_DIFF = 150000; // 2.5 minutes
+    }
+
 
     /**  init events from DB */
 
@@ -29,6 +37,8 @@ public class UserMapHandler {
 
         initRandDrives(driveNum);
         initRandRiders(pedestriansNum);
+
+        printUserMapState();
     }
 
     public static void printUserMapState(){
@@ -37,32 +47,46 @@ public class UserMapHandler {
 
         showRider("Passengers", userMap.getRequests());
         showRider("Live_Passengers", userMap.getPendingRequests());
+        if(!userMap.getFinishedEvents().isEmpty()) {
+            System.out.println("=========================");
+            System.out.println("Finished");
+            System.out.println("=========================");
 
-        System.out.println("=========================");
-        System.out.println("Finished");
-        System.out.println("=========================");
-
-        userMap.getFinishedEvents().forEach(u ->
-                System.out.println("{Passenger, " + u.getId() + ", " + FORMAT(u.getStartTime()) + "}")
-        );
-        System.out.println("\n");
+            userMap.getFinishedEvents().forEach(u ->
+                    System.out.println("{Passenger, " + u.getId() + ", " + FORMAT(u.getStartTime()) + "}")
+            );
+            System.out.println("\n");
+        }
 
     }
 
     private static void showDrives(String msg, Collection<Driver> users){
-        System.out.println("=========================");
-        System.out.println(msg);
-        System.out.println("=========================");
-        users.forEach(u -> System.out.println("{Drive, " + u.getId() + ", " + FORMAT(u.getStartTime()) + "}"));
-        System.out.println("\n");
+        if(!users.isEmpty()) {
+            StringBuilder builder = new StringBuilder();
+            users.forEach(u -> builder.append("{Drive " + u.getId() + ", start " + FORMAT(u.getStartTime()) + ", time " + u.getOriginalTime() / 60000 + " minutes }\n"));
+            LOGGER.info("\n=========================\n"+
+                    msg + "\n=========================\n"+
+                    builder + "\n");
+//            System.out.println("=========================");
+//            System.out.println(msg);
+//            System.out.println("=========================");
+//            users.forEach(u -> System.out.println("{Drive, " + u.getId() + ", " + FORMAT(u.getStartTime()) + "}"));
+        }
     }
 
     private static void showRider(String msg, Collection<Rider> users){
-        System.out.println("=========================");
-        System.out.println(msg);
-        System.out.println("=========================");
-        users.forEach(u -> System.out.println("{Passenger, " + u.getId() + ", " + FORMAT(u.getStartTime()) + "}"));
-        System.out.println("\n");
+        if(!users.isEmpty()) {
+            StringBuilder builder = new StringBuilder();
+            users.forEach(u -> builder.append("{Passenger " + u.getId() + ", start " + FORMAT(u.getStartTime()) + "}\n"));
+            LOGGER.info("\n=========================\n"+
+                    msg + "\n=========================\n"+
+                    builder + "\n");
+//            System.out.println("=========================");
+//            System.out.println(msg);
+//            System.out.println("=========================");
+//            users.forEach(u -> System.out.println("{Passenger " + u.getId() + ", start " + FORMAT(u.getStartTime()) + "}"));
+//            System.out.println("\n");
+        }
     }
 
     public static void initRandRiders(int requestsNum){
@@ -76,9 +100,9 @@ public class UserMapHandler {
         for (int i = 0; i < requestsNum; i++) {
             src = nodes.get(randomIndexes[i*2]);
             dst = nodes.get(randomIndexes[i*2 +1 ]);
-            int timeAdded = rand.nextInt(150000);
+            int timeAdded = rand.nextInt(RAND_MAX_EVENT_DIFF);
 
-            Rider rider = new Rider(src, dst, new Date(pedestriansStartTime + ((long) (750000 + timeAdded) * i)));
+            Rider rider = new Rider(src, dst, new Date(pedestriansStartTime + ((long) (CONST_EVENT_DIFF + timeAdded) * i)));
             userMap.addRequest(rider);
         }
 
@@ -104,12 +128,12 @@ public class UserMapHandler {
 
             if(src != null && dst != null ){
                 shortestPath = GraphAlgo.getShortestPath(src, dst);
-                long timeAdded = rand.nextInt(150000);
+                long timeAdded = rand.nextInt(RAND_MAX_EVENT_DIFF);
                 if(shortestPath != null) {
                     if(drive != null){
                         timeAdded = (long) (drive.getPath().getWeight()/2);
                     }
-                    userMap.addDrive(src, dst, ((750000 + timeAdded) * i));
+                    userMap.addDrive(src, dst, ((CONST_EVENT_DIFF + timeAdded) * i));
 
                 }
             }
