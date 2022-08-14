@@ -12,6 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static app.controller.UserMapHandler.printUserMapState;
 import static utils.LogHandler.LOGGER;
 import static utils.Utils.*;
 
@@ -52,6 +53,8 @@ public class EventManager implements Runnable, TimeSync{
         localTime = UserMap.INSTANCE.getFirstEventTime();
         eventsQueue = UserMap.INSTANCE.getEventQueue();
         this.simulator = Simulator.INSTANCE;
+
+        printUserMapState();
     }
 
 

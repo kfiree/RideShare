@@ -12,8 +12,12 @@ import org.graphstream.ui.graphicGraph.GraphicGraph;
 import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.util.DefaultMouseManager;
 
+import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.util.Map;
+
+import static app.view.StyleUtils.focusOn;
+import static app.view.StyleUtils.stylePath;
 
 
 /**
@@ -23,30 +27,7 @@ public class MapMouseManager extends DefaultMouseManager {
     protected View view;
     protected GraphicGraph displayGraph;
     private boolean firstClicked;
-    private Node node1, node2;
 
-    private static boolean editing;
-    //todo check & clean unused
-    private Node focusedNode;
-    private Map.Entry<Node, Driver> focusedCar;
-    private Edge[] edges;
-
-
-
-    public static void addDrive(){
-        editing = true;
-
-//        UserMap.INSTANCE.addDrive();
-
-
-        editing = false;
-    }
-
-    public static void addRider(){
-        editing = true;
-
-        editing = false;
-    }
 
     @Override
     public void init(GraphicGraph displayGraph, View view) {
@@ -64,13 +45,23 @@ public class MapMouseManager extends DefaultMouseManager {
         firstClicked  = !firstClicked; //prevent double click
 
         if(firstClicked) { //todo add min distance for paint
-
-            GraphicElement currentNode = view.findNodeOrSpriteAt(e.getX(), e.getY());
-            if(currentNode!= null){
-                app.model.graph.Node node = RoadMap.INSTANCE.getNode(Long.parseLong(currentNode.getLabel()));
-                if(node != null) {
-                    System.out.println(node);
+            System.out.println("================== left click ======================");
+            if(SwingUtilities.isLeftMouseButton(e)){
+                GraphicElement currentNode = view.findNodeOrSpriteAt(e.getX(), e.getY());
+                if(currentNode!= null){
+                    app.model.graph.Node node = RoadMap.INSTANCE.getNode(Long.parseLong(currentNode.getLabel()));
+                    if(node != null) {
+                        System.out.println(node);
+                    }
                 }
+            }else{
+                System.out.println("#################### right click ####################");
+                Driver closestDrive = getClosestDrive(e);
+                if (closestDrive != null) {
+                    stylePath(closestDrive);
+//                    focusOn(closestDrive);
+                }
+
             }
 
 //            System.out.println( "MouseEvent xy ("+e.getX() +","+e.getY()+"), coordinates ("

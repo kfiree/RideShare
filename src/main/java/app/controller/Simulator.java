@@ -12,6 +12,7 @@ import java.util.concurrent.locks.ReentrantLock;
 //import java.util.concurrent.CyclicBarrier;
 
 import static app.controller.RoadMapHandler.CreateMap;
+import static app.controller.UserMapHandler.initEventsInLine;
 import static app.controller.UserMapHandler.initRandomEvents;
 import static utils.LogHandler.LOGGER;
 import static utils.Utils.*;
@@ -58,7 +59,7 @@ public class Simulator implements Runnable, TimeSync{
 
         LOGGER.info("Map is ready. Map = " + RoadMap.INSTANCE);
 
-        // initEventsInLine(requestNum);
+//         initEventsInLine(requestNum);
         initRandomEvents(driveNum, requestNum);
 
         this.speed = simulatorSpeed;

@@ -37,8 +37,6 @@ public class UserMapHandler {
 
         initRandDrives(driveNum);
         initRandRiders(pedestriansNum);
-
-        printUserMapState();
     }
 
     public static void printUserMapState(){
@@ -171,13 +169,15 @@ public class UserMapHandler {
             userMap.addRequest(src, dst, new Date(startTime.getTime() + i* 100L));
 
         }
-        userMap.getDrives().forEach(d ->
-                System.out.println("drive " + d.getId() + " from " + d.getLocation().getId() + " to " + d.getDestination().getId() + ", size " + d.getPath().getSize())
-        );
+//        userMap.getDrives().forEach(d ->
+//                System.out.println("drive " + d.getId() + " from " + d.getLocation().getId() + " to " + d.getDestination().getId() + ", size " + d.getPath().getSize())
+//        );
+//
+//        userMap.getRequests().forEach(d ->
+//                System.out.println("request " + d.getId() + " from " + d.getLocation().getId() + " to " + d.getDestination().getId())
+//        );
 
-        userMap.getRequests().forEach(d ->
-                System.out.println("request " + d.getId() + " from " + d.getLocation().getId() + " to " + d.getDestination().getId())
-        );
+        printUserMapState();
     }
 
 }

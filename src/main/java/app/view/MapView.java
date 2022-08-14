@@ -170,7 +170,11 @@ public class MapView{
             User nextEvent = eventIter.next();
             try {
                 if(elementsOnMapNodes.containsKey(nextEvent)){
-                    displayGraph.removeNode(String.valueOf(nextEvent.getId()));
+                    Node node = displayGraph.getNode(String.valueOf(nextEvent.getId()));
+                    if (node != null) {
+                        node.setAttribute( "ui.hide");
+                    }
+//                    displayGraph.removeNode(String.valueOf(nextEvent.getId()));
                     elementsOnMapNodes.remove(nextEvent);
                 }
             } catch (Exception e) {

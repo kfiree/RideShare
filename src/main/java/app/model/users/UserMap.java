@@ -43,6 +43,8 @@ public class UserMap {
 
     public Collection<Driver> getDrives() { return drives.values(); }
 
+    public Driver getDriver(int id) { return drives.get(id); }
+
 //    public Drive getOnGoingDrive(int id){
 //        return onGoingDrives.get(id);
 //    }
@@ -94,6 +96,7 @@ public class UserMap {
 
         events.sort(Comparator.comparing(User::getStartTime)
                 .thenComparing(User::getStartTime));
+
 
         return events;
     }

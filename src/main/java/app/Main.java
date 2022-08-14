@@ -1,3 +1,5 @@
+package app;
+
 import app.controller.RoadMapHandler;
 import app.controller.Simulator;
 
@@ -125,27 +127,27 @@ import static utils.LogHandler.*;
  * ==========================================================================================
  *
  */
-public final class App{
+public final class Main {
     private static Long  NODE_IN_MAIN_COMPONENT;
     private static Double SIMULATOR_SPEED;
     private static String CONSOLE_LOG_LEVEL, PBF_PATH;
     private static Boolean BOUNDS, SHOW_MAP, PARSE_FROM_PBF;
     private static int DRIVE_NUM, REQUEST_NUM;
     private static final String Instructions;
-    private App() {}
+    private Main() {}
 
     static{
         PARSE_FROM_PBF = false;
         PBF_PATH = "data/maps/osm/israel.pbf";
         NODE_IN_MAIN_COMPONENT =2432701015L;
-        SIMULATOR_SPEED = 5.0;
+        SIMULATOR_SPEED = 2.0;
         BOUNDS = true;
         CONSOLE_LOG_LEVEL =
-//                "SEVERE";
-                "ALL";
+                "SEVERE";
+//                "ALL";
         SHOW_MAP = true;
         DRIVE_NUM = 15;
-        REQUEST_NUM = 10;
+        REQUEST_NUM = 20;
     }
 
     public static void main(String[] args) {

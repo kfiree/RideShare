@@ -36,7 +36,7 @@ public class Driver extends User implements Runnable, TimeSync{
     private static SimulatorLatch latch = SimulatorLatch.INSTANCE;
     private boolean pathChange;
 
-    /** CONSTRUCTORS */
+    /* CONSTRUCTORS */
 
     private Driver(Date startTime) {
         this.id = UserMap.keyGenerator.incrementAndGet();
@@ -90,7 +90,6 @@ public class Driver extends User implements Runnable, TimeSync{
     private void driveToNextStop(){
         pathChange = false;
 
-        List<Node> nodes = getPath().getNodes();
         Iterator<Node> nodeIter = getPath().iterator();
         Node nextNode = nodeIter.next();
 
@@ -123,20 +122,6 @@ public class Driver extends User implements Runnable, TimeSync{
         unregister(this);
         LOGGER.finest("Drive "+ id +" finished!, total time : " + (timeDiff(startTime, localTime)/ 60000.0) + " minutes.");
     }
-
-//    private void sleep(long sleepTime ) {
-//        if(sleepTime <1 ){
-//            LOGGER.warning("drive " + getId()+" sleep time "+ FORMAT(sleepTime) +" seconds is too small.");
-//        }
-//
-//        try {
-//            Thread.sleep((long) (sleepTime / Simulator.INSTANCE.speed()));
-////            Thread.sleep((long) (sleepTime * 1000 / Simulator.INSTANCE.speed()));
-//            addTime(sleepTime);
-//        } catch (InterruptedException e) {
-//            LOGGER.severe(e.getMessage() +"\n"+ Arrays.toString(e.getStackTrace()));
-//        }
-//    }
 
 
 
