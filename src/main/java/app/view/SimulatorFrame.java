@@ -3,13 +3,11 @@ package app.view;
 import app.controller.EventManager;
 import app.controller.MatchMaker;
 import app.controller.Simulator;
-import app.controller.TimeSync;
+import app.controller.SimulatorThread;
 import app.model.users.Driver;
-import org.graphstream.ui.j2dviewer.J2DGraphRenderer;
-import org.graphstream.ui.swingViewer.ViewPanel;
 import org.graphstream.ui.view.Viewer;
 import org.graphstream.ui.view.ViewerPipe;
-import utils.SimulatorLatch;
+import app.controller.Latch;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -19,6 +17,7 @@ import java.util.Date;
 import static utils.Utils.FORMAT;
 
 public class SimulatorFrame extends JFrame{
+    private Latch latch = Latch.INSTANCE;
     protected JPanel graphPanel;
     private JPanel mainTab;
     private JSlider speedSlider;
@@ -33,7 +32,10 @@ public class SimulatorFrame extends JFrame{
     private JLabel threadsTitle;
     private JLabel simulatorTitle;
     private JTabbedPane tabs;
-    private SimulatorLatch latch = SimulatorLatch.INSTANCE;
+    private JPanel pausePanel;
+
+    static final Color GREEN = new Color(114,187,102);
+    static final Color RED = new Color(212, 81, 81);
 
     protected Viewer viewer;
     private ViewerPipe pipeIn;
@@ -52,7 +54,7 @@ public class SimulatorFrame extends JFrame{
 
     private void setListeners(){
         speedButton.addActionListener(e -> {
-            TimeSync.showThreadsData();
+            SimulatorThread.showThreadsData();
             if(speedSlider.getValue() == 0){
                 speedSlider.setValue(1);
             }
@@ -60,12 +62,14 @@ public class SimulatorFrame extends JFrame{
             updateSpeed();
         });
         pauseButton.addActionListener(e -> {
-            if(latch.isPause()){
-                latch.unpause();
-                pauseButton.setBackground(Color.green);
+            if(Latch.lock){
+                latch.resume();
+                pauseButton.setText("Pause");
+                pauseButton.setBackground(RED);
             }else{
-                latch.pause();
-                pauseButton.setBackground(Color.red);
+                latch.lock();
+                pauseButton.setText("Continue");
+                pauseButton.setBackground(GREEN);
             }
         });
     }
@@ -99,13 +103,13 @@ public class SimulatorFrame extends JFrame{
             model.addRow(new Object[]{"thread" , FORMAT(new Date()), "start time"});
         }
 
-        TimeSync.threads.forEach(t->{
+        SimulatorThread.threads.forEach(t->{
             model.addRow(TimeSyncType(t));
         });
 
     }
 
-    private Object[] TimeSyncType(TimeSync t){
+    private Object[] TimeSyncType(SimulatorThread t){
         if(t instanceof Simulator){
             return new Object[]{"Simulator" , FORMAT(t.getTime()), "start time"};
         }else if(t instanceof MatchMaker){

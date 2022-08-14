@@ -3,7 +3,7 @@ package app.model.users;
 /* third party */
 import java.util.*;
 
-import app.controller.TimeSync;
+import app.controller.SimulatorThread;
 import org.jetbrains.annotations.NotNull;
 
 /* local */
@@ -11,7 +11,7 @@ import app.model.graph.Node;
 import app.model.graph.Path;
 import app.controller.GraphAlgo;
 import utils.HashPriorityQueue;
-import utils.SimulatorLatch;
+import app.controller.Latch;
 
 /* static imports */
 import static utils.LogHandler.LOGGER;
@@ -23,7 +23,8 @@ import static utils.Utils.*;
  *             this.currPath = currPath;
  *         }
 */
-public class Driver extends User implements Runnable, TimeSync{
+public class Driver extends User implements Runnable, SimulatorThread {
+    private final Latch latch;
     private static final int MAX_PASSENGERS_NUM = 2; //todo set to 3
     private final int id;
     private final HashPriorityQueue<Rider> passengers;
@@ -33,12 +34,12 @@ public class Driver extends User implements Runnable, TimeSync{
     private double originalTime, detoursTime;
     private final Date startTime;
     private Date localTime;
-    private static SimulatorLatch latch = SimulatorLatch.INSTANCE;
     private boolean pathChange;
 
     /* CONSTRUCTORS */
 
     private Driver(Date startTime) {
+        this.latch = Latch.INSTANCE;
         this.id = UserMap.keyGenerator.incrementAndGet();
         this.startTime = startTime;
         this.localTime = startTime;
@@ -111,9 +112,9 @@ public class Driver extends User implements Runnable, TimeSync{
             if(pathChange){
                 return;
             }
+//            System.out.println("driver"+this.getId());
+            latch.waitOnCondition();
 
-
-            latch.waitIfPause();
         }
         pathChange = true;
     }

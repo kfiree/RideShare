@@ -5,8 +5,8 @@ import java.util.HashSet;
 
 import static utils.Utils.FORMAT;
 
-public interface TimeSync {
-    HashSet<TimeSync> threads = new HashSet<>();
+public interface SimulatorThread {
+    HashSet<SimulatorThread> threads = new HashSet<>(), sleeping = new HashSet<>();
 
 
     void setTime(Date date);
@@ -17,14 +17,13 @@ public interface TimeSync {
 
     Date getTime();
 
-    default void register(TimeSync t){//, Date date) {
-//        t.setTime(date);
+    default void register(SimulatorThread t){
         synchronized (this){
             threads.add(t);
         }
     }
 
-    default void unregister(TimeSync t) {
+    default void unregister(SimulatorThread t) {
         synchronized (this){
             threads.remove(t);
         }
@@ -40,7 +39,7 @@ public interface TimeSync {
     }
 
     static void showThreadsData(){
-        for (TimeSync t: threads) {
+        for (SimulatorThread t: threads) {
             System.out.println(t + " : " + FORMAT(t.getTime()));
 
         }

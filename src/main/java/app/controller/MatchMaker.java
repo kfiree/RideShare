@@ -4,7 +4,6 @@ import app.model.users.Driver;
 import app.model.graph.Node;
 import app.model.users.Rider;
 import app.model.users.UserMap;
-import utils.SimulatorLatch;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -19,16 +18,17 @@ import static utils.Utils.unLock;
 /* todo replace matchBruteForce1Pickup(Drive drive) with matchBruteForce1Pickup( ) (without drivers calling this method).
  *      might use https://github.com/frankfarrell/kds4j
  * */
-public class MatchMaker implements Runnable, TimeSync{
+public class MatchMaker implements Runnable, SimulatorThread {
+    private final Latch latch;
     private static final int MAX_KM_ADDITION_TO_PATH, SECONDS_15;
     private Simulator simulator = Simulator.INSTANCE;
-    private SimulatorLatch latch;
     private Date localTime;
 
 
     /* CONSTRUCTORS */
 
     public MatchMaker() {
+        this.latch = Latch.INSTANCE;
         localTime = UserMap.INSTANCE.getFirstEventTime();
     }
 
@@ -45,15 +45,16 @@ public class MatchMaker implements Runnable, TimeSync{
     public void run() {
         register(this);
 
-        this.latch = SimulatorLatch.INSTANCE;
 
         while(Simulator.INSTANCE.isAlive()){ //todo fix while by fixing 'simulator.isAlive()'
+//            System.out.println("MatchMaker");
+            latch.waitOnCondition();
+
             sleep(SECONDS_15);
 
             if(!UserMap.INSTANCE.getPendingRequests().isEmpty()){
                 matchMultiplePickup();
             }
-            latch.waitIfPause();
         }
 
         finish();
@@ -210,4 +211,5 @@ public class MatchMaker implements Runnable, TimeSync{
     public Date getTime() {
         return localTime;
     }
+
 }

@@ -1,23 +1,21 @@
 package app.controller;
 
-import app.model.graph.RoadMap;
-import app.model.users.UserMap;
-import app.view.MapView;
-import utils.JsonHandler;
-import utils.SimulatorLatch;
 
 import java.util.Date;
-import java.util.concurrent.locks.ReentrantLock;
-//import java.util.concurrent.BrokenBarrierException;
-//import java.util.concurrent.CyclicBarrier;
+
+import app.view.MapView;
+import utils.JsonHandler;
+import app.model.graph.RoadMap;
+import app.model.users.UserMap;
 
 import static app.controller.RoadMapHandler.CreateMap;
-import static app.controller.UserMapHandler.initEventsInLine;
 import static app.controller.UserMapHandler.initRandomEvents;
 import static utils.LogHandler.LOGGER;
-import static utils.Utils.*;
+import static utils.Utils.validate;
 
-public class Simulator implements Runnable, TimeSync{
+
+public class Simulator implements Runnable, SimulatorThread {
+    private final Latch latch;
     private static long SLEEP_BETWEEN_FRAMES;
     private double speed;
     private boolean show;
@@ -27,17 +25,13 @@ public class Simulator implements Runnable, TimeSync{
     private Thread eventsThread, cupidThread;
     private Date localTime;
     private final MapView mapView = MapView.instance;
-    private ReentrantLock simulatorLock = new ReentrantLock();
-    private SimulatorLatch latch;
-//    private ArrayList<Object> threads = new ArrayList<>();
-//    public final CyclicBarrier cyclicBarrier;
 
 
     /* CONSTRUCTORS */
 
     private Simulator(){
-//        this.cyclicBarrier = new CyclicBarrier(2);
         SLEEP_BETWEEN_FRAMES = 2000;
+        this.latch = Latch.INSTANCE;
     }
 
     /** Singleton specific properties */
@@ -45,7 +39,6 @@ public class Simulator implements Runnable, TimeSync{
 
     public void init(double simulatorSpeed, int requestNum, int driveNum, boolean show, boolean bounds, boolean createFromPBF){
         validate(simulatorSpeed > 0, "Illegal simulator speed "+ simulatorSpeed + ".");
-        this.latch = SimulatorLatch.INSTANCE;
         RoadMapHandler.setBounds(bounds);
 
         if (createFromPBF) {
@@ -70,7 +63,7 @@ public class Simulator implements Runnable, TimeSync{
 
 
     /* RUN */
-//int i = 0;
+
     @Override
     public void run() {
         localTime = UserMap.INSTANCE.getFirstEventTime();
@@ -94,16 +87,19 @@ public class Simulator implements Runnable, TimeSync{
         cupidThread = new Thread(cupid);
         cupidThread.start();
 
-        if(show){
-            do{
-                sleep(SLEEP_BETWEEN_FRAMES);
+
+        latch.lock();
+
+        do{
+//            System.out.println("Simulator");
+            latch.waitOnCondition();
+
+            if(show) {
                 updateFrame();
-//                i++;
-//                if(i%10 == 0){
-//                    TimeSync.showThreadsData();
-//                }
-            }while(isAlive());
-        }
+            }
+
+            sleep(SLEEP_BETWEEN_FRAMES);
+        }while(isAlive());
 
         finish();
     }
@@ -115,24 +111,11 @@ public class Simulator implements Runnable, TimeSync{
 
     private void updateFrame(){
         mapView.update();
-
-        latch.waitIfPause();
     }
 
     public boolean isAlive(){
         return eventsThread.isAlive() || !UserMap.INSTANCE.getDrives().isEmpty();
     }
-
-//    private void sleep() {
-//        localTime = new Date(localTime.getTime()+SLEEP_BETWEEN_FRAMES);
-//
-//        try {
-//            Thread.sleep((long) (SLEEP_BETWEEN_FRAMES/this.speed()));
-//            addTime(SLEEP_BETWEEN_FRAMES);
-//        }catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
 
 
@@ -157,6 +140,8 @@ public class Simulator implements Runnable, TimeSync{
     public Thread cupidThread() {
         return cupidThread;
     }
+
+
 
     @Override
     public Date getTime() {

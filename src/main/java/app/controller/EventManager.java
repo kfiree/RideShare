@@ -5,7 +5,6 @@ import app.model.users.Rider;
 import app.model.users.User;
 import app.model.users.UserMap;
 import utils.JsonHandler;
-import utils.SimulatorLatch;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -35,19 +34,20 @@ import static utils.Utils.*;
  *          - https://www.baeldung.com/java-add-hours-date
  *          - https://stackabuse.com/how-to-get-the-number-of-days-between-dates-in-java/
  */
-public class EventManager implements Runnable, TimeSync{
-    private final ReentrantLock lock;
+public class EventManager implements Runnable, SimulatorThread {
+    private final Latch latch;
+    private final ReentrantLock reentrantLock;
     private final ExecutorService pool;
     private final Queue<User> eventsQueue;
     private Date localTime;
     private final Simulator simulator;
-    private SimulatorLatch latch;
 
 
     /* CONSTRUCTORS */
 
     public EventManager() {
-        lock = new ReentrantLock();
+        this.latch = Latch.INSTANCE;
+        reentrantLock = new ReentrantLock();
         pool = Executors.newCachedThreadPool();
 
         localTime = UserMap.INSTANCE.getFirstEventTime();
@@ -67,7 +67,6 @@ public class EventManager implements Runnable, TimeSync{
 
         LOGGER.fine("RealTimeEvents star running");
 
-        this.latch  = SimulatorLatch.INSTANCE;
 
         while(!eventsQueue.isEmpty()){
             /*  poll new event and wait till it is his start time */
@@ -87,7 +86,9 @@ public class EventManager implements Runnable, TimeSync{
             + "\nevent time "+ FORMAT(newEvent.getStartTime()) + "."
             + "\nSimulator time "+ FORMAT(simulator.time()) + ".");
 
-            latch.waitIfPause();
+//            System.out.println("eventManager");
+            latch.waitOnCondition();
+
         }
 
         finish();
@@ -101,9 +102,9 @@ public class EventManager implements Runnable, TimeSync{
     }
 
     private void startEvent(User newEvent){
-        System.out.println("Starting " + newEvent);
+//        System.out.println("Starting " + newEvent);
         try {
-            lock.lock();
+            reentrantLock.lock();
             lock(false);//todo combine
             if(newEvent instanceof Driver drive){
                 UserMap.INSTANCE.startDrive(drive);
@@ -112,19 +113,10 @@ public class EventManager implements Runnable, TimeSync{
                 UserMap.INSTANCE.startRequest((Rider) newEvent);
             }
         } finally {
-            lock.unlock();
+            reentrantLock.unlock();
         }
 
     }
-
-//    private void sleep(long sleepTime ) {
-////        long sleepTime = 3000;
-//        try {
-//            Thread.sleep((long) (sleepTime / Simulator.INSTANCE.speed()));
-//            addTime(sleepTime);
-//        }
-//        catch (InterruptedException e) { e.printStackTrace(); }
-//    }
 
 
 

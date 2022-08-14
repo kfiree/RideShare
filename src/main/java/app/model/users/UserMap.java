@@ -25,6 +25,7 @@ public class UserMap {
     private final HashSet<UserEdge> userEdges;//todo use or delete
     private Simulator simulator;
     public static ReentrantLock requestsLock = new ReentrantLock(), drivesLock = new ReentrantLock();
+
     /** CONSTRUCTORS  */
     private UserMap() {
         this.onGoingDrives = new ArrayList<>();
