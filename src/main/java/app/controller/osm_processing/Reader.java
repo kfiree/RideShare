@@ -1,6 +1,7 @@
 package app.controller.osm_processing;
 
-import static app.controller.RoadMapHandler.inBound;
+import static app.model.utils.RoadMapHandler.inBound;
+import static utils.logs.LogHandler.LOGGER;
 
 import org.openstreetmap.osmosis.core.container.v0_6.*;
 import org.openstreetmap.osmosis.core.domain.v0_6.*;
@@ -24,6 +25,7 @@ public class Reader implements Sink {
     private final ArrayList<OsmWay> ways = new ArrayList<>();
     private final Map<Long, OsmObject> mapObjects = new HashMap<>();
     private final HashMap<Long, Long> JUNCTIONS = new HashMap<>();
+    private static int nodeNum = 0, wayNum = 0;
 
     /* GETTERS */
     public ArrayList<OsmWay> getWays() {
@@ -48,10 +50,21 @@ public class Reader implements Sink {
     @Override
     public void process(EntityContainer entityContainer) {
         if (entityContainer instanceof NodeContainer){
+            nodeNum++;
             processNode(((NodeContainer) entityContainer).getEntity());
+            if(nodeNum % 1000000 == 0){
+                LOGGER.info("Reader has processed " + nodeNum + " nodes.");
+            }
         } else if (entityContainer instanceof WayContainer){
+            wayNum++;
+            if(wayNum % 100000 == 0){
+                LOGGER.info("Reader has processed " + wayNum + " ways.");
+            }
             processWay(((WayContainer) entityContainer).getEntity());
         }
+
+
+
     }
 
     private void processWay(Way way){

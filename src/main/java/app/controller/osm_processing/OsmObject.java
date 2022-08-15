@@ -1,6 +1,6 @@
 package app.controller.osm_processing;
 
-import app.controller.RoadMapHandler;
+import app.model.utils.RoadMapHandler;
 import app.model.utils.Coordinates;
 import app.model.utils.Located;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;

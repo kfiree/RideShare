@@ -35,13 +35,20 @@ public enum JsonHandler {
         }
     }
 
-    public void load() {
+    public void load(String path) {
         switch (this) {
-            case All -> JSONToSimulatorState(Objects.requireNonNull(readFile(JSON_PATH + "state.json")));
-            case RoadMapType -> JSONToRoadMap(Objects.requireNonNull(readFile(JSON_PATH + "roadMap.json")));
-            case UserMapType -> JSONToUserMap(Objects.requireNonNull(readFile(JSON_PATH + "userMap.json")));
+            case All -> JSONToSimulatorState(Objects.requireNonNull(readFile(JSON_PATH + path)));
+            case RoadMapType -> JSONToRoadMap(Objects.requireNonNull(readFile(JSON_PATH + path)));
+            case UserMapType -> JSONToUserMap(Objects.requireNonNull(readFile(JSON_PATH + path)));
         }
     }
+//    public void load() {
+//        switch (this) {
+//            case All -> JSONToSimulatorState(Objects.requireNonNull(readFile(JSON_PATH + "state.json")));
+//            case RoadMapType -> JSONToRoadMap(Objects.requireNonNull(readFile(JSON_PATH + "roadMap.json")));
+//            case UserMapType -> JSONToUserMap(Objects.requireNonNull(readFile(JSON_PATH + "userMap.json")));
+//        }
+//    }
 
     private static void JSONToSimulatorState(JSONObject jsonObject){
         System.out.println("Load state to project...");
@@ -62,10 +69,10 @@ public enum JsonHandler {
     @SuppressWarnings("unchecked")
     private static JSONObject roadMapToJSON(){
         JSONArray nodesJSON = new JSONArray();
-        RoadMap.INSTANCE.getNodes().forEach(node -> nodesJSON.add(nodeToJSON(node)));
+        RoadMap.INSTANCE.nodesOperation(node -> nodesJSON.add(nodeToJSON(node)));
 
         JSONArray edgesJSON = new JSONArray();
-        RoadMap.INSTANCE.getEdges().forEach(edge -> edgesJSON.add(edgeToJSON(edge)));
+        RoadMap.INSTANCE.edgesOperation(edge -> edgesJSON.add(edgeToJSON(edge)));
 
         JSONObject metaDataJSON = new JSONObject();
         metaDataJSON.put("nodes_size", RoadMap.INSTANCE.nodesSize());

@@ -1,13 +1,13 @@
 package app.model.graph;
 
-import app.controller.GraphAlgo;
-import app.controller.RoadMapHandler;
+import app.model.utils.RoadMapHandler;
 import app.model.utils.Coordinates;
 import app.model.utils.Located;
 import org.jetbrains.annotations.NotNull;
 import app.controller.osm_processing.OsmObject;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 /**
@@ -23,13 +23,13 @@ import java.util.stream.Collectors;
 public class Node implements Comparable<Node>, Located {
     private final Long id;
     private final Coordinates coordinates;
-    private final Set<Edge> edges;
+    private final CopyOnWriteArrayList<Edge> edges;
     private double f;
 
 
     public Node(long id, Coordinates coordinates) {
         this.coordinates = coordinates;
-        edges = new HashSet<>();
+        edges = new CopyOnWriteArrayList<>();
         this.id = id;
     }
 
@@ -78,7 +78,7 @@ public class Node implements Comparable<Node>, Located {
         return adjacentNodes;
     }
 
-    public Set<Edge> getEdges() {
+    public List<Edge> getEdges() {
         return edges;
     }
 

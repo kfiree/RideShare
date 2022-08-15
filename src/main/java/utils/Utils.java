@@ -1,12 +1,10 @@
 package utils;
 
-import javax.swing.*;
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static utils.LogHandler.LOGGER;
+import static utils.logs.LogHandler.LOGGER;
 
 /**
  * todo check what package-private is.
@@ -63,17 +61,5 @@ public class Utils {
 
     public static void unLock(){
         lock.unlock();
-    }
-
-    public static String chooseFile() {
-        // JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-        JFileChooser jfc = new JFileChooser("data");
-        jfc.setDialogTitle("Select .osm.pbf file to read");
-        int returnValue = jfc.showOpenDialog(null);
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = jfc.getSelectedFile();
-            return selectedFile.getAbsolutePath();
-        }
-        return "Not A Valid Path";
     }
 }

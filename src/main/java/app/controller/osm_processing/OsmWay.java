@@ -54,7 +54,7 @@ public class OsmWay implements Located {
     }
 
     /**
-     * @return coordinates of way's start
+     * @return coordinates of way's choose
      */
     @Override
     public Coordinates getCoordinates() {

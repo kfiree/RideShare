@@ -1,9 +1,9 @@
 package app;
 
-import app.controller.RoadMapHandler;
-import app.controller.Simulator;
+import app.model.utils.RoadMapHandler;
+import app.controller.simulator.Simulator;
 
-import static utils.LogHandler.*;
+import static utils.logs.LogHandler.*;
 
 /**
  *
@@ -21,8 +21,8 @@ import static utils.LogHandler.*;
  *
  *
  *    Use case:
- *      * to run with intellij with args[]
- *           edit configuration -> Name: APP -> Build and run -> Program arguments -> insert relevant flags
+ *      * to operate with intellij with args[]
+ *           edit configuration -> Name: APP -> Build and operate -> Program arguments -> insert relevant flags
  *
  *
  *      * to convert files:
@@ -86,7 +86,7 @@ import static utils.LogHandler.*;
  *
  *      TODO project:
  *          Priority 1:
- *              - add summary of run
+ *              - add summary of operate
  *              - ReadMe (use javadocs).
  *              - Address warnings - optimize project.
  *              -
@@ -143,8 +143,8 @@ public final class Main {
         SIMULATOR_SPEED = 2.0;
         BOUNDS = true;
         CONSOLE_LOG_LEVEL =
-                "SEVERE";
-//                "ALL";
+//                "SEVERE";
+                "ALL";
         SHOW_MAP = true;
         DRIVE_NUM = 15;
         REQUEST_NUM = 20;

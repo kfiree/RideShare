@@ -64,6 +64,6 @@ public class Rider extends User {
 
     @Override
     public String toString() {
-        return "Rider " + id + ", start time " + FORMAT(askTime) ;
+        return "Rider " + id + ", choose time " + FORMAT(askTime) ;
     }
 }

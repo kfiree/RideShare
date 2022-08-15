@@ -1,16 +1,17 @@
 package app.view;
 
 
-import app.controller.Simulator;
+import app.controller.simulator.Simulator;
 
 import static utils.Utils.FORMAT;
-import static app.view.StyleUtils.*;
+import static app.view.utils.Style.*;
 
 import app.model.graph.RoadMap;
 import app.model.users.Driver;
 import app.model.users.Rider;
 import app.model.users.User;
 import app.model.users.UserMap;
+import app.view.frames.SimulatorFrame;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -18,6 +19,7 @@ import org.graphstream.graph.implementations.MultiGraph;
 
 import javax.swing.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -39,8 +41,8 @@ import java.util.*;
 public class MapView{
     /* MAP */
     protected final UserMap userMap;
-    static protected final Hashtable<User, Node> elementsOnMapNodes;
-    static protected final Graph displayGraph;
+    private final Map<User, Node> elementsOnMapNodes;
+    private final Graph displayGraph;
 
     /* DISPLAY */
     protected SimulatorFrame simulatorFrame;
@@ -56,67 +58,23 @@ public class MapView{
 
 
     static{
-//        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
-        displayGraph = new MultiGraph("map simulation");
-
-        displayGraph.addAttribute("ui.stylesheet", styleSheet);
-        displayGraph.addAttribute("ui.quality");
-        displayGraph.addAttribute("ui.antialias");
-
-        elementsOnMapNodes = new Hashtable<>();
         SLEEP_BETWEEN_FRAMES = 2000;
     }
 
     /** CONSTRUCTORS */
     private MapView() {
         userMap = UserMap.INSTANCE;
+        displayGraph = new MultiGraph("map simulation");
 
+        displayGraph.addAttribute("ui.stylesheet", styleSheet);
+        displayGraph.addAttribute("ui.quality");
+        displayGraph.addAttribute("ui.antialias");
 
-//
-//        JFrame frame = new JFrame();
-//        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-//
-//        JPanel panel = new JPanel(new GridLayout())
-//        {
-//            @Override
-//            public Dimension getPreferredSize() {
-//                return Toolkit.getDefaultToolkit().getScreenSize();
-////                Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-////                setBounds(100, 100, (int) dim.getWidth(), (int) dim.getHeight());
-////                return new Dimension(640, 480);
-//            }
-//        };
-//
-//        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-//        frame.setBounds(100, 100, (int) dim.getWidth(), (int) dim.getHeight());
-//        frame.setLocationRelativeTo(null);
-//
-//        panel.setBorder(BorderFactory.createLineBorder(Color.black, 5));
-//
-//        viewer = new Viewer(displayGraph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
-////        ViewPanel graphRenderer = viewer.addView("graphRenderer", new J2DGraphRenderer());
-////        View view = viewer.addDefaultView(false);
-//
-//        ViewPanel viewPanel = viewer.addDefaultView(false);
-//        panel.add(viewPanel);
-////        panel.add(new JSeparator());
-//
-//
-//        frame.add(panel);
-//        frame.pack();
-//        frame.setLocationRelativeTo(null);
-//        frame.setVisible(true);
-//        pipeIn = simulatorFrame.getGraphViewer().newViewerPipe();
-//        viewer.getView("view1").setShortcutManager(new MapShortcutManager());
-//        viewer.getView("view1").setMouseManager(new MapMouseManager());
-//        viewer.setCloseFramePolicy(Viewer.CloseFramePolicy.CLOSE_VIEWER);
-//        pipeIn.addAttributeSink( displayGraph );
-
-
+        elementsOnMapNodes = new ConcurrentHashMap<>();
     }
 
     /** Singleton specific properties */
-    public static final MapView instance = new MapView();
+    public static final MapView INSTANCE = new MapView();
 
     public void init(Simulator simulator){
         this.simulator = simulator;
@@ -185,22 +143,14 @@ public class MapView{
         }
     }
 
-//    private void sleep() {
-//        simulatorCurrTime = new Date(simulatorCurrTime.getTime()+SLEEP_BETWEEN_FRAMES);
-//        clock.addAttribute("ui.label", FORMAT(simulatorCurrTime));
-//        try { Thread.sleep(SLEEP_BETWEEN_FRAMES) ; }
-//        catch (InterruptedException e) { e.printStackTrace(); }
-//    }
-
     private void drawRoadMap(){
-        RoadMap.INSTANCE.getEdges().forEach(e -> {
+        RoadMap.INSTANCE.edgesOperation(e -> {
             if(displayGraph.getEdge(String.valueOf(e.getId())) == null) {
                 Node start = drawNode(e.getNode1());
                 Node end = drawNode(e.getNode2());
                 Edge displayEdge = displayGraph.addEdge(String.valueOf(e.getId()), start, end);//, e.isDirected());
                 displayEdge.addAttribute("ui.class", "edge."+e.getHighwayType());
             }
-
         });
     }
 
@@ -219,33 +169,19 @@ public class MapView{
 
         return displayNode;
     }
+
+    /* GETTERS */
+
+    public Map<User, Node> getElementsOnMapNodes() {
+        return elementsOnMapNodes;
+    }
+
+    public Graph getDisplayGraph() {
+        return displayGraph;
+    }
 }
 
 
-
-//
-//    private MapView() {
-//        userMap = UserMap.INSTANCE;
-//
-//
-//        /* set graph */
-//        viewer = new Viewer(displayGraph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
-//        pipeIn = viewer.newViewerPipe();
-//        viewer.addView("view1", new J2DGraphRenderer());
-//        viewer.disableAutoLayout();
-//
-//        viewer.getView("view1").setShortcutManager(new MapShortcutManager());
-//        viewer.getView("view1").setMouseManager(new MapMouseManager());
-//        viewer.setCloseFramePolicy(Viewer.CloseFramePolicy.CLOSE_VIEWER);
-//        pipeIn.addAttributeSink( displayGraph );
-//
-//        displayGraph.addAttribute("ui.stylesheet", styleSheet);
-//        displayGraph.addAttribute("ui.quality");
-//        displayGraph.addAttribute("ui.antialias");
-//
-//
-//    }
-//
 
 
 
@@ -307,11 +243,11 @@ public class MapView{
 //
 //package app.view;
 //
-//import app.controller.Simulator;
+//import app.controller.simulator.Simulator;
 //import app.model.*;
 //
 //import static utils.Utils.FORMAT;
-//import static app.view.StyleUtils.*;
+//import static app.view.utils.StyleUtils.*;
 //
 //import app.model.interfaces.ElementOnMap;
 //import org.graphstream.graph.Edge;
@@ -393,7 +329,7 @@ public class MapView{
 //    public static final MapView instance = new MapView();
 //
 ////    @Override
-////    public void run() {
+////    public void operate() {
 ////        this.simulatorCurrTime = simulator.time();
 ////
 ////        pipeIn.pump();
@@ -492,9 +428,9 @@ public class MapView{
 //    private void drawRoadMap(){
 //        RoadMap.INSTANCE.getEdges().forEach(e -> {
 //            if(displayGraph.getEdge(String.valueOf(e.getId())) == null) {
-//                Node start = drawNode(e.getNode1());
+//                Node choose = drawNode(e.getNode1());
 //                Node end = drawNode(e.getNode2());
-//                Edge displayEdge = displayGraph.addEdge(String.valueOf(e.getId()), start, end);//, e.isDirected());
+//                Edge displayEdge = displayGraph.addEdge(String.valueOf(e.getId()), choose, end);//, e.isDirected());
 //                displayEdge.addAttribute("ui.class", "edge."+e.getHighwayType());
 //            }
 //

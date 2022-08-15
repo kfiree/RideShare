@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static utils.Utils.FORMAT;
 import static utils.Utils.validate;
+import static utils.logs.LogHandler.LOGGER;
 
 /**
  *      |==================================|
@@ -23,8 +25,11 @@ import static utils.Utils.validate;
  */
 public final class Parser {
     private final Map<OsmObject, Map<OsmObject, OsmWay>> AdjacentMap = new HashMap<>();
+    private static int waysNum;
 
     public void parseMapWays(ArrayList<OsmWay> ways){
+        waysNum = ways.size();
+
         initAdjacentMap(ways);
 
         buildRoadMap();
@@ -42,7 +47,9 @@ public final class Parser {
     }
 
     private void initAdjacentMap(ArrayList<OsmWay> ways){
+        int index = 0;
         for (OsmWay way: ways) {
+            index++;
 
             List<OsmObject> objectsOnWay = way.getObjectsOnWay();
             OsmObject srcObj , dstObj;
@@ -62,6 +69,10 @@ public final class Parser {
                     }
                 }
                 addWay(srcObj,  objectsOnWay.get(objectsOnWay.size() -1), way, directed); //todo check its last
+            }
+
+            if(index % 10000 == 0){
+                LOGGER.info("Parser has parse " + FORMAT(((double)index)/waysNum) + "% of the map.");
             }
         }
     }

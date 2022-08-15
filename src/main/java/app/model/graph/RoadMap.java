@@ -3,9 +3,15 @@ package app.model.graph;
 import app.controller.osm_processing.OsmObject;
 import app.controller.osm_processing.OsmWay;
 import app.model.utils.Coordinates;
+import utils.DS.EdgeOperation;
+import utils.DS.NodeOperation;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
+
+import static utils.logs.LogHandler.LOGGER;
 
 /**
  *      |==================================|
@@ -20,7 +26,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since   2021-06-20
  */
 public class RoadMap {
-
+    private final ReentrantLock edgeLock, nodeLock;
+    private String name = "";
     private final Set<Edge> edges;
     private final Map<Long, Node> nodes;
     protected static AtomicInteger keyGenerator = new AtomicInteger(-1);
@@ -29,6 +36,8 @@ public class RoadMap {
     private RoadMap(){
         edges = new HashSet<>();
         nodes = new HashMap<>();
+        edgeLock = new ReentrantLock();
+        nodeLock = new ReentrantLock();
     }
 
     /**  Singleton specific properties */
@@ -38,11 +47,27 @@ public class RoadMap {
 
     /* GETTERS */
 
+    public String getName() {
+        return name;
+    }
+
     public Node getNode(long key){ return nodes.get(key); }
 
-    public Collection<Node> getNodes() { return nodes.values();}
+    public Collection<Node> getNodes(){
+        return Collections.unmodifiableCollection(nodes.values());
+    }
 
-    public Set<Edge> getEdges() { return edges; }
+    public void nodesOperation(NodeOperation op){
+        nodes.values().forEach(op::operate);
+    }
+    public void edgesOperation(EdgeOperation op){
+        edgeLock.lock();
+        edges.forEach(op::operate);
+        edgeLock.unlock();
+    }
+//    private Collection<Edge> getEdges() {
+//        return Collections.unmodifiableCollection(edges);
+//    }
 
     public int edgesSize(){ return nodes.size(); }
 
@@ -52,10 +77,15 @@ public class RoadMap {
 
     /*     SETTERS     */
 
+    public void setName(String name)  {
+        this.name = name;
+    }
+
     public void setEdges(Collection<Edge> edges) { this.edges.addAll(edges); }
 
     /** add edge from Parser */
     public void addEdge(Node src, Node dst, OsmWay way){
+        edgeLock.lock();
         Edge edge = setEdgeIfExists(src, dst);
 
         if(edge == null){
@@ -63,6 +93,8 @@ public class RoadMap {
             src.addEdge(edge);
             edges.add(edge);
         }
+
+        edgeLock.unlock();
 
     }
 
@@ -125,7 +157,7 @@ public class RoadMap {
 
     /* REMOVE FROM GRAPH */
 
-    public Node removeNode(long id){ //TODO check this
+    public Node removeNode(long id){ //TODO uncheck
         Node node = this.nodes.remove(id);
 
         node.getEdges().forEach(edge ->{
@@ -141,12 +173,15 @@ public class RoadMap {
         List<Edge> edgesToRemove = new ArrayList<>();
 
         for(Node node:nodesToRemove) {
-            nodes.remove(node.getId());
             for (Edge edge : node.getEdges()) {
                 edge.getOtherEnd(node.getId()).removeEdgeTo(node);
                 edgesToRemove.add(edge);
             }
         }
+
+        nodes.entrySet().removeIf(e->nodesToRemove.contains(e.getValue()));
+
+
 
         edgesToRemove.forEach(edges::remove);
 
@@ -161,6 +196,16 @@ public class RoadMap {
 
     }
 
+    public void removeAllNodesBut(List<Node> nodesToKeep){
+        List<Node> nodesToRemove = nodes.values().stream()
+                .filter(node -> !nodesToKeep.contains(node))
+                .collect(Collectors.toList());
+
+        LOGGER.info(nodesToRemove.size() + " nodes that are not part of main component are found and being removed.");
+
+        removeNodes(nodesToRemove);
+    }
+
     public boolean removeEdge(Edge edge){
         edge.getNode2().removeEdge(edge);
         edge.getNode1().removeEdge(edge);
@@ -169,6 +214,8 @@ public class RoadMap {
 
 
 
+    public static void unlockEdges(){}
+    public static void unlockNode(){}
     @Override
     public String toString() {
         return "RoadMap{" +

@@ -1,6 +1,6 @@
 package app.model.users;
 
-import app.controller.Simulator;
+import app.controller.simulator.Simulator;
 import app.model.utils.UserEdge;
 import app.model.graph.Node;
 
