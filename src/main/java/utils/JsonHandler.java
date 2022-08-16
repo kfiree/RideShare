@@ -5,7 +5,7 @@ import app.model.graph.Node;
 import app.model.graph.Path;
 import app.model.graph.RoadMap;
 import app.model.users.Driver;
-import app.model.users.Rider;
+import app.model.users.Passenger;
 import app.model.users.UserMap;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -222,13 +222,13 @@ public enum JsonHandler {
     }
 
     @SuppressWarnings("unchecked")
-    private static JSONObject pedestrianToJSON(Rider rider){
+    private static JSONObject pedestrianToJSON(Passenger passenger){
         JSONObject pedestrianJSON = new JSONObject();
 
-        pedestrianJSON.put("id", rider.getId());
-        pedestrianJSON.put("src", rider.getLocation().getId());
-        pedestrianJSON.put("dst", rider.getDestination().getId());
-        pedestrianJSON.put("date", rider.getStartTime().getTime());
+        pedestrianJSON.put("id", passenger.getId());
+        pedestrianJSON.put("src", passenger.getLocation().getId());
+        pedestrianJSON.put("dst", passenger.getDestination().getId());
+        pedestrianJSON.put("date", passenger.getStartTime().getTime());
 
         return pedestrianJSON;
     }

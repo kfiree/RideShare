@@ -16,8 +16,8 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class UserMap {
     private final Hashtable<Integer, Driver> drives;
-    private final Hashtable<Integer, Rider> requests;
-    private final ArrayList<Rider>  pendingRequests;
+    private final Hashtable<Integer, Passenger> requests;
+    private final ArrayList<Passenger>  pendingRequests;
     private final ArrayList<Driver> onGoingDrives;
     private final ArrayList<User> finished;
     protected static AtomicInteger keyGenerator = new AtomicInteger(-1);
@@ -52,9 +52,9 @@ public class UserMap {
 
     public Collection<Driver> getOnGoingDrives() { return onGoingDrives; }
 
-    public Collection<Rider> getRequests() { return requests.values(); }
+    public Collection<Passenger> getRequests() { return requests.values(); }
 
-    public Collection<Rider> getPendingRequests() { return pendingRequests; }
+    public Collection<Passenger> getPendingRequests() { return pendingRequests; }
 
     public ArrayList<User> getFinishedEvents() {
         return finished;
@@ -67,8 +67,8 @@ public class UserMap {
     /*     SETTERS     */
 
     public void addDrive(Driver drive) {
-        for(Rider rider: this.requests.values()){
-            this.userEdges.add(new UserEdge(drive, rider));
+        for(Passenger passenger : this.requests.values()){
+            this.userEdges.add(new UserEdge(drive, passenger));
 
         }
         drives.put(drive.getId(), drive);
@@ -80,13 +80,13 @@ public class UserMap {
         return drive;
     }
 
-    public void addRequest(Rider rider){
-        requests.put(rider.getId(), rider);
+    public void addRequest(Passenger passenger){
+        requests.put(passenger.getId(), passenger);
     }
 
     public void addRequest(Node src, Node dst, Date date) {
-        Rider rider = new Rider(src, dst, date);
-        requests.put(rider.getId(), rider);
+        Passenger passenger = new Passenger(src, dst, date);
+        requests.put(passenger.getId(), passenger);
     }
 
     public LinkedList<User> getEventQueue(){
@@ -102,8 +102,8 @@ public class UserMap {
         return events;
     }
 
-    public void startRequest(Rider rider){
-        this.pendingRequests.add(rider);
+    public void startRequest(Passenger passenger){
+        this.pendingRequests.add(passenger);
     }
 
     public void startDrive(Driver drive){
@@ -134,8 +134,8 @@ public class UserMap {
         finished.add(user);
     }
 
-    public void pickPedestrian(Rider rider){
-        pendingRequests.remove(rider);
+    public void matchPassenger(Passenger passenger){
+        pendingRequests.remove(passenger);
     }
 
 

@@ -2,15 +2,12 @@ package app.view.utils;
 
 
 import app.model.users.Driver;
-import app.model.users.Rider;
 import app.model.users.User;
 import app.model.users.UserMap;
 import app.model.utils.Coordinates;
 import app.view.MapView;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
-import org.graphstream.ui.spriteManager.Sprite;
-import org.graphstream.ui.spriteManager.SpriteManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -103,11 +100,7 @@ public class Style {
     }
 
     private static synchronized void stylePassenger(Driver drive, String color){
-        for (User element : drive.getPassengers()) {//todo lock
-            if(element instanceof Rider) {
-                styleNodes(color, MapView.INSTANCE.getElementsOnMapNodes().get(element));
-            }
-        }
+        drive.passengerOperation(rider -> styleNodes(color, MapView.INSTANCE.getElementsOnMapNodes().get(rider)));
     }
 
 

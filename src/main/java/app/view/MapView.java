@@ -8,7 +8,7 @@ import static app.view.utils.Style.*;
 
 import app.model.graph.RoadMap;
 import app.model.users.Driver;
-import app.model.users.Rider;
+import app.model.users.Passenger;
 import app.model.users.User;
 import app.model.users.UserMap;
 import app.view.frames.SimulatorFrame;
@@ -110,7 +110,7 @@ public class MapView{
 
         }
 
-        for (Rider request : new ArrayList<>(userMap.getPendingRequests())) {
+        for (Passenger request : new ArrayList<>(userMap.getPendingRequests())) {
             Node node = elementsOnMapNodes.get(request);
 
             if (node == null) {

@@ -7,30 +7,40 @@ import static utils.Utils.FORMAT;
 
 
 
-public class Rider extends User {
+public class Passenger extends User {
     private final Date askTime;
     private final Node src, dest;
-    private final int id;
-    private boolean taken;
+    private boolean matched;
     private boolean carNextTarget;
 
 
-    public Rider(@NotNull Node currNode, @NotNull Node destination, Date askTime) {
-        this.id = UserMap.keyGenerator.incrementAndGet();
+    /* CONSTRUCTORS  */
+    public Passenger(@NotNull Node currNode, @NotNull Node destination, Date askTime) {
         this.askTime = askTime;
         this.dest = destination;
         this.src = currNode;
     }
 
-    public void markTaken() {
+
+    /* LOGIC */
+
+    public void markMatched() {
         /* remove this from waiting list */
-        taken = true;
-        UserMap.INSTANCE.pickPedestrian(this);
+        matched = true;
+        UserMap.INSTANCE.matchPassenger(this);
     }
 
-    public boolean isTaken() {
-        return taken;
+    public boolean isMatched() {
+        return matched;
     }
+
+//    public boolean distTo(Node node) {
+//        return Math.min(getDestination().distanceTo(node), getLocation().distanceTo(node));
+//    }
+
+
+
+    /* GETTERS */
 
     @Override
     public Node getNextStop(){
@@ -47,6 +57,13 @@ public class Rider extends User {
     @Override
     public Node getLocation() { return src; }
 
+    @Override
+    public Date getStartTime() { return askTime; }
+
+
+
+    /* SETTERS */
+
     public void setCarNextTarget(boolean nextTarget) {
         this.carNextTarget = nextTarget;
     }
@@ -55,11 +72,7 @@ public class Rider extends User {
         return carNextTarget;
     }
 
-    @Override
-    public Date getStartTime() { return askTime; }
 
-    @Override
-    public int getId() { return id; }
 
 
     @Override

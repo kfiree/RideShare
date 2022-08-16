@@ -1,21 +1,20 @@
 package app.model.utils;
 
 import app.model.users.Driver;
-import app.model.users.Rider;
-import app.model.utils.Coordinates;
+import app.model.users.Passenger;
 
 public class UserEdge {
     private final Driver drive;
-    private final Rider rider;
+    private final Passenger passenger;
     private double weight;
     private final int id;
     private static int  keyGenerator = 0;
 
 
-    public UserEdge(Driver drive, Rider ride){
+    public UserEdge(Driver drive, Passenger ride){
         this.id = ++keyGenerator;
         this.drive = drive;
-        this.rider = ride;
+        this.passenger = ride;
     }
 
     /*  GETTERS */
@@ -26,8 +25,8 @@ public class UserEdge {
         return drive;
     }
 
-    public Rider getRider() {
-        return rider;
+    public Passenger getRider() {
+        return passenger;
     }
 
     public Double getWeight() {

@@ -2,7 +2,7 @@ package app.controller.simulator;
 
 import utils.DS.Latch;
 import app.model.users.Driver;
-import app.model.users.Rider;
+import app.model.users.Passenger;
 import app.model.users.User;
 import app.model.users.UserMap;
 import utils.JsonHandler;
@@ -111,7 +111,7 @@ public class EventManager implements Runnable, SimulatorThread {
                 UserMap.INSTANCE.startDrive(drive);
                 pool.execute(drive);
             }else{
-                UserMap.INSTANCE.startRequest((Rider) newEvent);
+                UserMap.INSTANCE.startRequest((Passenger) newEvent);
             }
         } finally {
             reentrantLock.unlock();

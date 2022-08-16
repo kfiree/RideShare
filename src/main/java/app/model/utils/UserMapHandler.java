@@ -4,7 +4,7 @@ import app.model.graph.Node;
 import app.model.graph.Path;
 import app.model.graph.RoadMap;
 import app.model.users.Driver;
-import app.model.users.Rider;
+import app.model.users.Passenger;
 import app.model.users.UserMap;
 import utils.JsonHandler;
 
@@ -72,7 +72,7 @@ public class UserMapHandler {
         }
     }
 
-    private static void showRider(String msg, Collection<Rider> users){
+    private static void showRider(String msg, Collection<Passenger> users){
         if(!users.isEmpty()) {
             StringBuilder builder = new StringBuilder();
             users.forEach(u -> builder.append("{Passenger " + u.getId() + ", choose " + FORMAT(u.getStartTime()) + "}\n"));
@@ -100,8 +100,8 @@ public class UserMapHandler {
             dst = nodes.get(randomIndexes[i*2 +1 ]);
             int timeAdded = rand.nextInt(RAND_MAX_EVENT_DIFF);
 
-            Rider rider = new Rider(src, dst, new Date(pedestriansStartTime + ((long) (CONST_EVENT_DIFF + timeAdded) * i)));
-            userMap.addRequest(rider);
+            Passenger passenger = new Passenger(src, dst, new Date(pedestriansStartTime + ((long) (CONST_EVENT_DIFF + timeAdded) * i)));
+            userMap.addRequest(passenger);
         }
 
         LOGGER.finer("init "+ requestsNum + " pedestrians.");

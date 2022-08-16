@@ -1,7 +1,11 @@
 package utils;
 
+import org.apache.commons.math3.geometry.Point;
+
+import java.awt.geom.Point2D;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.PriorityQueue;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static utils.logs.LogHandler.LOGGER;
@@ -55,6 +59,7 @@ public class Utils {
         }
     }
 
+
     public static long timeDiff(Date from, Date to){
         return to.getTime() - from.getTime();
     }
@@ -62,4 +67,60 @@ public class Utils {
     public static void unLock(){
         lock.unlock();
     }
+
+//    public static double lineToPointDist(double x, double y, double x1, double y1, double x2, double y2){
+//        double A = x - x1; // position of point rel one end of line
+//        double B = y - y1;
+//        double C = x2 - x1; // vector along line
+//        double D = y2 - y1;
+//        double E = -D; // orthogonal vector
+//        double F = C;
+//
+//        double dot = A * E + B * F;
+//        double len_sq = E * E + F * F;
+//
+//        return dot * dot / len_sq;
+//    }
+
+    public static double lineToPointDist(double px, double py, double x1, double y1, double x2, double y2){ // https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
+        double numerator = Math.abs((x2 - x1)*(y1 - py) - (x1 - px)*(y2 - y1));
+        double denominator = Math.sqrt(Math.pow((x2-x1), 2) + Math.pow(y2-y1, 2));
+
+        return numerator/denominator;
+    }
+
+    private static void foo(double x, double y){
+        double x1 = -2;
+        double y1 = 1;
+        double x2 = 4;
+        double y2 = -3;
+
+        System.out.println(lineToPointDist(x, y, x1, y1, x2, y2));
+    }
+    public static void main(String[] args) {
+
+        double x1 = 1;
+        double y1 = 2;
+
+        double x2 = 3;
+        double y2 = 4;
+
+        double x3 = -1;
+        double y3 = -2;
+
+        double x4 = -0.5;
+        double y4 = 0;
+
+        double x5 = 15;
+        double y5 = 2;
+
+        foo(x1, y1);
+        foo(x2, y2);
+        foo(x3, y3);
+        foo(x4, y4);
+        foo(x5, y5);
+
+
+    }
+
 }

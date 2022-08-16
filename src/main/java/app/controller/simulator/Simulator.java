@@ -3,7 +3,7 @@ package app.controller.simulator;
 
 import java.util.Date;
 
-import app.view.frames.ChooseRegion;
+import app.view.frames.ChooseRegionFrame;
 import utils.DS.Latch;
 import app.view.MapView;
 import utils.JsonHandler;
@@ -42,12 +42,12 @@ public class Simulator implements Runnable, SimulatorThread {
     public void init(double simulatorSpeed, int requestNum, int driveNum, boolean show, boolean bounds, boolean createFromPBF){
         validate(simulatorSpeed > 0, "Illegal simulator speed "+ simulatorSpeed + ".");
 
-//        String region = ChooseRegion.choose();
-        String region = "tlv.json";
+        String region = ChooseRegionFrame.choose();
+//        String region = "tlv.json";
 
         if (createFromPBF || region.equals("Custom")) {
             LOGGER.info( "Start parsing main map.");
-            CreateMap(ChooseRegion.chooseFile());
+            CreateMap(ChooseRegionFrame.chooseFile());
             JsonHandler.RoadMapType.save();
         } else {
             LOGGER.info( "Read road map from JSON.");

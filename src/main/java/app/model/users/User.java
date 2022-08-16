@@ -12,11 +12,7 @@ public abstract class User implements Comparable<User>, Located {
     protected static AtomicInteger keyGenerator = new AtomicInteger(-1);
     private Node currNode, destination;
     private Date startTime;
-    final int id;
-
-    public User() {
-        this.id = keyGenerator.incrementAndGet();
-    }
+    final int id = keyGenerator.incrementAndGet();;
 
     /* GETTERS*/
 
