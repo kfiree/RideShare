@@ -3,6 +3,7 @@ package app;
 import app.controller.RoadMapHandler;
 import app.controller.Simulator;
 
+
 import static utils.LogHandler.*;
 
 /**
@@ -138,7 +139,7 @@ public final class Main {
 
     static{
         PARSE_FROM_PBF = false;
-        PBF_PATH = "data/maps/osm/israel.pbf";
+        PBF_PATH = "/Users/amitha/Desktop";
         NODE_IN_MAIN_COMPONENT =2432701015L;
         SIMULATOR_SPEED = 2.0;
         BOUNDS = true;

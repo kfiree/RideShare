@@ -20,7 +20,7 @@ public class Rider extends User {
     private boolean taken;
     private boolean carNextTarget;
     private Date pickupTime, dropTime;
-    private long totalTimeTraveled;
+    private long totalTimeTraveled, timeWaited;
 
 
     public Rider(@NotNull Node currNode, @NotNull Node destination, Date askTime) {
@@ -72,11 +72,13 @@ public class Rider extends User {
     @Override
     public int getId() { return id; }
 
-    public void setPickupTime(Date pickupTime) { this.pickupTime = pickupTime;}
+    public void setPickupTime(Date pickupTime) {
+        this.pickupTime = pickupTime;
+        timeWaited = (pickupTime.getTime() - askTime.getTime()) / (60*1000) % 60;
+    }
 
     public void setDropTime(Date dropTime) {
         totalTimeTraveled = (dropTime.getTime() - pickupTime.getTime()) / (60*1000) % 60;
-        System.out.println("drop time: "+ dropTime);
         this.dropTime = dropTime;
     }
 
@@ -90,6 +92,10 @@ public class Rider extends User {
 
     public long getTotalTimeTraveled() {
         return totalTimeTraveled;
+    }
+
+    public long getTimeWaited() {
+        return timeWaited;
     }
 
     @Override

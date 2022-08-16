@@ -123,6 +123,7 @@ public class Simulator implements Runnable, SimulatorThread {
     }
 
     private void writeRequestToCsv(Collection<Rider> riders) {
+        riders = riders.stream().filter(rider -> rider.getPickupTime() != null && rider.getDropTime() != null).toList();
         File file = new File("data/logs/sum.csv");
         try {
             // create FileWriter object with file as parameter
@@ -132,7 +133,7 @@ public class Simulator implements Runnable, SimulatorThread {
             CSVWriter writer = new CSVWriter(outputfile);
 
             // adding header to csv
-            String[] header = { "id", "ask_time", "pickup_time", "drop_time", "total_time_traveled"};
+            String[] header = { "id", "ask_time", "pickup_time", "src", "drop_time", "dest", "total_time_waited", "total_time_traveled"};
             writer.writeNext(header);
 
             // add data to csv
@@ -142,15 +143,19 @@ public class Simulator implements Runnable, SimulatorThread {
                         rider.getId()+"",
                         rider.getStartTime()+"",
                         rider.getPickupTime().toLocaleString(),
+                        rider.getLocation().toString(),
                         rider.getDropTime().toLocaleString(),
-                        rider.getTotalTimeTraveled()+""
+                        rider.getDestination().toString(),
+                        rider.getTimeWaited()+" Minutes",
+                        rider.getTotalTimeTraveled()+" Minutes"
                 };
                 data.add(row);
             }
 
             // sum up some fields in the last row.
             long totalTimeAvg = riders.stream().mapToLong(Rider::getTotalTimeTraveled).sum() / riders.size();
-            String[] summary = {"NaN", "NaN", "NaN", totalTimeAvg+""};
+            long timeWaitedAvg = riders.stream().mapToLong(Rider::getTimeWaited).sum() / riders.size();
+            String[] summary = {"Summary", "--", "--", "--", "--", "--", timeWaitedAvg+" Minutes",totalTimeAvg+" Minutes"};
             data.add(summary);
 
             writer.writeAll(data);
