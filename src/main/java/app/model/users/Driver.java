@@ -1,9 +1,11 @@
 package app.model.users;
 
 /* third party */
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
+import app.view.MapView;
 import app.controller.simulator.Simulator;
 import app.controller.simulator.SimulatorThread;
 import org.jetbrains.annotations.NotNull;
@@ -213,6 +215,7 @@ public class Driver extends User implements Runnable, SimulatorThread {
                     }
                 } else { /* passenger dropped */
                     if (currNode == nextDriver.getDestination()) {
+                        nextDriver.setDropTime(Simulator.INSTANCE.time());
                         getNextDest();
                     }
 //                        updatePath(rider.getNextStop());
