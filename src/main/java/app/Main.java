@@ -143,8 +143,8 @@ public final class Main {
         SIMULATOR_SPEED = 2.0;
         BOUNDS = true;
         CONSOLE_LOG_LEVEL =
-//                "SEVERE";
-                "ALL";
+                "SEVERE";
+//                "ALL";
         SHOW_MAP = true;
         DRIVE_NUM = 15;
         REQUEST_NUM = 20;

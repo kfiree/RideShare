@@ -35,7 +35,7 @@ public class Driver extends User implements Runnable, SimulatorThread {
     private final Queue<Passenger> passengers;
     private Path path;
     private Node currNode, destination;
-    private Passenger nextDriver;
+    private Passenger nextRider;
     private double originalTime, detoursTime;
     private final Date startTime;
     private Date localTime;
@@ -180,12 +180,16 @@ public class Driver extends User implements Runnable, SimulatorThread {
         addStop(passenger);
 
         if(passengers.peek() == passenger){
-            if(nextDriver != null) {
-                nextDriver.setCarNextTarget(false);
+            if(nextRider != null) {
+                nextRider.setCarNextTarget(false);
             }
-            nextDriver = passenger;
-            detoursTime += distTo(nextDriver.getDestination()) + distTo(nextDriver.getLocation());
-            updatePath(nextDriver.getNextStop());
+            nextRider = passenger;
+            detoursTime += distTo(nextRider.getDestination()) + distTo(nextRider.getLocation());
+            System.out.println("driver: "+this.getId()+" rider: "+nextRider.getId());
+            if(nextRider.getId() == 15 && id == 0){
+                System.out.println("214");
+            }
+            updatePath(nextRider.getNextStop());
         }
     }
 
@@ -203,22 +207,22 @@ public class Driver extends User implements Runnable, SimulatorThread {
         if(pathChange){
             if (!passengers.isEmpty()) {
                 passengerLock.lock();
-                nextDriver = passengers.poll();
+                nextRider = passengers.poll();
                 passengerLock.unlock();
 
-                if (!nextDriver.isCarNextTarget()) { /* passenger has not picked up */
-                    addStop(nextDriver);
-                    updatePath(nextDriver.getNextStop());
-                    if(this.getLocation() == nextDriver.getLocation()) { /*reached passenger*/
-                        UserMap.INSTANCE.finishUserEvent(nextDriver);
-                        nextDriver.setCarNextTarget(true);
+                if (!nextRider.isCarNextTarget()) { /* passenger has not picked up */
+                    addStop(nextRider);
+                    if(this.getLocation() == nextRider.getLocation()) { /*passenger picked up*/
+                        UserMap.INSTANCE.finishUserEvent(nextRider);
+                        nextRider.setCarNextTarget(true);
+                        nextRider.setPickupTime(getTime());
+                        updatePath(nextRider.getNextStop());
                     }
                 } else { /* passenger dropped */
-                    if (currNode == nextDriver.getDestination()) {
-                        nextDriver.setDropTime(Simulator.INSTANCE.time());
+                    if (currNode == nextRider.getDestination()) {
+                        nextRider.setDropTime(Simulator.INSTANCE.time());
                         getNextDest();
                     }
-//                        updatePath(rider.getNextStop());
                 }
             } else {
                 if(Thread.currentThread().getName().equals("0")){
@@ -308,6 +312,13 @@ public class Driver extends User implements Runnable, SimulatorThread {
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Driver) {
+            return ((Driver) o).getId() == this.id;
+        }
+        return false;
+    }
 
     /* SETTERS */
     @Override

@@ -1,21 +1,28 @@
 package app.controller.simulator;
 
+import app.model.users.User;
 import app.model.utils.GraphAlgo;
+import app.model.utils.UserEdge;
+import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
 import utils.DS.Latch;
 import app.model.users.Driver;
 import app.model.graph.Node;
 import app.model.users.Passenger;
 import app.model.users.UserMap;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.PriorityQueue;
+import java.util.*;
 
 import static java.lang.Thread.sleep;
 import static utils.logs.LogHandler.LOGGER;
 import static utils.Utils.lock;
 import static utils.Utils.unLock;
+
+import org.jgrapht.*;
+import org.jgrapht.alg.connectivity.*;
+import org.jgrapht.alg.interfaces.ShortestPathAlgorithm.*;
+import org.jgrapht.alg.interfaces.*;
+import org.jgrapht.alg.shortestpath.*;
+import org.jgrapht.graph.*;
 
 /* todo replace matchBruteForce1Pickup(Drive drive) with matchBruteForce1Pickup( ) (without drivers calling this method).
  *      might use https://github.com/frankfarrell/kds4j
@@ -70,6 +77,21 @@ public class MatchMaker implements Runnable, SimulatorThread {
 
 
     /* MATCH ALGORITHMS */
+
+    public void shtuiut() {
+        Graph<User, UserEdge> graph = new SimpleGraph<>(UserEdge.class);
+        UserMap.INSTANCE.getDrives().forEach(driver -> graph.addVertex(driver));
+        UserMap.INSTANCE.getPendingRequests().forEach(request -> graph.addVertex(request));
+
+        KuhnMunkresMinimalWeightBipartitePerfectMatching<User, UserEdge> hungarian =
+                new KuhnMunkresMinimalWeightBipartitePerfectMatching<>(
+                        graph,
+                        new HashSet<>(UserMap.INSTANCE.getDrives()),
+                        new HashSet<>(UserMap.INSTANCE.getPendingRequests())
+                );
+
+        hungarian.getMatching();
+    }
 
     public synchronized void matchMultiplePickup(){
         try {

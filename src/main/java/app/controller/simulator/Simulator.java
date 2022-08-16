@@ -102,7 +102,6 @@ public class Simulator implements Runnable, SimulatorThread {
         cupidThread = new Thread(cupid);
         cupidThread.start();
 
-
         latch.lock();
 
         do{
@@ -128,7 +127,7 @@ public class Simulator implements Runnable, SimulatorThread {
 
     private void writeRequestToCsv(Collection<Passenger> riders) {
         riders = riders.stream().filter(rider -> rider.getPickupTime() != null && rider.getDropTime() != null).toList();
-        File file = new File("data/logs/sum.csv");
+        File file = new File("data/logs/sum1.csv");
         try {
             // create FileWriter object with file as parameter
             FileWriter outputfile = new FileWriter(file);
@@ -157,8 +156,8 @@ public class Simulator implements Runnable, SimulatorThread {
             }
 
             // sum up some fields in the last row.
-            long totalTimeAvg = riders.stream().mapToLong(Rider::getTotalTimeTraveled).sum() / riders.size();
-            long timeWaitedAvg = riders.stream().mapToLong(Rider::getTimeWaited).sum() / riders.size();
+            long totalTimeAvg = riders.stream().mapToLong(Passenger::getTotalTimeTraveled).sum() / riders.size();
+            long timeWaitedAvg = riders.stream().mapToLong(Passenger::getTimeWaited).sum() / riders.size();
             String[] summary = {"Summary", "--", "--", "--", "--", "--", timeWaitedAvg+" Minutes",totalTimeAvg+" Minutes"};
             data.add(summary);
 

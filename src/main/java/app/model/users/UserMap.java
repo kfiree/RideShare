@@ -69,24 +69,37 @@ public class UserMap {
     public void addDrive(Driver drive) {
         for(Passenger passenger : this.requests.values()){
             this.userEdges.add(new UserEdge(drive, passenger));
-
         }
+
+        //connect driver to other riders
+        connectDrivesToPassengers(drive);
+
         drives.put(drive.getId(), drive);
     }
 
     public Driver addDrive(Node src, Node dst, Long delayTime) {
         Driver drive = new Driver(src, dst, new Date(firstEventTime.getTime()+ delayTime));
+
+        //connect driver to other riders
+        connectDrivesToPassengers(drive);
+
         drives.put(drive.getId(), drive);
         return drive;
     }
 
     public void addRequest(Passenger passenger){
         requests.put(passenger.getId(), passenger);
+
+        // connect passenger to drives
+        connectRequestToPDrivers(passenger);
     }
 
     public void addRequest(Node src, Node dst, Date date) {
         Passenger passenger = new Passenger(src, dst, date);
         requests.put(passenger.getId(), passenger);
+
+        // connect passenger to drives
+        connectRequestToPDrivers(passenger);
     }
 
     public LinkedList<User> getEventQueue(){
@@ -97,7 +110,6 @@ public class UserMap {
 
         events.sort(Comparator.comparing(User::getStartTime)
                 .thenComparing(User::getStartTime));
-
 
         return events;
     }
@@ -128,7 +140,11 @@ public class UserMap {
     public void finishUserEvent(User user) {
         if(user instanceof Driver){
             onGoingDrives.remove(user);
+            //dis-connect driver from all the passenger
+            userEdges.removeIf(edge -> edge.getDrive().equals(user));
         }else{
+            //dis-connect passenger from all the driver
+            userEdges.removeIf(edge -> edge.getRider().equals(user));
             pendingRequests.remove(user);
         }
         finished.add(user);
@@ -136,6 +152,21 @@ public class UserMap {
 
     public void matchPassenger(Passenger passenger){
         pendingRequests.remove(passenger);
+
+        //dis-connect passenger from all the driver
+        userEdges.removeIf(edge -> edge.getRider().equals(passenger));
+    }
+
+    private void connectDrivesToPassengers(Driver drive) {
+        requests.values().forEach(request -> {
+            userEdges.add(new UserEdge(drive, request));
+        });
+    }
+
+    private void connectRequestToPDrivers(Passenger request) {
+        drives.values().forEach(drive -> {
+            userEdges.add(new UserEdge(drive, request));
+        });
     }
 
 

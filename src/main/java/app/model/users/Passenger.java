@@ -34,7 +34,8 @@ public class Passenger extends User {
     public void markMatched() {
         /* remove this from waiting list */
         matched = true;
-        setPickupTime(Simulator.INSTANCE.time());
+
+        //remove user edges from graph
         UserMap.INSTANCE.matchPassenger(this);
     }
 
@@ -106,6 +107,14 @@ public class Passenger extends User {
 
     public long getTimeWaited() {
         return timeWaited;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Passenger) {
+            return ((Passenger) o).getId() == this.id;
+        }
+        return false;
     }
 
     @Override
