@@ -341,7 +341,7 @@ public final class GraphAlgo {
         }
         Collections.reverse(pathNodes);
         Path path =  new Path(pathNodes, pathWeight);
-        validate(path.getNodes().size() > 1, "Bad path size :"+ pathNodes.size());
+        validate(path.getNodes().size() >= 1, "Bad path size :"+ pathNodes.size());
         return path;
     }
 

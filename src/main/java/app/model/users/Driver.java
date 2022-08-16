@@ -96,36 +96,43 @@ public class Driver extends User implements Runnable, SimulatorThread {
         pathChange = false;
 
         Iterator<Node> nodeIter = getPath().iterator();
-        Node nextNode = nodeIter.next();
+        Node nextNode;
 
-        while(nodeIter.hasNext()){
+        if(nodeIter.hasNext()){
 
-            currNode = nextNode;
             nextNode = nodeIter.next();
 
-            long timeToNextNode = currNode.getEdgeTo(nextNode).getWeight();
+            while(nodeIter.hasNext()){
 
-            sleep(timeToNextNode);
+                currNode = nextNode;
+                nextNode = nodeIter.next();
+
+                long timeToNextNode = currNode.getEdgeTo(nextNode).getWeight();
+
+                sleep(timeToNextNode);
 
 //            originalTime -= timeToNextNode;
 
-            lock(false);
+                lock(false);
 
-            currNode = nextNode;
+                currNode = nextNode;
 
-            if(pathChange){
-                return;
-            }
+                if(pathChange){
+                    return;
+                }
 //            System.out.println("driver"+this.getId());
-            latch.waitOnCondition();
+                latch.waitOnCondition();
 
+            }
         }
+
+
         pathChange = true;
     }
 
     private void finish() {
         unregister(this);
-        LOGGER.finest("Drive "+ id +" finished!, total time : " + (timeDiff(startTime, localTime)/ 60000.0) + " minutes.");
+        LOGGER.finest("Drive "+ id +" finished!, total time : " + FORMAT(timeDiff(startTime, localTime)/ 60000.0) + " minutes.");
     }
 
 
@@ -183,6 +190,7 @@ public class Driver extends User implements Runnable, SimulatorThread {
             }
             nextDriver = passenger;
             detoursTime += distTo(nextDriver.getDestination()) + distTo(nextDriver.getLocation());
+            System.out.println("==============   set path ("+this+": r"+nextDriver+"}   ==============");
             updatePath(nextDriver.getNextStop());
         }
     }
@@ -205,7 +213,9 @@ public class Driver extends User implements Runnable, SimulatorThread {
                 passengerLock.unlock();
 
                 if (!nextDriver.isCarNextTarget()) { /* passenger has not picked up */
+                    System.out.println(id+": " );
                     addStop(nextDriver);
+                    System.out.println("==============   set path ("+this+": r"+nextDriver+"}   ==============");
                     updatePath(nextDriver.getNextStop());
                     if(this.getLocation() == nextDriver.getLocation()) { /*reached passenger*/
                         UserMap.INSTANCE.finishUserEvent(nextDriver);
@@ -218,9 +228,7 @@ public class Driver extends User implements Runnable, SimulatorThread {
 //                        updatePath(rider.getNextStop());
                 }
             } else {
-                if(Thread.currentThread().getName().equals("0")){
-                    System.out.println("");
-                }
+                System.out.println("==============   set path ("+this+": r"+nextDriver+"}   ==============");
                 updatePath(getDestination());
             }
         }
@@ -284,7 +292,7 @@ public class Driver extends User implements Runnable, SimulatorThread {
 
     @Override
     public Node getNextStop() {
-        return getDestination();
+        return path.getDest();
     }
 
     public Path getPath(){
@@ -307,34 +315,21 @@ public class Driver extends User implements Runnable, SimulatorThread {
 
 
     /* SETTERS */
+
     @Override
     public String toString() {
-        return "Drive " + id + ", choose time =" + FORMAT(this.startTime) +", weight :  " + this.originalTime / 60000 +" minutes.";
+        return "Driver{" +
+                "id=" + id +
+                ", passengers=" + passengers.size() +
+                ", currNode=" + currNode.getId() +
+                ", localTime=" + FORMAT(localTime) +
+                ", driving time" + FORMAT(this.originalTime / 60000) +" minutes."+
+                '}';
     }
+
+
+    //    @Override
+//    public String toString() {
+//        return "Drive " + id + ", choose time =" + FORMAT(this.startTime) +", weight :  " + this.originalTime / 60000 +" minutes.";
+//    }
 }
-
-
-//    TimerTask moveToNext = new TimerTask(){
-//
-//        @Override
-//        public void operate() {
-//            Iterator<Node> nodeIter = getPath().iterator();
-//            Node nextNode = nodeIter.next();
-//
-//            while(nodeIter.hasNext()){
-//                currNode = nextNode;
-//                nextNode = nodeIter.next();
-//
-//                long timeToNextNode = currNode.getEdgeTo(nextNode).getWeight();
-//
-//                sleep(timeToNextNode);
-//
-//                originalTime -= timeToNextNode;
-//
-//                lock(false);
-//
-//                currNode = nextNode;
-//
-//            }
-//        }
-//    };

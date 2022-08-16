@@ -6,6 +6,7 @@ import app.controller.simulator.Simulator;
 import app.controller.simulator.SimulatorThread;
 import app.model.graph.RoadMap;
 import app.model.users.Driver;
+import app.model.users.User;
 import app.view.MapView;
 import app.view.utils.MapMouseManager;
 import app.view.utils.MapShortcutManager;
@@ -14,9 +15,16 @@ import org.graphstream.ui.view.ViewerPipe;
 import utils.DS.Latch;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static app.view.utils.Style.LIGHT_GREEN;
 import static app.view.utils.Style.LIGHT_RED;
@@ -52,6 +60,40 @@ public class SimulatorFrame extends JFrame{
 
         setListeners();
 
+        threadsTab.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                super.focusGained(e);
+            }
+        });
+
+        tabs.addChangeListener(e -> {
+            if(e.getSource() instanceof JTabbedPane tabbedPane){
+                int index = tabbedPane.getSelectedIndex();
+                System.out.println(index);
+
+                DefaultTableModel model = (DefaultTableModel) threadsTable.getModel();
+
+                int rowCount = model.getRowCount();
+                for (int i = rowCount - 1; i >= 0; i--) {
+                    model.removeRow(i);
+                }
+
+                SimulatorThread.threads.forEach(t->{
+                    if(t instanceof Simulator thread){
+                        model.addRow(new Object[]{"Simulator" , FORMAT(thread.time())});
+                    }else if(t instanceof EventManager thread){
+                        model.addRow(new Object[]{"Event Manager" , FORMAT(thread.getTime())});
+                    }else if(t instanceof MatchMaker thread){
+                        model.addRow(new Object[]{"Match Maker" , FORMAT(thread.getTime())});
+                    }else if(t instanceof Driver drive){
+                        model.addRow(new Object[]{"Drive"+ drive.getId()+", current location: " + drive.getLocation().getId()+
+                                ", passengers: "  + drive.getPassengers().stream().map(User::getId).toList()+ ".",
+                                FORMAT(drive.getTime())});
+                    }
+                });
+            }
+        });
     }
 
     private void setListeners(){
@@ -102,15 +144,18 @@ public class SimulatorFrame extends JFrame{
         DefaultTableModel model = (DefaultTableModel) threadsTable.getModel();
         model.addColumn("Thread");
         model.addColumn("Relative time");
-        model.addColumn("Start Time");
 
-        for (int i = 0; i < 4; i++) {
-            model.addRow(new Object[]{"thread" , FORMAT(new Date()), "choose time"});
-        }
 
         SimulatorThread.threads.forEach(t->{
-            model.addRow(TimeSyncType(t));
+            if(t instanceof Simulator thread){
+                model.addRow(new Object[]{"Simulator" , FORMAT(thread.time())});
+            }else if(t instanceof EventManager thread){
+                model.addRow(new Object[]{"Event Manager" , FORMAT(thread.getTime())});
+            }else if(t instanceof MatchMaker thread) {
+                model.addRow(new Object[]{"thread", FORMAT(thread.getTime())});
+            }
         });
+
     }
 
     private Object[] TimeSyncType(SimulatorThread t){

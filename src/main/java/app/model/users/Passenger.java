@@ -72,11 +72,19 @@ public class Passenger extends User {
         return carNextTarget;
     }
 
-
-
-
     @Override
     public String toString() {
-        return "Rider " + id + ", choose time " + FORMAT(askTime) ;
+        return "Passenger{" +
+                "id=" + id +
+                ", askTime=" + askTime +
+                ", src=" + src.getId() +
+                ", dest=" + dest.getId() +
+                '}';
     }
+
+
+//    @Override
+//    public String toString() {
+//        return "Rider " + id + ", choose time " + FORMAT(askTime) ;
+//    }
 }

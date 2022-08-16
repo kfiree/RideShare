@@ -21,7 +21,7 @@ public class UserMap {
     private final ArrayList<Driver> onGoingDrives;
     private final ArrayList<User> finished;
     protected static AtomicInteger keyGenerator = new AtomicInteger(-1);
-    private Date firstEventTime;
+    private Date firstEventTime, lastEventTime;
     private final HashSet<UserEdge> userEdges;//todo use or delete
     private Simulator simulator;
     public static ReentrantLock requestsLock = new ReentrantLock(), drivesLock = new ReentrantLock();
@@ -69,7 +69,6 @@ public class UserMap {
     public void addDrive(Driver drive) {
         for(Passenger passenger : this.requests.values()){
             this.userEdges.add(new UserEdge(drive, passenger));
-
         }
         drives.put(drive.getId(), drive);
     }
