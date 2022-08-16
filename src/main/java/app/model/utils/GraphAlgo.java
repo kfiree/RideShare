@@ -345,20 +345,20 @@ public final class GraphAlgo {
         return path;
     }
 
-    private static Path reconstructPatha(Hashtable<AlgoNode, AlgoNode> cameFrom, AlgoNode n){
-        List<Node> pathNodes = new ArrayList<>();
-        pathNodes.add(n.getNode());
-        double pathWeight = 0;
-        while(cameFrom.containsKey(n)){
-            pathWeight += n.getNode().getEdgeTo(cameFrom.get(n).getNode()).getWeight();
-            n = cameFrom.get(n);
-            pathNodes.add(n.getNode());
-        }
-        Collections.reverse(pathNodes);
-        Path path =  new Path(pathNodes, pathWeight);
-        validate(path.getNodes().size() > 1, "Bad path size :"+ pathNodes.size());
-        return path;
-    }
+//    private static Path reconstructPatha(Hashtable<AlgoNode, AlgoNode> cameFrom, AlgoNode n){
+//        List<Node> pathNodes = new ArrayList<>();
+//        pathNodes.add(n.getNode());
+//        double pathWeight = 0;
+//        while(cameFrom.containsKey(n)){
+//            pathWeight += n.getNode().getEdgeTo(cameFrom.get(n).getNode()).getWeight();
+//            n = cameFrom.get(n);
+//            pathNodes.add(n.getNode());
+//        }
+//        Collections.reverse(pathNodes);
+//        Path path =  new Path(pathNodes, pathWeight);
+//        validate(path.getNodes().size() > 1, "Bad path size :"+ pathNodes.size());
+//        return path;
+//    }
 
     /**
      :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

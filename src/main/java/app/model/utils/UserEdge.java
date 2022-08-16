@@ -37,6 +37,14 @@ public class UserEdge {
         this.weight = weight;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof UserEdge) {
+            return ((UserEdge) o).getId() == this.id;
+        }
+        return false;
+    }
+
 //    public Coordinates getLocation(){
 //        return drive.getLocation();
 //    }

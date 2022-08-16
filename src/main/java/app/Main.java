@@ -138,13 +138,13 @@ public final class Main {
 
     static{
         PARSE_FROM_PBF = false;
-        PBF_PATH = "data/maps/osm/israel.pbf";
+        PBF_PATH = "/Users/amitha/Desktop";
         NODE_IN_MAIN_COMPONENT =2432701015L;
         SIMULATOR_SPEED = 2.0;
         BOUNDS = true;
         CONSOLE_LOG_LEVEL =
-//                "SEVERE";
-                "ALL";
+                "SEVERE";
+//                "ALL";
         SHOW_MAP = true;
         DRIVE_NUM = 15;
         REQUEST_NUM = 20;

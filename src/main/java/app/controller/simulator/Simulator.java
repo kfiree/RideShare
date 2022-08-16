@@ -1,11 +1,22 @@
 package app.controller.simulator;
 
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import app.view.frames.ChooseRegionFrame;
+import app.model.users.Passenger;
 import utils.DS.Latch;
 import app.view.MapView;
+import com.opencsv.CSVWriter;
 import utils.JsonHandler;
 import app.model.graph.RoadMap;
 import app.model.users.UserMap;
@@ -91,7 +102,6 @@ public class Simulator implements Runnable, SimulatorThread {
         cupidThread = new Thread(cupid);
         cupidThread.start();
 
-
         latch.lock();
 
         do{
@@ -103,14 +113,63 @@ public class Simulator implements Runnable, SimulatorThread {
             }
 
             sleep(SLEEP_BETWEEN_FRAMES);
-        }while(isAlive());
+        } while(isAlive());
 
         finish();
     }
 
     private void finish(){
         unregister(this);
+        // Write csv the riders analytics
+        writeRequestToCsv(UserMap.INSTANCE.getRequests());
         LOGGER.info("Simulator finished!.");
+    }
+
+    private void writeRequestToCsv(Collection<Passenger> riders) {
+        riders = riders.stream().filter(rider -> rider.getPickupTime() != null && rider.getDropTime() != null).toList();
+        File file = new File("data/logs/sum1.csv");
+        try {
+            // create FileWriter object with file as parameter
+            FileWriter outputfile = new FileWriter(file);
+
+            // create CSVWriter object filewriter object as parameter
+            CSVWriter writer = new CSVWriter(outputfile);
+
+            // adding header to csv
+            String[] header = { "id", "ask_time", "pickup_time", "src", "drop_time", "dest", "total_time_waited", "total_time_traveled"};
+            writer.writeNext(header);
+
+            // add data to csv
+            List<String[]> data = new ArrayList<String[]>();
+            for (Passenger rider : riders) {
+                String[] row = {
+                        rider.getId()+"",
+                        rider.getStartTime()+"",
+                        rider.getPickupTime().toLocaleString(),
+                        rider.getLocation().toString(),
+                        rider.getDropTime().toLocaleString(),
+                        rider.getDestination().toString(),
+                        rider.getTimeWaited()+" Minutes",
+                        rider.getTotalTimeTraveled()+" Minutes"
+                };
+                data.add(row);
+            }
+
+            // sum up some fields in the last row.
+            long totalTimeAvg = riders.stream().mapToLong(Passenger::getTotalTimeTraveled).sum() / riders.size();
+            long timeWaitedAvg = riders.stream().mapToLong(Passenger::getTimeWaited).sum() / riders.size();
+            String[] summary = {"Summary", "--", "--", "--", "--", "--", timeWaitedAvg+" Minutes",totalTimeAvg+" Minutes"};
+            data.add(summary);
+
+            writer.writeAll(data);
+
+            // closing writer connection
+            writer.close();
+        }
+        catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     private void updateFrame(){
