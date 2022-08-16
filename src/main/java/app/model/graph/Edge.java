@@ -1,6 +1,6 @@
 package app.model.graph;
 
-import app.controller.GraphAlgo;
+import app.model.utils.GraphAlgo;
 import app.controller.osm_processing.OsmWay;
 import app.model.utils.Coordinates;
 import app.model.utils.Located;

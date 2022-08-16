@@ -7,16 +7,19 @@ import java.util.*;
 import app.controller.Simulator;
 import app.controller.SimulatorThread;
 import app.view.MapView;
+import app.controller.simulator.Simulator;
+import app.controller.simulator.SimulatorThread;
 import org.jetbrains.annotations.NotNull;
 
 /* local */
 import app.model.graph.Node;
 import app.model.graph.Path;
-import app.controller.GraphAlgo;
-import utils.HashPriorityQueue;
-import app.controller.Latch;
+import app.model.utils.GraphAlgo;
+import utils.DS.HashPriorityQueue;
+import utils.DS.Latch;
 
 /* static imports */
+import static utils.logs.LogHandler.LOGGER;
 import static app.controller.UserMapHandler.userMap;
 import static utils.LogHandler.LOGGER;
 import static utils.Utils.*;
@@ -43,7 +46,7 @@ public class Driver extends User implements Runnable, SimulatorThread {
     /* CONSTRUCTORS */
 
     private Driver(Date startTime) {
-        this.latch = Latch.INSTANCE;
+        this.latch = Simulator.INSTANCE.getLatch();;
         this.id = UserMap.keyGenerator.incrementAndGet();
         this.startTime = startTime;
         this.localTime = startTime;
@@ -77,8 +80,10 @@ public class Driver extends User implements Runnable, SimulatorThread {
     public void run() {
         register(this);
 
+        Thread.currentThread().setName(String.valueOf(id));
+
         LOGGER.fine("Drive "+ id +" started.");
-        validate(getPath() != null, "can't start a drive if path is null. Drive owner id - " + id);
+        validate(getPath() != null, "can't choose a drive if path is null. Drive owner id - " + id);
 
         while(!passengers.isEmpty() || currNode!= getDestination()){
             getNextDest();
@@ -191,19 +196,28 @@ public class Driver extends User implements Runnable, SimulatorThread {
     }
 
     private void getNextDest(){//System.out.println(this.currNode.getId());
+        if(Thread.currentThread().getName().equals("0")){
+            System.out.println("");
+        }
         if(pathChange){
             if (!passengers.isEmpty()) {
                 onTheWayTo = passengers.poll();
 
-                if (!onTheWayTo.isCarNextTarget()) { /* passenger picked up */
-//                    System.out.println(this.id + " picked up " + onTheWayTo.getId());
+                if (!onTheWayTo.isCarNextTarget()) { /* passenger has not picked up */
+                    if(Thread.currentThread().getName().equals("0")){
+                        System.out.println("");
+                    }
                     addStop(onTheWayTo);
-                    passengers.add(onTheWayTo);
-                    onTheWayTo.setCarNextTarget(true);
                     updatePath(onTheWayTo.getNextStop());
-                    UserMap.INSTANCE.finishUserEvent(onTheWayTo);
+                    if(this.getLocation() == onTheWayTo.getLocation()) { /*reached passenger*/
+                        UserMap.INSTANCE.finishUserEvent(onTheWayTo);
+                    }
+                    onTheWayTo.setCarNextTarget(true);
                 } else { /* passenger dropped */
                     if (currNode == onTheWayTo.getDestination()) {
+                        if(Thread.currentThread().getName().equals("0")){
+                            System.out.println("");
+                        }
 //                        System.out.println(this.id + " dropped up " + onTheWayTo.getId());
                         onTheWayTo.setDropTime(Simulator.INSTANCE.time());
                         System.out.println("rider stat: "+ onTheWayTo.toString());
@@ -212,6 +226,9 @@ public class Driver extends User implements Runnable, SimulatorThread {
 //                        updatePath(rider.getNextStop());
                 }
             } else {
+                if(Thread.currentThread().getName().equals("0")){
+                    System.out.println("");
+                }
                 updatePath(getDestination());
             }
         }
@@ -290,7 +307,7 @@ public class Driver extends User implements Runnable, SimulatorThread {
     /* SETTERS */
     @Override
     public String toString() {
-        return "Drive " + id + ", start time =" + FORMAT(this.startTime) +", weight :  " + this.originalTime / 60000 +" minutes.";
+        return "Drive " + id + ", choose time =" + FORMAT(this.startTime) +", weight :  " + this.originalTime / 60000 +" minutes.";
     }
 }
 
@@ -298,7 +315,7 @@ public class Driver extends User implements Runnable, SimulatorThread {
 //    TimerTask moveToNext = new TimerTask(){
 //
 //        @Override
-//        public void run() {
+//        public void operate() {
 //            Iterator<Node> nodeIter = getPath().iterator();
 //            Node nextNode = nodeIter.next();
 //

@@ -1,10 +1,5 @@
 package app.model.utils;
 
-import app.controller.GraphAlgo;
-import app.controller.RoadMapHandler;
-import app.model.users.User;
-import app.model.utils.Coordinates;
-
 public interface Located {
 
     Coordinates getCoordinates();
