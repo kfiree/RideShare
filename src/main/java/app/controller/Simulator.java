@@ -1,9 +1,20 @@
 package app.controller;
 
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import app.model.users.Rider;
 import app.view.MapView;
+import com.opencsv.CSVWriter;
 import utils.JsonHandler;
 import app.model.graph.RoadMap;
 import app.model.users.UserMap;
@@ -99,14 +110,58 @@ public class Simulator implements Runnable, SimulatorThread {
             }
 
             sleep(SLEEP_BETWEEN_FRAMES);
-        }while(isAlive());
+        } while(isAlive());
 
         finish();
     }
 
     private void finish(){
         unregister(this);
+        // Write csv the riders analytics
+        writeRequestToCsv(UserMap.INSTANCE.getRequests());
         LOGGER.info("Simulator finished!.");
+    }
+
+    private void writeRequestToCsv(Collection<Rider> riders) {
+        File file = new File("data/logs/sum.csv");
+        try {
+            // create FileWriter object with file as parameter
+            FileWriter outputfile = new FileWriter(file);
+
+            // create CSVWriter object filewriter object as parameter
+            CSVWriter writer = new CSVWriter(outputfile);
+
+            // adding header to csv
+            String[] header = { "id", "ask_time", "pickup_time", "drop_time", "total_time_traveled"};
+            writer.writeNext(header);
+
+            // add data to csv
+            List<String[]> data = new ArrayList<String[]>();
+            for (Rider rider : riders) {
+                String[] row = {
+                        rider.getId()+"",
+                        rider.getStartTime()+"",
+                        rider.getPickupTime().toLocaleString(),
+                        rider.getDropTime().toLocaleString(),
+                        rider.getTotalTimeTraveled()+""
+                };
+                data.add(row);
+            }
+
+            // sum up some fields in the last row.
+            long totalTimeAvg = riders.stream().mapToLong(Rider::getTotalTimeTraveled).sum() / riders.size();
+            String[] summary = {"NaN", "NaN", "NaN", totalTimeAvg+""};
+            data.add(summary);
+
+            writer.writeAll(data);
+
+            // closing writer connection
+            writer.close();
+        }
+        catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     private void updateFrame(){

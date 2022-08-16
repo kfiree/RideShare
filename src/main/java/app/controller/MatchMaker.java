@@ -140,6 +140,7 @@ public class MatchMaker implements Runnable, SimulatorThread {
 
 
             if(isWorthItBruteForceSolution(drive, rider)){
+                //Here we will update the pick-up time for the rider(maybe inside the method 'markTaken')
                 rider.markTaken();
                 drive.addPassenger(rider);
                 return true;

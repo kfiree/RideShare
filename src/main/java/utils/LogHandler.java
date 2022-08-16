@@ -43,7 +43,7 @@ public class LogHandler{
 //            ));
 
             //file handler src/data/logs
-            FILE_HANDLER = new FileHandler("data/logs/log_", 20000, 10);
+            FILE_HANDLER = new FileHandler("data/logs/log", 20000, 10);
             FILE_HANDLER.setFormatter(new LineFormat());
             FILE_HANDLER.setLevel(Level.ALL);
             //console handler

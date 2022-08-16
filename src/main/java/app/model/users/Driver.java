@@ -1,9 +1,12 @@
 package app.model.users;
 
 /* third party */
+import java.time.LocalDateTime;
 import java.util.*;
 
+import app.controller.Simulator;
 import app.controller.SimulatorThread;
+import app.view.MapView;
 import org.jetbrains.annotations.NotNull;
 
 /* local */
@@ -14,6 +17,7 @@ import utils.HashPriorityQueue;
 import app.controller.Latch;
 
 /* static imports */
+import static app.controller.UserMapHandler.userMap;
 import static utils.LogHandler.LOGGER;
 import static utils.Utils.*;
 
@@ -201,6 +205,8 @@ public class Driver extends User implements Runnable, SimulatorThread {
                 } else { /* passenger dropped */
                     if (currNode == onTheWayTo.getDestination()) {
 //                        System.out.println(this.id + " dropped up " + onTheWayTo.getId());
+                        onTheWayTo.setDropTime(Simulator.INSTANCE.time());
+                        System.out.println("rider stat: "+ onTheWayTo.toString());
                         getNextDest();
                     }
 //                        updatePath(rider.getNextStop());

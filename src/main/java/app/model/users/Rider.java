@@ -1,8 +1,14 @@
 package app.model.users;
 
+import app.controller.Simulator;
 import app.model.graph.Node;
 import org.jetbrains.annotations.NotNull;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.util.Date;
+
 import static utils.Utils.FORMAT;
 
 
@@ -13,6 +19,8 @@ public class Rider extends User {
     private final int id;
     private boolean taken;
     private boolean carNextTarget;
+    private Date pickupTime, dropTime;
+    private long totalTimeTraveled;
 
 
     public Rider(@NotNull Node currNode, @NotNull Node destination, Date askTime) {
@@ -25,7 +33,10 @@ public class Rider extends User {
     public void markTaken() {
         /* remove this from waiting list */
         taken = true;
+//        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        setPickupTime(Simulator.INSTANCE.time());
         UserMap.INSTANCE.pickPedestrian(this);
+        System.out.println("pickup time: "+ pickupTime);
     }
 
     public boolean isTaken() {
@@ -61,9 +72,32 @@ public class Rider extends User {
     @Override
     public int getId() { return id; }
 
+    public void setPickupTime(Date pickupTime) { this.pickupTime = pickupTime;}
+
+    public void setDropTime(Date dropTime) {
+        totalTimeTraveled = (dropTime.getTime() - pickupTime.getTime()) / (60*1000) % 60;
+        System.out.println("drop time: "+ dropTime);
+        this.dropTime = dropTime;
+    }
+
+    public Date getPickupTime(){
+        return this.pickupTime;
+    }
+
+    public Date getDropTime() {
+        return this.dropTime;
+    }
+
+    public long getTotalTimeTraveled() {
+        return totalTimeTraveled;
+    }
 
     @Override
     public String toString() {
+        if (this.dropTime != null) {
+            return "Rider " + id + " picked up at: " + pickupTime + " Dropped at: " + dropTime
+                    + " Total time travel: " + totalTimeTraveled;
+        }
         return "Rider " + id + ", start time " + FORMAT(askTime) ;
     }
 }

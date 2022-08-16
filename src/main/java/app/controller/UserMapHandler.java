@@ -14,7 +14,7 @@ import static utils.LogHandler.LOGGER;
 import static utils.Utils.FORMAT;
 
 public class UserMapHandler {
-    private static final UserMap userMap = UserMap.INSTANCE;
+    public static final UserMap userMap = UserMap.INSTANCE;
     private static final RoadMap roadMap = RoadMap.INSTANCE;
     private static final Random rand = new Random(1);
     private static final int CONST_EVENT_DIFF, RAND_MAX_EVENT_DIFF;
