@@ -1,7 +1,7 @@
 package utils.DS;
 
 public class Latch {
-    public static volatile boolean lock = true;
+    public static volatile boolean lock = false;
 
     public Latch() {}
 

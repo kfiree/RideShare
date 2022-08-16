@@ -59,14 +59,9 @@ public class SimulatorFrame extends JFrame{
         setLocationRelativeTo(null);
 
         setListeners();
+    }
 
-        threadsTab.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                super.focusGained(e);
-            }
-        });
-
+    private void setListeners(){
         tabs.addChangeListener(e -> {
             if(e.getSource() instanceof JTabbedPane tabbedPane){
                 int index = tabbedPane.getSelectedIndex();
@@ -94,9 +89,6 @@ public class SimulatorFrame extends JFrame{
                 });
             }
         });
-    }
-
-    private void setListeners(){
         speedButton.addActionListener(e -> {
             SimulatorThread.showThreadsData();
             if(speedSlider.getValue() == 0){
@@ -124,21 +116,13 @@ public class SimulatorFrame extends JFrame{
     }
 
     private void createUIComponents() {
-        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
-        viewer = new Viewer(MapView.INSTANCE.getDisplayGraph(), Viewer.ThreadingModel.GRAPH_IN_GUI_THREAD);
-        graphPanel = viewer.addDefaultView(false);
-//        graphPanel = viewer.addView("RoadMapView", new J2DGraphRenderer());
-
-        viewer.disableAutoLayout();
-        pipeIn = viewer.newViewerPipe();
-
-//        graphPanel.addMouseListener(new MapMouseManager());
-        viewer.getDefaultView().setShortcutManager(new MapShortcutManager());
-        viewer.getDefaultView().setMouseManager(new MapMouseManager());
-
         simulatorTitle = new JLabel("--- "+ RoadMap.INSTANCE.getName() +" SharedRide Simulator ---");
-//        simulatorTitle.setText("--- "+ RoadMap.INSTANCE.getName() +" SharedRide Simulator ---");
 
+        drawGraph();
+        drawTable();
+    }
+
+    private void drawTable(){
         threadsTable = new JTable(new DefaultTableModel());
 
         DefaultTableModel model = (DefaultTableModel) threadsTable.getModel();
@@ -155,20 +139,18 @@ public class SimulatorFrame extends JFrame{
                 model.addRow(new Object[]{"thread", FORMAT(thread.getTime())});
             }
         });
-
     }
 
-    private Object[] TimeSyncType(SimulatorThread t){
-        if(t instanceof Simulator){
-            return new Object[]{"Simulator" , FORMAT(t.getTime()), "choose time"};
-        }else if(t instanceof MatchMaker){
-            return new Object[]{"MatchMaker" , FORMAT(t.getTime()), "choose time"};
-        }else if(t instanceof EventManager){
-            return new Object[]{"EventManager" , FORMAT(t.getTime()), "choose time"};
-        }else if(t instanceof Driver){
-            return new Object[]{"EventManager" , FORMAT(t.getTime()), "choose time"};
-        }
-        return new Object[0];
+    private void drawGraph(){
+        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
+        viewer = new Viewer(MapView.INSTANCE.getDisplayGraph(), Viewer.ThreadingModel.GRAPH_IN_GUI_THREAD);
+        graphPanel = viewer.addDefaultView(false);
+
+        viewer.disableAutoLayout();
+        pipeIn = viewer.newViewerPipe();
+
+        viewer.getDefaultView().setShortcutManager(new MapShortcutManager());
+        viewer.getDefaultView().setMouseManager(new MapMouseManager());
     }
 
     public void updateFrame(){
