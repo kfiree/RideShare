@@ -227,7 +227,7 @@ public enum JsonHandler {
 
         pedestrianJSON.put("id", passenger.getId());
         pedestrianJSON.put("src", passenger.getLocation().getId());
-        pedestrianJSON.put("dst", passenger.getDestination().getId());
+        pedestrianJSON.put("dst", passenger.getFinalDestination().getId());
         pedestrianJSON.put("date", passenger.getStartTime().getTime());
 
         return pedestrianJSON;

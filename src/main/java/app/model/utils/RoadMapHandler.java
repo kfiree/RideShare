@@ -11,6 +11,7 @@ import javax.swing.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.sql.SQLOutput;
 import java.util.*;
 
 import static app.model.utils.GraphAlgo.extractLargestCC;
@@ -53,7 +54,7 @@ public final class RoadMapHandler {
     }
 
     public static void updateBounds(@NotNull Double topLatitude, @NotNull Double bottomLatitude, @NotNull Double topLongitude, @NotNull Double bottomLongitude){
-
+        System.out.println("update bound to " + topLatitude+ ", " + bottomLatitude+ ", "+ topLongitude+ ", "+ bottomLongitude+ ", ");
         RoadMapHandler.maxLatitude = topLatitude;
         minLatitude = bottomLatitude;
         maxLongitude = topLongitude;

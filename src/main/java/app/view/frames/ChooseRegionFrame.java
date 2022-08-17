@@ -16,6 +16,13 @@ public class ChooseRegionFrame extends JDialog {
     private JLabel HeadLine;
     private JComboBox regionDropBox;
     private JPanel choosePanel;
+    private JPanel LongPanel;
+    private JTextField maxLong;
+    private JTextField minLon;
+    private JTextField maxLat;
+    private JTextField minLat;
+    private JPanel buttonsPanle;
+    private JPanel latPanel;
 
     static public Region region = Region.TLV;
 
@@ -26,17 +33,9 @@ public class ChooseRegionFrame extends JDialog {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(100, 100, (int) (dim.getWidth()/2), (int) ((dim.getHeight()-50)/2));
 
-        buttonOK.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onOK();
-            }
-        });
+        buttonOK.addActionListener(e -> onOK());
 
-        buttonCancel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        });
+        buttonCancel.addActionListener(e -> onCancel());
 
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -46,14 +45,17 @@ public class ChooseRegionFrame extends JDialog {
             }
         });
 
-        // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
         setModal(true);
+        regionDropBox.addActionListener(e -> {
+            String selectedItem = (String) regionDropBox.getSelectedItem();
+            assert selectedItem != null;
+            if(selectedItem.equals(Region.CUSTOM.name)){
+                LongPanel.setVisible(true);
+                latPanel.setVisible(true);
+            }
+        });
     }
 
     private void onOK() {
@@ -65,12 +67,17 @@ public class ChooseRegionFrame extends JDialog {
             region = Region.BERLIN;
         } else if (Region.CUSTOM.name.equals(selectedItem)) {
             region = Region.CUSTOM;
+            RoadMapHandler.updateBounds(
+                    Double.parseDouble(maxLat.getText()), Double.parseDouble(minLat.getText()),
+                    Double.parseDouble(maxLong.getText()), Double.parseDouble(minLon.getText())
+            );
         }
+
         dispose();
     }
 
     private void onCancel() {
-        // add your code here if necessary
+        dispose();
 
     }
 

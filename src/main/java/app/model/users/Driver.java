@@ -1,11 +1,9 @@
 package app.model.users;
 
 /* third party */
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
-import app.view.MapView;
 import app.controller.simulator.Simulator;
 import app.controller.simulator.SimulatorThread;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +32,7 @@ public class Driver extends User implements Runnable, SimulatorThread {
     private static final int MAX_PASSENGERS_NUM = 2; //todo set to 3
     private final Queue<Passenger> passengers;
     private Path path;
-    private Node currNode, destination;
+    private Node currNode, finalDestination;
     private Passenger nextRider;
     private double originalTime, detoursTime;
     private final Date startTime;
@@ -65,7 +63,7 @@ public class Driver extends User implements Runnable, SimulatorThread {
     public void initPathVariables(@NotNull Path path) {
         setPath(path);
         currNode = path.getSrc();
-        destination = path.getDest();
+        finalDestination = path.getDest();
         originalTime = path.getWeight();
     }
 
@@ -82,7 +80,7 @@ public class Driver extends User implements Runnable, SimulatorThread {
         LOGGER.fine("Drive "+ id +" started.");
         validate(getPath() != null, "can't choose a drive if path is null. Drive owner id - " + id);
 
-        while(!passengers.isEmpty() || currNode!= getDestination()){
+        while(!passengers.isEmpty() || currNode!= getFinalDestination()){
             getNextDest();
 
             driveToNextStop();
@@ -101,9 +99,11 @@ public class Driver extends User implements Runnable, SimulatorThread {
         Node nextNode = nodeIter.next();
 
         while(nodeIter.hasNext()){
-
             currNode = nextNode;
             nextNode = nodeIter.next();
+            if(nextNode == this.finalDestination){
+                System.out.println("stop");
+            }
 
             long timeToNextNode = currNode.getEdgeTo(nextNode).getWeight();
 
@@ -140,17 +140,17 @@ public class Driver extends User implements Runnable, SimulatorThread {
      * @return distance to node
      */
     public double distTo(Node node){
-        double minDist = Math.min(getLocation().distanceTo(node), getDestination().distanceTo(node));
+        double minDist = Math.min(getLocation().distanceTo(node), getFinalDestination().distanceTo(node));
 
 //        passengerOperation(rider -> );
 
         Comparator<Passenger> comparator = Comparator.
                 comparingDouble(rider ->
-                        Math.min(rider.getDestination().distanceTo(node), rider.getLocation().distanceTo(node)));
+                        Math.min(rider.getFinalDestination().distanceTo(node), rider.getLocation().distanceTo(node)));
         Collections.min(this.passengers, comparator);
 
         for(Passenger passenger : getPassengers()) {
-            minDist = Math.min(minDist, passenger.getDestination().distanceTo(node));
+            minDist = Math.min(minDist, passenger.getFinalDestination().distanceTo(node));
             if (!passenger.isCarNextTarget()) {
                 minDist = Math.min(minDist, passenger.getLocation().distanceTo(node));
             }
@@ -184,7 +184,7 @@ public class Driver extends User implements Runnable, SimulatorThread {
                 nextRider.setCarNextTarget(false);
             }
             nextRider = passenger;
-            detoursTime += distTo(nextRider.getDestination()) + distTo(nextRider.getLocation());
+            detoursTime += distTo(nextRider.getFinalDestination()) + distTo(nextRider.getLocation());
             updatePath(nextRider.getNextStop());
         }
     }
@@ -205,6 +205,9 @@ public class Driver extends User implements Runnable, SimulatorThread {
                 passengerLock.lock();
                 nextRider = passengers.poll();
                 passengerLock.unlock();
+                if(this.currNode == this.finalDestination){
+                    System.out.println("stop");
+                }
 
                 if (!nextRider.isCarNextTarget()) { /* passenger has not picked up */
                     addStop(nextRider);
@@ -215,14 +218,13 @@ public class Driver extends User implements Runnable, SimulatorThread {
                         updatePath(nextRider.getNextStop());
                     }
                 } else { /* passenger dropped */
-                    if (currNode == nextRider.getDestination()) {
+                    if (currNode == nextRider.getFinalDestination()) {
                         nextRider.setDropTime(Simulator.INSTANCE.time());
                         getNextDest();
                     }
-//                        updatePath(rider.getNextStop());
                 }
             } else {
-                updatePath(getDestination());
+                updatePath(getFinalDestination());
             }
         }
     }
@@ -252,8 +254,8 @@ public class Driver extends User implements Runnable, SimulatorThread {
     }
 
     @Override
-    public Node getDestination() {
-        return this.destination;
+    public Node getFinalDestination() {
+        return this.finalDestination;
 //        return paths.get(paths.size() -1).getDestination(); // TODO check if last
     }
 

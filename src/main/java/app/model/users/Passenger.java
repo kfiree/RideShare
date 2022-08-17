@@ -1,12 +1,8 @@
 package app.model.users;
 
-import app.controller.simulator.Simulator;
 import app.model.graph.Node;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.Temporal;
 import java.util.Date;
 import static utils.Utils.FORMAT;
 
@@ -43,10 +39,6 @@ public class Passenger extends User {
         return matched;
     }
 
-//    public boolean distTo(Node node) {
-//        return Math.min(getDestination().distanceTo(node), getLocation().distanceTo(node));
-//    }
-
 
 
     /* GETTERS */
@@ -54,14 +46,14 @@ public class Passenger extends User {
     @Override
     public Node getNextStop(){
         if( isCarNextTarget()){
-            return getDestination();
+            return getFinalDestination();
         }else{
             return getLocation();
         }
     }
 
     @Override
-    public Node getDestination() { return dest; }
+    public Node getFinalDestination() { return dest; }
 
     @Override
     public Node getLocation() { return src; }
@@ -117,22 +109,22 @@ public class Passenger extends User {
         return false;
     }
 
+//    @Override
+//    public String toString() {
+//        return "Passenger{" +
+//                "id=" + id +
+//                ", askTime=" + askTime +
+//                ", src=" + src.getId() +
+//                ", dest=" + dest.getId() +
+//                '}';
+//    }
+
     @Override
     public String toString() {
-        return "Passenger{" +
-                "id=" + id +
-                ", askTime=" + askTime +
-                ", src=" + src.getId() +
-                ", dest=" + dest.getId() +
-                '}';
+        if (this.dropTime != null) {
+            return "Rider " + id + " picked up at: " + pickupTime + " Dropped at: " + dropTime
+                    + " Total time travel: " + totalTimeTraveled;
+        }
+        return "Rider " + id + ", start time " + FORMAT(askTime) ;
     }
-
-    //    @Override
-    //    public String toString() {
-    //        if (this.dropTime != null) {
-    //            return "Rider " + id + " picked up at: " + pickupTime + " Dropped at: " + dropTime
-    //                    + " Total time travel: " + totalTimeTraveled;
-    //        }
-    //        return "Rider " + id + ", start time " + FORMAT(askTime) ;
-    //    }
 }

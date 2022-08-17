@@ -82,12 +82,7 @@ public class EventManager implements Runnable, SimulatorThread {
 
             /*  add new event */
             startEvent(newEvent);
-
-            LOGGER.info("RealTimeEvents add: " + newEvent
-            + "\nevent time "+ FORMAT(newEvent.getStartTime()) + "."
-            + "\nSimulator time "+ FORMAT(simulator.time()) + ".");
-
-//            System.out.println("eventManager");
+            LOGGER.info("RealTimeEvents add: " + newEvent +".");
             latch.waitOnCondition();
 
         }
@@ -103,7 +98,6 @@ public class EventManager implements Runnable, SimulatorThread {
     }
 
     private void startEvent(User newEvent){
-//        System.out.println("Starting " + newEvent);
         try {
             reentrantLock.lock();
             lock(false);//todo combine

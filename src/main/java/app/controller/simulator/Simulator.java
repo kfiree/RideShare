@@ -4,13 +4,10 @@ package app.controller.simulator;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import app.view.frames.ChooseRegionFrame;
 import app.model.users.Passenger;
@@ -53,8 +50,7 @@ public class Simulator implements Runnable, SimulatorThread {
     public void init(double simulatorSpeed, int requestNum, int driveNum, boolean show, boolean bounds, boolean createFromPBF){
         validate(simulatorSpeed > 0, "Illegal simulator speed "+ simulatorSpeed + ".");
 
-//        String region = ChooseRegionFrame.choose();
-        String region = "tlv.json";
+        String region = show? ChooseRegionFrame.choose() : "tlv.json";
 
         if (createFromPBF || region.equals("Custom")) {
             LOGGER.info( "Start parsing main map.");
@@ -150,7 +146,7 @@ public class Simulator implements Runnable, SimulatorThread {
                         rider.getPickupTime().toLocaleString(),
                         rider.getLocation().toString(),
                         rider.getDropTime().toLocaleString(),
-                        rider.getDestination().toString(),
+                        rider.getFinalDestination().toString(),
                         rider.getTimeWaited()+" Minutes",
                         rider.getTotalTimeTraveled()+" Minutes"
                 };

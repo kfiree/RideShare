@@ -145,13 +145,13 @@ public final class Main {
         CONSOLE_LOG_LEVEL =
 //                "SEVERE";
                 "ALL";
-        SHOW_MAP = false;
+        SHOW_MAP = true;
         DRIVE_NUM = 15;
         REQUEST_NUM = 20;
     }
 
     public static void main(String[] args) {
-//        ExampleCLI();
+        ExampleCLI();
 
         init(args);
         LOGGER.finest("Let's GO!!");

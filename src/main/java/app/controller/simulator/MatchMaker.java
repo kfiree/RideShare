@@ -18,10 +18,6 @@ import static utils.Utils.lock;
 import static utils.Utils.unLock;
 
 import org.jgrapht.*;
-import org.jgrapht.alg.connectivity.*;
-import org.jgrapht.alg.interfaces.ShortestPathAlgorithm.*;
-import org.jgrapht.alg.interfaces.*;
-import org.jgrapht.alg.shortestpath.*;
 import org.jgrapht.graph.*;
 
 /* todo replace matchBruteForce1Pickup(Drive drive) with matchBruteForce1Pickup( ) (without drivers calling this method).
@@ -131,9 +127,9 @@ public class MatchMaker implements Runnable, SimulatorThread {
         Node driveSrc, riderSrc, driveDest, riderDest;
 
         driveSrc = drive.getLocation();
-        driveDest = drive.getDestination();
+        driveDest = drive.getFinalDestination();
         riderSrc = passenger.getLocation();
-        riderDest = passenger.getDestination();
+        riderDest = passenger.getFinalDestination();
 
         return -1*( driveSrc.distanceTo(riderSrc) + driveDest.distanceTo(riderDest) + drive.getDetoursTime());
 
@@ -179,7 +175,7 @@ public class MatchMaker implements Runnable, SimulatorThread {
     private boolean isWorthItBruteForceSolution(Driver d, Passenger p){// good for 1 pickup only per drive
         double distanceTo = GraphAlgo.distance(d.getCoordinates(), p.getCoordinates()),
                 addedPathDistance = GraphAlgo.distance(p.getCoordinates(), p.getCoordinates()),
-                distanceFrom = GraphAlgo.distance(p.getDestination().getCoordinates(), d.getDestination().getCoordinates());
+                distanceFrom = GraphAlgo.distance(p.getFinalDestination().getCoordinates(), d.getFinalDestination().getCoordinates());
 
         double newPathLength_heuristic = distanceTo + addedPathDistance + distanceFrom;
 
@@ -200,7 +196,7 @@ public class MatchMaker implements Runnable, SimulatorThread {
     private boolean isWorthItBitBetterSolution(Driver d, Passenger p){
         double distanceTo = GraphAlgo.distance(d.getCoordinates(), p.getCoordinates()),
 
-                distanceFrom = GraphAlgo.distance(p.getDestination().getCoordinates(), d.getDestination().getCoordinates());
+                distanceFrom = GraphAlgo.distance(p.getFinalDestination().getCoordinates(), d.getFinalDestination().getCoordinates());
 
         double newPathLength_heuristic = distanceTo + distanceFrom;
 

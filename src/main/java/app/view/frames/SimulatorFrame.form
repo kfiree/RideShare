@@ -145,7 +145,7 @@
               <focusable value="false"/>
               <font name="Bodoni MT Black" size="24" style="3"/>
               <horizontalAlignment value="0"/>
-              <text value="--- TLV SharedRide Simulator ---"/>
+              <text value="--- Berlin SharedRide Simulator ---"/>
             </properties>
           </component>
         </children>

@@ -29,7 +29,7 @@ public abstract class User implements Comparable<User>, Located {
         return id;
     }
 
-    public Node getDestination() {
+    public Node getFinalDestination() {
         return destination;
     }
 
