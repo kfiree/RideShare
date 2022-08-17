@@ -82,7 +82,7 @@ public class Driver extends User implements Runnable, SimulatorThread {
         LOGGER.fine("Drive "+ id +" started.");
         validate(getPath() != null, "can't choose a drive if path is null. Drive owner id - " + id);
 
-        while(!passengers.isEmpty() || currNode!= getDestination()){
+        while(currNode!= getDestination()){
             getNextDest();
 
             driveToNextStop();
@@ -101,6 +101,9 @@ public class Driver extends User implements Runnable, SimulatorThread {
         Node nextNode = nodeIter.next();
 
         while(nodeIter.hasNext()){
+            if(this.getId() == 9){
+                System.out.println("210");
+            }
 
             currNode = nextNode;
             nextNode = nodeIter.next();
@@ -122,7 +125,9 @@ public class Driver extends User implements Runnable, SimulatorThread {
             latch.waitOnCondition();
 
         }
-        pathChange = true;
+        if(currNode != this.destination){
+            pathChange = true;
+        }
     }
 
     private void finish() {
@@ -179,8 +184,12 @@ public class Driver extends User implements Runnable, SimulatorThread {
         passenger.markMatched();
         addStop(passenger);
 
+        if(this.getId() == 9){
+            System.out.println("210");
+        }
+
         if(passengers.peek() == passenger){
-            if(nextRider != null) {
+            if(nextRider != null && !passenger.isPickedup()) {
                 nextRider.setCarNextTarget(false);
             }
             nextRider = passenger;
@@ -204,6 +213,9 @@ public class Driver extends User implements Runnable, SimulatorThread {
     }
 
     private void getNextDest(){//System.out.println(this.currNode.getId());
+        if(this.getId() == 9){
+            System.out.println("210");
+        }
         if(pathChange){
             if (!passengers.isEmpty()) {
                 passengerLock.lock();
@@ -211,12 +223,19 @@ public class Driver extends User implements Runnable, SimulatorThread {
                 passengerLock.unlock();
 
                 if (!nextRider.isCarNextTarget()) { /* passenger has not picked up */
+                    if(this.getId() == 9){
+                        System.out.println("210");
+                    }
                     addStop(nextRider);
                     if(this.getLocation() == nextRider.getLocation()) { /*passenger picked up*/
                         UserMap.INSTANCE.finishUserEvent(nextRider);
                         nextRider.setCarNextTarget(true);
                         nextRider.setPickupTime(getTime());
                         updatePath(nextRider.getNextStop());
+                        nextRider.setPickedup(true);
+                    } else {
+//                        nextRider.setCarNextTarget(true);
+                        updatePath(nextRider.getLocation());
                     }
                 } else { /* passenger dropped */
                     if (currNode == nextRider.getDestination()) {
