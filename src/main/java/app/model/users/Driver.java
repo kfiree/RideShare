@@ -32,7 +32,7 @@ public class Driver extends User implements Runnable, SimulatorThread {
     private static final int MAX_PASSENGERS_NUM = 2; //todo set to 3
     private final Queue<Passenger> passengers;
     private Path path;
-    private Node currNode, finalDestination;
+    private Node currNode, destination;
     private Passenger nextRider;
     private double originalTime, detoursTime;
     private final Date startTime;
@@ -63,7 +63,7 @@ public class Driver extends User implements Runnable, SimulatorThread {
     public void initPathVariables(@NotNull Path path) {
         setPath(path);
         currNode = path.getSrc();
-        finalDestination = path.getDest();
+        destination = path.getDest();
         originalTime = path.getWeight();
     }
 
@@ -80,7 +80,7 @@ public class Driver extends User implements Runnable, SimulatorThread {
         LOGGER.fine("Drive "+ id +" started.");
         validate(getPath() != null, "can't choose a drive if path is null. Drive owner id - " + id);
 
-        while(!passengers.isEmpty() || currNode!= getFinalDestination()){
+        while(currNode!= getFinalDestination()){
             getNextDest();
 
             driveToNextStop();
@@ -99,11 +99,12 @@ public class Driver extends User implements Runnable, SimulatorThread {
         Node nextNode = nodeIter.next();
 
         while(nodeIter.hasNext()){
+            if(this.getId() == 9){
+                System.out.println("210");
+            }
+
             currNode = nextNode;
             nextNode = nodeIter.next();
-            if(nextNode == this.finalDestination){
-                System.out.println("stop");
-            }
 
             long timeToNextNode = currNode.getEdgeTo(nextNode).getWeight();
 
@@ -122,12 +123,14 @@ public class Driver extends User implements Runnable, SimulatorThread {
             latch.waitOnCondition();
 
         }
-        pathChange = true;
+        if(currNode != this.destination){
+            pathChange = true;
+        }
     }
 
     private void finish() {
         unregister(this);
-        LOGGER.finest("Drive "+ id +" finished!, total time : " + FORMAT(timeDiff(startTime, localTime)/ 60000.0) + " minutes.");
+        LOGGER.finest("Drive "+ id +" finished!, total time : " + (timeDiff(startTime, localTime)/ 60000.0) + " minutes.");
     }
 
 
@@ -179,8 +182,12 @@ public class Driver extends User implements Runnable, SimulatorThread {
         passenger.markMatched();
         addStop(passenger);
 
+        if(this.getId() == 9){
+            System.out.println("210");
+        }
+
         if(passengers.peek() == passenger){
-            if(nextRider != null) {
+            if(nextRider != null && !passenger.isPickedup()) {
                 nextRider.setCarNextTarget(false);
             }
             nextRider = passenger;
@@ -205,9 +212,6 @@ public class Driver extends User implements Runnable, SimulatorThread {
                 passengerLock.lock();
                 nextRider = passengers.poll();
                 passengerLock.unlock();
-                if(this.currNode == this.finalDestination){
-                    System.out.println("stop");
-                }
 
                 if (!nextRider.isCarNextTarget()) { /* passenger has not picked up */
                     addStop(nextRider);
@@ -216,6 +220,10 @@ public class Driver extends User implements Runnable, SimulatorThread {
                         nextRider.setCarNextTarget(true);
                         nextRider.setPickupTime(getTime());
                         updatePath(nextRider.getNextStop());
+                        nextRider.setPickedup(true);
+                    } else {
+//                        nextRider.setCarNextTarget(true);
+                        updatePath(nextRider.getLocation());
                     }
                 } else { /* passenger dropped */
                     if (currNode == nextRider.getFinalDestination()) {
@@ -255,8 +263,8 @@ public class Driver extends User implements Runnable, SimulatorThread {
 
     @Override
     public Node getFinalDestination() {
-        return this.finalDestination;
-//        return paths.get(paths.size() -1).getDestination(); // TODO check if last
+        return this.destination;
+//        return paths.get(paths.size() -1).getFinalDestination(); // TODO check if last
     }
 
     @Override
@@ -287,7 +295,7 @@ public class Driver extends User implements Runnable, SimulatorThread {
 
     @Override
     public Node getNextStop() {
-        return path.getDest();
+        return getFinalDestination();
     }
 
     public Path getPath(){
@@ -317,16 +325,34 @@ public class Driver extends User implements Runnable, SimulatorThread {
     }
 
     /* SETTERS */
-
     @Override
     public String toString() {
-        return "Driver{" +
-                "id=" + id +
-                ", passengers=" + passengers.size() +
-                ", currNode=" + currNode.getId() +
-                ", localTime=" + FORMAT(localTime) +
-                ", driving time" + FORMAT(this.originalTime / 60000) +" minutes."+
-                '}';
+        return "Drive " + id + ", choose time =" + FORMAT(this.startTime) +", weight :  " + this.originalTime / 60000 +" minutes.";
     }
-
 }
+
+
+//    TimerTask moveToNext = new TimerTask(){
+//
+//        @Override
+//        public void operate() {
+//            Iterator<Node> nodeIter = getPath().iterator();
+//            Node nextNode = nodeIter.next();
+//
+//            while(nodeIter.hasNext()){
+//                currNode = nextNode;
+//                nextNode = nodeIter.next();
+//
+//                long timeToNextNode = currNode.getEdgeTo(nextNode).getWeight();
+//
+//                sleep(timeToNextNode);
+//
+//                originalTime -= timeToNextNode;
+//
+//                lock(false);
+//
+//                currNode = nextNode;
+//
+//            }
+//        }
+//    };

@@ -170,11 +170,11 @@ public class UserMapHandler {
 
         }
 //        userMap.getDrives().forEach(d ->
-//                System.out.println("drive " + d.getId() + " from " + d.getLocation().getId() + " to " + d.getDestination().getId() + ", size " + d.getPath().getSize())
+//                System.out.println("drive " + d.getId() + " from " + d.getLocation().getId() + " to " + d.getFinalDestination().getId() + ", size " + d.getPath().getSize())
 //        );
 //
 //        userMap.getRequests().forEach(d ->
-//                System.out.println("request " + d.getId() + " from " + d.getLocation().getId() + " to " + d.getDestination().getId())
+//                System.out.println("request " + d.getId() + " from " + d.getLocation().getId() + " to " + d.getFinalDestination().getId())
 //        );
 
         printUserMapState();

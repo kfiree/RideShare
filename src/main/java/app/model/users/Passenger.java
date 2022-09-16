@@ -15,13 +15,22 @@ public class Passenger extends User {
     private boolean carNextTarget;
     private Date pickupTime, dropTime;
     private long totalTimeTraveled, timeWaited;
+    private boolean pickedup;
 
+    public boolean isPickedup() {
+        return pickedup;
+    }
+
+    public void setPickedup(boolean pickedup) {
+        this.pickedup = pickedup;
+    }
 
     /* CONSTRUCTORS  */
     public Passenger(@NotNull Node currNode, @NotNull Node destination, Date askTime) {
         this.askTime = askTime;
         this.dest = destination;
         this.src = currNode;
+        pickedup = false;
     }
 
 
