@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  *      |==================================|
  *
  *
- * @author  Kfir Ettinger & Amit Hajaj & Motti Dahari
+ * @author  Kfir Ettinger
  * @version 1.0
  * @since   2021-06-20
  */

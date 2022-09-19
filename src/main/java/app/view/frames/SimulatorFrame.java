@@ -20,7 +20,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static app.view.utils.Style.LIGHT_GREEN;
 import static app.view.utils.Style.LIGHT_RED;
@@ -41,7 +40,7 @@ public class SimulatorFrame extends JFrame{
     private JTable threadsTable;
     private JLabel threadsTitle;
     private JLabel simulatorTitle;
-    private JTabbedPane tabs;
+    private JTabbedPane tabPane;
     private JPanel pausePanel;
     private JPanel driversTabs;
     private JTable driversTable;
@@ -51,7 +50,7 @@ public class SimulatorFrame extends JFrame{
     private ViewerPipe pipeIn;
 
     public SimulatorFrame() {
-        setContentPane(tabs);
+        setContentPane(tabPane);
         setTitle("TLV SharedRide Simulator");
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(100, 100, (int) dim.getWidth(), (int) dim.getHeight()-50);
@@ -61,7 +60,7 @@ public class SimulatorFrame extends JFrame{
     }
 
     private void setListeners(){
-        tabs.addChangeListener(e -> {
+        tabPane.addChangeListener(e -> {
             if(e.getSource() instanceof JTabbedPane tabbedPane){
                 int index = tabbedPane.getSelectedIndex();
                 System.out.println(index);

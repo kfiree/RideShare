@@ -16,7 +16,7 @@ import java.util.List;
  *
  *
  * Note: this class has a natural ordering that is inconsistent with equals.
- * @author Kfir Ettinger & Amit Hajaj & Motti Dahari
+ * @author Kfir Ettinger
  * @version 1.0
  * @since 2021-06-20
  */

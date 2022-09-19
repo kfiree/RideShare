@@ -10,7 +10,7 @@ import java.awt.geom.Point2D;
  *  geo location extends 'java.awt.geom.Point2D.Double'
  *
  *
- * @author  Kfir Ettinger & Amit Hajaj & Motti Dahari
+ * @author  Kfir Ettinger
  * @version 1.0
  * @since   2021-06-20
  */

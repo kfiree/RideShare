@@ -17,7 +17,7 @@ import java.util.*;
  *
  *  Read '.pbf' file and initialize a collection of OsmObject and collection of OsmWay (for the Parser class to parse).
  *
- * @author  Kfir Ettinger & Amit Hajaj & Motti Dahari
+ * @author  Kfir Ettinger
  * @version 1.0
  * @since   2021-06-20
  */

@@ -9,7 +9,7 @@ import java.awt.event.*;
 import java.io.File;
 
 public class ChooseRegionFrame extends JDialog {
-    private JPanel contentPane;
+    private JPanel contentPanel;
     private JButton buttonOK;
     private JButton buttonCancel;
     private JPanel bottonsPanel;
@@ -27,7 +27,7 @@ public class ChooseRegionFrame extends JDialog {
     static public Region region = Region.TLV;
 
     private ChooseRegionFrame() {
-        setContentPane(contentPane);
+        setContentPane(contentPanel);
 
         getRootPane().setDefaultButton(buttonOK);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -45,7 +45,7 @@ public class ChooseRegionFrame extends JDialog {
             }
         });
 
-        contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        contentPanel.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
         setModal(true);
         regionDropBox.addActionListener(e -> {

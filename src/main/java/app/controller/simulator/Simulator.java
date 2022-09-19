@@ -64,8 +64,8 @@ public class Simulator implements Runnable, SimulatorThread {
 
         LOGGER.info("Map is ready. Map = " + RoadMap.INSTANCE);
 
-         initEventsInLine(2);
-//        initRandomEvents(driveNum, requestNum);
+//         initEventsInLine(2);
+        initRandomEvents(driveNum, requestNum);
 
         this.speed = simulatorSpeed;
         this.show = show;

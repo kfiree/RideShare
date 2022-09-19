@@ -23,7 +23,7 @@ import static utils.Utils.validate;
  *      - remove nodes that are not part of a given node connected component
  *
  *
- * @author  Kfir Ettinger & Amit Hajaj & Motti Dahari
+ * @author  Kfir Ettinger
  * @version 1.0
  * @since   2021-06-20
  */

@@ -26,7 +26,7 @@ import static utils.Utils.throwException;
  *
  *  manage map and objects on map
  *
- * @author  Kfir Ettinger & Amit Hajaj & Motti Dahari
+ * @author  Kfir Ettinger
  * @version 1.0
  * @since   2021-06-20
  */

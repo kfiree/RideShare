@@ -3,7 +3,6 @@ package app.view;
 
 import app.controller.simulator.Simulator;
 
-import static utils.Utils.FORMAT;
 import static app.view.utils.Style.*;
 
 import app.model.graph.RoadMap;
@@ -27,25 +26,25 @@ import java.util.concurrent.ConcurrentHashMap;
  *      |==================================|
  *      |===========| MAP VIEW |===========|
  *      |==================================|
- *
+ * <p>
  *   simulator for road map.
- *
+ * <p>
  *
  *
  *  version 1: graph in one thread.
  *
- * @author  Kfir Ettinger & Amit Hajaj & Motti Dahari
+ * @author  Kfir Ettinger
  * @version 2.0
  * @since   2021-06-20
  */
-public class MapView{
+public final class MapView{
     /* MAP */
-    protected final UserMap userMap;
+    private final UserMap userMap;
     private final Map<User, Node> elementsOnMapNodes;
     private final Graph displayGraph;
 
     /* DISPLAY */
-    protected SimulatorFrame simulatorFrame;
+    private SimulatorFrame simulatorFrame;
 //    protected Viewer viewer;
 //    private final ViewerPipe pipeIn;
 //    private static Sprite clock;
@@ -274,7 +273,7 @@ public class MapView{
 // *
 // *  version 1: graph in one thread.
 // *
-// * @author  Kfir Ettinger & Amit Hajaj & Motti Dahari
+// * @author  Kfir Ettinger
 // * @version 2.0
 // * @since   2021-06-20
 // */

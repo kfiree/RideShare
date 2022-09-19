@@ -69,31 +69,39 @@ public class Style {
             Node car = mapView.getElementsOnMapNodes().get(drive);
             String color = "";
             Graph graph = mapView.getDisplayGraph();
-            if(passengersEdges != null){
-                for (int i = 0; i < passengersEdges.length; i++) {
-                    graph.removeEdge(passengersEdges[i]);
-                }
-            }
 
-            passengersEdges = new Edge[drive.getPassengers().size()];
-            int i = 0;
-            for (Passenger p : drive.getPassengers()) {
-                Node start = graph.getNode(String.valueOf(p.getLocation().getId()));
-                Node end = graph.getNode(String.valueOf(p.getFinalDestination().getId()));
-                Edge edge = graph.addEdge(p.getId() + "path", start, end);
-                passengersEdges[i] = edge;
-                edge.addAttribute("ui.style", "shape: cubic-curve;");
-//                focusedCar.addAttribute("ui.style", styleSheet);" shape: diamond;";
-                i++;
-            }
 
 
             if(car != null){
+                color = extractAttribute("fill-color", car);
+
+                if(passengersEdges != null){
+                    for (int i = 0; i < passengersEdges.length; i++) {
+                        graph.removeEdge(passengersEdges[i]);
+                    }
+                }
+
+                passengersEdges = new Edge[drive.getPassengers().size()];
+                int i = 0;
+                for (Passenger p : drive.getPassengers()) {
+                    Node start = graph.getNode(String.valueOf(p.getLocation().getId()));
+                    Node end = graph.getNode(String.valueOf(p.getFinalDestination().getId()));
+                    Edge edge = graph.addEdge(p.getId() + "path", start, end);
+                    passengersEdges[i] = edge;
+                    edge.addAttribute("ui.style", "shape: cubic-curve;" + color);
+//                focusedCar.addAttribute("ui.style", styleSheet);" shape: diamond;";
+                    i++;
+                }
+
+
+
                 if(focusedPath!=null) {
                     styleEdges(EDGE_STYLE_SHEET, focusedPath);
                 }
 
-                color = extractAttribute("fill-color", car);
+
+
+
                 focusedPath = Arrays.stream(drive.getPath().getEdgeIds())
                         .map(mapView.getDisplayGraph()::getEdge).toArray(Edge[]::new);
 

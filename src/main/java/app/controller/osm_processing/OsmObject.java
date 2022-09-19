@@ -22,7 +22,7 @@ import java.util.Map;
  *      - int linkCounter := count appearances of object in osm ways.
  *                          if linkCounter greater then 1 node will be a crosses or entities of class Node
  *
- * @author  Kfir Ettinger & Amit Hajaj & Motti Dahari
+ * @author  Kfir Ettinger
  * @version 1.0
  * @since   2021-06-20
  */
