@@ -2,11 +2,13 @@ package app.view.utils;
 
 
 import app.model.users.Driver;
+import app.model.users.Passenger;
 import app.model.users.User;
 import app.model.users.UserMap;
 import app.model.utils.Coordinates;
 import app.view.MapView;
 import org.graphstream.graph.Edge;
+import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,12 +33,12 @@ public class Style {
     protected static Node focusedCar;
     protected static Driver focusedDrive;
 //    protected static final HashMap<String, Edge[]> carPaths = new HashMap<>();
-    protected static final HashMap<String, String> carColors = new HashMap<>();
-    protected static Edge[] focusedPath;
-    public static final String nodeStyleSheet, riderStyleSheet, carStyleSheet,
-            edgeStyleSheet, secondaryEdgeStyleSheet, primaryEdgeStyleSheet,
-            motorwayEdgeStyleSheet, tertiaryEdgeStyleSheet, pathStyleSheet,
-            spriteStyleSheet, styleSheet, focusedCarStyleSheet;
+    protected static final HashMap<String, String> CAR_COLORS = new HashMap<>();
+    protected static Edge[] focusedPath, passengersEdges;
+    public static final String NODE_STYLE_SHEET, RIDER_STYLE_SHEET, CAR_STYLE_SHEET,
+            EDGE_STYLE_SHEET, SECONDARY_EDGE_STYLE_SHEET, PRIMARY_EDGE_STYLE_SHEET,
+            MOTORWAY_EDGE_STYLE_SHEET, TERTIARY_EDGE_STYLE_SHEET, PATH_STYLE_SHEET,
+            SPRITE_STYLE_SHEET, STYLE_SHEET, FOCUSED_CAR_STYLE_SHEET;
     private static ReentrantLock lock = new ReentrantLock();
 
 
@@ -65,18 +67,37 @@ public class Style {
         if(drive !=null) {
 
             Node car = mapView.getElementsOnMapNodes().get(drive);
-//            Edge[] edges = focusedPath;
             String color = "";
+            Graph graph = mapView.getDisplayGraph();
+            if(passengersEdges != null){
+                for (int i = 0; i < passengersEdges.length; i++) {
+                    graph.removeEdge(passengersEdges[i]);
+                }
+            }
+
+            passengersEdges = new Edge[drive.getPassengers().size()];
+            int i = 0;
+            for (Passenger p : drive.getPassengers()) {
+                Node start = graph.getNode(String.valueOf(p.getLocation().getId()));
+                Node end = graph.getNode(String.valueOf(p.getFinalDestination().getId()));
+                Edge edge = graph.addEdge(p.getId() + "path", start, end);
+                passengersEdges[i] = edge;
+                edge.addAttribute("ui.style", "shape: cubic-curve;");
+//                focusedCar.addAttribute("ui.style", styleSheet);" shape: diamond;";
+                i++;
+            }
 
 
             if(car != null){
+                if(focusedPath!=null) {
+                    styleEdges(EDGE_STYLE_SHEET, focusedPath);
+                }
 
                 color = extractAttribute("fill-color", car);
-
-                Edge[] edges = Arrays.stream(drive.getPath().getEdgeIds())
+                focusedPath = Arrays.stream(drive.getPath().getEdgeIds())
                         .map(mapView.getDisplayGraph()::getEdge).toArray(Edge[]::new);
 
-                styleEdges(pathStyleSheet + color,  edges);
+                styleEdges(PATH_STYLE_SHEET + color,  focusedPath);
 
 //                Arrays.stream(drive.getPath().getEdges()).forEach(edge -> {
 //                    styleEdges(pathStyleSheet + finalColor,  mapView.getDisplayGraph().getEdge(String.valueOf(edge.getId())));
@@ -111,7 +132,7 @@ public class Style {
             if (focusedCar != null && drive == focusedDrive) {
                 stylePath(focusedDrive); //todo add focusedEdges to carPaths with sending it to styleDrives
 //                System.out.println(""+focusedCar.getAttribute("ui.style"));
-                styleNodes(focusedCarStyleSheet+focusedCar.getAttribute("ui.style"), focusedCar);
+                styleNodes(FOCUSED_CAR_STYLE_SHEET +focusedCar.getAttribute("ui.style"), focusedCar);
             }//todo duplicate 2
         }finally {
             lock.unlock();
@@ -126,8 +147,8 @@ public class Style {
             if (focusedDrive != drive) {
                 if (focusedDrive != null) {
                     /* reset prev drive style */
-                    styleEdges(edgeStyleSheet);
-                    styleNodes(carStyleSheet, focusedCar);//todo duplicate 1
+                    styleEdges(EDGE_STYLE_SHEET);
+                    styleNodes(CAR_STYLE_SHEET, focusedCar);//todo duplicate 1
                 }
 
                 /* set new drive */
@@ -154,9 +175,9 @@ public class Style {
         node.addAttribute("xy", location.getLongitude(), location.getLatitude());
         node.addAttribute("ui.label", element.getId());
         if(styleClass.equals("rider")){
-            node.setAttribute("ui.style", riderStyleSheet);
+            node.setAttribute("ui.style", RIDER_STYLE_SHEET);
         }else{
-            node.setAttribute("ui.style", carStyleSheet);
+            node.setAttribute("ui.style", CAR_STYLE_SHEET);
             node.setAttribute("ui.style", "size: 15px;");
         }
         // node.addAttribute("ui.class", styleClass);
@@ -177,7 +198,7 @@ public class Style {
         try {
             lock.lock();
 
-            String color = carColors.get(drive.getId());
+            String color = CAR_COLORS.get(drive.getId());
             if(color == null) {
                 color = extractAttribute("fill-color", mapView.getElementsOnMapNodes().get(drive));
             }
@@ -191,7 +212,7 @@ public class Style {
     /* STYLE MAP PARTS */
 
     public static void styleNode(Node node){
-            node.setAttribute("ui.style", nodeStyleSheet);
+            node.setAttribute("ui.style", NODE_STYLE_SHEET);
 
     }
 
@@ -260,11 +281,11 @@ public class Style {
     static {
         /*     |==== NODE ====|   */
 
-        nodeStyleSheet = "text-mode: hidden;" +
+        NODE_STYLE_SHEET = "text-mode: hidden;" +
                 "z-index: 1;" +
                 "fill-color: grey;" +
                 "size: 3px;";
-        riderStyleSheet =
+        RIDER_STYLE_SHEET =
                 " z-index: 2;" +
                 " size: 20px;" +
                 " text-mode: normal;" +
@@ -276,9 +297,9 @@ public class Style {
                 " fill-color: grey, white;" +
                 " fill-mode: gradient-horizontal;"+
                 " shape: diamond;";
-        focusedCarStyleSheet =
+        FOCUSED_CAR_STYLE_SHEET =
                 "size: 25px;";
-        carStyleSheet =
+        CAR_STYLE_SHEET =
                 "z-index: 2;" +
                 "size: 15px;" +
                 "text-mode: normal;" +
@@ -289,36 +310,36 @@ public class Style {
 
         /*     |==== EDGE ====|     */
 
-        edgeStyleSheet =
+        EDGE_STYLE_SHEET =
                 "fill-color: black;" +
                 "size: 1px;" ;
-        pathStyleSheet =
+        PATH_STYLE_SHEET =
                 "size: 4px;";
-        motorwayEdgeStyleSheet =
+        MOTORWAY_EDGE_STYLE_SHEET =
                 "fill-color: rgb(50, 50, 255);" +
                 "size: 2px;";
-        tertiaryEdgeStyleSheet =
+        TERTIARY_EDGE_STYLE_SHEET =
                 "fill-color: rgb(50, 50, 200);" +
                 "size: 1px;";
-        secondaryEdgeStyleSheet =
+        SECONDARY_EDGE_STYLE_SHEET =
                 "fill-color: rgb(50, 50, 150);" +
                 "size: 1.25px;";
-        primaryEdgeStyleSheet =
+        PRIMARY_EDGE_STYLE_SHEET =
                 "fill-color: rgb(50, 50, 100);" +
                 "size: 1.5px;";
 
 
         /*     |==== SPRITE ====|   */
 
-        spriteStyleSheet =
+        SPRITE_STYLE_SHEET =
                 "";
 
         /*     |==== STYLE ====|   */
 
-        styleSheet =
-                "edge{" + edgeStyleSheet + "}" +
-                "node.car {" + carStyleSheet + "}" +
-                "node.rider {" + riderStyleSheet + "}";
+        STYLE_SHEET =
+                "edge{" + EDGE_STYLE_SHEET + "}" +
+                "node.car {" + CAR_STYLE_SHEET + "}" +
+                "node.rider {" + RIDER_STYLE_SHEET + "}";
 //                "node {" + nodeStyleSheet + "}" +
     }
 

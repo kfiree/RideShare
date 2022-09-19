@@ -33,7 +33,7 @@ public class Driver extends User implements Runnable, SimulatorThread {
     private final Queue<Passenger> passengers;
     private Path path;
     private Node currNode, destination;
-    private Passenger nextRider;
+    private Passenger nextPassenger;
     private double originalTime, detoursTime;
     private final Date startTime;
     private Date localTime;
@@ -86,7 +86,7 @@ public class Driver extends User implements Runnable, SimulatorThread {
             driveToNextStop();
         }
 
-        UserMap.INSTANCE.finishUserEvent(this);
+        UserMap.INSTANCE.finishEvent(this);
 
 
         finish();
@@ -187,12 +187,12 @@ public class Driver extends User implements Runnable, SimulatorThread {
         }
 
         if(passengers.peek() == passenger){
-            if(nextRider != null && !passenger.isPickedup()) {
-                nextRider.setCarNextTarget(false);
+            if(nextPassenger != null && !passenger.isPickedup()) {
+                nextPassenger.setCarNextTarget(false);
             }
-            nextRider = passenger;
-            detoursTime += distTo(nextRider.getFinalDestination()) + distTo(nextRider.getLocation());
-            updatePath(nextRider.getNextStop());
+            nextPassenger = passenger;
+            detoursTime += distTo(nextPassenger.getFinalDestination()) + distTo(nextPassenger.getLocation());
+            updatePath(nextPassenger.getNextStop());
         }
     }
 
@@ -207,33 +207,32 @@ public class Driver extends User implements Runnable, SimulatorThread {
     }
 
     private void getNextDest(){//System.out.println(this.currNode.getId());
-        if(pathChange){
-            if (!passengers.isEmpty()) {
-                passengerLock.lock();
-                nextRider = passengers.poll();
-                passengerLock.unlock();
+        if(pathChange && !passengers.isEmpty()) {
+            passengerLock.lock();
+            nextPassenger = passengers.poll();
+            passengerLock.unlock();
 
-                if (!nextRider.isCarNextTarget()) { /* passenger has not picked up */
-                    addStop(nextRider);
-                    if(this.getLocation() == nextRider.getLocation()) { /*passenger picked up*/
-                        UserMap.INSTANCE.finishUserEvent(nextRider);
-                        nextRider.setCarNextTarget(true);
-                        nextRider.setPickupTime(getTime());
-                        updatePath(nextRider.getNextStop());
-                        nextRider.setPickedup(true);
-                    } else {
-//                        nextRider.setCarNextTarget(true);
-                        updatePath(nextRider.getLocation());
+            switch (nextPassenger.state()){
+                case Matched -> {
+                    addStop(nextPassenger);
+
+                    if(getLocation() == nextPassenger.getLocation()){
+                        nextPassenger.markedPickup(getTime());
+                        updatePath(nextPassenger.getFinalDestination());
+                    }else{
+                        updatePath(nextPassenger.getLocation());
                     }
-                } else { /* passenger dropped */
-                    if (currNode == nextRider.getFinalDestination()) {
-                        nextRider.setDropTime(Simulator.INSTANCE.time());
-                        getNextDest();
-                    }
+
                 }
-            } else {
-                updatePath(getFinalDestination());
+                case Picked -> {
+                    nextPassenger.setDropTime(Simulator.INSTANCE.time());
+                    nextPassenger = null;
+                    getNextDest();
+                }
+                case Dropped, Available  -> throwException("Bad pickup order. passenger can't be 'Dropped' or 'Available'.");
             }
+        }else {
+            updatePath(getFinalDestination());
         }
     }
 
@@ -295,7 +294,11 @@ public class Driver extends User implements Runnable, SimulatorThread {
 
     @Override
     public Node getNextStop() {
-        return getFinalDestination();
+        if(nextPassenger == null){
+            return getFinalDestination();
+        }else{
+            return nextPassenger.getNextStop();
+        }
     }
 
     public Path getPath(){
@@ -315,6 +318,9 @@ public class Driver extends User implements Runnable, SimulatorThread {
         return localTime;
     }
 
+    public Passenger getNextPassenger() {
+        return nextPassenger;
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -57,7 +57,7 @@ public class MatchMaker implements Runnable, SimulatorThread {
 
             sleep(SECONDS_15);
 
-            if(!UserMap.INSTANCE.getPendingRequests().isEmpty()){
+            if(!UserMap.INSTANCE.getLiveRequest().isEmpty()){
                 matchMultiplePickup();
             }
         }
@@ -77,13 +77,13 @@ public class MatchMaker implements Runnable, SimulatorThread {
     public void shtuiut() {
         Graph<User, UserEdge> graph = new SimpleGraph<>(UserEdge.class);
         UserMap.INSTANCE.getDrives().forEach(driver -> graph.addVertex(driver));
-        UserMap.INSTANCE.getPendingRequests().forEach(request -> graph.addVertex(request));
+        UserMap.INSTANCE.getLiveRequest().forEach(request -> graph.addVertex(request));
 
         KuhnMunkresMinimalWeightBipartitePerfectMatching<User, UserEdge> hungarian =
                 new KuhnMunkresMinimalWeightBipartitePerfectMatching<>(
                         graph,
                         new HashSet<>(UserMap.INSTANCE.getDrives()),
-                        new HashSet<>(UserMap.INSTANCE.getPendingRequests())
+                        new HashSet<>(UserMap.INSTANCE.getLiveRequest())
                 );
 
         hungarian.getMatching();
@@ -92,13 +92,13 @@ public class MatchMaker implements Runnable, SimulatorThread {
     public synchronized void matchMultiplePickup(){
         try {
             lock(true);
-            for (Passenger passenger : UserMap.INSTANCE.getPendingRequests()) {
+            for (Passenger passenger : UserMap.INSTANCE.getLiveRequest()) {
                 if(!passenger.isMatched()) {
                     PriorityQueue<Driver> matches = new PriorityQueue<>(
                             Comparator.comparingDouble(drive -> detourCost(drive, passenger))
                     );
 
-                    UserMap.INSTANCE.getOnGoingDrives().forEach(drive -> {
+                    UserMap.INSTANCE.getLiveDrives().forEach(drive -> {
                         if (drive.canSqueezeOneMore()) {
                             matches.add(drive);
                         }
@@ -108,12 +108,8 @@ public class MatchMaker implements Runnable, SimulatorThread {
                     if (bestMatch == null) return;
                     double matchHeuristic = bestMatch.distanceTo(passenger);
                     if (matchHeuristic < MAX_KM_ADDITION_TO_PATH) {
-//                        System.out.println("Match " + bestMatch.getId() + " with " + rider.getId() + ", match heuristic:" + matchHeuristic);
                         bestMatch.addPassenger(passenger);
                     }
-//                else{
-//                    System.out.println("Match too expensive, " + bestMatch.getId() + " with " + rider.getId()+ ", match heuristic:" + matchHeuristic);
-//                }
 
                     return;
                 }
@@ -139,8 +135,8 @@ public class MatchMaker implements Runnable, SimulatorThread {
     public synchronized void matchBruteForce1Pickup(){
         try {
             lock(true);
-            Collection<Passenger> requests = UserMap.INSTANCE.getPendingRequests();
-            Collection<Driver> drives = UserMap.INSTANCE.getOnGoingDrives();
+            Collection<Passenger> requests = UserMap.INSTANCE.getLiveRequest();
+            Collection<Driver> drives = UserMap.INSTANCE.getLiveDrives();
 
             for (Driver drive : drives) {
                 if(drive.canSqueezeOneMore()) {
@@ -172,21 +168,21 @@ public class MatchMaker implements Runnable, SimulatorThread {
 
     /* MATCH COST HEURISTIC */
 
-    private boolean isWorthItBruteForceSolution(Driver d, Passenger p){// good for 1 pickup only per drive
+    private boolean isWorthItBruteForceSolution(Driver d, Passenger p){// good for 1 markedPickup only per drive
         double distanceTo = GraphAlgo.distance(d.getCoordinates(), p.getCoordinates()),
                 addedPathDistance = GraphAlgo.distance(p.getCoordinates(), p.getCoordinates()),
                 distanceFrom = GraphAlgo.distance(p.getFinalDestination().getCoordinates(), d.getFinalDestination().getCoordinates());
 
-        double newPathLength_heuristic = distanceTo + addedPathDistance + distanceFrom;
+        double newPathLengthHeuristic = distanceTo + addedPathDistance + distanceFrom;
 
-        boolean worthIt = newPathLength_heuristic < d.getOriginalTime() + MAX_KM_ADDITION_TO_PATH;
+        boolean worthIt = newPathLengthHeuristic < d.getOriginalTime() + MAX_KM_ADDITION_TO_PATH;
 
         if(worthIt) {
             LOGGER.fine(
                     "drive " + d.getId() + " change path to pick up passenger: " + p.getId() +
                             ".\nPath length heuristics:" +
                             "\n * Prev path: " + d.getOriginalTime() +
-                            "\n * new path: " + newPathLength_heuristic
+                            "\n * new path: " + newPathLengthHeuristic
             );
         }
 
@@ -198,16 +194,16 @@ public class MatchMaker implements Runnable, SimulatorThread {
 
                 distanceFrom = GraphAlgo.distance(p.getFinalDestination().getCoordinates(), d.getFinalDestination().getCoordinates());
 
-        double newPathLength_heuristic = distanceTo + distanceFrom;
+        double newPathLengthHeuristic = distanceTo + distanceFrom;
 
-        boolean worthIt = newPathLength_heuristic < d.getOriginalTime() + MAX_KM_ADDITION_TO_PATH;
+        boolean worthIt = newPathLengthHeuristic < d.getOriginalTime() + MAX_KM_ADDITION_TO_PATH;
 
         if(worthIt) {
             LOGGER.fine(
                     "drive " + d.getId() + " change path to pick up passenger: " + p.getId() +
                             ".\nPath length heuristics:" +
                             "\n * Prev path: " + d.getOriginalTime() +
-                            "\n * new path: " + newPathLength_heuristic
+                            "\n * new path: " + newPathLengthHeuristic
             );
         }
 

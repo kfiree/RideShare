@@ -41,10 +41,10 @@ public class UserMapHandler {
 
     public static void printUserMapState(){
         showDrives("Drives" , userMap.getDrives());
-        showDrives("Live_Drives" , userMap.getOnGoingDrives());
+        showDrives("Live_Drives" , userMap.getLiveDrives());
 
         showRider("Passengers", userMap.getRequests());
-        showRider("Live_Passengers", userMap.getPendingRequests());
+        showRider("Live_Passengers", userMap.getLiveRequest());
         if(!userMap.getFinishedEvents().isEmpty()) {
             System.out.println("=========================");
             System.out.println("Finished");

@@ -6,7 +6,9 @@ import app.controller.simulator.Simulator;
 import app.controller.simulator.SimulatorThread;
 import app.model.graph.RoadMap;
 import app.model.users.Driver;
+import app.model.users.Passenger;
 import app.model.users.User;
+import app.model.users.UserMap;
 import app.view.MapView;
 import app.view.utils.MapMouseManager;
 import app.view.utils.MapShortcutManager;
@@ -15,16 +17,10 @@ import org.graphstream.ui.view.ViewerPipe;
 import utils.DS.Latch;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static app.view.utils.Style.LIGHT_GREEN;
 import static app.view.utils.Style.LIGHT_RED;
@@ -47,6 +43,9 @@ public class SimulatorFrame extends JFrame{
     private JLabel simulatorTitle;
     private JTabbedPane tabs;
     private JPanel pausePanel;
+    private JPanel driversTabs;
+    private JTable driversTable;
+    private JLabel driversTitle;
 
     protected Viewer viewer;
     private ViewerPipe pipeIn;
@@ -67,26 +66,44 @@ public class SimulatorFrame extends JFrame{
                 int index = tabbedPane.getSelectedIndex();
                 System.out.println(index);
 
-                DefaultTableModel model = (DefaultTableModel) threadsTable.getModel();
+                DefaultTableModel threadsModel = (DefaultTableModel) threadsTable.getModel();
 
-                int rowCount = model.getRowCount();
+                int rowCount = threadsModel.getRowCount();
                 for (int i = rowCount - 1; i >= 0; i--) {
-                    model.removeRow(i);
+                    threadsModel.removeRow(i);
                 }
 
                 SimulatorThread.threads.forEach(t->{
                     if(t instanceof Simulator thread){
-                        model.addRow(new Object[]{"Simulator" , FORMAT(thread.time())});
+                        threadsModel.addRow(new Object[]{"Simulator" , FORMAT(thread.time())});
                     }else if(t instanceof EventManager thread){
-                        model.addRow(new Object[]{"Event Manager" , FORMAT(thread.getTime())});
+                        threadsModel.addRow(new Object[]{"Event Manager" , FORMAT(thread.getTime())});
                     }else if(t instanceof MatchMaker thread){
-                        model.addRow(new Object[]{"Match Maker" , FORMAT(thread.getTime())});
+                        threadsModel.addRow(new Object[]{"Match Maker" , FORMAT(thread.getTime())});
                     }else if(t instanceof Driver drive){
-                        model.addRow(new Object[]{"Drive"+ drive.getId()+", current location: " + drive.getLocation().getId()+
+                        threadsModel.addRow(new Object[]{"Drive"+ drive.getId()+", current location: " + drive.getLocation().getId()+
                                 ", passengers: "  + drive.getPassengers().stream().map(User::getId).toList()+ ".",
                                 FORMAT(drive.getTime())});
                     }
+                } );
+
+
+                DefaultTableModel driversModel = (DefaultTableModel) driversTable.getModel();
+                rowCount = driversModel.getRowCount();
+                for (int i = rowCount - 1; i >= 0; i--) {
+                    driversModel.removeRow(i);
+                }
+
+                UserMap.INSTANCE.getLiveDrives().forEach(d->{
+                    List<Integer> passengers = d.getPassengers().stream().map(User::getId).toList();
+                    List<Integer> onBoard = d.getPassengers().stream().filter(p -> p.state() == Passenger.State.Picked).map(User::getId).toList();
+                    String nextStop = d.getPassengers().isEmpty() ?
+                            "final stop.":
+                            "passenger " + d.getNextPassenger().getId() + "'s " + (d.getNextPassenger().state() == Passenger.State.Picked? "drop off.": "pick up.");
+
+                    driversModel.addRow(new Object[]{d.getId(), passengers, onBoard, nextStop});
                 });
+
             }
         });
         speedButton.addActionListener(e -> {
@@ -119,26 +136,37 @@ public class SimulatorFrame extends JFrame{
         simulatorTitle = new JLabel("--- "+ RoadMap.INSTANCE.getName() +" SharedRide Simulator ---");
 
         drawGraph();
-        drawTable();
+        drawTables();
     }
 
-    private void drawTable(){
+    private void drawTables(){
+        /** thread table */
         threadsTable = new JTable(new DefaultTableModel());
 
-        DefaultTableModel model = (DefaultTableModel) threadsTable.getModel();
-        model.addColumn("Thread");
-        model.addColumn("Relative time");
+        DefaultTableModel threadsModel = (DefaultTableModel) threadsTable.getModel();
+        threadsModel.addColumn("Thread");
+        threadsModel.addColumn("Relative time");
 
 
         SimulatorThread.threads.forEach(t->{
             if(t instanceof Simulator thread){
-                model.addRow(new Object[]{"Simulator" , FORMAT(thread.time())});
+                threadsModel.addRow(new Object[]{"Simulator" , FORMAT(thread.time())});
             }else if(t instanceof EventManager thread){
-                model.addRow(new Object[]{"Event Manager" , FORMAT(thread.getTime())});
+                threadsModel.addRow(new Object[]{"Event Manager" , FORMAT(thread.getTime())});
             }else if(t instanceof MatchMaker thread) {
-                model.addRow(new Object[]{"thread", FORMAT(thread.getTime())});
+                threadsModel.addRow(new Object[]{"thread", FORMAT(thread.getTime())});
             }
         });
+
+        /** driver table */
+        driversTable = new JTable(new DefaultTableModel());
+        DefaultTableModel driversModel = (DefaultTableModel) driversTable.getModel();
+        driversModel.addColumn("Driver Id");
+        driversModel.addColumn("Passengers");
+        driversModel.addColumn("On Board");
+        driversModel.addColumn("Next stop");
+
+        driversModel.addRow(new Object[]{"0000", "0", "0", "Nan"});
     }
 
     private void drawGraph(){

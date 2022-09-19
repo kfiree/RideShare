@@ -66,7 +66,7 @@ public class MapView{
         userMap = UserMap.INSTANCE;
         displayGraph = new MultiGraph("map simulation");
 
-        displayGraph.addAttribute("ui.stylesheet", styleSheet);
+        displayGraph.addAttribute("ui.stylesheet", STYLE_SHEET);
         displayGraph.addAttribute("ui.quality");
         displayGraph.addAttribute("ui.antialias");
 
@@ -96,7 +96,7 @@ public class MapView{
 
     private void drawUsers(){
 
-        for (Driver drive : new ArrayList<>(userMap.getOnGoingDrives())) {
+        for (Driver drive : new ArrayList<>(userMap.getLiveDrives())) {
             Node node = elementsOnMapNodes.get(drive);
 
             if (node == null) {
@@ -110,7 +110,7 @@ public class MapView{
 
         }
 
-        for (Passenger request : new ArrayList<>(userMap.getPendingRequests())) {
+        for (Passenger request : new ArrayList<>(userMap.getLiveRequest())) {
             Node node = elementsOnMapNodes.get(request);
 
             if (node == null) {

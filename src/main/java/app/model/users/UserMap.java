@@ -17,8 +17,8 @@ import java.util.concurrent.locks.ReentrantLock;
 public class UserMap {
     private final Hashtable<Integer, Driver> drives;
     private final Hashtable<Integer, Passenger> requests;
-    private final ArrayList<Passenger>  pendingRequests;
-    private final ArrayList<Driver> onGoingDrives;
+    private final ArrayList<Passenger> liveRequest;
+    private final ArrayList<Driver> liveDrives;
     private final ArrayList<User> finished;
     protected static AtomicInteger keyGenerator = new AtomicInteger(-1);
     private Date firstEventTime, lastEventTime;
@@ -28,8 +28,8 @@ public class UserMap {
 
     /** CONSTRUCTORS  */
     private UserMap() {
-        this.onGoingDrives = new ArrayList<>();
-        this.pendingRequests = new ArrayList<>();
+        this.liveDrives = new ArrayList<>();
+        this.liveRequest = new ArrayList<>();
         finished = new ArrayList<>();
 
         drives = new Hashtable<>();
@@ -50,11 +50,11 @@ public class UserMap {
 //        return onGoingDrives.get(id);
 //    }
 
-    public Collection<Driver> getOnGoingDrives() { return onGoingDrives; }
+    public Collection<Driver> getLiveDrives() { return liveDrives; }
 
     public Collection<Passenger> getRequests() { return requests.values(); }
 
-    public Collection<Passenger> getPendingRequests() { return pendingRequests; }
+    public Collection<Passenger> getLiveRequest() { return liveRequest; }
 
     public ArrayList<User> getFinishedEvents() {
         return finished;
@@ -115,11 +115,11 @@ public class UserMap {
     }
 
     public void startRequest(Passenger passenger){
-        this.pendingRequests.add(passenger);
+        this.liveRequest.add(passenger);
     }
 
     public void startDrive(Driver drive){
-        this.onGoingDrives.add(drive);
+        this.liveDrives.add(drive);
     }
 
     public Date setFirstEventTime() {
@@ -136,22 +136,23 @@ public class UserMap {
 //    }
 
     /* REMOVE FROM GRAPH */
+//    public void finishEvent(User user, Date date) {
 
-    public void finishUserEvent(User user) {
-        if(user instanceof Driver){
-            onGoingDrives.remove(user);
+    public void finishEvent(User user) {
+        if(user instanceof Passenger passenger){
+            liveRequest.remove(passenger);
             //dis-connect driver from all the passenger
-            userEdges.removeIf(edge -> edge.getDrive().equals(user));
+//            userEdges.removeIf(edge -> edge.getDrive().equals(user));
         }else{
-            //dis-connect passenger from all the driver
-            userEdges.removeIf(edge -> edge.getRider().equals(user));
-            pendingRequests.remove(user);
+            liveDrives.remove(user);
+//            //dis-connect passenger from all the driver
+//            userEdges.removeIf(edge -> edge.getRider().equals(user));
         }
         finished.add(user);
     }
 
     public void matchPassenger(Passenger passenger){
-        pendingRequests.remove(passenger);
+        liveRequest.remove(passenger);
 
         //dis-connect passenger from all the driver
         userEdges.removeIf(edge -> edge.getRider().equals(passenger));
@@ -175,8 +176,8 @@ public class UserMap {
         return "UserMap{" +
                 ", total requests=" + requests.size() +
                 ", total drives=" + drives.size() +
-                ", started drives=" + onGoingDrives.size() +
-                ", started requests=" + pendingRequests.size() +
+                ", started drives=" + liveDrives.size() +
+                ", started requests=" + liveRequest.size() +
                 '}';
     }
 }

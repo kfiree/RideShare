@@ -85,7 +85,7 @@ public class MapMouseManager extends DefaultMouseManager {
         Point3 clickCoordinates = view.getCamera().transformPxToGu(e.getX(), e.getY());
         double minDistance = Integer.MAX_VALUE;
         Driver car = null;
-        for (Driver drive: UserMap.INSTANCE.getOnGoingDrives()) {
+        for (Driver drive: UserMap.INSTANCE.getLiveDrives()) {
             Coordinates carLocation = drive.getCoordinates();
 
             double currDis = Math.sqrt(( carLocation.getLatitude() - clickCoordinates.y) * (carLocation.getLatitude() - clickCoordinates.y)

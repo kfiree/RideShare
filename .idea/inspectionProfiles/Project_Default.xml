@@ -65,6 +65,28 @@
     <inspection_tool class="ExceptionNameDoesntEndWithException" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="ExtendsThread" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="FieldMayBeStatic" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="FieldNamingConvention" enabled="true" level="WEAK WARNING" enabled_by_default="true" editorAttributes="INFO_ATTRIBUTES">
+      <extension name="ConstantNamingConvention" enabled="true">
+        <option name="m_regex" value="[A-Z][A-Z_]*" />
+        <option name="m_minLength" value="0" />
+        <option name="m_maxLength" value="128" />
+      </extension>
+      <extension name="ConstantWithMutableFieldTypeNamingConvention" enabled="true">
+        <option name="m_regex" value="[A-Z][A-Z_]*" />
+        <option name="m_minLength" value="0" />
+        <option name="m_maxLength" value="128" />
+      </extension>
+      <extension name="InstanceVariableNamingConvention" enabled="true">
+        <option name="m_regex" value="[a-z][A-Za-z\d]*" />
+        <option name="m_minLength" value="0" />
+        <option name="m_maxLength" value="128" />
+      </extension>
+      <extension name="StaticVariableNamingConvention" enabled="false">
+        <option name="m_regex" value="s_[a-z][A-Za-z\d]*" />
+        <option name="m_minLength" value="5" />
+        <option name="m_maxLength" value="32" />
+      </extension>
+    </inspection_tool>
     <inspection_tool class="FindAndMapToApply" enabled="true" level="Practice" enabled_by_default="true" />
     <inspection_tool class="ForwardReference" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="FunctionTupleSyntacticSugar" enabled="true" level="WARNING" enabled_by_default="true" />

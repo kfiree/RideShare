@@ -19,6 +19,7 @@ import app.model.graph.RoadMap;
 import app.model.users.UserMap;
 
 import static app.model.utils.RoadMapHandler.CreateMap;
+import static app.model.utils.UserMapHandler.initEventsInLine;
 import static app.model.utils.UserMapHandler.initRandomEvents;
 import static utils.logs.LogHandler.LOGGER;
 import static utils.Utils.validate;
@@ -63,8 +64,8 @@ public class Simulator implements Runnable, SimulatorThread {
 
         LOGGER.info("Map is ready. Map = " + RoadMap.INSTANCE);
 
-//         initEventsInLine(requestNum);
-        initRandomEvents(driveNum, requestNum);
+         initEventsInLine(2);
+//        initRandomEvents(driveNum, requestNum);
 
         this.speed = simulatorSpeed;
         this.show = show;
@@ -207,8 +208,8 @@ public class Simulator implements Runnable, SimulatorThread {
     }
 
     public void getState(){
-        UserMap.INSTANCE.getOnGoingDrives();
-        UserMap.INSTANCE.getPendingRequests();
+        UserMap.INSTANCE.getLiveDrives();
+        UserMap.INSTANCE.getLiveRequest();
     }
 
     @Override

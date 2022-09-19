@@ -9,9 +9,23 @@ import static utils.Utils.FORMAT;
 
 
 public class Passenger extends User {
+    public enum State{
+        Available("Available"), Matched("Matched"),
+        Picked("Picked"), Dropped("Dropped");
+
+        public String text;
+        State(String name) {
+            this.text = name;
+        }
+
+        @Override
+        public String toString() {
+            return "" + text;
+        }
+    }
+    private State state;
     private final Date askTime;
     private final Node src, dest;
-    private boolean matched;
     private boolean carNextTarget;
     private Date pickupTime, dropTime;
     private long totalTimeTraveled, timeWaited;
@@ -27,6 +41,7 @@ public class Passenger extends User {
 
     /* CONSTRUCTORS  */
     public Passenger(@NotNull Node currNode, @NotNull Node destination, Date askTime) {
+        state = State.Available;
         this.askTime = askTime;
         this.dest = destination;
         this.src = currNode;
@@ -37,20 +52,22 @@ public class Passenger extends User {
     /* LOGIC */
 
     public void markMatched() {
-        /* remove this from waiting list */
-        matched = true;
-
+        state = State.Matched;
         //remove user edges from graph
         UserMap.INSTANCE.matchPassenger(this);
     }
 
     public boolean isMatched() {
-        return matched;
+        return state == State.Matched;
     }
 
 
 
     /* GETTERS */
+
+    public State state() {
+        return state;
+    }
 
     @Override
     public Node getNextStop(){
@@ -70,30 +87,6 @@ public class Passenger extends User {
     @Override
     public Date getStartTime() { return askTime; }
 
-
-
-    /* SETTERS */
-
-    public void setCarNextTarget(boolean nextTarget) {
-        this.carNextTarget = nextTarget;
-    }
-
-    public boolean isCarNextTarget() {
-        return carNextTarget;
-    }
-
-
-
-    public void setPickupTime(Date pickupTime) {
-        this.pickupTime = pickupTime;
-        timeWaited = (pickupTime.getTime() - askTime.getTime()) / (60*1000) % 60;
-    }
-
-    public void setDropTime(Date dropTime) {
-        totalTimeTraveled = (dropTime.getTime() - pickupTime.getTime()) / (60*1000) % 60;
-        this.dropTime = dropTime;
-    }
-
     public Date getPickupTime(){
         return this.pickupTime;
     }
@@ -108,6 +101,35 @@ public class Passenger extends User {
 
     public long getTimeWaited() {
         return timeWaited;
+    }
+
+
+
+    /* SETTERS */
+
+    public void setCarNextTarget(boolean nextTarget) {
+        this.carNextTarget = nextTarget;
+    }
+
+    public boolean isCarNextTarget() {
+        return carNextTarget;
+    }
+
+
+    public void markedPickup(Date time) {
+        state = State.Picked;
+        this.pickupTime = time;
+        timeWaited = (time.getTime() - askTime.getTime()) / (60*1000) % 60;
+        UserMap.INSTANCE.finishEvent(this);
+    }
+
+    public void setDropTime(Date dropTime) {
+        totalTimeTraveled = (dropTime.getTime() - pickupTime.getTime()) / (60*1000) % 60;
+        this.dropTime = dropTime;
+    }
+
+    private void setState(State state) {
+        this.state = state;
     }
 
     @Override
