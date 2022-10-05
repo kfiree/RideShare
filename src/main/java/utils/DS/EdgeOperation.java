@@ -1,6 +1,6 @@
 package utils.DS;
 
-import app.model.graph.Edge;
+import road_map.model.graph.Edge;
 
 @FunctionalInterface
 public interface EdgeOperation {

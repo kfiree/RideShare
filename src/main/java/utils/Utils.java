@@ -88,39 +88,4 @@ public class Utils {
 
         return numerator/denominator;
     }
-
-    private static void foo(double x, double y){
-        double x1 = -2;
-        double y1 = 1;
-        double x2 = 4;
-        double y2 = -3;
-
-        System.out.println(lineToPointDist(x, y, x1, y1, x2, y2));
     }
-    public static void main(String[] args) {
-
-        double x1 = 1;
-        double y1 = 2;
-
-        double x2 = 3;
-        double y2 = 4;
-
-        double x3 = -1;
-        double y3 = -2;
-
-        double x4 = -0.5;
-        double y4 = 0;
-
-        double x5 = 15;
-        double y5 = 2;
-
-        foo(x1, y1);
-        foo(x2, y2);
-        foo(x3, y3);
-        foo(x4, y4);
-        foo(x5, y5);
-
-
-    }
-
-}

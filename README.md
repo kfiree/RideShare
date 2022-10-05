@@ -1,8 +1,8 @@
 
 # RideShare
 
-Ride-sharing simulator for research and app development.
-Multithreaded simulator for ride-sharing for research and app development.
+Ride-sharing simulator for research and simulator development.
+Multithreaded simulator for ride-sharing for research and simulator development.
 
 The project parts:
 * Osm file processing for custom roadmap and 2 built in roadmaps: Tel Aviv, and Berlin.

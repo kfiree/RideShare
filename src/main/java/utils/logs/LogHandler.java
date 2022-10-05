@@ -1,5 +1,6 @@
 package utils.logs;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
@@ -25,12 +26,11 @@ import java.util.logging.Logger;
  *                      *     }
  */
 public class LogHandler{
-    public static Logger LOGGER;
-    public static ConsoleHandler CONSOLE_HANDLER;
+    public static Logger LOGGER = Logger.getLogger(LogHandler.class.getName());
+    public static ConsoleHandler CONSOLE_HANDLER = new ConsoleHandler();;
     public static Handler FILE_HANDLER;
 
     static{
-        LOGGER = Logger.getLogger(LogHandler.class.getName());
         LOGGER.setUseParentHandlers(false);
         LOGGER.setLevel(Level.ALL);
 
@@ -40,11 +40,15 @@ public class LogHandler{
 //            ));
 
             //file handler src/data/logs
-            FILE_HANDLER = new FileHandler("data/logs/log", 20000, 10);
+            String path = System.getProperty("user.dir")+ "/data/logs/log";
+            File file = new File(path);
+            file.mkdirs();
+
+            FILE_HANDLER = new FileHandler(path, 20000, 10);
             FILE_HANDLER.setFormatter(new LineFormat());
             FILE_HANDLER.setLevel(Level.ALL);
             //console handler
-            CONSOLE_HANDLER = new ConsoleHandler();
+
             CONSOLE_HANDLER.setFormatter(new colorFormat());
             CONSOLE_HANDLER.setLevel(Level.ALL);
 

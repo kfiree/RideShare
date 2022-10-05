@@ -1,6 +1,6 @@
 package utils.DS;
 
-import app.model.utils.UserEdge;
+import simulator.model.utils.UserEdge;
 
 @FunctionalInterface
 public interface UserEdgeOperation {

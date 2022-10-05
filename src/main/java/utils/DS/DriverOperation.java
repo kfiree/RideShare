@@ -1,6 +1,6 @@
 package utils.DS;
 
-import app.model.users.Driver;
+import simulator.model.users.Driver;
 
 @FunctionalInterface
 public interface DriverOperation {

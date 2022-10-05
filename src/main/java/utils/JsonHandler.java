@@ -1,12 +1,12 @@
 package utils;
 
-import app.model.graph.Edge;
-import app.model.graph.Node;
-import app.model.graph.Path;
-import app.model.graph.RoadMap;
-import app.model.users.Driver;
-import app.model.users.Passenger;
-import app.model.users.UserMap;
+import road_map.model.graph.Edge;
+import road_map.model.graph.Node;
+import road_map.model.graph.Path;
+import road_map.model.graph.RoadMap;
+import simulator.model.users.Driver;
+import simulator.model.users.Passenger;
+import simulator.model.users.UserMap;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

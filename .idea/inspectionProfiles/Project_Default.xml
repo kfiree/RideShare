@@ -109,6 +109,7 @@
     <inspection_tool class="JavaAccessorMethodCalledAsEmptyParen" enabled="true" level="Practice" enabled_by_default="true" />
     <inspection_tool class="JavaAccessorMethodOverridenAsEmptyParen" enabled="true" level="Practice" enabled_by_default="true" />
     <inspection_tool class="JavaMutatorMethodOverridenAsParameterless" enabled="true" level="Practice" enabled_by_default="true" />
+    <inspection_tool class="JavadocBlankLines" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="LegacyStringFormatting" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="LocalCanBeFinal" enabled="false" level="WEAK WARNING" enabled_by_default="false">
       <option name="REPORT_VARIABLES" value="true" />
@@ -116,7 +117,7 @@
       <option name="REPORT_CATCH_PARAMETERS" value="false" />
       <option name="REPORT_FOREACH_PARAMETERS" value="false" />
     </inspection_tool>
-    <inspection_tool class="LocalVariableNamingConvention" enabled="true" level="ERROR" enabled_by_default="true">
+    <inspection_tool class="LocalVariableNamingConvention" enabled="true" level="WEAK WARNING" enabled_by_default="true" editorAttributes="INFO_ATTRIBUTES">
       <option name="m_ignoreForLoopParameters" value="false" />
       <option name="m_ignoreCatchParameters" value="false" />
       <option name="m_regex" value="[a-z][A-Za-z\d]*" />
@@ -158,7 +159,7 @@
       <option name="ignoreInconvertibleTypes" value="true" />
     </inspection_tool>
     <inspection_tool class="OverloadedVarargsMethod" enabled="false" level="ERROR" enabled_by_default="false" />
-    <inspection_tool class="PackageNamingConvention" enabled="true" level="ERROR" enabled_by_default="true">
+    <inspection_tool class="PackageNamingConvention" enabled="true" level="WEAK WARNING" enabled_by_default="true" editorAttributes="INFO_ATTRIBUTES">
       <option name="m_regex" value="[a-z\d]*" />
       <option name="m_minLength" value="0" />
       <option name="m_maxLength" value="128" />
@@ -167,7 +168,7 @@
       <option name="m_ignoreSingleCharacterNames" value="false" />
       <option name="m_ignoreOverridesOfLibraryMethods" value="false" />
     </inspection_tool>
-    <inspection_tool class="ParameterNamingConvention" enabled="true" level="ERROR" enabled_by_default="true">
+    <inspection_tool class="ParameterNamingConvention" enabled="true" level="WEAK WARNING" enabled_by_default="true" editorAttributes="INFO_ATTRIBUTES">
       <option name="m_regex" value="[a-z_][A-Za-z_\d]*" />
       <option name="m_minLength" value="0" />
       <option name="m_maxLength" value="128" />
@@ -238,7 +239,7 @@
     <inspection_tool class="UnnecessarySuperConstructor" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnnecessarySuperQualifier" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnnecessaryThis" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="UpperCaseFieldNameNotConstant" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="UpperCaseFieldNameNotConstant" enabled="true" level="WEAK WARNING" enabled_by_default="true" editorAttributes="INFO_ATTRIBUTES" />
     <inspection_tool class="UtilityClassWithPublicConstructor" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UtilityClassWithoutPrivateConstructor" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignorableAnnotations">

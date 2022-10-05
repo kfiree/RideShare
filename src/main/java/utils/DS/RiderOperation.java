@@ -1,6 +1,6 @@
 package utils.DS;
 
-import app.model.users.Passenger;
+import simulator.model.users.Passenger;
 
 @FunctionalInterface
 public interface RiderOperation {

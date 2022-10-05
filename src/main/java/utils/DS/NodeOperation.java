@@ -1,6 +1,6 @@
 package utils.DS;
 
-import app.model.graph.Node;
+import road_map.model.graph.Node;
 
 @FunctionalInterface
 public interface NodeOperation {
