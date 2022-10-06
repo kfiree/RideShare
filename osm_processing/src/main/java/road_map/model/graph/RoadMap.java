@@ -1,17 +1,19 @@
 package road_map.model.graph;
 
+import road_map.model.utils.EdgeOperation;
+import road_map.model.utils.NodeOperation;
 import road_map.osm_processing.OsmObject;
 import road_map.osm_processing.OsmWay;
 import road_map.model.utils.Coordinates;
-import utils.DS.EdgeOperation;
-import utils.DS.NodeOperation;
+//import utils.DS.EdgeOperation;
+//import utils.DS.NodeOperation;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
-import static utils.logs.LogHandler.LOGGER;
+//import static utils.logs.LogHandler.LOGGER;
 
 /**
  *      |==================================|
@@ -201,7 +203,7 @@ public class RoadMap {
                 .filter(node -> !nodesToKeep.contains(node))
                 .collect(Collectors.toList());
 
-        LOGGER.info(nodesToRemove.size() + " nodes that are not part of main component are found and being removed.");
+//        LogHandler.LOGGER.info(nodesToRemove.size() + " nodes that are not part of main component are found and being removed.");
 
         removeNodes(nodesToRemove);
     }

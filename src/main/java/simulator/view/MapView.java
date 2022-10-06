@@ -1,7 +1,7 @@
 package simulator.view;
 
 
-import simulator.controller.simulator.Simulator;
+import simulator.controller.Simulator;
 
 import static simulator.view.utils.Style.*;
 
@@ -242,7 +242,7 @@ public final class MapView{
 //
 //package app.view;
 //
-//import app.controller.simulator.Simulator;
+//import app.controller.simulator.controller.Simulator;
 //import app.model.*;
 //
 //import static utils.Utils.FORMAT;

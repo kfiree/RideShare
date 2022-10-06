@@ -1,6 +1,6 @@
 package road_map.model.graph;
 
-import simulator.model.utils.GraphAlgo;
+import road_map.Utils;
 import road_map.osm_processing.OsmWay;
 import road_map.model.utils.Coordinates;
 import road_map.model.utils.Located;
@@ -72,7 +72,7 @@ public class Edge implements Located { // , GraphElement {
      */
     private long calculateWeight(){
         double timeInHour = (node1.distanceTo(node2) / SPEED_LIMIT.getOrDefault(highwayType, 50));
-        return GraphAlgo.hourToMS(timeInHour);
+        return Utils.hourToMS(timeInHour);
     }
 
 

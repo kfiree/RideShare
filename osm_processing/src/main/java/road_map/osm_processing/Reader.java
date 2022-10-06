@@ -1,7 +1,7 @@
 package road_map.osm_processing;
 
 import static road_map.RoadMapHandler.inBound;
-import static utils.logs.LogHandler.LOGGER;
+//import static utils.logs.LogHandler.LOGGER;
 
 import org.openstreetmap.osmosis.core.container.v0_6.*;
 import org.openstreetmap.osmosis.core.domain.v0_6.*;
@@ -52,14 +52,14 @@ public class Reader implements Sink {
         if (entityContainer instanceof NodeContainer){
             nodeNum++;
             processNode(((NodeContainer) entityContainer).getEntity());
-            if(nodeNum % 1000000 == 0){
-                LOGGER.info("Reader has processed " + nodeNum + " nodes.");
-            }
+//            if(nodeNum % 1000000 == 0){
+//                LogHandler.LOGGER.info("Reader has processed " + nodeNum + " nodes.");
+//            }
         } else if (entityContainer instanceof WayContainer){
             wayNum++;
-            if(wayNum % 100000 == 0){
-                LOGGER.info("Reader has processed " + wayNum + " ways.");
-            }
+//            if(wayNum % 100000 == 0){
+//                LogHandler.LOGGER.info("Reader has processed " + wayNum + " ways.");
+//            }
             processWay(((WayContainer) entityContainer).getEntity());
         }
 

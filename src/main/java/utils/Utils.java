@@ -68,19 +68,6 @@ public class Utils {
         lock.unlock();
     }
 
-//    public static double lineToPointDist(double x, double y, double x1, double y1, double x2, double y2){
-//        double A = x - x1; // position of point rel one end of line
-//        double B = y - y1;
-//        double C = x2 - x1; // vector along line
-//        double D = y2 - y1;
-//        double E = -D; // orthogonal vector
-//        double F = C;
-//
-//        double dot = A * E + B * F;
-//        double len_sq = E * E + F * F;
-//
-//        return dot * dot / len_sq;
-//    }
 
     public static double lineToPointDist(double px, double py, double x1, double y1, double x2, double y2){ // https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
         double numerator = Math.abs((x2 - x1)*(y1 - py) - (x1 - px)*(y2 - y1));
@@ -88,4 +75,4 @@ public class Utils {
 
         return numerator/denominator;
     }
-    }
+}

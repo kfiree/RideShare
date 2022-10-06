@@ -1,4 +1,4 @@
-package simulator.controller.simulator;
+package simulator.controller;
 
 import simulator.model.users.User;
 import simulator.model.utils.UserEdge;

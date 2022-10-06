@@ -12,9 +12,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-import static simulator.model.utils.GraphAlgo.extractLargestCC;
-import static utils.logs.LogHandler.LOGGER;
-import static utils.Utils.throwException;
+//import static simulator.model.utils.GraphAlgo.extractLargestCC;
+//import static utils.logs.LogHandler.LOGGER;
+//import static utils.Utils.throwException;
 
 
 /**
@@ -51,7 +51,7 @@ public final class RoadMapHandler {
     }
 
     public static void updateBounds(@NotNull Double topLatitude, @NotNull Double bottomLatitude, @NotNull Double topLongitude, @NotNull Double bottomLongitude){
-        LOGGER.info("update bound to " + topLatitude+ ", " + bottomLatitude+ ", "+ topLongitude+ ", "+ bottomLongitude+ ", ");
+//        LogHandler.LOGGER.info("update bound to " + topLatitude+ ", " + bottomLatitude+ ", "+ topLongitude+ ", "+ bottomLongitude+ ", ");
 
         maxLatitude = topLatitude;
         minLatitude = bottomLatitude;
@@ -63,7 +63,9 @@ public final class RoadMapHandler {
             String coordinateType = longitudeException? "Longitude" : "Latitude";
             Double top = longitudeException? topLongitude : topLatitude,
                     bottom = longitudeException? bottomLongitude: bottomLatitude ;
-            throwException("Illegal Map Bounds. Top " + coordinateType + " bound can not be smaller then bottom " + coordinateType + ". " + top + " < " + bottom + ".");
+
+//            Utils.throwException(
+                throw new RuntimeException("Illegal Map Bounds. Top " + coordinateType + " bound can not be smaller then bottom " + coordinateType + ". " + top + " < " + bottom + ".");
         }
 
     }
@@ -128,20 +130,20 @@ public final class RoadMapHandler {
             osmosisReader.setSink(reader);
 
             // initial parsing of the .pbf file:
-            LOGGER.info("Start reading osm file.");
+//            LogHandler.LOGGER.info("Start reading osm file.");
             osmosisReader.run();
 
             // secondary parsing of ways/creation of edges:
             Parser parser = new Parser();
-            LOGGER.info("Start parsing Reader's data.");
+//            LogHandler.LOGGER.info("Start parsing Reader's data.");
             parser.parseMapWays(reader.getWays());
 
             // clean road map
-            extractLargestCC();
+//            GraphAlgo.extractLargestCC();
 //            GraphAlgo.removeNodesThatNotConnectedTo(RoadMap.INSTANCE.getNode(2432701015L));
 
         } catch (FileNotFoundException e) {
-            LOGGER.severe("File not found!, "+e.getMessage());
+//            LogHandler.LOGGER.severe("File not found!, "+e.getMessage());
             JOptionPane.showMessageDialog(new JFrame(), "File not found!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
 

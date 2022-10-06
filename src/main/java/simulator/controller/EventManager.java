@@ -1,4 +1,4 @@
-package simulator.controller.simulator;
+package simulator.controller;
 
 import utils.DS.Latch;
 import simulator.model.users.Driver;

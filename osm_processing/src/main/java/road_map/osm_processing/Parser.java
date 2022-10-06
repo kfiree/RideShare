@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static utils.Utils.FORMAT;
-import static utils.Utils.validate;
-import static utils.logs.LogHandler.LOGGER;
+//import static utils.Utils.FORMAT;
+//import static utils.Utils.validate;
+//import static utils.logs.LogHandler.LOGGER;
 
 /**
  *      |==================================|
@@ -72,7 +72,7 @@ public final class Parser {
             }
 
             if(index % 10000 == 0){
-                LOGGER.info("Parser has parse " + FORMAT(((double)index)/waysNum) + "% of the map.");
+//                LogHandler.LOGGER.info("Parser has parse " + Utils.FORMAT(((double)index)/waysNum) + "% of the map.");
             }
         }
     }
@@ -83,7 +83,7 @@ public final class Parser {
     }
 
     private void addWay(OsmObject first, OsmObject last, OsmWay way, boolean directed){
-        validate(first != null && last != null, "can't create edge because edge's node is null. node1 - "+ first + ", node2 - "+ last+".");
+//        Utils.validate(first != null && last != null, "can't create edge because edge's node is null. node1 - "+ first + ", node2 - "+ last+".");
         addDirectedWay(first, last, way);
         if(!directed){
             addDirectedWay(last, first, way);

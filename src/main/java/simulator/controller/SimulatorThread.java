@@ -1,4 +1,4 @@
-package simulator.controller.simulator;
+package simulator.controller;
 
 import java.util.Date;
 import java.util.HashSet;

@@ -1,4 +1,4 @@
-package utils.DS;
+package road_map.model.utils;
 
 import road_map.model.graph.Edge;
 

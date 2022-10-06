@@ -1,7 +1,7 @@
 package simulator;
 
 import road_map.RoadMapHandler;
-import simulator.controller.simulator.Simulator;
+import simulator.controller.Simulator;
 
 import java.util.Arrays;
 
@@ -64,6 +64,7 @@ public final class Main {
     }
 
     public static void main(String[] args) {
+
         ExampleCLI();
 
         init(args);

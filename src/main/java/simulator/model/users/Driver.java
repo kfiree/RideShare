@@ -4,8 +4,8 @@ package simulator.model.users;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
-import simulator.controller.simulator.Simulator;
-import simulator.controller.simulator.SimulatorThread;
+import simulator.controller.Simulator;
+import simulator.controller.SimulatorThread;
 import org.jetbrains.annotations.NotNull;
 
 /* local */

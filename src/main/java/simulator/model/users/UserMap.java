@@ -1,6 +1,6 @@
 package simulator.model.users;
 
-import simulator.controller.simulator.Simulator;
+import simulator.controller.Simulator;
 import simulator.model.utils.UserEdge;
 import road_map.model.graph.Node;
 

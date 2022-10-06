@@ -1,9 +1,9 @@
 package simulator.view.frames;
 
-import simulator.controller.simulator.EventManager;
-import simulator.controller.simulator.MatchMaker;
-import simulator.controller.simulator.Simulator;
-import simulator.controller.simulator.SimulatorThread;
+import simulator.controller.EventManager;
+import simulator.controller.MatchMaker;
+import simulator.controller.Simulator;
+import simulator.controller.SimulatorThread;
 import road_map.model.graph.RoadMap;
 import simulator.model.users.Driver;
 import simulator.model.users.Passenger;
