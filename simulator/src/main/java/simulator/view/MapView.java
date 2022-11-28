@@ -242,7 +242,7 @@ public final class MapView{
 //
 //package app.view;
 //
-//import app.controller.simulator.controller.Simulator;
+//import app.controller.controller.simulator.Simulator;
 //import app.model.*;
 //
 //import static utils.Utils.FORMAT;

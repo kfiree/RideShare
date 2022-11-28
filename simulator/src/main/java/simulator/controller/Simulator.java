@@ -13,10 +13,12 @@ import simulator.view.frames.ChooseRegionFrame;
 import simulator.model.users.Passenger;
 import utils.DS.Latch;
 import simulator.view.MapView;
-import com.opencsv.CSVWriter;
+//import com.opencsv.CSVWriter;
 import utils.JsonHandler;
 import road_map.model.graph.RoadMap;
 import simulator.model.users.UserMap;
+import utils.Utils;
+import utils.logs.LogHandler;
 
 import static road_map.RoadMapHandler.CreateMap;
 import static simulator.model.utils.UserMapHandler.initRandomEvents;
@@ -48,20 +50,20 @@ public class Simulator implements Runnable, SimulatorThread {
     public static final Simulator INSTANCE = new Simulator();
 
     public void init(double simulatorSpeed, int requestNum, int driveNum, boolean show, boolean bounds, boolean createFromPBF){
-        validate(simulatorSpeed > 0, "Illegal simulator speed "+ simulatorSpeed + ".");
+        Utils.validate(simulatorSpeed > 0, "Illegal simulator speed "+ simulatorSpeed + ".");
 
         String region = show? ChooseRegionFrame.choose() : "tlv.json";
 
         if (createFromPBF || region.equals("Custom")) {
-            LOGGER.info( "Start parsing main map.");
+            LogHandler.LOGGER.info( "Start parsing main map.");
             CreateMap(ChooseRegionFrame.chooseFile());
             JsonHandler.RoadMapType.save();
         } else {
-            LOGGER.info( "Read road map from JSON.");
+            LogHandler.LOGGER.info( "Read road map from JSON.");
             JsonHandler.RoadMapType.load(region);
         }
 
-        LOGGER.info("Map is ready. Map = " + RoadMap.INSTANCE);
+        LogHandler.LOGGER.info("Map is ready. Map = " + RoadMap.INSTANCE);
 
 //         initEventsInLine(2);
         initRandomEvents(driveNum, requestNum);
@@ -118,57 +120,57 @@ public class Simulator implements Runnable, SimulatorThread {
     private void finish(){
         unregister(this);
         // Write csv the riders analytics
-        writeRequestToCsv(UserMap.INSTANCE.getRequests());
-        LOGGER.info("Simulator finished!.");
+//        writeRequestToCsv(UserMap.INSTANCE.getRequests());
+        LogHandler.LOGGER.info("Simulator finished!.");
     }
-
-    private void writeRequestToCsv(Collection<Passenger> riders) {
-        riders = riders.stream().filter(rider -> rider.getPickupTime() != null && rider.getDropTime() != null).toList();
-        File file = new File("data/logs/sum1.csv");
-        try {
-            // create FileWriter object with file as parameter
-            FileWriter outputfile = new FileWriter(file);
-
-            // create CSVWriter object filewriter object as parameter
-            CSVWriter writer = new CSVWriter(outputfile);
-
-            // adding header to csv
-            String[] header = { "id", "ask_time", "pickup_time", "src", "drop_time", "dest", "total_time_waited", "total_time_traveled"};
-            writer.writeNext(header);
-
-            // add data to csv
-            List<String[]> data = new ArrayList<String[]>();
-            for (Passenger rider : riders) {
-                String[] row = {
-                        rider.getId()+"",
-                        rider.getStartTime()+"",
-                        rider.getPickupTime().toLocaleString(),
-                        rider.getLocation().toString(),
-                        rider.getDropTime().toLocaleString(),
-                        rider.getFinalDestination().toString(),
-                        rider.getTimeWaited()+" Minutes",
-                        rider.getTotalTimeTraveled()+" Minutes"
-                };
-                data.add(row);
-            }
-
-            // sum up some fields in the last row.
-            long totalTimeAvg = riders.stream().mapToLong(Passenger::getTotalTimeTraveled).sum() / riders.size();
-            long timeWaitedAvg = riders.stream().mapToLong(Passenger::getTimeWaited).sum() / riders.size();
-            String[] summary = {"Summary", "--", "--", "--", "--", "--", timeWaitedAvg+" Minutes",totalTimeAvg+" Minutes"};
-            data.add(summary);
-
-            writer.writeAll(data);
-
-            // closing writer connection
-            writer.close();
-        }
-        catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
+//
+//    private void writeRequestToCsv(Collection<Passenger> riders) {
+//        riders = riders.stream().filter(rider -> rider.getPickupTime() != null && rider.getDropTime() != null).toList();
+//        File file = new File("data/logs/sum1.csv");
+//        try {
+//            // create FileWriter object with file as parameter
+//            FileWriter outputfile = new FileWriter(file);
+//
+//            // create CSVWriter object filewriter object as parameter
+//            CSVWriter writer = new CSVWriter(outputfile);
+//
+//            // adding header to csv
+//            String[] header = { "id", "ask_time", "pickup_time", "src", "drop_time", "dest", "total_time_waited", "total_time_traveled"};
+//            writer.writeNext(header);
+//
+//            // add data to csv
+//            List<String[]> data = new ArrayList<String[]>();
+//            for (Passenger rider : riders) {
+//                String[] row = {
+//                        rider.getId()+"",
+//                        rider.getStartTime()+"",
+//                        rider.getPickupTime().toLocaleString(),
+//                        rider.getLocation().toString(),
+//                        rider.getDropTime().toLocaleString(),
+//                        rider.getFinalDestination().toString(),
+//                        rider.getTimeWaited()+" Minutes",
+//                        rider.getTotalTimeTraveled()+" Minutes"
+//                };
+//                data.add(row);
+//            }
+//
+//            // sum up some fields in the last row.
+//            long totalTimeAvg = riders.stream().mapToLong(Passenger::getTotalTimeTraveled).sum() / riders.size();
+//            long timeWaitedAvg = riders.stream().mapToLong(Passenger::getTimeWaited).sum() / riders.size();
+//            String[] summary = {"Summary", "--", "--", "--", "--", "--", timeWaitedAvg+" Minutes",totalTimeAvg+" Minutes"};
+//            data.add(summary);
+//
+//            writer.writeAll(data);
+//
+//            // closing writer connection
+//            writer.close();
+//        }
+//        catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//    }
+//
     private void updateFrame(){
         mapView.update();
     }

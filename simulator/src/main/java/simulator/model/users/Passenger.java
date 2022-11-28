@@ -2,6 +2,7 @@ package simulator.model.users;
 
 import road_map.model.graph.Node;
 import org.jetbrains.annotations.NotNull;
+import utils.Utils;
 
 import java.util.Date;
 import static utils.Utils.FORMAT;
@@ -156,6 +157,6 @@ public class Passenger extends User {
             return "Rider " + id + " picked up at: " + pickupTime + " Dropped at: " + dropTime
                     + " Total time travel: " + totalTimeTraveled;
         }
-        return "Rider " + id + ", start time " + FORMAT(askTime) ;
+        return "Rider " + id + ", start time " + Utils.FORMAT(askTime) ;
     }
 }

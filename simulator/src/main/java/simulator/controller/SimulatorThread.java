@@ -1,5 +1,7 @@
 package simulator.controller;
 
+import utils.Utils;
+
 import java.util.Date;
 import java.util.HashSet;
 
@@ -40,7 +42,7 @@ public interface SimulatorThread {
 
     static void showThreadsData(){
         for (SimulatorThread t: threads) {
-            System.out.println(t + " : " + FORMAT(t.getTime()));
+            System.out.println(t + " : " + Utils.FORMAT(t.getTime()));
 
         }
     }

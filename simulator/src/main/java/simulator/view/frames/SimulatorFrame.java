@@ -15,6 +15,7 @@ import simulator.view.utils.MapShortcutManager;
 import org.graphstream.ui.view.Viewer;
 import org.graphstream.ui.view.ViewerPipe;
 import utils.DS.Latch;
+import utils.Utils;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -74,11 +75,11 @@ public class SimulatorFrame extends JFrame{
 
                 SimulatorThread.threads.forEach(t->{
                     if(t instanceof Simulator thread){
-                        threadsModel.addRow(new Object[]{"Simulator" , FORMAT(thread.time())});
+                        threadsModel.addRow(new Object[]{"Simulator" , Utils.FORMAT(thread.time())});
                     }else if(t instanceof EventManager thread){
-                        threadsModel.addRow(new Object[]{"Event Manager" , FORMAT(thread.getTime())});
+                        threadsModel.addRow(new Object[]{"Event Manager" , Utils.FORMAT(thread.getTime())});
                     }else if(t instanceof MatchMaker thread){
-                        threadsModel.addRow(new Object[]{"Match Maker" , FORMAT(thread.getTime())});
+                        threadsModel.addRow(new Object[]{"Match Maker" , Utils.FORMAT(thread.getTime())});
                     }else if(t instanceof Driver drive){
                         threadsModel.addRow(new Object[]{"Drive"+ drive.getId()+", current location: " + drive.getLocation().getId()+
                                 ", passengers: "  + drive.getPassengers().stream().map(User::getId).toList()+ ".",
@@ -149,11 +150,11 @@ public class SimulatorFrame extends JFrame{
 
         SimulatorThread.threads.forEach(t->{
             if(t instanceof Simulator thread){
-                threadsModel.addRow(new Object[]{"Simulator" , FORMAT(thread.time())});
+                threadsModel.addRow(new Object[]{"Simulator" , Utils.FORMAT(thread.time())});
             }else if(t instanceof EventManager thread){
-                threadsModel.addRow(new Object[]{"Event Manager" , FORMAT(thread.getTime())});
+                threadsModel.addRow(new Object[]{"Event Manager" , Utils.FORMAT(thread.getTime())});
             }else if(t instanceof MatchMaker thread) {
-                threadsModel.addRow(new Object[]{"thread", FORMAT(thread.getTime())});
+                threadsModel.addRow(new Object[]{"thread", Utils.FORMAT(thread.getTime())});
             }
         });
 
@@ -182,6 +183,6 @@ public class SimulatorFrame extends JFrame{
 
     public void updateFrame(){
         pipeIn.pump();
-        clockLabel.setText(FORMAT(Simulator.INSTANCE.time()));
+        clockLabel.setText(Utils.FORMAT(Simulator.INSTANCE.time()));
     }
 }

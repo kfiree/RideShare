@@ -2,10 +2,9 @@ package simulator;
 
 import road_map.RoadMapHandler;
 import simulator.controller.Simulator;
+import utils.logs.LogHandler;
 
 import java.util.Arrays;
-
-import static utils.logs.LogHandler.*;
 
 /**
  *
@@ -68,7 +67,7 @@ public final class Main {
         ExampleCLI();
 
         init(args);
-        LOGGER.finest("Let's GO!!");
+        LogHandler.LOGGER.finest("Let's GO!!");
 
         try {
             Thread thread = new Thread(Simulator.INSTANCE);
@@ -76,10 +75,10 @@ public final class Main {
             thread.start();
             thread.join();
         } catch (InterruptedException e) {
-            LOGGER.severe(e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()));
+            LogHandler.LOGGER.severe(e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()));
         } finally {
-            closeLogHandlers();
-            LOGGER.info("Finished!");
+            LogHandler.closeLogHandlers();
+            LogHandler.LOGGER.info("Finished!");
         }
 
 
@@ -106,7 +105,7 @@ public final class Main {
                 }
             }
         }
-        ConsoleLevel(CONSOLE_LOG_LEVEL);
+        LogHandler.ConsoleLevel(CONSOLE_LOG_LEVEL);
     }
 
     private static void ExampleCLI(){

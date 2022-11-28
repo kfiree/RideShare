@@ -2,7 +2,7 @@ package road_map.model.utils;
 
 //import simulator.model.utils.GraphAlgo;
 import road_map.RoadMapHandler;
-import road_map.Utils;
+import road_map.SimulatorUtils;
 
 public interface Located {
 
@@ -13,7 +13,7 @@ public interface Located {
     }
 
     default double distanceTo(Located other){
-        return Utils.distance(getCoordinates(), other.getCoordinates());
+        return SimulatorUtils.distance(getCoordinates(), other.getCoordinates());
     }
 
     @Override

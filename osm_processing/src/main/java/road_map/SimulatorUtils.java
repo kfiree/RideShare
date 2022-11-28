@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Utils {
+public class SimulatorUtils {
     public static long hourToMS(double hour){
         return (long) (hour * 3600000);
     }

@@ -15,6 +15,8 @@ import simulator.model.utils.GraphAlgo;
 import utils.DS.Latch;
 import utils.DS.RiderOperation;
 import utils.DS.VolatilePriorityQueue;
+import utils.Utils;
+import utils.logs.LogHandler;
 
 /* static imports */
 import static utils.logs.LogHandler.LOGGER;
@@ -77,8 +79,8 @@ public class Driver extends User implements Runnable, SimulatorThread {
 
         Thread.currentThread().setName(String.valueOf(id));
 
-        LOGGER.fine("Drive "+ id +" started.");
-        validate(getPath() != null, "can't choose a drive if path is null. Drive owner id - " + id);
+        LogHandler.LOGGER.fine("Drive "+ id +" started.");
+        Utils.validate(getPath() != null, "can't choose a drive if path is null. Drive owner id - " + id);
 
         while(currNode!= getFinalDestination()){
             getNextDest();
@@ -108,7 +110,7 @@ public class Driver extends User implements Runnable, SimulatorThread {
 
 //            originalTime -= timeToNextNode;
 
-            lock(false);
+            Utils.lock(false);
 
             currNode = nextNode;
 
@@ -126,7 +128,7 @@ public class Driver extends User implements Runnable, SimulatorThread {
 
     private void finish() {
         unregister(this);
-        LOGGER.finest("Drive "+ id +" finished!, total time : " + (timeDiff(startTime, localTime)/ 60000.0) + " minutes.");
+        LogHandler.LOGGER.finest("Drive "+ id +" finished!, total time : " + (Utils.timeDiff(startTime, localTime)/ 60000.0) + " minutes.");
     }
 
 
@@ -221,7 +223,7 @@ public class Driver extends User implements Runnable, SimulatorThread {
                     nextPassenger = null;
                     getNextDest();
                 }
-                case Dropped, Available  -> throwException("Bad pickup order. passenger can't be 'Dropped' or 'Available'.");
+                case Dropped, Available  -> Utils.throwException("Bad pickup order. passenger can't be 'Dropped' or 'Available'.");
             }
         }else {
             updatePath(getFinalDestination());
@@ -325,7 +327,7 @@ public class Driver extends User implements Runnable, SimulatorThread {
     /* SETTERS */
     @Override
     public String toString() {
-        return "Drive " + id + ", choose time =" + FORMAT(this.startTime) +", weight :  " + this.originalTime / 60000 +" minutes.";
+        return "Drive " + id + ", choose time =" + Utils.FORMAT(this.startTime) +", weight :  " + this.originalTime / 60000 +" minutes.";
     }
 }
 

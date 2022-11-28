@@ -6,6 +6,8 @@ import simulator.model.users.Passenger;
 import simulator.model.users.User;
 import simulator.model.users.UserMap;
 import utils.JsonHandler;
+import utils.Utils;
+import utils.logs.LogHandler;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -48,14 +50,14 @@ public class EventManager implements Runnable, SimulatorThread {
     public void run() {
         register(this);
 
-        LOGGER.fine("RealTimeEvents star running");
+        LogHandler.LOGGER.fine("RealTimeEvents star running");
 
 
         while(!eventsQueue.isEmpty()){
             /*  poll new event and wait till it is his choose time */
             User newEvent = eventsQueue.poll();
 
-            long timeDiff = timeDiff(localTime, newEvent.getStartTime());
+            long timeDiff = Utils.timeDiff(localTime, newEvent.getStartTime());
             sleep(timeDiff);
 //            sleep(currTime.compareTo(newEvent.getStartTime()));
 
@@ -64,7 +66,7 @@ public class EventManager implements Runnable, SimulatorThread {
 
             /*  add new event */
             startEvent(newEvent);
-            LOGGER.info("RealTimeEvents add: " + newEvent +".");
+            LogHandler.LOGGER.info("RealTimeEvents add: " + newEvent +".");
             latch.waitOnCondition();
 
         }
@@ -75,14 +77,14 @@ public class EventManager implements Runnable, SimulatorThread {
 
     private void finish(){
         JsonHandler.UserMapType.save();
-        LOGGER.info("EventManager finished!.");
+        LogHandler.LOGGER.info("EventManager finished!.");
         unregister(this);
     }
 
     private void startEvent(User newEvent){
         try {
             reentrantLock.lock();
-            lock(false);//todo combine
+            Utils.lock(false);//todo combine
             if(newEvent instanceof Driver drive){
                 UserMap.INSTANCE.startDrive(drive);
                 pool.execute(drive);

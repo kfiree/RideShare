@@ -11,6 +11,7 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.jetbrains.annotations.NotNull;
+import utils.logs.LogHandler;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -198,7 +199,7 @@ public class Style {
         if(location != null){
             car.addAttribute("xy", location.getLongitude(), location.getLatitude());
         }else{
-            LOGGER.info(UserMap.INSTANCE.getDrives().size() + " On-Going drives.");
+            LogHandler.LOGGER.info(UserMap.INSTANCE.getDrives().size() + " On-Going drives.");
             mapView.getDisplayGraph().removeNode(drive.getId());
         }
 

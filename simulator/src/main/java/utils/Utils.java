@@ -1,11 +1,7 @@
 package utils;
 
-import org.apache.commons.math3.geometry.Point;
-
-import java.awt.geom.Point2D;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.PriorityQueue;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static utils.logs.LogHandler.LOGGER;

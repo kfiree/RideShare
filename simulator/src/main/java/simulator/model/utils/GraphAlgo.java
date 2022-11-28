@@ -1,16 +1,14 @@
 package simulator.model.utils;
 
-import road_map.Utils;
+import road_map.SimulatorUtils;
 import road_map.model.utils.Coordinates;
 import road_map.model.graph.Path;
-import road_map.model.graph.RoadMap;
 import road_map.model.graph.Node;
+import utils.Utils;
+import utils.logs.LogHandler;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
-
-import static utils.logs.LogHandler.LOGGER;
-import static utils.Utils.validate;
 
 /**
  *      |==================================|
@@ -67,7 +65,7 @@ public final class GraphAlgo {
 
     //Loop through all the nodes, and find the closest one
     nodes.forEach(other -> {
-                double dist = Utils.distance(other.getCoordinates(), location);
+                double dist = SimulatorUtils.distance(other.getCoordinates(), location);
                 if(dist < minDistance.get()){
                     minDistance.set(dist);
                     closestNode.set(other);
@@ -151,7 +149,7 @@ public final class GraphAlgo {
                 }
             }
         }
-        LOGGER.fine("BFS from node "+ node.getId());
+        LogHandler.LOGGER.fine("BFS from node "+ node.getId());
         return visited.stream().toList();
     }
 
@@ -201,7 +199,7 @@ public final class GraphAlgo {
                 }
             }
         }
-        LOGGER.severe("couldn't find path between nodes, src "+ src+", dst "+ dst);
+        LogHandler.LOGGER.severe("couldn't find path between nodes, src "+ src+", dst "+ dst);
         return null;
 
     }
@@ -241,7 +239,7 @@ public final class GraphAlgo {
         }
         Collections.reverse(pathNodes);
         Path path =  new Path(pathNodes, pathWeight);
-        validate(path.getNodes().size() >= 1, "Bad path size :"+ pathNodes.size());
+        Utils.validate(path.getNodes().size() >= 1, "Bad path size :"+ pathNodes.size());
         return path;
     }
 

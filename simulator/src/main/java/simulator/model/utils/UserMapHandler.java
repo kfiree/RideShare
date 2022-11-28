@@ -7,6 +7,7 @@ import simulator.model.users.Driver;
 import simulator.model.users.Passenger;
 import simulator.model.users.UserMap;
 import utils.JsonHandler;
+import utils.logs.LogHandler;
 
 import java.util.*;
 
@@ -62,7 +63,7 @@ public class UserMapHandler {
         if(!users.isEmpty()) {
             StringBuilder builder = new StringBuilder();
             users.forEach(u -> builder.append("{Drive " + u.getId() + ", choose " + FORMAT(u.getStartTime()) + ", time " + u.getOriginalTime() / 60000 + " minutes }\n"));
-            LOGGER.info("\n=========================\n"+
+            LogHandler.LOGGER.info("\n=========================\n"+
                     msg + "\n=========================\n"+
                     builder + "\n");
         }
@@ -72,7 +73,7 @@ public class UserMapHandler {
         if(!users.isEmpty()) {
             StringBuilder builder = new StringBuilder();
             users.forEach(u -> builder.append("{Passenger " + u.getId() + ", choose " + FORMAT(u.getStartTime()) + "}\n"));
-            LOGGER.info("\n=========================\n"+
+            LogHandler.LOGGER.info("\n=========================\n"+
                     msg + "\n=========================\n"+
                     builder + "\n");
         }
@@ -95,7 +96,7 @@ public class UserMapHandler {
             userMap.addRequest(passenger);
         }
 
-        LOGGER.finer("init "+ requestsNum + " pedestrians.");
+        LogHandler.LOGGER.finer("init "+ requestsNum + " pedestrians.");
     }
 
     public static void initRandDrives(int drivesNum) {
@@ -130,7 +131,7 @@ public class UserMapHandler {
 //            drives.put(drive.getId(), drive);
         }
 
-        LOGGER.finer("init " + drivesNum + " drives.");
+        LogHandler.LOGGER.finer("init " + drivesNum + " drives.");
     }
 
     public static void initEventsInLine(int requestsNum){

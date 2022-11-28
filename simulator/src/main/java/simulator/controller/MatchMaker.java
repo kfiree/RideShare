@@ -2,7 +2,7 @@ package simulator.controller;
 
 import simulator.model.users.User;
 import simulator.model.utils.UserEdge;
-import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
+//import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
 import utils.DS.Latch;
 import simulator.model.users.Driver;
 import road_map.model.graph.Node;
@@ -18,8 +18,10 @@ import static utils.logs.LogHandler.LOGGER;
 import static utils.Utils.lock;
 import static utils.Utils.unLock;
 
-import org.jgrapht.*;
-import org.jgrapht.graph.*;
+//import org.jgrapht.*;
+//import org.jgrapht.graph.*;
+import utils.Utils;
+import utils.logs.LogHandler;
 
 /**
  *
@@ -66,31 +68,31 @@ public class MatchMaker implements Runnable, SimulatorThread {
 
     private void finish() {
         unregister(this);
-        LOGGER.finest("MatchMaker finished!.");
+        LogHandler.LOGGER.finest("MatchMaker finished!.");
     }
 
 
 
     /* MATCH ALGORITHMS */
-
-    public void shtuiut() {
-        Graph<User, UserEdge> graph = new SimpleGraph<>(UserEdge.class);
-        UserMap.INSTANCE.getDrives().forEach(graph::addVertex);
-        UserMap.INSTANCE.getLiveRequest().forEach(graph::addVertex);
-
-        KuhnMunkresMinimalWeightBipartitePerfectMatching<User, UserEdge> hungarian =
-                new KuhnMunkresMinimalWeightBipartitePerfectMatching<>(
-                        graph,
-                        new HashSet<>(UserMap.INSTANCE.getDrives()),
-                        new HashSet<>(UserMap.INSTANCE.getLiveRequest())
-                );
-
-        hungarian.getMatching();
-    }
+//
+//    public void shtuiut() {
+//        Graph<User, UserEdge> graph = new SimpleGraph<>(UserEdge.class);
+//        UserMap.INSTANCE.getDrives().forEach(graph::addVertex);
+//        UserMap.INSTANCE.getLiveRequest().forEach(graph::addVertex);
+//
+//        KuhnMunkresMinimalWeightBipartitePerfectMatching<User, UserEdge> hungarian =
+//                new KuhnMunkresMinimalWeightBipartitePerfectMatching<>(
+//                        graph,
+//                        new HashSet<>(UserMap.INSTANCE.getDrives()),
+//                        new HashSet<>(UserMap.INSTANCE.getLiveRequest())
+//                );
+//
+//        hungarian.getMatching();
+//    }
 
     public synchronized void matchMultiplePickup(){
         try {
-            lock(true);
+            Utils.lock(true);
             for (Passenger passenger : UserMap.INSTANCE.getLiveRequest()) {
                 if(!passenger.isMatched()) {
                     PriorityQueue<Driver> matches = new PriorityQueue<>(
@@ -116,7 +118,7 @@ public class MatchMaker implements Runnable, SimulatorThread {
                 }
             }
         }finally {
-            unLock();
+            Utils.unLock();
         }
     }
 
