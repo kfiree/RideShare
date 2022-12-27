@@ -150,8 +150,4 @@ public final class RoadMapHandler {
             System.exit(0);
         }
     }
-
-    public static void main(String[] args) {
-
-    }
 }
