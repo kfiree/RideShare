@@ -1,27 +1,30 @@
 
-# RideShare
+## RideShare
 
-Ride-sharing simulator for research and simulator development.
+# Ride-sharing simulator for research and simulator development.
 Multithreaded simulator for ride-sharing for research and simulator development.
 
+# Features
 The project parts:
-* Osm file processing for custom roadmap and 2 built in roadmaps: Tel Aviv, and Berlin.
-* Multithreaded simulator.
-* Gui.
-
+- Osm file processing for custom roadmap and 2 built in roadmaps: Tel Aviv, and Berlin.
+- Multithreaded simulator.
+- Gui.
 
 Algorithms:
-* Shortest path with multiple stops algorithms (TSP/SHPP on steroids).
-* Matching algorithm.
+- Shortest path with multiple stops algorithms (TSP/SHPP on steroids).
+- Matching algorithm.
+
 
 ![Logo](data/assets/logo.png)
 
 
 
-## Author
+## Author [Kfir Ettinger.](https://github.com/kfiree)
 
-- [@kfiree](https://github.com/kfiree)
-
+# Tech
+- [Osmosis] - Java application for processing OSM data.
+- [GraphStream] - Java library for the modeling and analysis of dynamic graphs.
+- Multi-Threaded simulator. 
 
 ## Run Locally
 
@@ -40,7 +43,7 @@ Go to the project directory
 Install dependencies
 
 ```bash
-  mvn clean
+  mvn clean # always good to clean before install
   mvn install
 ```
 
@@ -92,3 +95,10 @@ Simulator view:
 
 * Use DeepPool for matching (AI).
 * 
+
+**Enjoy!**
+
+
+
+[Osmosis]: <https://wiki.openstreetmap.org/wiki/Osmosis>
+[GraphStream]: <https://graphstream-project.org/>
