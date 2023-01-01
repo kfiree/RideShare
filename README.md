@@ -1,7 +1,9 @@
 
 ## RideShare
+![Build Status](https://github.com/openstreetmap/osmosis/actions/workflows/continuous-integration.yml/badge.svg)
 
-# Ride-sharing simulator for research and simulator development.
+Ride-sharing simulator for research and simulator development.
+
 Multithreaded simulator for ride-sharing for research and simulator development.
 
 # Features
